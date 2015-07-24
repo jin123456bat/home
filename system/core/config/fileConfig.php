@@ -23,7 +23,10 @@ class fileConfig extends config
 		 * 允许上传类型
 		 */
 		$this->type = array(
-			'image/jpeg'
+			'image/jpeg',
+			'image/png',
+			'image/gif',
+			'image/jpg'
 		);
 		
 		/**

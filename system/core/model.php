@@ -57,16 +57,43 @@ class model
 	public function select($field = '*')
 	{
 		$sql = 'select '.$field.' from '.$this->_table.' '.$this->_temp['where'];
-		return $this->_db->query($sql,empty($this->_temp['where'])?array():$this->_temp['array']);
+		$result = $this->_db->query($sql,empty($this->_temp['where'])?array():$this->_temp['array']);
+		unset($result);
+		return $result;
 	}
 	
+	/**
+	 * 增加条件
+	 * @param unknown $sql
+	 * @param unknown $array
+	 * @return \system\core\model
+	 */
 	public function where($sql,$array = array())
 	{
-		$this->_temp['where'] = 'where'.' '.$sql;
-		$this->_temp['array'] = $array;
+		if(isset($this->_temp['where']))
+		{
+			$this->_temp['where'] = $this->_temp['where'].' and '.$sql;
+		}
+		else
+		{
+			$this->_temp['where'] = 'where'.' '.$sql;
+		}
+		if(isset($this->_temp['array']))
+		{
+			$this->_temp['array'] = array_merge($this->_temp['array'],$array);
+		}
+		else
+		{
+			$this->_temp['array'] = $array;
+		}
 		return $this;
 	}
 	
+	/**
+	 * 插入
+	 * @param array $array
+	 * @return Ambigous <boolean, multitype:>
+	 */
 	public function insert(array $array)
 	{
 		$parameter = '';
@@ -83,18 +110,48 @@ class model
 		}
 		$parameter = rtrim($parameter,',');
 		$sql = 'insert into '.$this->_table.' values ('.$parameter.')';
-		return $this->_db->query($sql,$array);
+		$result = $this->_db->query($sql,$array);
+		unset($this->_temp);
+		return $result;
 	}
 	
+	/**
+	 * 更改
+	 * @param unknown $key
+	 * @param unknown $value
+	 * @return Ambigous <boolean, multitype:>
+	 */
 	public function update($key,$value)
 	{
 		$sql = 'update '.$this->_table.' set '.$key.' = ? '.$this->_temp['where'];
-		return $this->_db->query($sql,array_merge(array($value),$this->_temp['array']));
+		$result = $this->_db->query($sql,array_merge(array($value),$this->_temp['array']));
+		unset($this->_temp);
+		return $result;
 	}
 	
+	/**
+	 * 自增
+	 * @param unknown $key
+	 * @param number $num
+	 * @return Ambigous <boolean, multitype:>
+	 */
 	public function increase($key,$num = 1)
 	{
 		$sql = 'update '.$this->_table.' set '.$key.' = '.$key.' + ? '.$this->_temp['where'];
-		return $this->_db->query($sql,array_merge(array($num),$this->_temp['array']));
+		$result = $this->_db->query($sql,array_merge(array($num),$this->_temp['array']));
+		unset($this->_temp);
+		return $result;
+	}
+	
+	/**
+	 * 删除
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	public function delete()
+	{
+		$sql = 'delete from '.$this->_table.' '.$this->_temp['where'];
+		$result = $this->_db->query($sql,$this->_temp['array']);
+		unset($this->_temp);
+		return $result;
 	}
 }

@@ -11,7 +11,14 @@ class file
 {
 
 	function __construct()
-	{}
+	{
+		
+	}
+	
+	function __get($name)
+	{
+		return $this->receive($_FILES[$name], config('file'));
+	}
 
 	/**
 	 * 接受上传文件，成功返回文件保存路径，失败返回上传的错误代码，假如不是上传文件则返回false
