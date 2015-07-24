@@ -41,8 +41,7 @@ class response
 	 */
 	public function setCode($code)
 	{
-		if(is_int($code))
-		{
+		if (is_int($code)) {
 			$this->_code = $code;
 		}
 	}

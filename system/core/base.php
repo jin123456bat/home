@@ -9,21 +9,21 @@ namespace system\core;
  */
 class base
 {
-	
+
 	/**
 	 * post类
 	 *
 	 * @var $_POST
 	 */
 	protected $post;
-	
+
 	/**
 	 * get类
 	 *
 	 * @var $_GET
 	 */
 	protected $get;
-	
+
 	/**
 	 * file类
 	 *
@@ -31,6 +31,12 @@ class base
 	 */
 	protected $file;
 	
+	/**
+	 * $_SESSION
+	 * @var unknown
+	 */
+	protected $session;
+
 	/**
 	 * http管理
 	 *
@@ -40,6 +46,7 @@ class base
 
 	function __construct()
 	{
+		$this->session = new session();
 		$this->post = new post();
 		$this->get = new get();
 		$this->http = new http();

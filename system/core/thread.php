@@ -3,8 +3,11 @@ namespace system\core;
 
 class thread
 {
+
 	private $_http;
+
 	private $_log;
+
 	private $_config;
 
 	function __construct()
@@ -12,7 +15,6 @@ class thread
 		$this->_config = config('system');
 		$this->_http = new http();
 		$this->_log = new log();
-		set_time_limit(0);
 	}
 
 	/**
@@ -38,13 +40,10 @@ class thread
 		$errno = 0;
 		$errstr = 'completed';
 		$fp = fsockopen($host, $port, $errno, $errstr, 5);
-		if(! $fp)
-		{
+		if (! $fp) {
 			$this->_log->thread($errno, $errstr);
 			return false;
-		}
-		else
-		{
+		} else {
 			$out = 'GET ' . $query . " HTTP/1.1\r\n";
 			$out .= 'Host: ' . $host . "\r\n";
 			$out .= $this->_config['thread_enter'] . ': ' . $name . "\r\n";

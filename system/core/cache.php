@@ -8,7 +8,9 @@ namespace system\core;
  */
 class cache extends base
 {
+
 	private $_config;
+
 	private static $_instance;
 
 	function __construct($config)
@@ -19,8 +21,7 @@ class cache extends base
 
 	static public function getInstance($config)
 	{
-		if(self::$_instance === NULL)
-		{
+		if (self::$_instance === NULL) {
 			self::$_instance = new cache($config);
 		}
 		return self::$_instance;
@@ -36,10 +37,9 @@ class cache extends base
 	{
 		$md5 = md5($url);
 		$file = filesystem::path($this->_config['path'] . '/' . $md5 . '.' . $this->_config['suffix']);
-		if(is_file($file))
-		{
+		if (is_file($file)) {
 			$mtime = filemtime($file);
-			if($this->http->time() - $mtime < $this->_config['time'])
+			if ($this->http->time() - $mtime < $this->_config['time'])
 				return file_get_contents($file);
 		}
 		return NULL;

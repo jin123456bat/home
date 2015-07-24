@@ -26,19 +26,14 @@ class http
 	{
 		$protocal = (isset($_SERVER['https']) ? 'https://' : 'http://');
 		$port = isset($_SERVER['https']) ? (($this->port() == 443) ? '' : ':' . $this->port()) : (($this->port() == 80) ? '' : ':' . $this->port());
-		if($c === NULL && $a === NULL)
-		{
+		if ($c === NULL && $a === NULL) {
 			return $protocal . $this->host() . $port . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
-		}
-		else
-		{
+		} else {
 			$config = config('system', true);
-			switch($config['pathmode'])
-			{
+			switch ($config['pathmode']) {
 				case 'pathinfo':
 					$parameter = '/' . urlencode($c) . '/' . urlencode($a);
-					foreach($array as $key => $value)
-					{
+					foreach ($array as $key => $value) {
 						$parameter .= '/' . $key . '/' . urlencode($value);
 					}
 				default:

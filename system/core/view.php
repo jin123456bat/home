@@ -9,8 +9,11 @@ namespace system\core;
  */
 class view extends base
 {
+
 	private $_config;
+
 	private $_templateContent;
+
 	private $_var = array();
 
 	function __construct($viewConfig, $viewname)
@@ -27,22 +30,17 @@ class view extends base
 	private function parse()
 	{
 		$containerTimes = 0;
-		if(strpos($this->_templateContent, $this->_config->leftContainer) !== false)
-		{
-			if(++ $containerTimes > $this->_config['containerTimes'])
-			{
+		if (strpos($this->_templateContent, $this->_config->leftContainer) !== false) {
+			if (++ $containerTimes > $this->_config['containerTimes']) {
 				break;
 			}
 			// 处理include标签
 			$pattern = '/{%\s*include\s*file=[\'"]?.+[\'"]?\s*%}/';
-			if(preg_match_all($pattern, $this->_templateContent, $match))
-			{
+			if (preg_match_all($pattern, $this->_templateContent, $match)) {
 				$replaced = end($match);
-				array_map(function ($replace)
-				{
+				array_map(function ($replace) {
 					$pattern = '/file=[\'"]?.+[\'"]/';
-					if(preg_match($pattern, $replace, $match1))
-					{
+					if (preg_match($pattern, $replace, $match1)) {
 						$file = trim(trim(str_replace('file=', '', $match1[0]), '"'), '\'');
 						$file = realpath($this->_config->path . '/' . $file);
 						$this->_templateContent = str_replace($replace, file_get_contents($file), $this->_templateContent);
@@ -50,8 +48,7 @@ class view extends base
 				}, $replaced);
 			}
 			// 处理普通变量
-			foreach($this->_var as $key => $value)
-			{
+			foreach ($this->_var as $key => $value) {
 				$pattern = '/' . $this->_config->leftContainer . '\s*\$' . $key . '\s*' . $this->_config->rightContainer . '/';
 				$this->_templateContent = preg_replace($pattern, $value, $this->_templateContent);
 			}
@@ -69,11 +66,9 @@ class view extends base
 		$this->parse();
 		// 将模板存入缓存
 		$cacheConfig = config('cache');
-		if($cacheConfig['cache'])
-		{
+		if ($cacheConfig['cache']) {
 			$cache = cache::getInstance($cacheConfig);
-			if($cache->check($this->http->url()))
-			{
+			if ($cache->check($this->http->url())) {
 				$cache->write($this->http->url(), $this->_templateContent);
 			}
 		}

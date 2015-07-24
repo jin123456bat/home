@@ -11,8 +11,7 @@ class file
 {
 
 	function __construct()
-	{
-	}
+	{}
 
 	/**
 	 * 接受上传文件，成功返回文件保存路径，失败返回上传的错误代码，假如不是上传文件则返回false
@@ -39,28 +38,22 @@ class file
 	{
 		set_time_limit(0);
 		ini_set('memory_limit', $config->size);
-		if(is_uploaded_file($file['tmp_name']))
-		{
-			if($file['error'] != UPLOAD_ERR_OK)
-			{
+		if (is_uploaded_file($file['tmp_name'])) {
+			if ($file['error'] != UPLOAD_ERR_OK) {
 				return $file['error'];
 			}
-			if($file['size'] > $config['size'])
-			{
+			if ($file['size'] > $config['size']) {
 				return UPLOAD_ERR_INI_SIZE;
 			}
-			if(in_array($file['type'], $config['type']))
-			{
+			if (in_array($file['type'], $config['type'])) {
 				return 8;
 			}
-			if(! is_writable(filesystem::path($config['path'])) || is_dir(filesystem::path($config['path'])))
-			{
+			if (! is_writable(filesystem::path($config['path'])) || is_dir(filesystem::path($config['path']))) {
 				return UPLOAD_ERR_CANT_WRITE;
 			}
 			$type = empty(filesystem::type($file['name'])) ? 'tmpuploadfile' : filesystem::type($file['name']);
 			$filename = trim($config['path'], '/') . '/' . md5_file($file['tmp_name']) . sha1_file($file['tmp_name']) . '.' . $type;
-			if(move_uploaded_file($file['tmp_name'], $filename))
-			{
+			if (move_uploaded_file($file['tmp_name'], $filename)) {
 				return $filename;
 			}
 		}
@@ -84,17 +77,13 @@ class file
 		$file2 = filesystem::path($file2);
 		$writeHandler = fopen($file1, 'ab');
 		$readHandler = fopen($file2, 'rb');
-		if($readHandler && $writeHandler)
-		{
-			while(true)
-			{
+		if ($readHandler && $writeHandler) {
+			while (true) {
 				$data = fread($readHandler, 8192);
-				if(strlen($data) == 0)
-				{
+				if (strlen($data) == 0) {
 					break;
 				}
-				if(is_callable($callback))
-				{
+				if (is_callable($callback)) {
 					call_user_func($callback, array(
 						$data
 					));
@@ -123,24 +112,21 @@ class file
 	{
 		$path = filesystem::path($path);
 		$array = array();
-		if(is_writable($path) && is_dir($path))
-		{
+		if (is_writable($path) && is_dir($path)) {
 			$readHandler = fopen($file, 'rb');
-			if(! $readHandler)
+			if (! $readHandler)
 				return false;
 			$num = 0;
-			while(true)
-			{
+			while (true) {
 				$path = empty($path) ? sys_get_temp_dir() : $path;
 				$tmppath = tempnam($path, 'data_');
 				$writeHandler = fopen($tmppath, 'ab');
-				if(! $writeHandler)
+				if (! $writeHandler)
 					return false;
 				$data = fread($readHandler, $size);
-				if(strlen($data) == 0)
+				if (strlen($data) == 0)
 					break;
-				if(is_callable($callback))
-				{
+				if (is_callable($callback)) {
 					call_user_func($callback, array(
 						$data
 					));

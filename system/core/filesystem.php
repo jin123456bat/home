@@ -50,8 +50,7 @@ class filesystem
 	public static function rmdir($dir)
 	{
 		$dirs = self::scan($dir);
-		foreach($dirs as $directory)
-		{
+		foreach ($dirs as $directory) {
 			@unlink($directory);
 		}
 		return rmdir($dir);
@@ -70,21 +69,17 @@ class filesystem
 	{
 		static $array = array();
 		$dir = self::path($dir);
-		$array = array_merge(array_map(function ($filename)
-		{
-			if(filename === '.' || $filename == '..')
-			{
+		$array = array_merge(array_map(function ($filename) {
+			if (filename === '.' || $filename == '..') {
 				continue;
 			}
 			$filepath = self::path($dir . '/' . $filename);
-			if(is_dir($filepath) && $sdir)
-			{
+			if (is_dir($filepath) && $sdir) {
 				$array = array_merge($array, self::scan($filepath, $sdir));
-			}
-			else if(is_file($filepath))
-			{
-				return $filepath;
-			}
+			} else 
+				if (is_file($filepath)) {
+					return $filepath;
+				}
 		}, scandir($dir)));
 		return $array;
 	}

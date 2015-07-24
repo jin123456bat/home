@@ -17,8 +17,7 @@ class config implements \ArrayAccess
 		$data .= "{\n";
 		$data .= "\tfunction __construct()";
 		$data .= "\t{\n";
-		foreach($this as $key => $value)
-		{
+		foreach ($this as $key => $value) {
 			$data .= "\t\t\$this->" . $key . " = '" . $value . "';\n";
 		}
 		$data .= "\t}\n";
@@ -71,8 +70,7 @@ class config implements \ArrayAccess
 	public function combine(config $config)
 	{
 		$tempConfig = $this;
-		foreach($config as $parameter => $value)
-		{
+		foreach ($config as $parameter => $value) {
 			$tempConfig[$parameter] = $value;
 		}
 		return $tempConfig;

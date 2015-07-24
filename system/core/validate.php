@@ -2,10 +2,8 @@
 namespace system\core;
 
 /**
- * 验证类，验证变量是否符合规则，符合返回变量，不符合返回false
- *
+ * 验证类，验证变量是否符合规则，true，不符合返回false
  * @author jcc
- *        
  */
 class validate
 {
@@ -22,10 +20,19 @@ class validate
 	{
 		return checkdate($m, $d, $y);
 	}
+	
+	/**
+	 * 验证是否为手机号码
+	 * @param unknown $string
+	 */
+	public static function telephone($string)
+	{
+		$pattern = '$\d{11}$';
+		return preg_match($pattern, $string);
+	}
 
 	/**
 	 * 验证是否为纯数字+-.e都不允许
-	 *
 	 * @param unknown $var        	
 	 * @return mixed
 	 */
@@ -98,8 +105,7 @@ class validate
 		// 这个不允许中文，现在改成正则表达式
 		// return filter_var($var,FILTER_VALIDATE_URL);
 		$pattern = '$[a-zA-z]+://[^\s]*$';
-		if(preg_match($pattern, $var, $match))
-		{
+		if (preg_match($pattern, $var, $match)) {
 			return $match[0];
 		}
 		return false;

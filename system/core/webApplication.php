@@ -10,6 +10,7 @@ use system\core\config\viewConfig;
  */
 class webApplication extends base
 {
+
 	private $_config;
 
 	function __construct($config)
@@ -27,52 +28,44 @@ class webApplication extends base
 		$response = new response();
 		$cacheConfig = config('cache');
 		
-		if($cacheConfig['cache'])
-		{
+		if ($cacheConfig['cache']) {
 			$cache = cache::getInstance($cacheConfig);
 			$content = $cache->check($this->http->url());
-			if(! empty($content))
-			{
+			if (! empty($content)) {
 				$response->setBody($content);
 				$response->send();
 			}
 		}
-		try
-		{
+		try {
 			$handler = $this->parseUrl();
-			if(is_array($handler))
-			{
+			if (is_array($handler)) {
 				list ($control, $action) = $handler;
 				include ROOT . '/application/control/' . $control . '.php';
 				$class = 'application\\control\\' . $control . 'Control';
-				if(class_exists($class))
-				{
+				if (class_exists($class)) {
 					$class = new $class();
 					$class->response = &$response;
-					if(method_exists($class, $action))
-					{
-						
+					if (method_exists($class, $action)) {
 						$response->setCode(200);
 						$response->appendBody($this->__200($class, $action));
+					} else {
+						$response->setCode(404);
+						$response->appendBody($this->__404($class, $action));
 					}
+				} else {
+					$response->setCode(404);
+					$response->appendBody($this->__404($class, $action));
 				}
-				$response->setCode(404);
-				$response->appendBody($this->__404($class, $action));
-			}
-			else
-			{
+			} else {
 				include ROOT . '/application/thread/' . $handler . '.php';
 				$class = 'application\\thread\\' . $handler . 'Thread';
 				$class = new $class();
 				$class->run();
 			}
-		}
-		catch(\Exception $e)
-		{
+		} catch (\Exception $e) {
 			$response->setCode(500);
 			$response->appendBody($this->__500($e));
-		}
-		finally
+		} finally
 		{
 			$response->send();
 		}
@@ -83,24 +76,19 @@ class webApplication extends base
 	 */
 	function parseUrl()
 	{
-		switch($this->_config['pathmode'])
-		{
+		switch ($this->_config['pathmode']) {
 			case 'pathinfo':
 				$pos = stripos($_SERVER['REQUEST_URI'], '.php/');
-				if($pos)
-				{
+				if ($pos) {
 					$path = substr($_SERVER['REQUEST_URI'], $pos + 5);
 					$path = explode('/', $path);
 					$control = ! isset($path[0]) || empty($path[0]) ? $this->_config['default_control'] : $path[0];
 					$action = ! isset($path[1]) || empty($path[1]) ? $this->_config['default_action'] : $path[1];
-					for($i = 2;$i < count($path);$i += 2)
-					{
+					for ($i = 2; $i < count($path); $i += 2) {
 						$_GET[$path[$i]] = $path[$i + 1];
 						$_REQUEST[$path[$i]] = $path[$i + 1];
 					}
-				}
-				else
-				{
+				} else {
 					$control = $this->_config['default_control'];
 					$action = $this->_config['default_action'];
 				}
@@ -109,8 +97,7 @@ class webApplication extends base
 				$control = empty($this->get->c) ? $this->_config['default_control'] : $this->get->c;
 				$action = empty($this->get->a) ? $this->_config['default_control'] : $this->get->a;
 		}
-		if($control === $this->_config['thread_enter'])
-		{
+		if ($control === $this->_config['thread_enter']) {
 			return $action;
 		}
 		return array(
@@ -138,12 +125,9 @@ class webApplication extends base
 	 */
 	function __404($control, $action)
 	{
-		if(method_exists($control, '__404'))
-		{
+		if (method_exists($control, '__404')) {
 			return $control->__404();
-		}
-		else
-		{
+		} else {
 			$viewConfig = new viewConfig();
 			$view = new view($viewConfig, '404');
 			return $view->display();

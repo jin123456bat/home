@@ -12,7 +12,22 @@ class post
 
 	function __get($name)
 	{
-		return isset($_POST[$name]) ? (new variable($_POST[$name]))->trim() : NULL;
+		return isset($_POST[$name]) ? trim($_POST[$name]) : NULL;
+	}
+
+	function __set($name, $value)
+	{
+		$_POST[$name] = $value;
+	}
+
+	function __isset($name)
+	{
+		return isset($_POST[$name]) && ! empty($_POST[$name]);
+	}
+
+	function __unset($name)
+	{
+		unset($_POST[$name]);
 	}
 
 	/**

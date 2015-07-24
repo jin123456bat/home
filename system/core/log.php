@@ -5,6 +5,7 @@ use system\core\filesystem;
 
 class log
 {
+
 	private $_config;
 
 	function __construct()
@@ -21,8 +22,7 @@ class log
 	function thread($errno, $errstr)
 	{
 		$out = date(http::time(), "Y-m-d H:i:s") . ' ' . $errno . ' ' . $errstr;
-		if(filesystem::path($this->_config['thread_path']))
-		{
+		if (filesystem::path($this->_config['thread_path'])) {
 			file_put_contents($this->_config['thread_path'], $out);
 		}
 	}
@@ -36,8 +36,7 @@ class log
 	function mysql($errno, $errstr)
 	{
 		$out = date(http::time(), "Y-m-d H:i:s") . ' ' . $errno . ' ' . $errstr;
-		if(filesystem::path($this->_config['mysql_path']))
-		{
+		if (filesystem::path($this->_config['mysql_path'])) {
 			file_put_contents($this->_config['mysql_path'], $out);
 		}
 	}

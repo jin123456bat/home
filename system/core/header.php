@@ -27,12 +27,9 @@ class header
 	 */
 	function add($key, $value = NULL)
 	{
-		if(empty($value))
-		{
+		if (empty($value)) {
 			$this->_header[] = $key;
-		}
-		else
-		{
+		} else {
 			$this->_header[$key] = $value;
 		}
 	}
@@ -45,7 +42,7 @@ class header
 	 */
 	function check($string)
 	{
-		if(isset($this->_header[$string]))
+		if (isset($this->_header[$string]))
 			return true;
 		return in_array($string, $this->_header);
 	}
@@ -57,16 +54,13 @@ class header
 	 */
 	function delete($string)
 	{
-		foreach($this->_header as $key => $value)
-		{
-			if($key === $string)
-			{
+		foreach ($this->_header as $key => $value) {
+			if ($key === $string) {
 				unset($this->_header[$key]);
 				return true;
 			}
 			
-			if($key . ': ' . $value === $string)
-			{
+			if ($key . ': ' . $value === $string) {
 				unset($this->_header[$key]);
 				return;
 			}
@@ -82,12 +76,9 @@ class header
 	 */
 	function send($key, $value = NULL)
 	{
-		if(empty($value))
-		{
+		if (empty($value)) {
 			header($key, true);
-		}
-		else
-		{
+		} else {
 			header($key . ': ' . $value, true);
 		}
 	}
@@ -97,14 +88,10 @@ class header
 	 */
 	function sendAll()
 	{
-		foreach($this->_header as $key => $value)
-		{
-			if(is_int($key))
-			{
+		foreach ($this->_header as $key => $value) {
+			if (is_int($key)) {
 				header($value, true);
-			}
-			else
-			{
+			} else {
 				header($key . ': ' . $value, true);
 			}
 		}

@@ -12,16 +12,17 @@
 function config($name, $parent = false)
 {
 	static $_instance = array();
-	if(! isset($_instance[$name]))
-	{
+	if (! isset($_instance[$name])) {
 		$classname = $name . 'Config';
 		$path = ROOT . '/system/core/config/' . $classname . '.php';
-		include $path;
-		$namespace = 'system\\core\\config\\' . $classname;
-		$_instance[$name] = new $namespace();
-		$userPath = ROOT . '/application/config/' . $classname . '.php';
-		if(file_exists($userPath) && ! $parent)
+		if(file_exists($path))
 		{
+			include $path;
+			$namespace = 'system\\core\\config\\' . $classname;
+			$_instance[$name] = new $namespace();
+		}
+		$userPath = ROOT . '/application/config/' . $classname . '.php';
+		if (file_exists($userPath) && ! $parent) {
 			$namespace = '\\application\\config\\' . $classname;
 			include $userPath;
 			$userViewConfig = new $namespace();

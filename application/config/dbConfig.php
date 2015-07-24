@@ -1,5 +1,5 @@
 <?php
-namespace system\core\config;
+namespace application\config;
 
 use system\core\inter\config;
 
@@ -9,7 +9,7 @@ use system\core\inter\config;
  * @author 程晨
  *        
  */
-class mysqlConfig extends config
+class dbConfig extends config
 {
 
 	/**
@@ -31,7 +31,7 @@ class mysqlConfig extends config
 	 *
 	 * @var unknown
 	 */
-	public $db_dbname = '';
+	public $db_dbname = 'test';
 
 	/**
 	 * 数据库用户名
@@ -52,12 +52,12 @@ class mysqlConfig extends config
 	 *
 	 * @var unknown
 	 */
-	public $db_forever = false;
+	public $db_forever = true;
 
 	/**
 	 * 字符集
 	 *
 	 * @var unknown
 	 */
-	public $db_charset = 'utf-8';
+	public $db_charset = 'utf8';
 }
