@@ -17,21 +17,48 @@ class userModel extends model
 	 */
 	function register($telephone, $password)
 	{
-		echo $this->where('id=?',array(55))->increase('password', 1);
-		//$this->where('id = ?',array(55))->update('password', 'password + 1');
-		//var_dump($this->where('id=?',array(55))->select());
-		//$salt = random::word(6);
-		//echo $this->insert(array(NULL,$telephone,md5($password.$salt)));
+		$result = $this->where('telephone=?',array($telephone))->select();
+		if(isset($result[0]))
+			return false;
+		$salt = random::word(6);
+		$password = md5($password.$salt);
+		$regtime = $_SERVER['REQUEST_TIME'];
+		$logtime = $regtime;
+		$money = 0;
+		$close = 0;
+		$array = array(NULL,$telephone,md5($password),$regtime,$logtime,$money,$close);
+		return $this->insert($array);
 	}
 
 	/**
 	 * 用户登录
-	 * 
+	 *
 	 * @param unknown $telephone        	
 	 * @param unknown $password        	
 	 */
 	function login($telephone, $password)
 	{
-		
+		$result = $this->where('telephone=?',array($telephone))->select();
+		if(isset($result[0]))
+		{
+			$password = md5($password.$result[0]['salt']);
+			if($password === $result[0]['password'])
+				return $result[0];
+		}
+		return false;
+	}
+	
+	/**
+	 * 更改密码a
+	 */
+	function changepwd($uid,$pwd)
+	{
+		$result = $this->where('id=?',array($uid))->select();
+		if(isset($result[0]))
+		{
+			$pwd = md5($pwd.$result[0]['salt']);
+			return $this->where('id=?',array($uid))->update('password', $pwd);
+		}
+		return false;
 	}
 }

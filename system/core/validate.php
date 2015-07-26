@@ -3,6 +3,7 @@ namespace system\core;
 
 /**
  * 验证类，验证变量是否符合规则，true，不符合返回false
+ * 
  * @author jcc
  */
 class validate
@@ -20,10 +21,11 @@ class validate
 	{
 		return checkdate($m, $d, $y);
 	}
-	
+
 	/**
 	 * 验证是否为手机号码
-	 * @param unknown $string
+	 * 
+	 * @param unknown $string        	
 	 */
 	public static function telephone($string)
 	{
@@ -33,6 +35,7 @@ class validate
 
 	/**
 	 * 验证是否为纯数字+-.e都不允许
+	 * 
 	 * @param unknown $var        	
 	 * @return mixed
 	 */

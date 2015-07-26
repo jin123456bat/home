@@ -63,10 +63,8 @@ class mysql
 		$statement = $this->pdo->prepare($sql);
 		if ($statement) {
 			$result = $statement->execute($array);
-			if ($result)
-			{
-				if (strtolower(substr($statement->queryString, 0, 6)) == 'select')
-				{
+			if ($result) {
+				if (strtolower(substr($statement->queryString, 0, 6)) == 'select') {
 					return $statement->fetchAll(PDO::FETCH_ASSOC);
 				}
 				return $statement->rowCount();

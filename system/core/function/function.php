@@ -15,8 +15,7 @@ function config($name, $parent = false)
 	if (! isset($_instance[$name])) {
 		$classname = $name . 'Config';
 		$path = ROOT . '/system/core/config/' . $classname . '.php';
-		if(file_exists($path))
-		{
+		if (file_exists($path)) {
 			include $path;
 			$namespace = 'system\\core\\config\\' . $classname;
 			$_instance[$name] = new $namespace();
@@ -26,7 +25,11 @@ function config($name, $parent = false)
 			$namespace = '\\application\\config\\' . $classname;
 			include $userPath;
 			$userViewConfig = new $namespace();
-			$_instance[$name] = $_instance[$name]->combine($userViewConfig);
+			if (isset($_instance[$name])) {
+				$_instance[$name] = $_instance[$name]->combine($userViewConfig);
+			} else {
+				$_instance[$name] = $userViewConfig;
+			}
 		}
 	}
 	return $_instance[$name];

@@ -45,6 +45,7 @@ class webApplication extends base
 				if (class_exists($class)) {
 					$class = new $class();
 					$class->response = &$response;
+					
 					if (method_exists($class, $action)) {
 						$response->setCode(200);
 						$response->appendBody($this->__200($class, $action));
@@ -62,10 +63,13 @@ class webApplication extends base
 				$class = new $class();
 				$class->run();
 			}
-		} catch (\Exception $e) {
+		}
+		catch (\Exception $e)
+		{
 			$response->setCode(500);
 			$response->appendBody($this->__500($e));
-		} finally
+		}
+		finally
 		{
 			$response->send();
 		}
@@ -129,7 +133,7 @@ class webApplication extends base
 			return $control->__404();
 		} else {
 			$viewConfig = new viewConfig();
-			$view = new view($viewConfig, '404');
+			$view = new view($viewConfig, '404.html');
 			return $view->display();
 		}
 	}

@@ -9,83 +9,75 @@ namespace system\core;
  */
 class view extends base
 {
-
-	private $_config;
-
-	private $_templateContent;
-
-	private $_var = array();
-
+	/**
+	 * 配置
+	 */
+	private $_viewConfig;
+	
+	/**
+	 * 模板名称
+	 * @var unknown
+	 */
+	private $_viewname;
+	
+	/**
+	 * 模板引擎路径
+	 * @var unknown
+	 */
+	private $_enginePath;
+	
+	/**
+	 * 模板引擎实例
+	 * @var unknown
+	 */
+	private $_smarty;
+	/**
+	 * 构造函数
+	 * @param unknown $viewConfig
+	 * @param unknown $viewname
+	 */
 	function __construct($viewConfig, $viewname)
 	{
-		$this->_config = $viewConfig;
-		$path = realpath($this->_config['path'] . DIRECTORY_SEPARATOR . $viewname . '.' . ltrim($this->_config->suffix, '.'));
-		$this->_templateContent = file_get_contents($path);
-		parent::__construct();
+		$this->_viewConfig = $viewConfig;
+		$this->_viewname = $viewname;
+		$this->_enginePath = ROOT.'/extends/smarty/Smarty.class.php';
+		include_once $this->_enginePath;
+		$this->_smarty = new \Smarty();
+		$this->init();
 	}
-
+	
 	/**
-	 * 解析模板
+	 * 初始化模板引擎
 	 */
-	private function parse()
+	private function init()
 	{
-		$containerTimes = 0;
-		if (strpos($this->_templateContent, $this->_config->leftContainer) !== false) {
-			if (++ $containerTimes > $this->_config['containerTimes']) {
-				break;
-			}
-			// 处理include标签
-			$pattern = '/{%\s*include\s*file=[\'"]?.+[\'"]?\s*%}/';
-			if (preg_match_all($pattern, $this->_templateContent, $match)) {
-				$replaced = end($match);
-				array_map(function ($replace) {
-					$pattern = '/file=[\'"]?.+[\'"]/';
-					if (preg_match($pattern, $replace, $match1)) {
-						$file = trim(trim(str_replace('file=', '', $match1[0]), '"'), '\'');
-						$file = realpath($this->_config->path . '/' . $file);
-						$this->_templateContent = str_replace($replace, file_get_contents($file), $this->_templateContent);
-					}
-				}, $replaced);
-			}
-			// 处理普通变量
-			foreach ($this->_var as $key => $value) {
-				$pattern = '/' . $this->_config->leftContainer . '\s*\$' . $key . '\s*' . $this->_config->rightContainer . '/';
-				$this->_templateContent = preg_replace($pattern, $value, $this->_templateContent);
-			}
-		}
+		$this->_smarty->template_dir = $this->_viewConfig->template_dir;
+		$this->_smarty->caching = $this->_viewConfig->caching;									//是否使用缓存
+		$this->_smarty->compile_dir = $this->_viewConfig->compile_dir;		//设置编译目录
+		$this->_smarty->cache_dir = $this->_viewConfig->cache_dir;						//设置缓存文件夹
+		$this->_smarty->left_delimiter = $this->_viewConfig->left_delimiter;							//设置左右标示符
+		$this->_smarty->right_delimiter = $this->_viewConfig->right_delimiter;
 	}
-
+	
 	/**
-	 * 缓存并返回模板
-	 *
-	 * @return mixed
+	 * 添加模板变量
+	 * @param unknown $key
+	 * @param unknown $val
+	 * @return Smarty_Internal_Data
 	 */
-	function display()
+	function assign($key,$val)
 	{
-		// 解析模板
-		$this->parse();
-		// 将模板存入缓存
-		$cacheConfig = config('cache');
-		if ($cacheConfig['cache']) {
-			$cache = cache::getInstance($cacheConfig);
-			if ($cache->check($this->http->url())) {
-				$cache->write($this->http->url(), $this->_templateContent);
-			}
-		}
-		// 返回模板内容
-		return $this->_templateContent;
+		return $this->_smarty->assign($key,$val);
 	}
-
+	
 	/**
-	 * 替换模板变量
-	 *
-	 * @param unknown $var        	
-	 * @param unknown $val        	
+	 * 返回模板
+	 * @param string $template
+	 * @return string
 	 */
-	function assign($var, $val)
+	function display($template = NULL)
 	{
-		$this->_var[$var] = $val;
-		// $pattern = '/' . $this->_config->leftContainer . '\s*\$' . $var . '\s*' . $this->_config->rightContainer . '/';
-		// $this->_templateContent = preg_replace($pattern, $val, $this->_templateContent);
+		$template = empty($template)?$this->_viewname:$template;
+		return $this->_smarty->fetch($template);
 	}
 }

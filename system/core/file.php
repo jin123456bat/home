@@ -11,10 +11,8 @@ class file
 {
 
 	function __construct()
-	{
-		
-	}
-	
+	{}
+
 	function __get($name)
 	{
 		return $this->receive($_FILES[$name], config('file'));

@@ -30,9 +30,10 @@ class base
 	 * @var $_FILES
 	 */
 	protected $file;
-	
+
 	/**
 	 * $_SESSION
+	 * 
 	 * @var unknown
 	 */
 	protected $session;

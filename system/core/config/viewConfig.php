@@ -4,7 +4,6 @@ namespace system\core\config;
 use system\core\inter\config;
 
 /**
- * 模板引擎配置
  *
  * @author 程晨
  *        
@@ -14,29 +13,11 @@ class viewConfig extends config
 
 	function __construct()
 	{
-		/**
-		 * 模板保存路径
-		 */
-		$this->path = ROOT . '/system/template/';
-		
-		/**
-		 * 模板后缀
-		 */
-		$this->suffix = 'html';
-		
-		/**
-		 * 标签左开始符
-		 */
-		$this->leftContainer = '{%';
-		
-		/**
-		 * 标签右结束符号
-		 */
-		$this->rightContainer = '%}';
-		
-		/**
-		 * 标签嵌套最大次数
-		 */
-		$this->containerTimes = 3;
+		$this->template_dir = ROOT . '/system/template';
+		$this->caching = false;									//是否使用缓存
+		$this->compile_dir = ROOT.'/system/cache/smarty_compile';		//设置编译目录
+		$this->cache_dir = ROOT.'/system/cache/template/';						//设置缓存文件夹
+		$this->left_delimiter = '{%';							//设置左右标示符
+		$this->right_delimiter = '%}';
 	}
 }
