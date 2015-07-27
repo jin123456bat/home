@@ -84,11 +84,33 @@ class userControl extends control
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_SELECT))
 		{
-			$userModel = $this->model('user');
-			$user = $userModel->select();
 			$this->view = new view(config('view'), 'admin/userlist.html');
-			$this->view->assign('user',$user);
+			$userModel = $this->model('user');
+			$this->view->assign('user',$userModel->select());
 			return $this->view->display();
+		}
+	}
+	
+	/**
+	 * 
+	 * ajax调用用户数据列表
+	 */
+	function userlistajax()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_SELECT))
+		{
+			$userModel = $this->model('user');
+			
+			$num = $userModel->select('count(*)');
+			$result = $userModel->searchable($_POST);
+		
+			$resultObj = new \stdClass();
+			$resultObj->draw = $_POST['draw'];
+			$resultObj->recordsTotal = (int)$num[0]['count(*)'];
+  			$resultObj->recordsFiltered = count($result);
+  			$resultObj->data = array_slice($result,$this->post->start,$this->post->length);
+  			return json_encode($resultObj);
 		}
 	}
 }

@@ -11,6 +11,30 @@ class userModel extends model
 	{
 		parent::__construct('user');
 	}
+	
+	/**
+	 * 根据json对象搜索
+	 */
+	function searchable($json)
+	{
+		$parameter = '';
+		foreach ($json['columns'] as $key => $value)
+		{
+			foreach ($json['order'] as $order)
+			{
+				if($order['column'] == $key+1)
+				{
+					$this->orderby($value['data'],$order['dir']);
+				}
+			}
+			$parameter .= $value['data'].',';
+			if($value['searchable'] == 'true' && !empty($json['search']['value']))
+			{
+				$this->where($value['data'].' like ?',array('%'.$json['search']['value'].'%'),'or');
+			}
+		}
+		return $this->select(rtrim($parameter,','));
+	}
 
 	/**
 	 * 普通用户注册数据模型

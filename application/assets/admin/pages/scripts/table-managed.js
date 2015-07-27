@@ -8,6 +8,7 @@ var TableManaged = function () {
         table.dataTable({
             "columns": [{
 				"data":"id",
+				"bSortable": false,
                 "orderable": false
             }, {
 				"data":"telephone",
@@ -28,18 +29,19 @@ var TableManaged = function () {
 				"data":"ordernum",
 				"orderable": true
 			}, {
-				"data":"dosomething",
+				"data":"id",
 				"orderable": false
 			}],
+			"paging":true,
 			"processing": true,
 			"serverSide": true,
-			"ajax" : "load",
+			"ajax" :{"url":"?c=user&a=userlistajax","type":"post"},
             "lengthMenu": [
-                [10, 20, 30, -1],
-                [10, 20, 30, "All"] // change per page values here
+                [5, 10, 15, -1],
+                [5, 10, 15, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 10,            
+            "pageLength": 5,
             "pagingType": "bootstrap_full_number",
             "language": {
                 "lengthMenu": "  _MENU_ 记录",
@@ -54,6 +56,12 @@ var TableManaged = function () {
                 'orderable': false,
                 'targets': [0]
             }, {
+				"targets": [0],
+				"data": "id",
+				"render": function(data, type, full) {
+					return "<div class=checker><span><input type=checkbox class=checkboxes></span></div>";
+				}
+			}, {
                 "searchable": false,
                 "targets": [0]
             }],
@@ -69,7 +77,9 @@ var TableManaged = function () {
                 if (checked) {
                     $(this).attr("checked", true);
                     $(this).parents('tr').addClass("active");
+					$(this).parent('span').addClass('checked');
                 } else {
+					$(this).parent('span').removeClass('checked');
                     $(this).attr("checked", false);
                     $(this).parents('tr').removeClass("active");
                 }
@@ -79,6 +89,16 @@ var TableManaged = function () {
 
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+			if($(this).parent('span').hasClass('checked'))
+			{
+				$(this).parent('span').removeClass('checked');
+				$(this).attr('checked',false);
+			}
+			else
+			{
+				$(this).parent('span').addClass('checked');
+				$(this).attr('checked',true);
+			}
         });
 
     }

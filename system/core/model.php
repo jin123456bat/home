@@ -56,7 +56,7 @@ class model
 
 	public function select($field = '*')
 	{
-		$sql = 'select ' . $field . ' from ' . $this->_table . ' ' . $this->_temp['where'];
+		$sql = 'select ' . $field . ' from ' . $this->_table . ' ' . (isset($this->_temp['where'])?$this->_temp['where']:'') .' '.(isset($this->_temp['orderby'])?$this->_temp['orderby']:'').' '.(isset($this->_temp['limit'])?$this->_temp['limit']:'');
 		return $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
 	}
 
@@ -67,10 +67,10 @@ class model
 	 * @param unknown $array        	
 	 * @return \system\core\model
 	 */
-	public function where($sql, $array = array())
+	public function where($sql, $array = array(),$combine = 'and')
 	{
 		if (isset($this->_temp['where'])) {
-			$this->_temp['where'] = $this->_temp['where'] . ' and ' . $sql;
+			$this->_temp['where'] = $this->_temp['where'] .' '. $combine.' ' . $sql;
 		} else {
 			$this->_temp['where'] = 'where' . ' ' . $sql;
 		}
@@ -150,6 +150,38 @@ class model
 		$result = $this->_db->query($sql, $this->_temp['array']);
 		unset($this->_temp);
 		return $result;
+	}
+	
+	/**
+	 * 增加限制规则
+	 * @param unknown $start
+	 * @param number $length
+	 * @return \system\core\model
+	 */
+	public function limit($start,$length = 0)
+	{
+		if(empty($length))
+			$this->_temp['limit'] = 'limit '.$start;
+		else
+			$this->_temp['limit'] = 'limit '.$start.','.$length;
+		return $this;
+	}
+	
+	/**
+	 * 添加排序规则
+	 * @param unknown $field
+	 * @param string $asc
+	 */
+	public function orderby($field,$asc = 'asc')
+	{
+		if(isset($this->_temp['orderby']))
+		{
+			$this->_temp['orderby'] = $this->_temp['orderby'].','.$field.' '.$asc;
+		}
+		else
+		{
+			$this->_temp['orderby'] = 'order by '.$field.' '.$asc;
+		}
 	}
 	
 	public function query($sql)

@@ -1,6 +1,6 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-26 21:48:31
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-27 11:21:11
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
-<?php /*%%SmartyHeaderCode:2530155b4df8e1da190-54983073%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
+<?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
   array (
@@ -11,15 +11,15 @@ $_valid = $_smarty_tpl->decodeProperties(array (
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '2530155b4df8e1da190-54983073',
+  'nocache_hash' => '1838855b5a3a7d1e756-54879822',
   'function' => 
   array (
   ),
-  'version' => 'Smarty-3.1.16',
-  'unifunc' => 'content_55b4df8e1f7800_52688838',
   'has_nocache_code' => false,
+  'version' => 'Smarty-3.1.16',
+  'unifunc' => 'content_55b5a3a7df1726_57997583',
 ),false); /*/%%SmartyHeaderCode%%*/?>
-<?php if ($_valid && !is_callable('content_55b4df8e1f7800_52688838')) {function content_55b4df8e1f7800_52688838($_smarty_tpl) {?><!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+<?php if ($_valid && !is_callable('content_55b5a3a7df1726_57997583')) {function content_55b5a3a7df1726_57997583($_smarty_tpl) {?><!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 <div class="page-sidebar navbar-collapse collapse">
 	<!-- BEGIN SIDEBAR MENU -->

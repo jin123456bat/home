@@ -1,30 +1,29 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-27 02:49:00
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-27 14:17:31
          compiled from "D:\wamp\www\home\application\template\admin\userlist.html" */ ?>
-<?php /*%%SmartyHeaderCode:2854855b4dc9d0e6751-27402225%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
+<?php /*%%SmartyHeaderCode:2455055b5a3a7961bd5-95318673%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
   array (
     '10d6e352fb5d895c46dd8525c8eefdf551c739d2' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\userlist.html',
-      1 => 1437936329,
+      1 => 1437977849,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '2854855b4dc9d0e6751-27402225',
+  'nocache_hash' => '2455055b5a3a7961bd5-95318673',
   'function' => 
   array (
   ),
   'version' => 'Smarty-3.1.16',
-  'unifunc' => 'content_55b4dc9d252b54_79845572',
+  'unifunc' => 'content_55b5a3a7ba0db7_41231490',
   'variables' => 
   array (
     'VIEW_ROOT' => 0,
-    'user' => 0,
   ),
   'has_nocache_code' => false,
 ),false); /*/%%SmartyHeaderCode%%*/?>
-<?php if ($_valid && !is_callable('content_55b4dc9d252b54_79845572')) {function content_55b4dc9d252b54_79845572($_smarty_tpl) {?><!DOCTYPE html>
+<?php if ($_valid && !is_callable('content_55b5a3a7ba0db7_41231490')) {function content_55b5a3a7ba0db7_41231490($_smarty_tpl) {?><!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
@@ -315,65 +314,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 							</tr>
 							</thead>
 							<tbody>
-                            <?php if (isset($_smarty_tpl->tpl_vars['smarty']->value['section']['user'])) unset($_smarty_tpl->tpl_vars['smarty']->value['section']['user']);
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['name'] = 'user';
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['loop'] = is_array($_loop=$_smarty_tpl->tpl_vars['user']->value) ? count($_loop) : max(0, (int) $_loop); unset($_loop);
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['show'] = true;
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['max'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['loop'];
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['step'] = 1;
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['start'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['step'] > 0 ? 0 : $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['loop']-1;
-if ($_smarty_tpl->tpl_vars['smarty']->value['section']['user']['show']) {
-    $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['total'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['loop'];
-    if ($_smarty_tpl->tpl_vars['smarty']->value['section']['user']['total'] == 0)
-        $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['show'] = false;
-} else
-    $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['total'] = 0;
-if ($_smarty_tpl->tpl_vars['smarty']->value['section']['user']['show']):
-
-            for ($_smarty_tpl->tpl_vars['smarty']->value['section']['user']['index'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['start'], $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['iteration'] = 1;
-                 $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['iteration'] <= $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['total'];
-                 $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['index'] += $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['step'], $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['iteration']++):
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['rownum'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['iteration'];
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['index_prev'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['index'] - $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['step'];
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['index_next'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['index'] + $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['step'];
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['first']      = ($_smarty_tpl->tpl_vars['smarty']->value['section']['user']['iteration'] == 1);
-$_smarty_tpl->tpl_vars['smarty']->value['section']['user']['last']       = ($_smarty_tpl->tpl_vars['smarty']->value['section']['user']['iteration'] == $_smarty_tpl->tpl_vars['smarty']->value['section']['user']['total']);
-?>
-                                <tr class="odd gradeX">
-                                    <td>
-                                        <input type="checkbox" class="checkboxes" value="1"/>
-                                    </td>
-                                    <td>
-                                         <?php echo $_smarty_tpl->tpl_vars['user']->value[$_smarty_tpl->getVariable('smarty')->value['section']['user']['index']]['telephone'];?>
-
-                                    </td>
-                                    <td>
-                                        <a href="mailto:<?php echo $_smarty_tpl->tpl_vars['user']->value[$_smarty_tpl->getVariable('smarty')->value['section']['user']['index']]['email'];?>
-">
-                                        <?php echo $_smarty_tpl->tpl_vars['user']->value[$_smarty_tpl->getVariable('smarty')->value['section']['user']['index']]['email'];?>
- </a>
-                                    </td>
-                                    <td>
-                                         <?php echo $_smarty_tpl->tpl_vars['user']->value[$_smarty_tpl->getVariable('smarty')->value['section']['user']['index']]['regtime'];?>
-
-                                    </td>
-                                    <td class="center">
-                                         <?php echo $_smarty_tpl->tpl_vars['user']->value[$_smarty_tpl->getVariable('smarty')->value['section']['user']['index']]['logtime'];?>
-
-                                    </td>
-                                    <td>
-                                        <span class="label label-sm label-success">
-                                        <?php echo $_smarty_tpl->tpl_vars['user']->value[$_smarty_tpl->getVariable('smarty')->value['section']['user']['index']]['money'];?>
- </span>
-                                    </td>
-                                    <td>
-                                    	<?php echo $_smarty_tpl->tpl_vars['user']->value[$_smarty_tpl->getVariable('smarty')->value['section']['user']['index']]['ordernum'];?>
-
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
-                            <?php endfor; endif; ?>
+                            	
 							</tbody>
 							</table>
 						</div>
