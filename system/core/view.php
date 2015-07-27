@@ -57,6 +57,19 @@ class view extends base
 		$this->_smarty->cache_dir = $this->_viewConfig->cache_dir;						//设置缓存文件夹
 		$this->_smarty->left_delimiter = $this->_viewConfig->left_delimiter;							//设置左右标示符
 		$this->_smarty->right_delimiter = $this->_viewConfig->right_delimiter;
+		
+		$http = new http();
+		$baseUrl = rtrim("http://".$http->host().$http->path().'/application','/');
+		$this->_smarty->assign("VIEW_ROOT",$baseUrl);
+		$this->_smarty->registerPlugin('function',"url", array($this,'url'));
+		//include ROOT.'/extends/smarty/smartyex.class.php';
+		//$this->_smarty->registerObject("smartyex",new \smartyex());
+	}
+	
+	function url($parameter)
+	{
+		$http = new http();
+		return call_user_func_array(array($http,'url'), $parameter);
 	}
 	
 	/**

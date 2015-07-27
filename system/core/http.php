@@ -38,7 +38,7 @@ class http
 					}
 				default:
 					$parameter = '?c=' . urlencode($c) . '&a=' . urlencode($a);
-					$parameter .= '&' . http_build_query($array);
+					$parameter .= empty($array)?'':('&' . http_build_query($array));
 			}
 			$query = ($query === NULL) ? '' : '#' . $query;
 			return $protocal . $this->host() . $port . $_SERVER['PHP_SELF'] . $parameter . $query;
@@ -124,5 +124,14 @@ class http
 	function agnet()
 	{
 		return get_browser(NULL, true);
+	}
+	
+	/**
+	 * 脚本路径
+	 * @return unknown
+	 */
+	function path()
+	{
+		return pathinfo($_SERVER['PHP_SELF'],PATHINFO_DIRNAME);
 	}
 }

@@ -3,41 +3,66 @@ namespace application\control;
 
 use system\core\control;
 use system\core\validate;
+use system\core\view;
+use application\model\roleModel;
+use system\core\filter;
+use application\classes\login;
 
 class userControl extends control
 {
 
+	/**
+	 * 用户注册
+	 * @return string
+	 */
 	function register()
 	{
 		$telephone = $this->post->telephone;
 		$password = $this->post->password;
 		$code = $this->post->code;
-		if ($telephone != NULL && $password != NULL && validate::telephone($telephone) && validate::int($code)) {
-			foreach ($this->session->code as $precode)
+		$userModel = $this->model('user');
+		if ($telephone != NULL && validate::telephone($telephone)) {
+			if(login::admin())
 			{
-				if($precode == $code)
+				if(empty($password))
+					$password = $telephone;
+				if($userModel->register($telephone, $password))
 				{
-					$userModel = $this->model('user');
-					if($userModel->register($telephone, $password))
-					{
-						return json_encode(array('code'=>1,'result'=>'success'));
-					}
-					return json_encode(array('code'=>3,'result'=>'手机号重复注册'));
+					return json_encode(array('code'=>1,'result'=>'success'));
 				}
+				return json_encode(array('code'=>3,'result'=>'手机号重复注册'));
 			}
-			return json_encode(array('code'=>'2','result'=>'验证码不匹配'));
-			
+			else
+			{
+				foreach ($this->session->code as $precode)
+				{
+					if($precode == $code)
+					{
+						
+						if($userModel->register($telephone, $password))
+						{
+							return json_encode(array('code'=>1,'result'=>'success'));
+						}
+						return json_encode(array('code'=>3,'result'=>'手机号重复注册'));
+					}
+				}
+				return json_encode(array('code'=>'2','result'=>'验证码不匹配'));
+			}
 		}
 		return json_encode(array(
 			'code' => 0,
-			'result' => '请求失败'
+			'result' => '请输入正确的手机号码'
 		));
 	}
 
+	/**
+	 * 普通用户登录接口
+	 * @return string
+	 */
 	function login()
 	{
-		$telephone = $this->post->telephone;
-		$password = $this->post->password;
+		$telephone = filter::string($this->post->telephone,16);
+		$password = filter::string($this->post->password);
 		if($telephone != NULL && $password != NULL && validate::telephone($telephone))
 		{
 			$userModel = $this->model('user');
@@ -49,5 +74,21 @@ class userControl extends control
 			}
 		}
 		return json_encode(array('code'=>0,'result'=>'请求失败'));
+	}
+	
+	/**
+	 * 用户列表页面  管理员
+	 */
+	function userlist()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_SELECT))
+		{
+			$userModel = $this->model('user');
+			$user = $userModel->select();
+			$this->view = new view(config('view'), 'admin/userlist.html');
+			$this->view->assign('user',$user);
+			return $this->view->display();
+		}
 	}
 }

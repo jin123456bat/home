@@ -31,7 +31,7 @@ class dbConfig extends config
 	 *
 	 * @var unknown
 	 */
-	public $db_dbname = 'test';
+	public $db_dbname = 'home';
 
 	/**
 	 * 数据库用户名

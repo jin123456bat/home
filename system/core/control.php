@@ -48,7 +48,7 @@ class control extends base
 		if (file_exists($path)) {
 			require $path;
 			$model = "application\\model\\" . $name . 'Model';
-			$instance = new $model();
+			$instance = new $model($name);
 		}
 		return $instance;
 	}

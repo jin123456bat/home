@@ -24,9 +24,11 @@ class userModel extends model
 		$password = md5($password.$salt);
 		$regtime = $_SERVER['REQUEST_TIME'];
 		$logtime = $regtime;
+		$email = '';
 		$money = 0;
 		$close = 0;
-		$array = array(NULL,$telephone,md5($password),$regtime,$logtime,$money,$close);
+		$ordernum = 0;
+		$array = array(NULL,$telephone,$email,md5($password),$regtime,$logtime,$money,$ordernum,$salt,$close);
 		return $this->insert($array);
 	}
 
@@ -49,7 +51,7 @@ class userModel extends model
 	}
 	
 	/**
-	 * 更改密码a
+	 * 更改密码
 	 */
 	function changepwd($uid,$pwd)
 	{

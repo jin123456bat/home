@@ -1,6 +1,7 @@
 <?php
 namespace system\core;
 
+use system\core\db\mysql;
 /**
  * 数据模型
  *
@@ -34,28 +35,29 @@ class model
 	private function __loadDB()
 	{
 		$_dbConfig = config('db');
-		include ROOT . '/system/core/db/' . $_dbConfig->db_type . '.php';
-		$this->_db = \mysql::getInstance($_dbConfig);
+		$this->_db = mysql::getInstance($_dbConfig);
 	}
 
 	/**
 	 * 载入memcache
 	 */
 	private function __loadMemcache()
-	{}
+	{
+		
+	}
 
 	/**
 	 * 载入redis
 	 */
 	private function __loadRedis()
-	{}
+	{
+		
+	}
 
 	public function select($field = '*')
 	{
 		$sql = 'select ' . $field . ' from ' . $this->_table . ' ' . $this->_temp['where'];
-		$result = $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
-		unset($result);
-		return $result;
+		return $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
 	}
 
 	/**
@@ -148,5 +150,10 @@ class model
 		$result = $this->_db->query($sql, $this->_temp['array']);
 		unset($this->_temp);
 		return $result;
+	}
+	
+	public function query($sql)
+	{
+		return $this->_db->query($sql);
 	}
 }
