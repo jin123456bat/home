@@ -11,4 +11,13 @@ class filter
 	{
 		return substr($str, 0,$length);
 	}
+	
+	static public function telephone($string)
+	{
+		$pattern = '$\d{11}$';
+		if(preg_match($pattern, $string,$match))
+		{
+			return $match[0];
+		}
+	}
 }

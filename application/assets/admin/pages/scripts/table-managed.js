@@ -37,13 +37,14 @@ var TableManaged = function () {
 			"serverSide": true,
 			"ajax" :{"url":"?c=user&a=userlistajax","type":"post"},
             "lengthMenu": [
-                [5, 10, 15, -1],
-                [5, 10, 15, "All"] // change per page values here
+                [10, 20, 30, -1],
+                [10, 20, 30, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 5,
+            "pageLength": 10,
             "pagingType": "bootstrap_full_number",
             "language": {
+				"search":"搜索",
                 "lengthMenu": "  _MENU_ 记录",
                 "paginate": {
                     "previous":"上一页",
@@ -59,7 +60,13 @@ var TableManaged = function () {
 				"targets": [0],
 				"data": "id",
 				"render": function(data, type, full) {
-					return "<div class=checker><span><input type=checkbox class=checkboxes></span></div>";
+					return "<div class=checker><span><input type=checkbox class=checkboxes value="+data+"></span></div>";
+				}
+			}, {
+				"targets":[7],
+				"data":"id",
+				"render":function(data,type,full){
+					return '<div class="bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-small bootstrap-switch-animate bootstrap-switch-off"><div class="bootstrap-switch-container"><span class="bootstrap-switch-handle-on bootstrap-switch-info">ON</span><label class="bootstrap-switch-label">&nbsp;</label><span class="bootstrap-switch-handle-off bootstrap-switch-default">OFF</span><input type="checkbox" class="make-switch" data-size="small" data-on-color="info" data-on-text="ON" data-off-color="default" data-off-text="OFF"></div></div>';
 				}
 			}, {
                 "searchable": false,

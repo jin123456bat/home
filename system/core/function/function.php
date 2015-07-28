@@ -7,7 +7,7 @@
  *        	配置名称
  * @param bool $parent
  *        	强制只载入系统配置
- * @return unknown
+ * @return new config
  */
 function config($name, $parent = false)
 {

@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-27 11:21:11
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-28 01:48:01
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1437918510,
+      1 => 1438019280,
       2 => 'file',
     ),
   ),
@@ -15,9 +15,9 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'function' => 
   array (
   ),
-  'has_nocache_code' => false,
   'version' => 'Smarty-3.1.16',
   'unifunc' => 'content_55b5a3a7df1726_57997583',
+  'has_nocache_code' => false,
 ),false); /*/%%SmartyHeaderCode%%*/?>
 <?php if ($_valid && !is_callable('content_55b5a3a7df1726_57997583')) {function content_55b5a3a7df1726_57997583($_smarty_tpl) {?><!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
@@ -59,18 +59,14 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			<?php }?>
 			</a>
 		</li>
-		<li>
+		<li class="<?php if ($_GET['c']=='category'&&$_GET['a']=='admin') {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-basket"></i>
-			<span class="title">eCommerce</span>
+			<span class="title">商品管理</span>
 			<span class="arrow "></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="ecommerce_index.html">
-					<i class="icon-home"></i>
-					Dashboard</a>
-				</li>
+				
 				<li>
 					<a href="ecommerce_orders.html">
 					<i class="icon-basket"></i>
@@ -82,14 +78,21 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 					Order View</a>
 				</li>
 				<li>
-					<a href="ecommerce_products.html">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'listview'),$_smarty_tpl);?>
+">
 					<i class="icon-handbag"></i>
-					Products</a>
+					商品列表</a>
 				</li>
 				<li>
 					<a href="ecommerce_products_edit.html">
 					<i class="icon-pencil"></i>
 					Product Edit</a>
+				</li>
+				<li class="<?php if ($_GET['c']=='category'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'category','a'=>'admin'),$_smarty_tpl);?>
+">
+					<i class="icon-list"></i>
+					分类管理</a>
 				</li>
 			</ul>
 		</li>

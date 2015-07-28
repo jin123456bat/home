@@ -19,15 +19,16 @@ var EcommerceProducts = function () {
             onError: function (grid) {
                 // execute some code on network or other general error  
             },
-            loadingMessage: 'Loading...',
+            loadingMessage: '载入中...',
             dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
                 "lengthMenu": [
                     [10, 20, 50, 100, 150],
                     [10, 20, 50, 100, 150] // change per page values here 
                 ],
+				"processing": true,
                 "pageLength": 10, // default record count per page
                 "ajax": {
-                    "url": "demo/ecommerce_products.php", // ajax source
+                    "url": "http://localhost/home/application/ecommerce_products.php", // ajax source
                 },
                 "order": [
                     [1, "asc"]

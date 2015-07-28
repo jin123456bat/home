@@ -188,4 +188,19 @@ class model
 	{
 		return $this->_db->query($sql);
 	}
+	
+	public function transaction()
+	{
+		return $this->_db->transaction();
+	}
+	
+	public function commit()
+	{
+		return $this->_db->commit();
+	}
+	
+	public function rollback()
+	{
+		return $this->_db->rollback();
+	}
 }

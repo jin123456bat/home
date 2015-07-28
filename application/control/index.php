@@ -6,17 +6,14 @@ use system\core\view;
 use application\classes\sms;
 use system\core\validate;
 use system\core\random;
+use system\core\filter;
 
 class indexControl extends control
 {
 
 	function index()
 	{
-		$this->view = new view(config('view'), 'admin/index.html');
-		$this->view->assign("index", "你好啊");
-		$this->view->assign("index1", 'value1');
-		$this->view->assign("index2", 'value2');
-		return $this->view->display();
+		
 	}
 
 	/**

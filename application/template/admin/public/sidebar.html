@@ -37,18 +37,14 @@
 			{%/if%}
 			</a>
 		</li>
-		<li>
+		<li class="{%if $smarty.get.c==category && $smarty.get.a==admin%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-basket"></i>
-			<span class="title">eCommerce</span>
+			<span class="title">商品管理</span>
 			<span class="arrow "></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="ecommerce_index.html">
-					<i class="icon-home"></i>
-					Dashboard</a>
-				</li>
+				
 				<li>
 					<a href="ecommerce_orders.html">
 					<i class="icon-basket"></i>
@@ -60,14 +56,19 @@
 					Order View</a>
 				</li>
 				<li>
-					<a href="ecommerce_products.html">
+					<a href="{%url c=product a=listview%}">
 					<i class="icon-handbag"></i>
-					Products</a>
+					商品列表</a>
 				</li>
 				<li>
 					<a href="ecommerce_products_edit.html">
 					<i class="icon-pencil"></i>
 					Product Edit</a>
+				</li>
+				<li class="{%if $smarty.get.c==category && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=category a=admin%}">
+					<i class="icon-list"></i>
+					分类管理</a>
 				</li>
 			</ul>
 		</li>

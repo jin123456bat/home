@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-27 14:17:31
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-27 18:36:24
          compiled from "D:\wamp\www\home\application\template\admin\userlist.html" */ ?>
 <?php /*%%SmartyHeaderCode:2455055b5a3a7961bd5-95318673%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '10d6e352fb5d895c46dd8525c8eefdf551c739d2' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\userlist.html',
-      1 => 1437977849,
+      1 => 1437993383,
       2 => 'file',
     ),
   ),
@@ -65,6 +65,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 /assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
 <link id="style_color" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/umeditor/themes/default/css/umeditor.min.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
@@ -125,6 +127,29 @@ $_valid = $_smarty_tpl->decodeProperties(array (
                             <div class="modal-footer">
                                 <button type="submit" class="btn blue">保存</button>
                                 <button type="button" class="btn default" data-dismiss="modal">取消</button>
+                            </div>
+                        </form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+            <div class="modal fade container in" id="email" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form class="form-horizontal" role="form" id="sendemail">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">邮件群发</h4>
+                            </div>
+                            <div class="modal-body" style="padding:0px;">
+                                <script id="email_container" name="content" type="text/plain" style="width:598px;">
+									编辑邮件内容
+								</script>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn blue btn-circle">发送</button>
+                                <button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
                             </div>
                         </form>
 					</div>
@@ -257,14 +282,14 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 								<div class="row">
 									<div class="col-md-6">
 										<div class="btn-group">
-											<button class="btn green" data-toggle="modal" data-target="#portlet-config">
+											<button class="btn btn-default btn-circle" data-toggle="modal" data-target="#portlet-config">
 											添加新用户 <i class="fa fa-plus"></i>
 											</button>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="btn-group pull-right">
-											<button class="btn dropdown-toggle" data-toggle="dropdown">工具 <i class="fa fa-angle-down"></i>
+											<button class="btn dropdown-toggle btn-default btn-circle" data-toggle="dropdown">工具 <i class="fa fa-angle-down"></i>
 											</button>
 											<ul class="dropdown-menu pull-right">
 												<li>
@@ -272,7 +297,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 													导出 </a>
 												</li>
 												<li>
-													<a href="#">
+													<a href="#" data-toggle="modal" data-target="#email">
 													发送邮件 </a>
 												</li>
 												<li>
@@ -309,7 +334,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
                                 	订单数
                                 </td>
                                 <th>
-                                	操作
+                                	封号
                                 </th>
 							</tr>
 							</thead>
@@ -1045,6 +1070,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 /assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
@@ -1057,13 +1083,23 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 /assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/admin/pages/scripts/table-managed.js"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/umeditor/umeditor.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/umeditor/umeditor.config.js" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/umeditor/lang/zh-cn/zh-cn.js"></script>
 <script>
-jQuery(document).ready(function() {       
+jQuery(document).ready(function() {    
 Metronic.init(); // init metronic core components
 Layout.init(); // init current layout
 QuickSidebar.init(); // init quick sidebar
 Demo.init(); // init demo features
 TableManaged.init();
+	$.fn.urlencode = function(str){
+		str = (str + '').toString();
+    	return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
+	}
 	$('#add_user').on('submit',function(){
 		var telephone = $(this).find('input[name=telephone]').val(),
 			password = $(this).find('input[name=password]').val();
@@ -1083,6 +1119,49 @@ TableManaged.init();
 				alert(data.result);
 			}
 		});
+		return false;
+	});
+	
+	window.um = UM.getEditor('email_container');
+	
+	$('#sendemail').on('submit',function(data){
+		if(window.um.hasContents())
+		{
+			
+			var userid = [];
+			var content = window.um.getContent();
+			$.each($('.checkboxes',$('#sample_1')),function(index,value){
+				if($(value).is(':checked'))
+				{
+					userid.push($(value).val());
+				}
+			});
+			if(userid.length > 0)
+			{
+				window.um.setDisabled('fullscreen');
+				$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'user','a'=>'sendmail'),$_smarty_tpl);?>
+',{uid:JSON.stringify(userid),content:$.fn.urlencode(content)},function(data){
+					data = JSON.parse(data);
+					if(data.code == 1)
+					{
+						alert('邮件发送完毕');
+					}
+					else
+					{
+						alert(data.result);
+					}
+					window.um.setEnabled();
+				});
+			}
+			else
+			{
+				alert('请勾选接收邮件的会员');
+			}
+		}
+		else
+		{
+			window.um.focus();
+		}
 		return false;
 	});
 });
