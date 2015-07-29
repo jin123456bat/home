@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-28 17:50:36
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-29 15:56:14
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1438077035,
+      1 => 1438156572,
       2 => 'file',
     ),
   ),
@@ -84,9 +84,10 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 					商品列表</a>
 				</li>
 				<li>
-					<a href="ecommerce_products_edit.html">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'edit'),$_smarty_tpl);?>
+">
 					<i class="icon-pencil"></i>
-					Product Edit</a>
+					添加商品</a>
 				</li>
 				<li class="<?php if ($_GET['c']=='category'&&$_GET['a']=='admin') {?>active<?php }?>">
 					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'category','a'=>'admin'),$_smarty_tpl);?>

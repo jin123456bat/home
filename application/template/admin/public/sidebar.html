@@ -64,9 +64,9 @@
 					商品列表</a>
 				</li>
 				<li>
-					<a href="ecommerce_products_edit.html">
+					<a href="{%url c=product a=edit%}">
 					<i class="icon-pencil"></i>
-					Product Edit</a>
+					添加商品</a>
 				</li>
 				<li class="{%if $smarty.get.c==category && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=category a=admin%}">
