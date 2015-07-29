@@ -39,28 +39,28 @@ var Datatable = function() {
                 filterApplyAction: "filter",
                 filterCancelAction: "filter_cancel",
                 resetGroupActionInputOnSuccess: true,
-                loadingMessage: 'Loading...',
+                loadingMessage: '载入中',
                 dataTable: {
                     "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r><'table-scrollable't><'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>", // datatable layout
                     "pageLength": 10, // default records per page
                     "language": { // language settings
                         // metronic spesific
-                        "metronicGroupActions": "_TOTAL_ records selected:  ",
-                        "metronicAjaxRequestGeneralError": "Could not complete request. Please check your internet connection",
+                        "metronicGroupActions": "_TOTAL_ 条选择:  ",
+                        "metronicAjaxRequestGeneralError": "网络通信中断",
 
                         // data tables spesific
-                        "lengthMenu": "<span class='seperator'>|</span>View _MENU_ records",
-                        "info": "<span class='seperator'>|</span>Found total _TOTAL_ records",
-                        "infoEmpty": "No records found to show",
-                        "emptyTable": "No data available in table",
-                        "zeroRecords": "No matching records found",
+                        "lengthMenu": "<span class='seperator'>|</span>查看 _MENU_ 条记录",
+                        "info": "<span class='seperator'>|</span>找到总计 _TOTAL_ 条记录",
+                        "infoEmpty": "没有可以展现的记录",
+                        "emptyTable": "没有可用的数据",
+                        "zeroRecords": "没有找到匹配的记录",
                         "paginate": {
-                            "previous": "Prev",
-                            "next": "Next",
-                            "last": "Last",
-                            "first": "First",
-                            "page": "Page",
-                            "pageOf": "of"
+                            "previous": "上一页",
+                            "next": "下一页",
+                            "last": "最后一页",
+                            "first": "第一页",
+                            "page": "第",
+                            "pageOf": "页"
                         }
                     },
 
@@ -72,7 +72,7 @@ var Datatable = function() {
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
                     "autoWidth": false, // disable fixed width and enable fluid table
-                    "processing": false, // enable/disable display message box on record load
+                    "processing": true, // enable/disable display message box on record load
                     "serverSide": true, // enable/disable server side ajax loading
 
                     "ajax": { // define ajax settings
@@ -230,7 +230,7 @@ var Datatable = function() {
 
         resetFilter: function() {
             $('textarea.form-filter, select.form-filter, input.form-filter', table).each(function() {
-                $(this).val("");
+                $(this).val("0");
             });
             $('input.form-filter[type="checkbox"]', table).each(function() {
                 $(this).attr("checked", false);

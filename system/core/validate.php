@@ -41,7 +41,8 @@ class validate
 	 */
 	public static function int($var)
 	{
-		return filter_var($var, FILTER_VALIDATE_INT);
+		$pattern = '/[^\d]/';
+		return (!preg_match($pattern, $var)) || is_int($var);
 	}
 
 	/**

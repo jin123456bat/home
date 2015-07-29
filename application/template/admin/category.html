@@ -70,14 +70,14 @@
 							 <div class="form-group">
                                 <label class="col-md-3 control-label">分类名称</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control input-inline input-medium" placeholder="分类名称">
+                                    <input type="text" name="name" class="form-control input-inline input-medium" placeholder="分类名称">
                                     <span class="help-inline">
                                     顶级分类名称 </span>
                                 </div>
                             </div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn blue">创建</button>
+							<button type="submit" class="btn blue">创建</button>
 							<button type="button" class="btn default" data-dismiss="modal">取消</button>
 						</div>
                         </form>
@@ -818,7 +818,7 @@
 					</div>
 					<div class="tab-pane page-quick-sidebar-settings" id="quick_sidebar_tab_3">
 						<div class="page-quick-sidebar-settings-list">
-							<h3 class="list-heading">General Settings</h3>
+							<h3 class="list-heading">普通设置</h3>
 							<ul class="list-items borderless">
 								<li>
 									 Enable Notifications <input type="checkbox" class="make-switch" checked data-size="small" data-on-color="success" data-on-text="ON" data-off-color="default" data-off-text="OFF">
@@ -916,6 +916,16 @@ jQuery(document).ready(function() {
 	Demo.init(); // init demo features
 	UITree.init();
 	$('#create form').on('submit',function(){
+		var name = $('input[name=name]',$(this)).val();
+		$.post('{%url c=category a=add%}',{name:name},function(data){
+			data = JSON.parse(data);
+			if(data.code == 1)
+			{
+				$('#create').modal('hide');
+				$('#tree_4').jstree('refresh');
+			}
+		});
+		return false;
 	});
 });
 </script>

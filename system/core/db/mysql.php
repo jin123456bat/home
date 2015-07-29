@@ -113,8 +113,8 @@ class mysql
 	/**
 	 * 上一次插入的id
 	 */
-	public function lastInsert($name)
+	public function lastInsert()
 	{
-		return $this->pdo->lastInsertId($name);
+		return $this->pdo->lastInsertId();
 	}
 }

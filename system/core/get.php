@@ -1,18 +1,19 @@
 <?php
 namespace system\core;
 
+use \ArrayAccess;
 /**
  * $_GET管理
  *
  * @author 程晨
  *        
  */
-class get
+class get implements ArrayAccess
 {
 
 	function __get($name)
 	{
-		return isset($_GET[$name]) ? urldecode(trim($_GET[$name])) : NULL;
+		return isset($_GET[$name]) ? is_string($_GET[$name])?urldecode(trim($_GET[$name])):$_GET[$name] : NULL;
 	}
 
 	function __set($name, $value)
@@ -28,5 +29,25 @@ class get
 	function __unset($name)
 	{
 		unset($_GET[$name]);
+	}
+	
+	public function offsetSet($offset, $value)
+	{
+		$this->$offset = $value;
+	}
+	
+	public function offsetExists($offset)
+	{
+		return isset($this->$offset);
+	}
+	
+	public function offsetUnset($offset)
+	{
+		unset($this->$offset);
+	}
+	
+	public function offsetGet($offset)
+	{
+		return isset($this->$offset) ? $this->$offset : null;
 	}
 }

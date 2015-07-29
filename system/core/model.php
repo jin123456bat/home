@@ -57,7 +57,9 @@ class model
 	public function select($field = '*')
 	{
 		$sql = 'select ' . $field . ' from ' . $this->_table . ' ' . (isset($this->_temp['where'])?$this->_temp['where']:'') .' '.(isset($this->_temp['orderby'])?$this->_temp['orderby']:'').' '.(isset($this->_temp['limit'])?$this->_temp['limit']:'');
-		return $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
+		$result = $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
+		unset($this->_temp);
+		return $result;
 	}
 
 	/**
@@ -168,7 +170,7 @@ class model
 	}
 	
 	/**
-	 * 添加排序规则
+	 * 添加排序规则,最先添加的排序规则比重大于后面的排序规则
 	 * @param unknown $field
 	 * @param string $asc
 	 */
@@ -182,6 +184,18 @@ class model
 		{
 			$this->_temp['orderby'] = 'order by '.$field.' '.$asc;
 		}
+	}
+	
+	
+	/**
+	 * 增加搜索表
+	 * @param unknown $table
+	 * @param string $mode
+	 * @param string $on
+	 */
+	public function table($table,$mode = ',',$on = '')
+	{
+		$this->_table .= ' '.$mode.' '.$table.' '.$on;
 	}
 	
 	public function query($sql)
@@ -202,5 +216,10 @@ class model
 	public function rollback()
 	{
 		return $this->_db->rollback();
+	}
+	
+	public function lastInsertId()
+	{
+		return $this->_db->lastInsert();
 	}
 }

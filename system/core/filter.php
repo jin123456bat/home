@@ -19,5 +19,16 @@ class filter
 		{
 			return $match[0];
 		}
+		return NULL;
+	}
+	
+	static public function int($var)
+	{
+		$pattern = '$\d+$';
+		if(preg_match($pattern,$var,$match))
+		{
+			return $match[0];
+		}
+		return NULL;
 	}
 }

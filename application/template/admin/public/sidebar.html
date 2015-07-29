@@ -37,7 +37,10 @@
 			{%/if%}
 			</a>
 		</li>
-		<li class="{%if $smarty.get.c==category && $smarty.get.a==admin%}active open{%/if%}">
+		<li class="{%if 
+        	($smarty.get.c==category && $smarty.get.a==admin)
+            ||($smarty.get.c==product && $smarty.get.a==index)
+        %}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-basket"></i>
 			<span class="title">商品管理</span>
@@ -55,8 +58,8 @@
 					<i class="icon-tag"></i>
 					Order View</a>
 				</li>
-				<li>
-					<a href="{%url c=product a=listview%}">
+				<li class="{%if $smarty.get.c==product && $smarty.get.a==index%}active{%/if%}">
+					<a href="{%url c=product a=index%}">
 					<i class="icon-handbag"></i>
 					商品列表</a>
 				</li>

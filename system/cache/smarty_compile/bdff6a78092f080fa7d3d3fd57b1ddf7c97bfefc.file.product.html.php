@@ -1,4 +1,30 @@
-<!DOCTYPE html>
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-29 14:40:57
+         compiled from "D:\wamp\www\home\application\template\admin\product.html" */ ?>
+<?php /*%%SmartyHeaderCode:2146955b75011bb78f6-19459824%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
+$_valid = $_smarty_tpl->decodeProperties(array (
+  'file_dependency' => 
+  array (
+    'bdff6a78092f080fa7d3d3fd57b1ddf7c97bfefc' => 
+    array (
+      0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product.html',
+      1 => 1438152054,
+      2 => 'file',
+    ),
+  ),
+  'nocache_hash' => '2146955b75011bb78f6-19459824',
+  'function' => 
+  array (
+  ),
+  'version' => 'Smarty-3.1.16',
+  'unifunc' => 'content_55b75011cebef8_30181768',
+  'variables' => 
+  array (
+    'VIEW_ROOT' => 0,
+    'category' => 0,
+  ),
+  'has_nocache_code' => false,
+),false); /*/%%SmartyHeaderCode%%*/?>
+<?php if ($_valid && !is_callable('content_55b75011cebef8_30181768')) {function content_55b75011cebef8_30181768($_smarty_tpl) {?><!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
@@ -14,23 +40,36 @@
 <meta content="" name="description"/>
 <meta content="" name="author"/>
 <!-- BEGIN GLOBAL MANDATORY STYLES -->
-<link href="{%$VIEW_ROOT%}/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
 <!-- END GLOBAL MANDATORY STYLES -->
 <!-- BEGIN PAGE LEVEL STYLES -->
-<link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/global/plugins/select2/select2.css"/>
-<link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
-<link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-datepicker/css/datepicker.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/select2/select2.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datepicker/css/datepicker.css"/>
 <!-- END PAGE LEVEL STYLES -->
 <!-- BEGIN THEME STYLES -->
-<link href="{%$VIEW_ROOT%}/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
-<link id="style_color" href="{%$VIEW_ROOT%}/assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
+<link id="style_color" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
 </head>
@@ -46,11 +85,13 @@
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content ">
-	{%include file='admin/public/header.html'%}
+	<?php echo $_smarty_tpl->getSubTemplate ('admin/public/header.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
-	{%include file='admin/public/sidebar.html'%}
+	<?php echo $_smarty_tpl->getSubTemplate ('admin/public/sidebar.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 	<!-- END SIDEBAR -->
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
@@ -169,7 +210,8 @@
 				<ul class="page-breadcrumb">
 					<li>
 						<i class="fa fa-home"></i>
-						<a href="{%url c=index a=index%}">主页</a>
+						<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'index','a'=>'index'),$_smarty_tpl);?>
+">主页</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
@@ -177,7 +219,8 @@
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="{%url c=product a=listview%}">商品列表</a>
+						<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'listview'),$_smarty_tpl);?>
+">商品列表</a>
 					</li>
 				</ul>
 				
@@ -186,16 +229,11 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-					<div class="note note-danger">
-						<p>
-							 NOTE: The below datatable is not connected to a real database so the filter and sorting is just simulated for demo purposes only.
-						</p>
-					</div>
 					<!-- Begin: life time stats -->
 					<div class="portlet">
 						<div class="portlet-title">
 							<div class="caption">
-								<i class="fa fa-gift"></i>Products
+								<i class="fa fa-gift"></i>商品列表
 							</div>
 							<div class="actions">
 								<div class="btn-group">
@@ -231,12 +269,12 @@
 									<span>
 									</span>
 									<select class="table-group-action-input form-control input-inline input-small input-sm">
-										<option value="">Select...</option>
-										<option value="publish">Publish</option>
-										<option value="unpublished">Un-publish</option>
-										<option value="delete">Delete</option>
+										<option value="0" selected="selected">请选择</option>
+										<option value="1">上架</option>
+										<option value="2">下架</option>
+										<option value="3">删除</option>
 									</select>
-									<button class="btn btn-sm yellow table-group-action-submit"><i class="fa fa-check"></i> Submit</button>
+									<button class="btn btn-sm yellow table-group-action-submit"><i class="fa fa-check"></i>提交</button>
 								</div>
 								<table class="table table-striped table-bordered table-hover" id="datatable_products">
 								<thead>
@@ -273,53 +311,65 @@
 									<td>
 									</td>
 									<td>
-										<input type="text" class="form-control form-filter input-sm" name="product_id">
+										<input type="text" class="form-control form-filter input-sm" name="product_sku">
 									</td>
 									<td>
 										<input type="text" class="form-control form-filter input-sm" name="product_name">
 									</td>
 									<td>
 										<select name="product_category" class="form-control form-filter input-sm">
-											<option value="">Select...</option>
-											<option value="1">Mens</option>
-											<option value="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Footwear</option>
-											<option value="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clothing</option>
-											<option value="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Accessories</option>
-											<option value="5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fashion Outlet</option>
-											<option value="6">Football Shirts</option>
-											<option value="7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Premier League</option>
-											<option value="8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Football League</option>
-											<option value="9">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Serie A</option>
-											<option value="10">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bundesliga</option>
-											<option value="11">Brands</option>
-											<option value="12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adidas</option>
-											<option value="13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nike</option>
-											<option value="14">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Airwalk</option>
-											<option value="15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USA Pro</option>
-											<option value="16">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kangol</option>
+											<option value="0" selected>请选择</option>
+                                            <?php if (isset($_smarty_tpl->tpl_vars['smarty']->value['section']['category'])) unset($_smarty_tpl->tpl_vars['smarty']->value['section']['category']);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['name'] = 'category';
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['loop'] = is_array($_loop=$_smarty_tpl->tpl_vars['category']->value) ? count($_loop) : max(0, (int) $_loop); unset($_loop);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['show'] = true;
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['max'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['loop'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['step'] = 1;
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['start'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['step'] > 0 ? 0 : $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['loop']-1;
+if ($_smarty_tpl->tpl_vars['smarty']->value['section']['category']['show']) {
+    $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['total'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['loop'];
+    if ($_smarty_tpl->tpl_vars['smarty']->value['section']['category']['total'] == 0)
+        $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['show'] = false;
+} else
+    $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['total'] = 0;
+if ($_smarty_tpl->tpl_vars['smarty']->value['section']['category']['show']):
+
+            for ($_smarty_tpl->tpl_vars['smarty']->value['section']['category']['index'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['start'], $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['iteration'] = 1;
+                 $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['iteration'] <= $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['total'];
+                 $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['index'] += $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['step'], $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['iteration']++):
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['rownum'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['iteration'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['index_prev'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['index'] - $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['step'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['index_next'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['index'] + $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['step'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['first']      = ($_smarty_tpl->tpl_vars['smarty']->value['section']['category']['iteration'] == 1);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = ($_smarty_tpl->tpl_vars['smarty']->value['section']['category']['iteration'] == $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['total']);
+?>
+                                            <option value="<?php echo $_smarty_tpl->tpl_vars['category']->value[$_smarty_tpl->getVariable('smarty')->value['section']['category']['index']]['id'];?>
+"><?php echo $_smarty_tpl->tpl_vars['category']->value[$_smarty_tpl->getVariable('smarty')->value['section']['category']['index']]['name'];?>
+</option>
+                                            <?php endfor; endif; ?>
 										</select>
 									</td>
 									<td>
 										<div class="margin-bottom-5">
-											<input type="text" class="form-control form-filter input-sm" name="product_price_from" placeholder="From"/>
+											<input type="text" class="form-control form-filter input-sm" name="product_price_from" placeholder="从"/>
 										</div>
-										<input type="text" class="form-control form-filter input-sm" name="product_price_to" placeholder="To"/>
+										<input type="text" class="form-control form-filter input-sm" name="product_price_to" placeholder="到"/>
 									</td>
 									<td>
 										<div class="margin-bottom-5">
-											<input type="text" class="form-control form-filter input-sm" name="product_quantity_from" placeholder="From"/>
+											<input type="text" class="form-control form-filter input-sm" name="product_stock_from" placeholder="从"/>
 										</div>
-										<input type="text" class="form-control form-filter input-sm" name="product_quantity_to" placeholder="To"/>
+										<input type="text" class="form-control form-filter input-sm" name="product_stock_to" placeholder="到"/>
 									</td>
 									<td>
-										<div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-											<input type="text" class="form-control form-filter input-sm" readonly name="product_created_from" placeholder="From">
+										<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
+											<input type="text" class="form-control form-filter input-sm" name="product_time_from" placeholder="从">
 											<span class="input-group-btn">
 											<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
 											</span>
 										</div>
-										<div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-											<input type="text" class="form-control form-filter input-sm" readonly name="product_created_to " placeholder="To">
+										<div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+											<input type="text" class="form-control form-filter input-sm" name="product_time_to " placeholder="到">
 											<span class="input-group-btn">
 											<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
 											</span>
@@ -327,17 +377,17 @@
 									</td>
 									<td>
 										<select name="product_status" class="form-control form-filter input-sm">
-											<option value="">Select...</option>
-											<option value="published">Published</option>
-											<option value="notpublished">Not Published</option>
-											<option value="deleted">Deleted</option>
+											<option value="0" selected>请选择</option>
+											<option value="1">已上架</option>
+											<option value="2">未上架</option>
+											<option value="3">已删除</option>
 										</select>
 									</td>
 									<td>
 										<div class="margin-bottom-5">
-											<button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
+											<button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> 搜索</button>
 										</div>
-										<button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
+										<button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 重置</button>
 									</td>
 								</tr>
 								</thead>
@@ -405,7 +455,8 @@
 									<div class="media-status">
 										<span class="badge badge-success">8</span>
 									</div>
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar3.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Bob Nilson</h4>
 										<div class="media-heading-sub">
@@ -414,7 +465,8 @@
 									</div>
 								</li>
 								<li class="media">
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar1.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar1.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Nick Larson</h4>
 										<div class="media-heading-sub">
@@ -426,7 +478,8 @@
 									<div class="media-status">
 										<span class="badge badge-danger">3</span>
 									</div>
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar4.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar4.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Deon Hubert</h4>
 										<div class="media-heading-sub">
@@ -435,7 +488,8 @@
 									</div>
 								</li>
 								<li class="media">
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar2.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar2.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Ella Wong</h4>
 										<div class="media-heading-sub">
@@ -450,7 +504,8 @@
 									<div class="media-status">
 										<span class="badge badge-warning">2</span>
 									</div>
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar6.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar6.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Lara Kunis</h4>
 										<div class="media-heading-sub">
@@ -465,7 +520,8 @@
 									<div class="media-status">
 										<span class="label label-sm label-success">new</span>
 									</div>
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar7.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar7.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Ernie Kyllonen</h4>
 										<div class="media-heading-sub">
@@ -475,7 +531,8 @@
 									</div>
 								</li>
 								<li class="media">
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar8.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar8.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Lisa Stone</h4>
 										<div class="media-heading-sub">
@@ -490,7 +547,8 @@
 									<div class="media-status">
 										<span class="badge badge-success">7</span>
 									</div>
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar9.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar9.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Deon Portalatin</h4>
 										<div class="media-heading-sub">
@@ -499,7 +557,8 @@
 									</div>
 								</li>
 								<li class="media">
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar10.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar10.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Irina Savikova</h4>
 										<div class="media-heading-sub">
@@ -511,7 +570,8 @@
 									<div class="media-status">
 										<span class="badge badge-danger">4</span>
 									</div>
-									<img class="media-object" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar11.jpg" alt="...">
+									<img class="media-object" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar11.jpg" alt="...">
 									<div class="media-body">
 										<h4 class="media-heading">Maria Gomez</h4>
 										<div class="media-heading-sub">
@@ -531,7 +591,8 @@
 								</div>
 								<div class="page-quick-sidebar-chat-user-messages">
 									<div class="post out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar3.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Bob Nilson</a>
@@ -541,7 +602,8 @@
 										</div>
 									</div>
 									<div class="post in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar2.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar2.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Ella Wong</a>
@@ -551,7 +613,8 @@
 										</div>
 									</div>
 									<div class="post out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar3.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Bob Nilson</a>
@@ -561,7 +624,8 @@
 										</div>
 									</div>
 									<div class="post in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar2.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar2.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Ella Wong</a>
@@ -571,7 +635,8 @@
 										</div>
 									</div>
 									<div class="post out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar3.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Bob Nilson</a>
@@ -581,7 +646,8 @@
 										</div>
 									</div>
 									<div class="post in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar2.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar2.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Ella Wong</a>
@@ -591,7 +657,8 @@
 										</div>
 									</div>
 									<div class="post out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar3.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Bob Nilson</a>
@@ -601,7 +668,8 @@
 										</div>
 									</div>
 									<div class="post in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar2.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar2.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Ella Wong</a>
@@ -611,7 +679,8 @@
 										</div>
 									</div>
 									<div class="post out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
+										<img class="avatar" alt="" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/img/avatar3.jpg"/>
 										<div class="message">
 											<span class="arrow"></span>
 											<a href="#" class="name">Bob Nilson</a>
@@ -1021,45 +1090,67 @@
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/respond.min.js"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/excanvas.min.js"></script> 
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/respond.min.js"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/select2/select2.min.js"></script>
-<script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
-<script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="{%$VIEW_ROOT%}/assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/scripts/datatable.js"></script>
-<script src="{%$VIEW_ROOT%}/assets/admin/pages/scripts/ecommerce-products.js"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/scripts/datatable.js"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/pages/scripts/ecommerce-products.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
-        jQuery(document).ready(function() {    
-           Metronic.init(); // init metronic core components
-Layout.init(); // init current layout
-QuickSidebar.init(); // init quick sidebar
-Demo.init(); // init demo features
-           EcommerceProducts.init();
-        });
-    </script>
+jQuery(document).ready(function() {    
+	Metronic.init(); // init metronic core components
+	Layout.init(); // init current layout
+	QuickSidebar.init(); // init quick sidebar
+	Demo.init(); // init demo features
+	EcommerceProducts.init();
+});
+</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->
-</html>
+</html><?php }} ?>

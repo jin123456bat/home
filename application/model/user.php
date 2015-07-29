@@ -22,7 +22,7 @@ class userModel extends model
 		{
 			foreach ($json['order'] as $order)
 			{
-				if($order['column'] == $key+1)
+				if($order['column'] == $key)
 				{
 					$this->orderby($value['data'],$order['dir']);
 				}

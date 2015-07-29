@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-28 01:48:01
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-28 17:50:36
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1438019280,
+      1 => 1438077035,
       2 => 'file',
     ),
   ),
@@ -59,7 +59,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			<?php }?>
 			</a>
 		</li>
-		<li class="<?php if ($_GET['c']=='category'&&$_GET['a']=='admin') {?>active open<?php }?>">
+		<li class="<?php if (($_GET['c']=='category'&&$_GET['a']=='admin')||($_GET['c']=='product'&&$_GET['a']=='index')) {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-basket"></i>
 			<span class="title">商品管理</span>
@@ -77,8 +77,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 					<i class="icon-tag"></i>
 					Order View</a>
 				</li>
-				<li>
-					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'listview'),$_smarty_tpl);?>
+				<li class="<?php if ($_GET['c']=='product'&&$_GET['a']=='index') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'index'),$_smarty_tpl);?>
 ">
 					<i class="icon-handbag"></i>
 					商品列表</a>

@@ -81,9 +81,9 @@ class response
 	 *
 	 * @param unknown $string        	
 	 */
-	public function addHeader($string)
+	public function addHeader($key,$value = NULL)
 	{
-		$this->_header->add($string);
+		$this->_header->add($key,$value);
 	}
 
 	/**

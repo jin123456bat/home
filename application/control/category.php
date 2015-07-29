@@ -6,44 +6,238 @@ use application\model\roleModel;
 use application\classes\login;
 use system\core\view;
 use system\core\validate;
+use system\core\filter;
+
 class categoryControl extends control
 {
+
 	function admin()
 	{
 		$roleModel = $this->model('role');
-		if(login::admin() && $roleModel->checkPower($this->session->role,'category',roleModel::POWER_SELECT))
-		{
+		if (login::admin() && $roleModel->checkPower($this->session->role, 'category', roleModel::POWER_SELECT)) {
 			$this->view = new view(config('view'), 'admin/category.html');
 			$this->response->setBody($this->view->display());
 		}
 	}
-	
+
+	/**
+	 * ajax请求树
+	 * 
+	 * @return string
+	 */
 	function ajaxtree()
 	{
-		$icon = array("icon-state-warning","icon-state-success","icon-state-danger","icon-state-info");
-		if($this->get->parent == '#')
-		{
+		$this->response->addHeader('Content-Type', 'application/json');
+		$icon = array(
+			"icon-state-warning",
+			"icon-state-success",
+			"icon-state-danger",
+			"icon-state-info"
+		);
+		if ($this->get->parent == '#') {
 			$parent = 0;
+		} else {
+			$parent = $this->get->parent;
 		}
-		else
-		{
-			list($node,$parent) = explode('_', $this->get->parent);
-		}
-		if(validate::int($parent))
-		{
+		if (validate::int($parent)) {
 			$categoryModel = $this->model('category');
-			$result = $categoryModel->fetchChild();
-			$tree = array_map(function($cate){
-				$category = new \stdClass();
-				$category->id = "node_".$cate['id'];
-				$category->text = $cate['name'];
-				$category->icon = "fa fa-folder icon-lg ".array_rand($icon);
-				$category->children = !empty($categoryModel->fetchChild($cate['id']));
-				if($parent == 0)
-					$category->type = "root";
-				return $category;
-			}, $result);
+			$result = $categoryModel->fetchChild($parent);
+			$tree = array();
+			foreach ($result as $category) {
+				$temp = array();
+				$temp['id'] = $category['id'];
+				$temp['text'] = $category['name'];
+				$temp['icon'] = "fa fa-folder icon-lg " . $icon[array_rand($icon)];
+				$result = $categoryModel->fetchChild($category['id']);
+				$temp['children'] = ! empty($result);
+				if ($parent == 0)
+					$temp['type'] = 'root';
+				$tree[] = $temp;
+			}
 			return json_encode($tree);
 		}
+		return json_encode(array(
+			'code' => 0,
+			'result' => '错误的分类id'
+		));
+	}
+
+	/**
+	 * 创建分类
+	 */
+	function add()
+	{
+		$roleModel = $this->model('role');
+		if (login::admin() && $roleModel->checkPower($this->session->role, 'category', roleModel::POWER_INSERT)) {
+			$cid = empty($this->post->parent)?0:$this->post->parent;
+			if (! empty($this->post->name)) {
+				$categoryModel = $this->model('category');
+				$id = $categoryModel->add($this->post->name, $cid);
+				if ($id) {
+					return json_encode(array(
+						'code' => 1,
+						'result' => 'ok',
+						'body' => $id
+					));
+				}
+				return json_encode(array(
+					'code' => 0,
+					'result' => '分类添加错误'
+				));
+			}
+			return json_encode(array(
+				'code' => '3',
+				'result' => '分类名称不能为空'
+			));
+		}
+		return json_encode(array(
+			'code' => 2,
+			'result' => '权限不足或尚未登陆 '
+		));
+	}
+
+	/**
+	 * 更改分类名称
+	 */
+	function rename()
+	{
+		$roleModel = $this->model('role');
+		if (login::admin() && $roleModel->checkPower($this->session->role, 'category', roleModel::POWER_UPDATE)) {
+			$id = filter::int($this->post->id);
+			$name = $this->post->name;
+			if (! empty($id) && ! empty($name)) {
+				$categoryModel = $this->model('category');
+				if ($categoryModel->rename($id, $name)) {
+					return json_encode(array(
+						'code' => 1,
+						'result' => 'ok'
+					));
+				}
+				return json_encode(array(
+					'code' => 0,
+					'result' => 'failed'
+				));
+			}
+			return json_encode(array(
+				'code' => 3,
+				'result' => '参数错误'
+			));
+		}
+		return json_encode(array(
+			'code' => 2,
+			'result' => '权限不足或尚未登陆 '
+		));
+	}
+
+	/**
+	 * 删除分类
+	 * 
+	 * @return string
+	 */
+	function del()
+	{
+		$roleModel = $this->model('role');
+		if (login::admin() && $roleModel->checkPower($this->session->role, 'category', roleModel::POWER_DELETE)) {
+			$id = filter::int($this->post->id);
+			if (! empty($id)) {
+				$categoryModel = $this->model('category');
+				$result = $categoryModel->fetchChild($id);
+				if (empty($result)) {
+					if ($categoryModel->del($id)) {
+						return json_encode(array(
+							'code' => 1,
+							'result' => 'ok'
+						));
+					}
+					return json_encode(array(
+						'code' => 0,
+						'result' => 'failed'
+					));
+				}
+				return json_encode(array(
+					'code' => 4,
+					'result' => '请先删除该分类中的子分类'
+				));
+			}
+			return json_encode(array(
+				'code' => 3,
+				'result' => '参数错误'
+			));
+		}
+		return json_encode(array(
+			'code' => 2,
+			'result' => '权限不足或尚未登陆 '
+		));
+	}
+
+	/**
+	 * 移动分类
+	 * 
+	 * @return string
+	 */
+	function move()
+	{
+		$roleModel = $this->model('role');
+		if (login::admin() && $roleModel->checkPower($this->session->role, 'category', roleModel::POWER_UPDATE)) {
+			$id = filter::int($this->post->id);
+			if ($this->post->parent == '#') {
+				$parent = 0;
+			} else {
+				$parent = filter::int($this->post->parent);
+			}
+			if (! empty($id) && ! empty($parent)) {
+				$categoryModel = $this->model('category');
+				if ($categoryModel->move($id, $parent)) {
+					return json_encode(array(
+						'code' => 1,
+						'result' => 'ok'
+					));
+				}
+				return json_encode(array(
+					'code' => 0,
+					'result' => 'failed'
+				));
+			}
+			return json_encode(array(
+				'code' => 3,
+				'result' => '参数错误'
+			));
+		}
+		return json_encode(array(
+			'code' => 2,
+			'result' => '权限不足或尚未登陆 '
+		));
+	}
+	
+	function paste()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'category',roleModel::POWER_UPDATE))
+		{	
+			$id = json_decode($this->post->id);
+			$mode = $this->post->mode;
+			$parent = ($this->post->parent == '#')?0:filter::int($this->post->parent);
+			
+			if(empty($id) || empty($mode) || empty($parent))
+			{
+				return json_encode(array('code'=>0,'result'=>'参数错误'));
+			}
+			$categoryModel = $this->model('category');
+			if($categoryModel->paste($id,$mode,$parent))
+			{
+				return json_encode(array(
+						'code' => 1,
+						'result' => 'ok'
+					));
+			}
+			return json_encode(array(
+				'code' => 0,
+				'result' => 'failed'
+			));
+		}
+		return json_encode(array(
+			'code' => 2,
+			'result' => '权限不足或尚未登陆 '
+		));
 	}
 }
