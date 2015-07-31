@@ -9,8 +9,8 @@ use system\core\control;
  */
 class cacheControl extends control
 {
-	function product()
+	function productimg()
 	{
-		
+		$this->thread->call('productimg');
 	}
 }

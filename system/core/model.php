@@ -56,7 +56,7 @@ class model
 
 	public function select($field = '*')
 	{
-		$sql = 'select ' . $field . ' from ' . $this->_table . ' ' . (isset($this->_temp['where'])?$this->_temp['where']:'') .' '.(isset($this->_temp['orderby'])?$this->_temp['orderby']:'').' '.(isset($this->_temp['limit'])?$this->_temp['limit']:'');
+		$sql = 'select ' . $field . ' from ' . $this->_table . ' ' . (isset($this->_temp['where'])?$this->_temp['where']:'') .(isset($this->_temp['groupby'])?$this->_temp['groupby']:'').' '.(isset($this->_temp['orderby'])?$this->_temp['orderby']:'').' '.(isset($this->_temp['limit'])?$this->_temp['limit']:'');
 		$result = $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
 		unset($this->_temp);
 		return $result;
@@ -199,6 +199,14 @@ class model
 		{
 			$this->_temp['orderby'] = 'order by '.$field.' '.$asc;
 		}
+	}
+	
+	/**
+	 * 添加分组查询条件
+	 */
+	public function groupby($group)
+	{
+		$this->_temp['groupby'] = ' group by '.$group;
 	}
 	
 	

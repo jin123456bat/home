@@ -21,7 +21,7 @@ class log
 	 */
 	function thread($errno, $errstr)
 	{
-		$out = date(http::time(), "Y-m-d H:i:s") . ' ' . $errno . ' ' . $errstr;
+		$out = date("Y-m-d H:i:s",http::time()) . ' ' . $errno . ' ' . $errstr;
 		if (filesystem::path($this->_config['thread_path'])) {
 			file_put_contents($this->_config['thread_path'], $out);
 		}

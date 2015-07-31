@@ -7,6 +7,15 @@ use system\core\file;
 class productimgModel extends model
 {
 
+	/**
+	 * 搜索所有无效的图像数据
+	 */
+	function GetAndRemoveInvalidImg()
+	{
+		//select * from productimg where `productimg`.pid not in (select id from product)
+		return $this->where('`productimg`.pid not in (select id from product)')->delete();
+	}
+	
 	function __construct($table)
 	{
 		parent::__construct($table);

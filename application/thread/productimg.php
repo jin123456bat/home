@@ -1,17 +1,17 @@
 <?php
 namespace application\thread;
 
-use system\core\thread;
 use system\core\filesystem;
-class productimgThread extends thread
+use system\core\control;
+class productimgThread extends control
 {
 	/**
 	 * 清空无效图像
 	 */
-	function clearimg()
+	function run()
 	{
 		$productimgModel = $this->model('productimg');
-		$img = $productimgModel->getByPid(0);
+		$img = $productimgModel->GetAndRemoveInvalidImg();
 		$filesystem = new filesystem();
 		foreach($img as $im)
 		{
@@ -20,7 +20,5 @@ class productimgThread extends thread
 			$filesystem->remove($im['thumbnail_path']);
 		}
 		$productimgModel->removeByPid(0);
-		
-		
 	}
 }
