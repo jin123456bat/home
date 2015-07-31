@@ -11,7 +11,9 @@ class file
 {
 
 	function __construct()
-	{}
+	{
+		
+	}
 
 	function __get($name)
 	{
@@ -42,7 +44,7 @@ class file
 	function receive($file, $config)
 	{
 		set_time_limit(0);
-		ini_set('memory_limit', $config->size);
+		//ini_set('memory_limit', $config->size);
 		if (is_uploaded_file($file['tmp_name'])) {
 			if ($file['error'] != UPLOAD_ERR_OK) {
 				return $file['error'];
@@ -50,10 +52,10 @@ class file
 			if ($file['size'] > $config['size']) {
 				return UPLOAD_ERR_INI_SIZE;
 			}
-			if (in_array($file['type'], $config['type'])) {
+			if (!in_array($file['type'], $config['type'])) {
 				return 8;
 			}
-			if (! is_writable(filesystem::path($config['path'])) || is_dir(filesystem::path($config['path']))) {
+			if (! is_writable(filesystem::path($config['path'])) || !is_dir(filesystem::path($config['path']))) {
 				return UPLOAD_ERR_CANT_WRITE;
 			}
 			$type = empty(filesystem::type($file['name'])) ? 'tmpuploadfile' : filesystem::type($file['name']);
@@ -144,5 +146,20 @@ class file
 			return $array;
 		}
 		return false;
+	}
+	
+	/**
+	 * 将文件的绝对转化为url访问地址
+	 */
+	static function realpathToUrl($path)
+	{
+		$path = realpath($path);
+		if($path)
+		{
+			$path = str_replace(realpath(ROOT), '', $path);
+			$http = new http();
+			return rtrim('http://'.$http->host().$http->path(),'/').$path;
+		}
+		return NULL;
 	}
 }

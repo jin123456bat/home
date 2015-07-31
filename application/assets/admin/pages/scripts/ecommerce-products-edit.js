@@ -9,21 +9,22 @@ var EcommerceProductsEdit = function () {
             browse_button : document.getElementById('tab_images_uploader_pickfiles'), // you can pass in id...
             container: document.getElementById('tab_images_uploader_container'), // ... or DOM Element itself
              
-            url : "assets/plugins/plupload/examples/upload.php",
-             
+            //url : "http://localhost/home/application/assets/global/plugins/plupload/examples/upload.php",
+            url : "?c=productimg&a=upload",
+			
             filters : {
                 max_file_size : '10mb',
                 mime_types: [
-                    {title : "Image files", extensions : "jpg,gif,png"},
-                    {title : "Zip files", extensions : "zip"}
+                    {title : "Image files", extensions : "jpg,gif,png,jpeg,bmp"}
                 ]
             },
+			headers:{id:$('input[name=id]').val()},
          
             // Flash settings
-            flash_swf_url : 'assets/plugins/plupload/js/Moxie.swf',
+            flash_swf_url : 'http://localhost/home/application/assets/global/plugins/plupload/js/Moxie.swf',
      
             // Silverlight settings
-            silverlight_xap_url : 'assets/plugins/plupload/js/Moxie.xap',             
+            silverlight_xap_url : 'http://localhost/home/application/assets/global/plugins/plupload/js/Moxie.xap',             
          
             init: {
                 PostInit: function() {
@@ -42,7 +43,7 @@ var EcommerceProductsEdit = function () {
          
                 FilesAdded: function(up, files) {
                     plupload.each(files, function(file) {
-                        $('#tab_images_uploader_filelist').append('<div class="alert alert-warning added-files" id="uploaded_file_' + file.id + '">' + file.name + '(' + plupload.formatSize(file.size) + ') <span class="status label label-info"></span>&nbsp;<a href="javascript:;" style="margin-top:-5px" class="remove pull-right btn btn-sm red"><i class="fa fa-times"></i> remove</a></div>');
+                        $('#tab_images_uploader_filelist').append('<div class="alert alert-warning added-files" id="uploaded_file_' + file.id + '">' + file.name + '(' + plupload.formatSize(file.size) + ') <span class="status label label-info"></span>&nbsp;<a href="javascript:;" style="margin-top:-5px" class="remove pull-right btn btn-sm red"><i class="fa fa-times"></i> 删除</a></div>');
                     });
                 },
          
@@ -53,18 +54,23 @@ var EcommerceProductsEdit = function () {
                 FileUploaded: function(up, file, response) {
                     var response = $.parseJSON(response.response);
 
-                    if (response.result && response.result == 'OK') {
-                        var id = response.id; // uploaded file's unique name. Here you can collect uploaded file names and submit an jax request to your server side script to process the uploaded files and update the images tabke
+                    if (response.code == 1) {
+                        var id = response.body[0]; // uploaded file's unique name. Here you can collect uploaded file names and submit an jax request to your server side script to process the uploaded files and update the images tabke
 
-                        $('#uploaded_file_' + file.id + ' > .status').removeClass("label-info").addClass("label-success").html('<i class="fa fa-check"></i> Done'); // set successfull upload
+                        $('#uploaded_file_' + file.id + ' > .status').removeClass("label-info").addClass("label-success").html('<i class="fa fa-check"></i> 上传完毕'); // set successfull upload
+						var tpl = '<tr data-id="'+response.body[0]+'"><td><a href="'+response.body[4]+'" class="fancybox-button" data-rel="fancybox-button"><img class="img-responsive" src="'+response.body[4]+'" alt=""></a></td><td><input type="text" class="form-control" name="product[images][3][label]" value="'+response.body[2]+'"></td><td><input type="text" class="form-control" name="product[images][3][sort_order]" value="'+response.body[3]+'"></td><td><a href="javascript:;" class="btn default btn-sm"><i class="fa fa-times"></i> 删除 </a></td></tr>';
+						$('#preview').append(tpl);
+						
+						$('#form').append('<input type="hidden" name="picid" value="'+response.body[0]+'"/>');
+						
                     } else {
-                        $('#uploaded_file_' + file.id + ' > .status').removeClass("label-info").addClass("label-danger").html('<i class="fa fa-warning"></i> Failed'); // set failed upload
-                        Metronic.alert({type: 'danger', message: 'One of uploads failed. Please retry.', closeInSeconds: 10, icon: 'warning'});
+                        $('#uploaded_file_' + file.id + ' > .status').removeClass("label-info").addClass("label-danger").html('<i class="fa fa-warning"></i> 上传失败'); // set failed upload
+                        Metronic.alert({type: 'danger', message: '一个或多个文件上传失败，请重新上传.', closeInSeconds: 5, icon: 'warning'});
                     }
                 },
          
                 Error: function(up, err) {
-                    Metronic.alert({type: 'danger', message: err.message, closeInSeconds: 10, icon: 'warning'});
+                    Metronic.alert({type: 'danger', message: err.message, closeInSeconds: 5, icon: 'warning'});
                 }
             }
         });

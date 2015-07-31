@@ -7,11 +7,22 @@ namespace system\core;
  */
 class filter
 {
+	/**
+	 * 字符串过滤器  过滤字符串前$length个字符,允许中文
+	 * @param unknown $str
+	 * @param unknown $length
+	 * @return string
+	 */
 	static public function string($str,$length)
 	{
-		return substr($str, 0,$length);
+		return mb_substr($str, 0,$length);
 	}
 	
+	/**
+	 * 过滤手机号码,失败返回NULL
+	 * @param unknown $string
+	 * @return unknown|NULL
+	 */
 	static public function telephone($string)
 	{
 		$pattern = '$\d{11}$';
@@ -22,6 +33,11 @@ class filter
 		return NULL;
 	}
 	
+	/**
+	 * 过滤第一个数字  + - e .等符号都不允许
+	 * @param unknown $var
+	 * @return unknown|NULL
+	 */
 	static public function int($var)
 	{
 		$pattern = '$\d+$';

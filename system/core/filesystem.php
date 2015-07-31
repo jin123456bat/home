@@ -17,6 +17,19 @@ class filesystem
 	{
 		return realpath($path);
 	}
+	
+	/**
+	 * 删除文件
+	 * @param unknown $file
+	 * @return boolean
+	 */
+	public static function remove($file)
+	{
+		$path = self::path($file);
+		if($path)
+			return @unlink($path);
+		return true;
+	}
 
 	/**
 	 * 返回文件大小
@@ -92,7 +105,7 @@ class filesystem
 	 */
 	public static function type($filename)
 	{
-		return pathinfo(self::path($filename), PATHINFO_EXTENSION);
+		return pathinfo($filename, PATHINFO_EXTENSION);
 	}
 
 	/**
@@ -103,7 +116,7 @@ class filesystem
 	 * @param unknown $magicFile        	
 	 * @return unknown
 	 */
-	public static function mimetype($file, $options = FILEINFO_MIME_TYPE, $magicFile)
+	public static function mimetype($file, $options = FILEINFO_MIME_TYPE, $magicFile = NULL)
 	{
 		$result = finfo_file(finfo_open($options, $magicFile), self::path($file));
 		// return $result ? $result : self::getMimeTypeByExtension($file);

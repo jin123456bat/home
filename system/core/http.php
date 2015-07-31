@@ -95,6 +95,15 @@ class http
 	{
 		return $_SERVER['SERVER_PORT'];
 	}
+	
+	/**
+	 * 页面跳转
+	 * @param unknown $url
+	 */
+	function jump($url)
+	{
+		header('Location: '.$url,'302',true);
+	}
 
 	/**
 	 * 协议

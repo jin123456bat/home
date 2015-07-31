@@ -13,7 +13,7 @@ class post implements ArrayAccess
 
 	function __get($name)
 	{
-		return isset($_POST[$name]) ? is_string($_POST[$name])?trim($_POST[$name]):$_POST[$name] : NULL;
+		return isset($_POST[$name]) ? is_string($_POST[$name])?trim(htmlspecialchars($_POST[$name])):$_POST[$name] : NULL;
 	}
 
 	function __set($name, $value)

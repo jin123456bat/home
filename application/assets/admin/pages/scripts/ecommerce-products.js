@@ -108,7 +108,7 @@ var EcommerceProducts = function () {
 					"targets":[8],
 					"data":"id",
 					"render":function(data,type,full){
-						return '<a class="btn btn-default btn-sm">编辑</a>';
+						return '<a href="?c=product&a=edit&action=edit&id='+data+'" class="btn default btn-xs green-stripe">编辑</a>';
 					}
 				}],
 				"processing": true,

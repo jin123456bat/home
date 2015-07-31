@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-29 15:56:14
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 13:33:28
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1438156572,
+      1 => 1438320807,
       2 => 'file',
     ),
   ),
@@ -59,7 +59,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			<?php }?>
 			</a>
 		</li>
-		<li class="<?php if (($_GET['c']=='category'&&$_GET['a']=='admin')||($_GET['c']=='product'&&$_GET['a']=='index')) {?>active open<?php }?>">
+		<li class="<?php if (($_GET['c']=='category'&&$_GET['a']=='admin')||($_GET['c']=='product'&&$_GET['a']=='index')||($_GET['c']=='product'&&$_GET['a']=='edit')) {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-basket"></i>
 			<span class="title">商品管理</span>
@@ -83,7 +83,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 					<i class="icon-handbag"></i>
 					商品列表</a>
 				</li>
-				<li>
+				<li class="<?php if ($_GET['c']=='product'&&$_GET['a']=='edit') {?>active<?php }?>">
 					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'edit'),$_smarty_tpl);?>
 ">
 					<i class="icon-pencil"></i>
@@ -344,7 +344,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			</ul>
 		</li>
 		<li class="heading">
-			<h3 class="uppercase">Features</h3>
+			<h3 class="uppercase">运营</h3>
 		</li>
 		<li>
 			<a href="javascript:;">
@@ -660,18 +660,19 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			</ul>
 		</li>
 		<li class="heading">
-			<h3 class="uppercase">More</h3>
+			<h3 class="uppercase">设定</h3>
 		</li>
 		<li>
 			<a href="javascript:;">
 			<i class="icon-logout"></i>
-			<span class="title">Quick Sidebar</span>
+			<span class="title">缓存管理</span>
 			<span class="arrow "></span>
 			</a>
 			<ul class="sub-menu">
 				<li>
-					<a href="quick_sidebar_push_content.html">
-					Push Content</a>
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'cache','a'=>'product'),$_smarty_tpl);?>
+">
+					商品缓存</a>
 				</li>
 				<li>
 					<a href="quick_sidebar_over_content.html">
@@ -687,24 +688,12 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</li>
 			</ul>
 		</li>
-		<li>
-			<a href="javascript:;">
+		<li <?php if ($_GET['c']=='log'&&$_GET['a']=='index') {?>class="active"<?php }?>>
+			<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'log','a'=>'index'),$_smarty_tpl);?>
+">
 			<i class="icon-envelope-open"></i>
-			<span class="title">Email Templates</span>
-			<span class="arrow "></span>
+			<span class="title">系统日志</span>
 			</a>
-			<ul class="sub-menu">
-				<li>
-					<a href="email_newsletter.html">
-					Responsive Newsletter<br>
-					 Email Template</a>
-				</li>
-				<li>
-					<a href="email_system.html">
-					Responsive System<br>
-					 Email Template</a>
-				</li>
-			</ul>
 		</li>
 		<li>
 			<a href="javascript:;">

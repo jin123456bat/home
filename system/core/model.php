@@ -65,11 +65,11 @@ class model
 	/**
 	 * 增加条件
 	 * 
-	 * @param unknown $sql        	
-	 * @param unknown $array        	
+	 * @param string $sql        	
+	 * @param array $array        	
 	 * @return \system\core\model
 	 */
-	public function where($sql, $array = array(),$combine = 'and')
+	public function where($sql, array $array = array(),$combine = 'and')
 	{
 		if (isset($this->_temp['where'])) {
 			$this->_temp['where'] = $this->_temp['where'] .' '. $combine.' ' . $sql;
@@ -110,16 +110,31 @@ class model
 	/**
 	 * 更改
 	 * 
-	 * @param unknown $key        	
-	 * @param unknown $value        	
+	 * @param string|array $key
+	 * @param string|NULL $value        	
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	public function update($key, $value)
+	public function update($key, $value = '')
 	{
-		$sql = 'update ' . $this->_table . ' set ' . $key . ' = ? ' . $this->_temp['where'];
-		$result = $this->_db->query($sql, array_merge(array(
-			$value
-		), $this->_temp['array']));
+		if(is_array($key))
+		{
+			$parameter = '';
+			$value = array();
+			foreach ($key as $a => $b)
+			{
+				$parameter .= ($a.' = ?,');
+				$value[] = $b;
+			}
+			$parameter = rtrim($parameter,',');
+			$sql = 'update '.$this->_table.' set '.$parameter.' '.$this->_temp['where'];
+		}
+		else
+		{
+			$sql = 'update ' . $this->_table . ' set ' . $key . ' = ? ' . $this->_temp['where'];
+			$value = array($value);
+		}
+		$value = isset($this->_temp['array'])?array_merge($value,$this->_temp['array']):$value;
+		$result = $this->_db->query($sql, $value);
 		unset($this->_temp);
 		return $result;
 	}

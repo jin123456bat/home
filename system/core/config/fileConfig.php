@@ -26,7 +26,8 @@ class fileConfig extends config
 			'image/jpeg',
 			'image/png',
 			'image/gif',
-			'image/jpg'
+			'image/jpg',
+			'image/bmp'
 		);
 		
 		/**

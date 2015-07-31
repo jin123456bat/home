@@ -10,17 +10,57 @@ class productModel extends model
 		parent::__construct('product');
 	}
 	
+	function get($id)
+	{
+		$result = $this->where('id=?',array($id))->select();
+		return isset($result[0])?$result[0]:NULL;
+	}
+	
 	function add($product)
 	{
-		$array = array(
-			$product->name,
-			$product->sku,
-			$product->cid,
-			$product->bid,
-			$product->description,
-			
+		$product = array_merge(array('id'=>NULL),$product);
+		if($this->insert($product))
+		{
+			return $this->lastInsertId();
+		}
+		return false;
+	}
+	
+	/**
+	 * 保存商品数据
+	 * @param unknown $post
+	 */
+	function save($post)
+	{
+		$data = array(
+			'name' => $post->name,
+			'sku' => '',
+			'category' => $post->category,
+			'cid'=> '',
+			'bid'=>'',
+			'starttime' => strtotime($post->starttime),
+			'endtime' => strtotime($post->endtime),
+			'description' => $post->description,
+			'short_description' => $post->short_description,
+			'time' => $_SERVER['REQUEST_TIME'],
+			'price' => $post->price,
+			'stock' => $post->stock,
+			'status' => $post->status,
+			'orderby'=>$post->orderby,
+			'ship'=>'',
+			'meta_title'=>$post->meta_title,
+			'meta_keywords'=>$post->meta_keywords,
+			'meta_description'=>$post->meta_description,
+			'truth'=>''
 		);
-		$this->insert($array);
+		if(empty($post->id))
+		{
+			return $this->add($data);
+		}
+		else
+		{
+			return $this->where('id=?',array($post->id))->update($data);
+		}
 	}
 
 	/**

@@ -14,17 +14,20 @@
 	height: 0;
 	overflow: hidden;
 }
+
 .tp-bannershadow {
 	display: none;
 }
+
 .tp-bullets.simplebullets.round .bullet {
 	width: 12px;
 	height: 12px;
 	border-radius: 50% !important;
 	background: #d8d8d8;
 }
-.tp-bullets.simplebullets.round .bullet:hover,
-.tp-bullets.simplebullets.round .bullet.selected {
+
+.tp-bullets.simplebullets.round .bullet:hover, .tp-bullets.simplebullets.round .bullet.selected
+	{
 	background: #919191;
 }
 
@@ -34,9 +37,11 @@
 	text-transform: uppercase;
 	font: 300 47px/66px "Open Sans", sans-serif;
 }
+
 .slide_title_white_bold {
 	font-weight: 400;
 }
+
 .slide_subtitle_white {
 	border-top: 1px solid #fff !important;
 	border-bottom: 1px solid #fff !important;
@@ -46,6 +51,7 @@
 	text-align: center;
 	text-transform: uppercase;
 }
+
 .slider-colored {
 	z-index: 1;
 	height: 495px !important;
@@ -53,16 +59,19 @@
 	border-top: solid 1px #eee;
 	border-bottom: solid 1px #eee;
 }
-.slide_title, .slide_subtitle, .slide_desc, .slide_btn{
-	-moz-box-sizing: content-box; 
+
+.slide_title, .slide_subtitle, .slide_desc, .slide_btn {
+	-moz-box-sizing: content-box;
 	-webkit-box-sizing: content-box;
-    box-sizing: content-box;
+	box-sizing: content-box;
 }
+
 .slide_title {
 	font: 300 47px/66px "Open Sans", sans-serif;
 	color: #3f5862;
 	text-transform: uppercase;
 }
+
 .slide_subtitle {
 	font: 400 18px/25px "Open Sans", sans-serif;
 	background: #E84D1C;
@@ -70,6 +79,7 @@
 	color: #fafafa;
 	text-transform: uppercase;
 }
+
 .slide_list_item {
 	font: 400 14px/20px "Open Sans", sans-serif;
 	background: #E84D1C;
@@ -77,15 +87,18 @@
 	color: #fafafa;
 	text-transform: uppercase;
 }
+
 .slide_desc {
 	color: #7b8793;
 	font-size: 14px;
 	line-height: 25px;
 }
+
 .slide_desc_bordered {
-	border-left: 3px solid #ddd !important; 
+	border-left: 3px solid #ddd !important;
 	padding-left: 5px;
 }
+
 .slide_btn {
 	font: 300 14px/14px "Open Sans", sans-serif;
 	background: #6fc561;
@@ -94,14 +107,15 @@
 	text-transform: uppercase;
 	cursor: pointer;
 }
-.tp-leftarrow.default,
-.tp-rightarrow.default{
+
+.tp-leftarrow.default, .tp-rightarrow.default {
 	opacity: 0.7;
 }
-.tp-leftarrow.default:hover,
-.tp-rightarrow.default:hover {
+
+.tp-leftarrow.default:hover, .tp-rightarrow.default:hover {
 	opacity: 1;
 }
+
 .revolution-slider .hidearrows {
 	opacity: 0;
 }

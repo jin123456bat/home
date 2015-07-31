@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-27 23:27:15
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-29 16:15:09
          compiled from "D:\wamp\www\home\application\template\admin\login.html" */ ?>
 <?php /*%%SmartyHeaderCode:1749655b64dd3a494c9-77160441%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '011153f7dfd9908fd1fd82833b2f7c9f8e442dd8' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\login.html',
-      1 => 1437932731,
+      1 => 1438157708,
       2 => 'file',
     ),
   ),
@@ -15,13 +15,13 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'function' => 
   array (
   ),
+  'version' => 'Smarty-3.1.16',
+  'unifunc' => 'content_55b64dd3be5a29_02960924',
   'variables' => 
   array (
     'VIEW_ROOT' => 0,
   ),
   'has_nocache_code' => false,
-  'version' => 'Smarty-3.1.16',
-  'unifunc' => 'content_55b64dd3be5a29_02960924',
 ),false); /*/%%SmartyHeaderCode%%*/?>
 <?php if ($_valid && !is_callable('content_55b64dd3be5a29_02960924')) {function content_55b64dd3be5a29_02960924($_smarty_tpl) {?><!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
