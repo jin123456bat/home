@@ -80,6 +80,13 @@ class categoryModel extends model
 		))->update('cid', $cid);
 	}
 	
+	/**
+	 * 粘贴分类
+	 * @param unknown $id
+	 * @param unknown $mode
+	 * @param unknown $cid
+	 * @return boolean
+	 */
 	function paste($id,$mode,$cid)
 	{
 		try {

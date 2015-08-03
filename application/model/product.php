@@ -10,12 +10,22 @@ class productModel extends model
 		parent::__construct('product');
 	}
 	
+	/**
+	 * 获得一条商品信息
+	 * @param unknown $id
+	 * @return NULL
+	 */
 	function get($id)
 	{
 		$result = $this->where('id=?',array($id))->select();
 		return isset($result[0])?$result[0]:NULL;
 	}
 	
+	/**
+	 * 添加商品
+	 * @param unknown $product
+	 * @return string|boolean
+	 */
 	function add($product)
 	{
 		$product = array_merge(array('id'=>NULL),$product);
@@ -45,7 +55,9 @@ class productModel extends model
 			'time' => $_SERVER['REQUEST_TIME'],
 			'price' => $post->price,
 			'stock' => $post->stock,
+			'origin' => $post->origin,
 			'status' => $post->status,
+			'label' => $post->label,
 			'orderby'=>$post->orderby,
 			'ship'=>'',
 			'meta_title'=>$post->meta_title,
@@ -97,7 +109,7 @@ class productModel extends model
 					$parameter .= '`product`.`id`,';
 					break;
 				case 'categoryname':
-					$this->table('category','left join','on `category`.`id`=`product`.`category`');
+					$this->table('category','left join','`category`.`id`=`product`.`category`');
 					$parameter .= '`category`.`name` as categoryname,';
 					break;
 				case 'productname':
@@ -156,7 +168,7 @@ class productModel extends model
 	}
 	
 	/**
-	 * 商品数量
+	 * 所有商品数量
 	 * @return number
 	 */
 	function count()

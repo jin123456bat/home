@@ -10,6 +10,30 @@ class adminModel extends model
 	}
 	
 	/**
+	 * 根据json对象搜索
+	 */
+	function searchable($json)
+	{
+		$parameter = '';
+		foreach ($json['columns'] as $key => $value)
+		{
+			foreach ($json['order'] as $order)
+			{
+				if($order['column'] == $key)
+				{
+					$this->orderby($value['data'],$order['dir']);
+				}
+			}
+			$parameter .= $value['data'].',';
+			if($value['searchable'] == 'true' && !empty($json['search']['value']))
+			{
+				$this->where($value['data'].' like ?',array('%'.$json['search']['value'].'%'),'or');
+			}
+		}
+		return $this->select(rtrim($parameter,','));
+	}
+	
+	/**
 	 * 添加管理员
 	 */
 	function register($username,$password,$roleid = 1)

@@ -18,10 +18,45 @@ class adminControl extends control
 		return $this->view->display();
 	}
 	
+	/**
+	 * 管理后台主页
+	 */
 	function dashboard()
 	{
 		$this->view = new view(config('view'), 'admin/dashboard.html');
 		return $this->view->display();
+	}
+	
+	/**
+	 * ajax请求管理员列表
+	 * @return string
+	 */
+	function adminlistajax()
+	{
+		$roleModel = $this->model('role');
+		$resultObj = new \stdClass();
+		$resultObj->draw = $this->post->draw;
+		$resultObj->recordsTotal = 0;
+		$resultObj->recordsFiltered = 0;
+		$resultObj->data = array();
+		if (login::admin() && $roleModel->checkPower($this->session->role, 'admin', roleModel::POWER_SELECT)) {
+			$adminModel = $this->model('admin');
+			$num = $adminModel->select('count(*)');
+			$result = $adminModel->searchable($_POST);
+			$resultObj->recordsTotal = (int) $num[0]['count(*)'];
+			$resultObj->recordsFiltered = count($result);
+			$resultObj->data = array_slice($result, $this->post->start, $this->post->length);
+		}
+		return json_encode($resultObj);
+	}
+	
+	/**
+	 * 管理员列表 页面
+	 */
+	function adminlist()
+	{
+		$this->view = new view(config('view'), 'admin/adminlist.html');
+		$this->response->setBody($this->view->display());
 	}
 	
 	/**
@@ -48,7 +83,7 @@ class adminControl extends control
 	}
 	
 	/**
-	 * 添加管理员
+	 * 添加管理员 接口
 	 */
 	function register()
 	{

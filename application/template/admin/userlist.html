@@ -288,6 +288,9 @@
 								<th>
 									 余额
 								</th>
+                                <th>
+                                	积分
+                                </th>
                                 <td>
                                 	订单数
                                 </td>
@@ -429,6 +432,23 @@ TableManaged.init();
 			window.um.focus();
 		}
 		return false;
+	});
+
+	$('.closeuser').live('click',function(){
+		if($(this).hasClass('bootstrap-switch-on'))
+		{
+			$(this).removeClass('bootstrap-switch-on');
+			$(this).addClass('bootstrap-switch-off');
+			var toggle = 0;
+		}
+		else
+		{
+			$(this).removeClass('bootstrap-switch-off');
+			$(this).addClass('bootstrap-switch-on');
+			var toggle = 1;
+		}
+		var id = $(this).parents('tr').find('input[type=checkbox]').val();
+		$.post('{%url c=user a=close%}',{toggle:toggle,id:id});
 	});
 });
 </script>

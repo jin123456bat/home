@@ -9,6 +9,9 @@ use system\core\control;
  */
 class cacheControl extends control
 {
+	/**
+	 * 调用线程删除所有错误的产品图像
+	 */
 	function productimg()
 	{
 		$this->thread->call('productimg');

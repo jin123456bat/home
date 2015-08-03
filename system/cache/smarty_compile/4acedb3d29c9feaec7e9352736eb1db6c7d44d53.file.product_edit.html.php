@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 12:11:12
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-03 13:29:51
          compiled from "D:\wamp\www\home\application\template\admin\product_edit.html" */ ?>
 <?php /*%%SmartyHeaderCode:2754655b8878e9b8403-56204090%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '4acedb3d29c9feaec7e9352736eb1db6c7d44d53' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product_edit.html',
-      1 => 1438315870,
+      1 => 1438579730,
       2 => 'file',
     ),
   ),
@@ -260,6 +260,10 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 											<a href="#tab_general" data-toggle="tab">
 											通用属性 </a>
 										</li>
+                                        <li>
+											<a href="#tab_extra" data-toggle="tab">
+											附加属性 </a>
+										</li>
 										<li>
 											<a href="#tab_meta" data-toggle="tab">
 											元属性 </a>
@@ -390,6 +394,22 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 													</div>
                                                     
 												</div>
+                                                <div class="form-group">
+													<label class="col-md-2 control-label">来源国: 
+													</label>
+													<div class="col-md-10">
+														<input type="text" class="form-control" name="origin" placeholder="" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['origin'])===null||$tmp==='' ? '' : $tmp);?>
+">
+													</div>
+												</div>
+                                                <div class="form-group">
+													<label class="col-md-2 control-label">产品标签: 
+													</label>
+													<div class="col-md-10">
+														<input type="text" class="form-control" name="label" placeholder="" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['label'])===null||$tmp==='' ? '' : $tmp);?>
+">
+													</div>
+												</div>
 												<div class="form-group">
 													<label class="col-md-2 control-label">状态: <span class="required">
 													* </span>
@@ -411,6 +431,32 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 												</div>
 											</div>
 										</div>
+                                        <div class="tab-pane" id="tab_extra">
+                                        	<div class="form-body">
+                                            	<div class="row">
+                                                    <div class="col-md-4">
+                                                        <input type="text" class="form-control" name="prototype_name" placeholder="属性名">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                    	<select class="form-control" name="prototype_type">
+                                                        	<option value="text">固定值</option>
+                                                            <option value="radio">可选值</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="text" class="form-control" name="prototype_value" placeholder="属性值">
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                    	<button class="form-contorl btn btn-circle btn-danger" name="prototype_add"><i class="fa fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="col-md-12">
+                                                    <table class="table table-hover" id="prototype_container">
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
 										<div class="tab-pane" id="tab_meta">
 											<div class="form-body">
 												<div class="form-group">

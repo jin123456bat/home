@@ -12,5 +12,14 @@ class login
 		$session = new session();
 		return !($session->id == NULL || $session->role == NULL || $session->username == NULL);
 	}
+	
+	/**
+	 * 普通用户登陆
+	 */
+	static function user()
+	{
+		$session = new session();
+		return $session->id != NULL;
+	}
 
 }

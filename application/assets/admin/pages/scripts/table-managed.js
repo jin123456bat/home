@@ -26,10 +26,13 @@ var TableManaged = function () {
 				"data":"money",
                 "orderable": true
             }, {
+				"data":"score",
+				"orderable":true
+			}, {
 				"data":"ordernum",
 				"orderable": true
 			}, {
-				"data":"id",
+				"data":"close",
 				"orderable": false
 			}],
 			"paging":true,
@@ -63,10 +66,14 @@ var TableManaged = function () {
 					return "<div class=checker><span><input type=checkbox class=checkboxes value="+data+"></span></div>";
 				}
 			}, {
-				"targets":[7],
-				"data":"id",
+				"targets":[8],
+				"data":"close",
 				"render":function(data,type,full){
-					return '<div class="bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-small bootstrap-switch-animate bootstrap-switch-off"><div class="bootstrap-switch-container"><span class="bootstrap-switch-handle-on bootstrap-switch-info">ON</span><label class="bootstrap-switch-label">&nbsp;</label><span class="bootstrap-switch-handle-off bootstrap-switch-default">OFF</span><input type="checkbox" class="make-switch" data-size="small" data-on-color="info" data-on-text="ON" data-off-color="default" data-off-text="OFF"></div></div>';
+					if(data == 0)
+						toggle = 'off';
+					else
+						toggle = 'on';
+					return '<div class="closeuser bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-small bootstrap-switch-animate bootstrap-switch-'+toggle+'"><div class="bootstrap-switch-container"><span class="bootstrap-switch-handle-on bootstrap-switch-info">ON</span><label class="bootstrap-switch-label">&nbsp;</label><span class="bootstrap-switch-handle-off bootstrap-switch-default">OFF</span><input type="checkbox" class="make-switch" data-size="small" data-on-color="info" data-on-text="ON" data-off-color="default" data-off-text="OFF"></div></div>';
 				}
 			}, {
                 "searchable": false,

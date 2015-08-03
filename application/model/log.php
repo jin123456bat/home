@@ -2,7 +2,7 @@
 namespace application\model;
 
 use system\core\model;
-class adminlogModel extends model
+class logModel extends model
 {
 	function __construct($table)
 	{

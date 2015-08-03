@@ -8,7 +8,7 @@ class brandControl extends control
 {
 
 	/**
-	 * 添加品牌
+	 * 添加品牌 接口
 	 */
 	function add()
 	{
@@ -34,7 +34,7 @@ class brandControl extends control
 	}
 
 	/**
-	 * 获得一个品牌信息
+	 * 获得一个品牌信息 接口
 	 */
 	function get()
 	{
@@ -47,7 +47,9 @@ class brandControl extends control
 				'result' => 'ok',
 				'body' => $result
 			));
+			return json_encode(array('code'=>2,'result'=>'不存在'));
 		}
+		return json_encode(array('code'=>0,'result'=>'参数错误'));
 	}
 
 	/**
@@ -78,7 +80,7 @@ class brandControl extends control
 	}
 
 	/**
-	 * 删除一个品牌
+	 * 删除一个品牌 以及该品牌的所有产品
 	 * 
 	 * @return string
 	 */
@@ -90,15 +92,16 @@ class brandControl extends control
 			if ($brandModel->del($id)) {
 				$productModel = $this->model('product');
 				$productModel->deleteByBrand($id);
+				return json_encode(array(
+					'code' => 1,
+					'result' => 'ok'
+				));
 			}
-			return json_encode(array(
-				'code' => 1,
-				'result' => 'ok'
-			));
+			return json_encode(array('code'=>0,'result'=>'删除失败'));
 		}
 		return json_encode(array(
-			'code' => 0,
-			'result' => 'fail'
+			'code' => 2,
+			'result' => '参数错误'
 		));
 	}
 

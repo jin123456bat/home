@@ -6,9 +6,58 @@ use application\classes\login;
 use system\core\view;
 use application\model\roleModel;
 use application\classes\category;
-use system\core\http;
+use system\core\filter;
 class productControl extends control
 {
+	
+	/**
+	 * 获得一个商品的所有详细信息
+	 */
+	function information()
+	{
+		$pid = empty(filter::int($this->get->pid))?0:filter::int($this->get->pid);
+		$pcontent_array = json_decode($this->post->pcontent);
+		if(!empty($pcontent_array))
+		{
+			$pcontent_array = sort($pcontent_array);
+			$pserialize = serialize($pcontent_array);
+		}
+		$productModel = $this->model('product');
+		$product = $productModel->get($pid);
+		$prototypeModel = $this->model('prototype');
+		$prototype = $prototypeModel->getByPid($pid);
+		$product['prototype'] = $prototype;
+		$collectionModel = $this->model('collection');
+		$collection = $collectionModel->getByPid($pid);
+		$product['collection'] = $collection;
+		
+	}
+	
+	/**
+	 * 获得某一个分类下所有商品信息  包括子分类
+	 */
+	function category()
+	{
+		$cid = empty(filter::int($this->get->cid))?0:filter::int($this->get->cid);
+		$array = array($cid);
+		//获得子分类信息
+		$categoryModel = $this->model('category');
+		$result = $categoryModel->fetchChild($cid);
+		foreach($result as $category)
+		{
+			//将子分类id加入数组
+			$array[] = $category['id'];
+		}
+		$array = implode(',', $array);
+		$productModel = $this->model('product');
+		$product = $productModel->where('category in (?)',array($array))->select();
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
+	}
+	
+	/**
+	 * 保存商品信息
+	 * @return string
+	 */
 	function save()
 	{
 		$roleModel = $this->model('role');
@@ -18,12 +67,18 @@ class productControl extends control
 			$id = $productModel->save($this->post);
 			if($id)
 			{
+				$pid = empty($this->post->id)?$id:$this->post->id;
 				if(!empty($this->post->picid))
 				{
-					$pid = empty($this->post->id)?$id:$this->post->id;
 					$picid = json_decode(htmlspecialchars_decode($this->post->picid));
 					$productimgModel = $this->model('productimg');
 					$productimgModel->updatepid($picid,$pid);
+				}
+				if(!empty($this->post->prototype_id))
+				{
+					$prototype_id = json_decode(htmlspecialchars_decode($this->post->prototype_id));
+					$prototypeModel = $this->model('prototype');
+					$prototypeModel->updatepid($prototype_id,$pid);
 				}
 				return json_encode(array('code'=>1,'result'=>'ok','id'=>$id));
 			}

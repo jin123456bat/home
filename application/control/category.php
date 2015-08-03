@@ -10,7 +10,22 @@ use system\core\filter;
 
 class categoryControl extends control
 {
+	
+	/**
+	 * 获得一个分类下的子分类
+	 */
+	function getchild()
+	{
+		$this->response->addHeader('Cache-Control','nocache');
+		$cid = empty(filter::int($this->get->cid))?0:filter::int($this->get->cid);
+		$categoryModel = $this->model('category');
+		$result = $categoryModel->fetchChild($cid);
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+	}
 
+	/**
+	 * 分类管理界面
+	 */
 	function admin()
 	{
 		$roleModel = $this->model('role');
@@ -209,6 +224,10 @@ class categoryControl extends control
 		));
 	}
 	
+	/**
+	 * 复制或者剪切的ajax请求
+	 * @return string
+	 */
 	function paste()
 	{
 		$roleModel = $this->model('role');

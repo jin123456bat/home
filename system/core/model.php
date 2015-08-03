@@ -186,8 +186,9 @@ class model
 	
 	/**
 	 * 添加排序规则,最先添加的排序规则比重大于后面的排序规则
-	 * @param unknown $field
-	 * @param string $asc
+	 * @param string $field 排序字段
+	 * @param string $asc 排序规则 默认为asc从小到大
+	 * @return $this
 	 */
 	public function orderby($field,$asc = 'asc')
 	{
@@ -199,6 +200,7 @@ class model
 		{
 			$this->_temp['orderby'] = 'order by '.$field.' '.$asc;
 		}
+		return $this;
 	}
 	
 	/**
@@ -218,7 +220,7 @@ class model
 	 */
 	public function table($table,$mode = ',',$on = '')
 	{
-		$this->_table .= ' '.$mode.' '.$table.' '.$on;
+		$this->_table .= ' '.$mode.' '.$table.' on '.$on;
 	}
 	
 	public function query($sql)

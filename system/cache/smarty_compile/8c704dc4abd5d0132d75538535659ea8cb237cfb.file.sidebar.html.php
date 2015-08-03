@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 13:33:28
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 16:34:53
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1438320807,
+      1 => 1438331690,
       2 => 'file',
     ),
   ),
@@ -647,7 +647,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 					会员列表</a>
 				</li>
 				<li>
-					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'admin','a'=>'userlist'),$_smarty_tpl);?>
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'admin','a'=>'adminlist'),$_smarty_tpl);?>
 ">
 					管理员列表</a>
 				</li>

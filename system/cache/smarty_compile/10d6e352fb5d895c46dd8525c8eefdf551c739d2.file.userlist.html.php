@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-29 16:16:23
+<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 16:32:27
          compiled from "D:\wamp\www\home\application\template\admin\userlist.html" */ ?>
 <?php /*%%SmartyHeaderCode:2455055b5a3a7961bd5-95318673%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '10d6e352fb5d895c46dd8525c8eefdf551c739d2' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\userlist.html',
-      1 => 1438157780,
+      1 => 1438331521,
       2 => 'file',
     ),
   ),
@@ -330,6 +330,9 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 								<th>
 									 余额
 								</th>
+                                <th>
+                                	积分
+                                </th>
                                 <td>
                                 	订单数
                                 </td>
@@ -497,6 +500,24 @@ TableManaged.init();
 			window.um.focus();
 		}
 		return false;
+	});
+
+	$('.closeuser').live('click',function(){
+		if($(this).hasClass('bootstrap-switch-on'))
+		{
+			$(this).removeClass('bootstrap-switch-on');
+			$(this).addClass('bootstrap-switch-off');
+			var toggle = 0;
+		}
+		else
+		{
+			$(this).removeClass('bootstrap-switch-off');
+			$(this).addClass('bootstrap-switch-on');
+			var toggle = 1;
+		}
+		var id = $(this).parents('tr').find('input[type=checkbox]').val();
+		$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'user','a'=>'close'),$_smarty_tpl);?>
+',{toggle:toggle,id:id});
 	});
 });
 </script>

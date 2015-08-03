@@ -52,4 +52,12 @@ class control extends base
 		}
 		return $instance;
 	}
+	
+	/**
+	 * 后台运行另外一个control中的action方法
+	 */
+	function call($c,$a)
+	{
+		return file_get_contents($this->http->url($c,$a));
+	}
 }

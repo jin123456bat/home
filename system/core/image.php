@@ -123,10 +123,33 @@ class image
 	
 	/**
 	 * 生成二维码
-	 * @param string $string
+	 * @param string $string 生成二维码的数据
+	 * @param string $filename 二维码的保存路径 默认二维码文件名qrcode.png
+	 * @param string $errorCorrentionLevel 容错级别 默认L  L|M|Q|H
+	 * @param int $matrixPointSize 二维码大小 默认4
+	 * @param int $margin 旁白大小 默认2
+	 * @param string $logo logo图片路径
 	 */
-	public static function QRCode($string)
+	public static function QRCode($string,$filename = 'qrcode.png',$logo = NULL,$errorCorrectionLevel = 'L',$matrixPointSize = 4,$margin = 2)
 	{
-	
+		$path = ROOT.'/phpqrcode/phpqrcode.php';
+		if(file_exists($path))
+			include_once $path;
+		\QRcode::png($string, $filename, $errorCorrectionLevel, $matrixPointSize, $margin);
+		if (filesystem::path($logo) && filesystem::path($filename)) {
+			$QR = imagecreatefromstring(file_get_contents($filename));
+			$logo = imagecreatefromstring(file_get_contents($logo));
+			$QR_width = imagesx($filename);//二维码图片宽度
+			$QR_height = imagesy($filename);//二维码图片高度
+			$logo_width = imagesx($logo);//logo图片宽度
+			$logo_height = imagesy($logo);//logo图片高度
+			$logo_qr_width = $QR_width / 5;
+			$scale = $logo_width/$logo_qr_width;
+			$logo_qr_height = $logo_height/$scale;
+			$from_width = ($QR_width - $logo_qr_width) / 2;
+			//重新组合图片并调整大小
+			imagecopyresampled($filename, $logo, $from_width, $from_width, 0, 0, $logo_qr_width,
+				$logo_qr_height, $logo_width, $logo_height);
+		}
 	}
 }
