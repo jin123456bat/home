@@ -16,21 +16,19 @@ class productControl extends control
 	function information()
 	{
 		$pid = empty(filter::int($this->get->pid))?0:filter::int($this->get->pid);
-		$pcontent_array = json_decode($this->post->pcontent);
-		if(!empty($pcontent_array))
-		{
-			$pcontent_array = sort($pcontent_array);
-			$pserialize = serialize($pcontent_array);
-		}
 		$productModel = $this->model('product');
 		$product = $productModel->get($pid);
-		$prototypeModel = $this->model('prototype');
-		$prototype = $prototypeModel->getByPid($pid);
-		$product['prototype'] = $prototype;
-		$collectionModel = $this->model('collection');
-		$collection = $collectionModel->getByPid($pid);
-		$product['collection'] = $collection;
-		
+		if(!empty($product))
+		{
+			$prototypeModel = $this->model('prototype');
+			$prototype = $prototypeModel->getByPid($pid);
+			$product['prototype'] = $prototype;
+			$collectionModel = $this->model('collection');
+			$collection = $collectionModel->getByPid($pid);
+			$product['collection'] = $collection;
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
+		}
+		return json_encode(array('code'=>0,'result'=>'商品不存在'));
 	}
 	
 	/**

@@ -15,6 +15,15 @@ class prototypeModel extends model
 	}
 	
 	/**
+	 * 移除商品的额外属性
+	 * @param unknown $id
+	 */
+	function remove($id)
+	{
+		return $this->where('id=?',array($id))->delete();
+	}
+	
+	/**
 	 * 为商品添加自定义属性  属性存在的话会覆盖
 	 * @param int $pid 商品id
 	 * @param string $name 属性名称
@@ -24,7 +33,10 @@ class prototypeModel extends model
 	function create($name,$type,$value,$pid = 0)
 	{
 		if($type == 'radio')
-		$value = serialize($value);
+		{
+			$value = explode(',', $value);
+			$value = serialize($value);
+		}
 		$array = array(NULL,$pid,$name,$type,$value);
 		if($this->insert($array))
 		{

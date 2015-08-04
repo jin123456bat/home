@@ -13,7 +13,15 @@ class indexControl extends control
 
 	function index()
 	{
-		
+		if(isset($_POST['post']))
+		{
+			var_dump($_FILES);
+		}
+		else
+		{
+			$view = new view(config('view'), 'index.html');
+			return $view->display();
+		}
 	}
 
 	/**

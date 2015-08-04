@@ -53,7 +53,7 @@ class userModel extends model
 		$score = 0;
 		$close = 0;
 		$ordernum = 0;
-		$array = array(NULL,$telephone,$email,md5($password),$regtime,$logtime,$money,$score,$ordernum,$salt,$close,$o2o);
+		$array = array(NULL,$telephone,$email,$password,$regtime,$logtime,$money,$score,$ordernum,$salt,$close,$o2o);
 		return $this->insert($array);
 	}
 
@@ -69,22 +69,23 @@ class userModel extends model
 		if(isset($result[0]))
 		{
 			$password = md5($password.$result[0]['salt']);
-			if($password === $result[0]['password'])
+			if($password == $result[0]['password'])
 				return $result[0];
 		}
 		return false;
 	}
 	
 	/**
-	 * 更改密码
+	 * 更改密码 重新生成盐值
 	 */
 	function changepwd($telephone,$pwd)
 	{
 		$result = $this->where('telephone=?',array($telephone))->select();
 		if(isset($result[0]))
 		{
-			$pwd = md5($pwd.$result[0]['salt']);
-			return $this->where('telephone=?',array($telephone))->update('password', $pwd);
+			$salt = random::number(6);
+			$pwd = md5($pwd.$salt);
+			return $this->where('telephone=?',array($telephone))->update(array('password'=>$pwd,'salt'=>$salt));
 		}
 		return false;
 	}
@@ -99,8 +100,9 @@ class userModel extends model
 		{
 			if(md5($oldpwd.$result[0]['salt']) == $result[0]['password'])
 			{
-				$newpwd = md5($newpwd.$result[0]['salt']);
-				return $this->where('id=?',array($id))->update('password',$newpwd);
+				$salt = random::number(6);
+				$newpwd = md5($newpwd.$salt);
+				return $this->where('id=?',array($id))->update(array('password'=>$newpwd,'salt'=>$salt));
 			}
 			return false;
 		}

@@ -13,7 +13,7 @@ class get implements ArrayAccess
 
 	function __get($name)
 	{
-		return isset($_GET[$name]) ? is_string($_GET[$name])?urldecode(trim(htmlspecialchars($_GET[$name]))):$_GET[$name] : NULL;
+		return isset($_GET[$name]) ? is_string($_GET[$name])?htmlspecialchars(trim(urldecode($_GET[$name]))):$_GET[$name] : NULL;
 	}
 
 	function __set($name, $value)

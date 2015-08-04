@@ -146,17 +146,18 @@ class userControl extends control
 	{
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
-		if ($telephone != NULL && $password != NULL && validate::telephone($telephone)) {
+		if ($telephone != NULL && $password != NULL) {
 			$userModel = $this->model('user');
 			$uinfo = $userModel->login($telephone, $password);
-			if (isset($uinfo['uid']) && ! empty($uinfo['uid'])) {
+			if (isset($uinfo['id']) && ! empty($uinfo['id'])) {
 				if(empty($uinfo['close']))
 				{
-					$this->session->id = $uinfo['uid'];
+					$this->session->id = $uinfo['id'];
 					return json_encode(array('code'=>1,'result'=>'ok'));
 				}
-				return json_decode(array('code'=>2,'result'=>'被管理员封印ing'));
+				return json_encode(array('code'=>2,'result'=>'被管理员封印ing'));
 			}
+			return json_encode(array('code'=>3,'result'=>'账号或密码错误'));
 		}
 		return json_encode(array(
 			'code' => 0,

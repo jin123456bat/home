@@ -39,6 +39,18 @@ class collectionModel extends model
 	}
 	
 	/**
+	 * 根据商品id和属性关系查询价格和库存还有编码
+	 * @param unknown $pid
+	 * @param unknown $content
+	 */
+	function find($pid,$content)
+	{
+		$content = serialize(sort($content));
+		$result = $this->where('pid=? and content=?',array($pid,$content))->select();
+		return isset($result[0])?$result[0]:NULL;
+	}
+	
+	/**
 	 * 移除商品的所有组合属性
 	 * @param unknown $pid
 	 */

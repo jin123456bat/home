@@ -3,6 +3,7 @@ var ProductEditPage = function(){
 	return{
 		init:function(){
 			
+			//$.ajaxSetup({async:false});
 			var prototype = [];
 			
 			$('button[name=back]').on('click',function(){
@@ -84,11 +85,17 @@ var ProductEditPage = function(){
 					});
 				}
 			});
-			
 			$('button[name=prototype_add]').on('click',function(){
 				var name = $.trim($('input[name=prototype_name]').val());
 				var type = $('select[name=prototype_type]').val();
-				var value = $.trim($('input[name=prototype_value]').val());
+				if(type == 'text')
+				{
+					var value = $.trim($('#prototype_text').find('input').val());
+				}
+				else
+				{
+					var value = $.trim($('#prototype_radio').find('input').val());
+				}
 				if(name.length ==0 || value.length == 0)
 				{
 					alert('属性名或属性值不得为空');
@@ -100,8 +107,23 @@ var ProductEditPage = function(){
 					data = $.parseJSON(data);
 					if(data.code ==1)
 					{
-						type = (type=='text')?'固定值':'可选值';
-						var tpl = '<tr><td>'+name+'</td><td>'+type+'</td><td>'+value+'</td></tr>';
+						if(type == 'text')
+						{
+							type = '固定值';
+							content = '<td>'+value+'</td>';
+						}
+						else
+						{
+							type = '可选值';
+							value = value.split(',');
+							content = '<td>';
+							for(var i=0;i<value.length;i++)
+							{
+								content += '<button class="btn btn-xs btn-circle disabled">'+value[i]+'</button>';
+							}
+							content += '</td>';
+						}
+						var tpl = '<tr><td>'+name+'</td><td>'+type+'</td>'+content+'<td><button data-id="'+data.body+'" class="btn btn-xs btn-circle prototype_remove">删除</button></td></tr>';
 						$('#prototype_container').append(tpl);
 						$('#form').append('<input type="hidden" name="prototype_id" value="'+data.body+'"/>');
 					}
@@ -114,14 +136,61 @@ var ProductEditPage = function(){
 				{
 					for(var i=0;i<data.body.length;i++)
 					{
-						var type = (data.body[i].type == 'text')?'固定值':'可选值';
-						var tpl = '<tr><td>'+data.body[i].name+'</td><td>'+type+'</td><td>'+data.body[i].value+'</td><td><a class="btn btn-xs btn-circle">删除</a></td></tr>';
+						if(data.body[i].type=='text')
+						{
+							type = '固定值';
+							content = '<td>'+data.body[i].value+'</td>';
+						}
+						else
+						{
+							type='可选值';
+							content = '<td>';
+							for(var j=0;j<data.body[i].value.length;j++)
+							{
+								content += '<button class="btn btn-xs btn-circle disabled">'+data.body[i].value[j]+'</button>';
+							}
+							content += '</td>';
+							collection.createPrototype(data.body[i].value);
+						}
+						var tpl = '<tr><td>'+data.body[i].name+'</td><td>'+type+'</td>'+content+'<td><button data-id="'+data.body[i].id+'" class="btn btn-xs btn-circle prototype_remove">删除</button></td></tr>';
 						$('#prototype_container').append(tpl);
 						$('#form').append('<input type="hidden" name="prototype_id" value="'+data.body[i].id+'"/>');
 					}
 				}
 			});
-						
+			
+			$('button.prototype_remove').live('click',function(){
+				var ths = this;
+				var id = $(this).attr('data-id');
+				$.post('?c=prototype&a=remove',{id:id},function(data){
+					data = $.parseJSON(data);
+					if(data.code == 1)
+					{
+						$(ths).parents('tr').remove();
+					}
+				});
+			});
+			
+			$('select[name=prototype_type]').on('change',function(){
+				if($(this).val() == 'text')
+				{
+					$('#prototype_text').show();
+					$('#prototype_radio').hide();
+				}
+				else
+				{
+					$('#prototype_text').hide();
+					$('#prototype_radio').show();
+				}
+			});
+			
+			$('#prototype_radio').find('input').tagsInput({
+				width: 'auto',
+				interactive:true,
+				defaultText:"添加属性值"
+			});
+			
+
 		}
 		
 		

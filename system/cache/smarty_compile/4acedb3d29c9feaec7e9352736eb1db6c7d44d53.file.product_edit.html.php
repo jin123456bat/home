@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-03 13:29:51
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-04 10:43:15
          compiled from "D:\wamp\www\home\application\template\admin\product_edit.html" */ ?>
 <?php /*%%SmartyHeaderCode:2754655b8878e9b8403-56204090%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '4acedb3d29c9feaec7e9352736eb1db6c7d44d53' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product_edit.html',
-      1 => 1438579730,
+      1 => 1438655793,
       2 => 'file',
     ),
   ),
@@ -58,6 +58,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 /assets/global/plugins/select2/select2.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery-tags-input/jquery.tagsinput.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/bootstrap-datepicker/css/datepicker.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
@@ -435,16 +437,21 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
                                         	<div class="form-body">
                                             	<div class="row">
                                                     <div class="col-md-4">
-                                                        <input type="text" class="form-control" name="prototype_name" placeholder="属性名">
+                                                        <input type="text" class="form-control" style="height:38px;" name="prototype_name" placeholder="属性名">
                                                     </div>
                                                     <div class="col-md-3">
-                                                    	<select class="form-control" name="prototype_type">
+                                                    	<select class="form-control" name="prototype_type" style="height:38px;">
                                                         	<option value="text">固定值</option>
                                                             <option value="radio">可选值</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4">
+                                                    	<div id="prototype_text" style="display:block;">
+                                                        <input type="text" class="form-control" style="height:38px;" name="prototype_value" placeholder="属性值">
+                                                        </div>
+                                                        <div id="prototype_radio" style="display:none;">
                                                         <input type="text" class="form-control" name="prototype_value" placeholder="属性值">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-1">
                                                     	<button class="form-contorl btn btn-circle btn-danger" name="prototype_add"><i class="fa fa-plus"></i></button>
@@ -454,6 +461,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
                                                 <div class="col-md-12">
                                                     <table class="table table-hover" id="prototype_container">
                                                     </table>
+                                                </div>
+                                                <div class="col-md-12" id="collection_container">
                                                 </div>
                                             </div>
                                         </div>
@@ -525,26 +534,6 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 											</tr>
 											</thead>
 											<tbody id="preview">
-											<tr>
-												<td>
-													<a href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
-/assets/admin/pages/media/works/img1.jpg" class="fancybox-button" data-rel="fancybox-button">
-													<img class="img-responsive" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
-/assets/admin/pages/media/works/img1.jpg" alt="">
-													</a>
-												</td>
-												<td>
-													<input type="text" class="form-control" name="product[images][1][label]" value="Thumbnail image">
-												</td>
-												<td>
-													<input type="text" class="form-control" name="product[images][1][sort_order]" value="1">
-												</td>
-												
-												<td>
-													<a href="javascript:;" class="btn default btn-sm">
-													<i class="fa fa-times"></i> 删除 </a>
-												</td>
-											</tr>
 											</tbody>
 											</table>
 										</div>
@@ -750,6 +739,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 /assets/global/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/plupload/js/plupload.full.min.js" type="text/javascript"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/jquery-tags-input/jquery.tagsinput.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
@@ -772,6 +763,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 /assets/umeditor/lang/zh-cn/zh-cn.js"></script>
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/admin/pages/scripts/product_edit.js"></script>
+<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/admin/pages/scripts/collection-table.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
@@ -781,7 +774,7 @@ jQuery(document).ready(function() {
 	Demo.init(); // init demo features
 	EcommerceProductsEdit.init();
 	ProductEditPage.init();
-	
+	collection.init();
 	window.um = UM.getEditor('description');
 });
 </script>

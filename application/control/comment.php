@@ -2,6 +2,7 @@
 namespace application\control;
 
 use system\core\control;
+use application\classes\login;
 use system\core\filter;
 class commentControl extends control
 {
@@ -11,6 +12,8 @@ class commentControl extends control
 	 */
 	function send()
 	{
+		if(!login::user())
+			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$pid = filter::int($this->post->pid);
 		$content = $this->post->content;
 		if(!empty($pid))
@@ -30,6 +33,8 @@ class commentControl extends control
 	 */
 	function getlist()
 	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$pid = filter::int($this->get->pid);
 		if(!empty($pid))
 		{

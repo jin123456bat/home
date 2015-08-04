@@ -1,6 +1,7 @@
 <?php
 namespace system\core;
 
+use system\core\inter\config;
 /**
  * 上传文件管理
  *
@@ -59,12 +60,46 @@ class file
 				return UPLOAD_ERR_CANT_WRITE;
 			}
 			$type = empty(filesystem::type($file['name'])) ? 'tmpuploadfile' : filesystem::type($file['name']);
-			$filename = trim($config['path'], '/') . '/' . md5_file($file['tmp_name']) . sha1_file($file['tmp_name']) . '.' . $type;
+			$filename = rtrim($config['path'], '/') . '/' . md5_file($file['tmp_name']) . sha1_file($file['tmp_name']) . '.' . $type;
 			if (move_uploaded_file($file['tmp_name'], $filename)) {
 				return $filename;
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 接收多文件
+	 * @param array $files
+	 * @param config $config
+	 * @return array 返回上传成功的文件的保存路径
+	 */
+	function receiveMultiFile($files,$config)
+	{
+		if (! is_writable(filesystem::path($config['path'])) || !is_dir(filesystem::path($config['path']))) {
+			return UPLOAD_ERR_CANT_WRITE;
+		}
+		$index = 0;
+		$path = array();
+		while(isset($file['error'][$index]))
+		{
+			if($files['error'][$index] == UPLOAD_ERR_OK)
+			{
+				if (!isset($config['size']) || $files['size'][$index] < $config['size'])
+				{
+					if(!isset($config['type']) || in_array($files['type'][$index],$config['type']))
+					{
+						$type = empty(filesystem::type($files['name'][$index])) ? 'tmpuploadfile' : filesystem::type($files['name'][$index]);
+						$filename = rtrim($config['path'], '/') . '/' . md5_file($files['tmp_name'][$index]) . sha1_file($files['tmp_name'][$index]) . '.' . $type;
+						if (move_uploaded_file($files['tmp_name'], $filename)) {
+							$path[] = $filename;
+						}
+					}
+				}
+			}
+			$index++;
+		}
+		return $path;
 	}
 
 	/**

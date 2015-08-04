@@ -1,9 +1,11 @@
 <?php
 namespace application\control;
 use system\core\control;
+use application\classes\login;
 use system\core\filter;
 use system\core\image;
 use system\core\file;
+use application\model\roleModel;
 /**
  * o2o店铺相关Api
  * @author jin12
@@ -65,15 +67,20 @@ class o2oControl extends control
 	 */
 	function remove()
 	{
-		$id = filter::int($this->get->id);
-		if(!empty($id))
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'o2o',roleModel::POWER_DELETE))
 		{
-			$o2oModel = $this->model('o2oshop');
-			if($o2oModel->remove($id))
-				return json_encode(array('code'=>1,'result'=>'ok'));
-			return json_encode(array('code'=>0,'result'=>'failed'));
+			$id = filter::int($this->get->id);
+			if(!empty($id))
+			{
+				$o2oModel = $this->model('o2oshop');
+				if($o2oModel->remove($id))
+					return json_encode(array('code'=>1,'result'=>'ok'));
+				return json_encode(array('code'=>0,'result'=>'failed'));
+			}
+			return json_encode(array('code'=>2,'result'=>'参数错误'));
 		}
-		return json_encode(array('code'=>2,'result'=>'参数错误'));
+		return json_encode(array('code'=>3,'result'=>'权限不足'));
 	}
 	
 }
