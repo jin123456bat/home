@@ -28,6 +28,12 @@ class prototypeControl extends control
 		$id = $prototypeModel->create($name,$type,$value,$pid);
 		if(!empty($id))
 		{
+			if($type == 'radio')
+			{
+				//移除所有属性组合
+				$collectionModel = $this->model('collection');
+				$collectionModel->remove($pid);
+			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$id));
 		}
 		return json_encode(array('code'=>0,'result'=>'failed'));

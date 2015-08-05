@@ -20,7 +20,7 @@ var EcommerceOrders = function () {
             onError: function (grid) {
                 // execute some code on network or other general error  
             },
-            loadingMessage: 'Loading...',
+            loadingMessage: '载入中...',
             dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
                 "lengthMenu": [
                     [10, 20, 50, 100, 150, -1],
@@ -28,12 +28,32 @@ var EcommerceOrders = function () {
                 ],
                 "pageLength": 10, // default record count per page
                 "ajax": {
-                    "url": "demo/ecommerce_orders.php", // ajax source
+                    //"url": "demo/ecommerce_orders.php", // ajax source
+					url:"?c=order&a=ajaxorderlist"
                 },
                 "order": [
                     [1, "asc"]
                 ] // set first column as a default sort by asc
-            }
+            },
+			columns:[{
+				data:'id'
+			},{
+				data:'swift'
+			},{
+				data:'createtime'
+			},{
+				data:'consignee'
+			},{
+				data:'postmode'
+			},{
+				data:'ordertotalamount'
+			},{
+				data:'totalamount'
+			},{
+				data:'status'
+			},{
+				data:'id'
+			}]
         });
 
         // handle group actionsubmit button click

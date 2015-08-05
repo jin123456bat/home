@@ -2,7 +2,11 @@
 namespace application\control;
 
 use system\core\control;
+use application\classes\login;
 use system\core\validate;
+use system\core\view;
+use application\model\roleModel;
+use system\core\filter;
 
 class brandControl extends control
 {
@@ -117,5 +121,27 @@ class brandControl extends control
 			'result' => 'ok',
 			'body' => $result
 		));
+	}
+	
+	/**
+	 * 品牌管理页面
+	 */
+	function manager()
+	{
+		$roleModel = $this->model('role');
+		$start = empty(filter::int($this->get->start))?0:filter::int($this->get->start);
+		$length = empty(filter::int($this->get->length))?10:filter::int($this->get->length);
+		if(login::admin() && $roleModel->checkPower($this->session->role,'brand',roleModel::POWER_SELECT))
+		{
+			$this->view = new view(config('view'), 'admin/brand_manager.html');
+			$brandModel = $this->model('brand');
+			$result = $brandModel->fetchByProduct($start,$length);
+			$this->view->assign('brand',$result);
+			$this->response->setBody($this->view->display());
+		}
+		else
+		{
+			$this->http->jump($this->http->url('index','__404'));
+		}
 	}
 }

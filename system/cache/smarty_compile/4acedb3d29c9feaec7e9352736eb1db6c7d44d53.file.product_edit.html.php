@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-04 10:43:15
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-05 14:27:31
          compiled from "D:\wamp\www\home\application\template\admin\product_edit.html" */ ?>
 <?php /*%%SmartyHeaderCode:2754655b8878e9b8403-56204090%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '4acedb3d29c9feaec7e9352736eb1db6c7d44d53' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product_edit.html',
-      1 => 1438655793,
+      1 => 1438755894,
       2 => 'file',
     ),
   ),
@@ -276,8 +276,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 										</li>
 										<li>
 											<a href="#tab_reviews" data-toggle="tab">
-											评论 <span class="badge badge-success">
-											3 </span>
+											评论
 											</a>
 										</li>
 										<li>
@@ -434,6 +433,10 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 											</div>
 										</div>
                                         <div class="tab-pane" id="tab_extra">
+                                        	<div class="alert alert-success margin-bottom-10">
+												<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+												<i class="fa fa-warning fa-lg"></i> 当编辑可选值时，请先保存其他信息，防止信息丢失
+											</div>
                                         	<div class="form-body">
                                             	<div class="row">
                                                     <div class="col-md-4">
@@ -555,7 +558,7 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 														 内容
 													</th>
 													<th width="10%">
-														 状态
+														 评分
 													</th>
 													<th width="10%">
 														 操作
@@ -563,35 +566,30 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 												</tr>
 												<tr role="row" class="filter">
 													<td>
-														<input type="text" class="form-control form-filter input-sm" name="product_review_no">
+														<input type="text" class="form-control form-filter input-sm" name="id">
 													</td>
 													<td>
-														<div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-															<input type="text" class="form-control form-filter input-sm" name="product_review_date_from" placeholder="从">
+														<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
+															<input type="text" class="form-control form-filter input-sm" name="starttime" placeholder="从">
 															<span class="input-group-btn">
 															<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
 															</span>
 														</div>
-														<div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-															<input type="text" class="form-control form-filter input-sm" name="product_review_date_to" placeholder="到">
+														<div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+															<input type="text" class="form-control form-filter input-sm" name="endtime" placeholder="到">
 															<span class="input-group-btn">
 															<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
 															</span>
 														</div>
 													</td>
 													<td>
-														<input type="text" class="form-control form-filter input-sm" name="product_review_customer">
+														<input type="text" class="form-control form-filter input-sm" name="username">
 													</td>
 													<td>
-														<input type="text" class="form-control form-filter input-sm" name="product_review_content">
+														<input type="text" class="form-control form-filter input-sm" name="content">
 													</td>
 													<td>
-														<select name="product_review_status" class="form-control form-filter input-sm">
-															<option value="">请选择</option>
-															<option value="pending">待定</option>
-															<option value="approved">批准</option>
-															<option value="rejected">拒绝</option>
-														</select>
+														<input type="text" class="form-control form-filter input-sm" name="score">
 													</td>
 													<td>
 														<div class="margin-bottom-5">
@@ -611,14 +609,17 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 												<table class="table table-striped table-bordered table-hover" id="datatable_history">
 												<thead>
 												<tr role="row" class="heading">
+                                                	<th width="30%">
+                                                    	流水号
+                                                    </th>
 													<th width="25%">
 														 时间
 													</th>
-													<th width="55%">
-														 描述
+													<th width="25%">
+														 用户
 													</th>
 													<th width="10%">
-														 通知
+														 状态
 													</th>
 													<th width="10%">
 														 操作
@@ -626,24 +627,27 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 												</tr>
 												<tr role="row" class="filter">
 													<td>
+														<input type="text" class="form-control form-filter input-sm" name="swift" placeholder="流水号"/>
+													</td>
+													<td>
 														<div class="input-group date datetime-picker margin-bottom-5" data-date-format="yyyy-mm-dd hh:ii">
-															<input type="text" class="form-control form-filter input-sm" name="product_history_date_from" placeholder="From">
+															<input type="text" class="form-control form-filter input-sm" name="starttime" placeholder="从">
 															<span class="input-group-btn">
 															<button class="btn btn-sm default date-set" type="button"><i class="fa fa-calendar"></i></button>
 															</span>
 														</div>
 														<div class="input-group date datetime-picker" data-date-format="yyyy-mm-dd hh:ii">
-															<input type="text" class="form-control form-filter input-sm" name="product_history_date_to" placeholder="To">
+															<input type="text" class="form-control form-filter input-sm" name="endtime" placeholder="到">
 															<span class="input-group-btn">
 															<button class="btn btn-sm default date-set" type="button"><i class="fa fa-calendar"></i></button>
 															</span>
 														</div>
 													</td>
 													<td>
-														<input type="text" class="form-control form-filter input-sm" name="product_history_desc" placeholder="To"/>
+														<input type="text" class="form-control form-filter input-sm" name="telephone" placeholder="用户手机号"/>
 													</td>
 													<td>
-														<select name="product_history_notification" class="form-control form-filter input-sm">
+														<select name="status" class="form-control form-filter input-sm">
 															<option value="">请选择</option>
 															<option value="pending">正在处理</option>
 															<option value="notified">完成</option>

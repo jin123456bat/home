@@ -168,9 +168,10 @@ class productControl extends control
 		{
 			$resultObj->draw = $this->post->draw;
 			$result = $productModel->searchable($this->post);
-			$resultObj->data = $result;
 			$resultObj->recordsTotal = $productModel->count();
 			$resultObj->recordsFiltered = count($result);
+			$result = array_slice($result, $this->post->start,$this->post->length);
+			$resultObj->data = $result;
 		}
 		return json_encode($resultObj);
 	}

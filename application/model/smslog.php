@@ -13,9 +13,9 @@ class smslogModel extends model
 	 * @param unknown $telephone
 	 * @param unknown $content
 	 */
-	function create($telephone,$content)
+	function create($telephone,$code)
 	{
-		$data = array(NULL,$telephone,$content,$_SERVER['REQUEST_TIME']);
+		$data = array(NULL,$telephone,$code,$_SERVER['REQUEST_TIME']);
 		return $this->insert($data);
 	}
 	
@@ -31,11 +31,11 @@ class smslogModel extends model
 		{
 			$this->where('time > ?',array($_SERVER['REQUEST_TIME'] - 180));
 			$result = $this->where('telephone=?',array($telephone))->select('count(*)');
-			return (!isset($result[0]['count(*)'])) || ($result[0]['count(*)'] >= 3);
+			return (!isset($result[0]['count(*)'])) || ($result[0]['count(*)'] <= 3);
 		}
 		else
 		{
-			$this->where('time>?',array($_SERVER['REQUEST_TIME']) - 180);
+			$this->where('time>?',array($_SERVER['REQUEST_TIME'] - 180));
 			$result = $this->where('code=? and telephone=?',array($code,$telephone))->select('count(*)');
 			return (isset($result[0]['count(*)']) && $result[0]['count(*)']>0);
 		}

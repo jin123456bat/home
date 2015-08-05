@@ -40,20 +40,28 @@ class webApplication extends base
 			$handler = $this->parseUrl();
 			if (is_array($handler)) {
 				list ($control, $action) = $handler;
-				include ROOT . '/application/control/' . $control . '.php';
-				$class = 'application\\control\\' . $control . 'Control';
-				if (class_exists($class)) {
-					$class = new $class();
-					$class->response = &$response;
-					
-					if (method_exists($class, $action)) {
-						$response->setCode(200);
-						$response->appendBody($this->__200($class, $action));
+				$path = ROOT . '/application/control/' . $control . '.php';
+				if(file_exists($path))
+				{
+					include $path;
+					$class = 'application\\control\\' . $control . 'Control';
+					if (class_exists($class)) {
+						$class = new $class();
+						$class->response = &$response;
+						if (method_exists($class, $action)) {
+							$response->setCode(200);
+							$response->appendBody($this->__200($class, $action));
+						} else {
+							$response->setCode(404);
+							$response->appendBody($this->__404($class, $action));
+						}
 					} else {
 						$response->setCode(404);
 						$response->appendBody($this->__404($class, $action));
 					}
-				} else {
+				}
+				else
+				{
 					$response->setCode(404);
 					$response->appendBody($this->__404($class, $action));
 				}

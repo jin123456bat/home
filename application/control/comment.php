@@ -45,6 +45,24 @@ class commentControl extends control
 		return json_encode(array('code'=>0,'result'=>'参数错误'));
 	}
 	
+	/**
+	 * ajax获取某商品下的评论
+	 */
+	function ajaxcomment()
+	{
+		$resultObj = new \stdClass();
+		$resultObj->draw = $this->post->draw;
+		$commentModel = $this->model('comment');
+		$pid = filter::int($this->get->pid);
+		$result = $commentModel->searchable($this->post,$pid);
+		$resultObj->recordsFiltered = count($result);
+		$result = array_slice($result, $this->post->start,$this->post->length);
+		$count = $commentModel->select('count(*)');
+		$resultObj->recordsTotal = isset($count[0]['count(*)'])?$count[0]['count(*)']:0;
+		$resultObj->data = $result;
+		return json_encode($resultObj);
+	}
+	
 	
 	/**
 	 * 删除评论

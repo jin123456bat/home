@@ -70,11 +70,16 @@ class prototypeModel extends model
 	
 	/**
 	 * 获得商品所有属性 对于radio型数据已经反序列化了
-	 * @param unknown $pid
+	 * @param int $pid 商品id
+	 * @param string $type 属性类型 text|radio
 	 * @return array
 	 */
-	function getByPid($pid)
+	function getByPid($pid,$type = NULL)
 	{
+		if(!empty($type))
+		{
+			$this->where('type=?',array($type));
+		}
 		$result = $this->where('pid=?',array($pid))->select();
 		foreach($result as $key => &$value)
 		{

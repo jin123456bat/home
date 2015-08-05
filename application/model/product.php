@@ -3,11 +3,26 @@ namespace application\model;
 
 use system\core\model;
 
+/**
+ * 商品数据模型
+ * @author jin12
+ *
+ */
 class productModel extends model
 {
 	function __construct()
 	{
 		parent::__construct('product');
+	}
+	
+	/**
+	 * 修改商品库存,只针对无可选属性商品
+	 * @param unknown $pid
+	 * @param unknown $num
+	 */
+	function increaseStock($pid,$num)
+	{
+		return $this->where('pid=?',array($pid))->increase('stock',$num);
 	}
 	
 	/**
@@ -96,11 +111,14 @@ class productModel extends model
 		$parameter = '';
 		foreach($json['columns'] as $key => $value)
 		{
-			foreach($json['order'] as $orderby)
+			if(!empty($json['order']))
 			{
-				if($orderby['column'] == $key)
+				foreach($json['order'] as $orderby)
 				{
-					$this->orderby($value['data'],$orderby['dir']);
+					if($orderby['column'] == $key)
+					{
+						$this->orderby($value['data'],$orderby['dir']);
+					}
 				}
 			}
 			switch ($value['data'])
@@ -160,6 +178,10 @@ class productModel extends model
 				if(!empty($json['product_status']))
 				{
 					$this->where('status = ?',array($json['product_status']),'and');
+				}
+				if(!empty($json['product_bid']))
+				{
+					$this->where('bid=?',array($json['product_bid']));
 				}
 			}
 		}

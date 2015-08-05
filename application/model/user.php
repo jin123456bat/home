@@ -12,6 +12,12 @@ class userModel extends model
 		parent::__construct('user');
 	}
 	
+	function get($id)
+	{
+		$result = $this->where('id=?',array($id))->select();
+		return isset($result[0])?$result[0]:NULL;
+	}
+	
 	/**
 	 * 根据json对象搜索
 	 */

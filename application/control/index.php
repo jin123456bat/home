@@ -41,7 +41,7 @@ class indexControl extends control
 				$result = $sms->send($telephone, $template);
 				if($result > 0)
 				{
-					$smslogModel->create($telephone,$template);
+					$smslogModel->create($telephone,$code);
 					return json_encode(array('code'=>1,'result'=>'ok','body'=>$code));
 				}
 			}

@@ -11,6 +11,20 @@ class brandModel extends model
 	}
 	
 	/**
+	 * 根据产品数量 对品牌进行分组
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function fetchByProduct($start,$length)
+	{
+		$this->table('product','left join','product.bid=brand.id');
+		$this->orderby('num','desc');
+		$this->orderby('id','asc');
+		$this->groupby('product.bid');
+		$this->limit($start,$length);
+		return $this->select('count(*) as num,brand.name,brand.id');
+	}
+	
+	/**
 	 * 获取指定id品牌的信息
 	 * @param int $id 品牌id
 	 * @return array|NULL

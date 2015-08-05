@@ -16,14 +16,44 @@ class collectionControl extends control
 	function find()
 	{
 		$pid = filter::int($this->get->pid);
-		$content = htmlspecialchars_decode($this->get->content);
-		$content = json_decode($content);
-		if(!empty($content))
+		$array = array();
+		$a = explode(',', $this->get->content);
+		foreach ($a as $b)
+		{
+			list($c,$d) = explode(':', $b);
+			$array[$c] = $d;
+		}
+		if(!empty($array))
 		{
 			$collectionModel = $this->model('collection');
-			$result = $collectionModel->find($pid,$content);
+			$result = $collectionModel->find($pid,$array);
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 		}
 		return json_encode(array('code'=>0,'result'=>'failed'));
+	}
+	
+	/**
+	 * 更改映射关系对应的价格库存或者是商品编号  自动更新
+	 */
+	function updatevalue()
+	{
+		$data = json_decode(htmlspecialchars_decode($this->post->data));
+		$pid = $this->post->pid;
+		$collectionModel = $this->model('collection');
+		foreach ($data as $value)
+		{
+			$array = array();
+			$type = $value->type;
+			$did = $value->did;
+			$val = $value->value;
+			$didd = explode(',', $did);
+			foreach ($didd as $a)
+			{
+				list($x,$y) = explode(':',$a);
+				$array[$x] = $y;
+			}
+			$collectionModel->create($array,$pid,$type,$val);
+		}
+		
 	}
 }

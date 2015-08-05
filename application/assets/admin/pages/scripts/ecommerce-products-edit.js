@@ -1,5 +1,24 @@
 var EcommerceProductsEdit = function () {
 
+	var unixtotime = function(unixTime, isFull, timeZone) {
+		if (typeof (timeZone) == 'number')
+		{
+			unixTime = parseInt(unixTime) + parseInt(timeZone) * 60 * 60;
+		}
+		var time = new Date(unixTime * 1000);
+		var ymdhis = "";
+		ymdhis += time.getUTCFullYear() + "-";
+		ymdhis += (time.getUTCMonth()+1) + "-";
+		ymdhis += time.getUTCDate();
+		if (isFull === true)
+		{
+			ymdhis += " " + time.getUTCHours() + ":";
+			ymdhis += time.getUTCMinutes() + ":";
+			ymdhis += time.getUTCSeconds();
+		}
+		return ymdhis;
+	}
+	
     var handleImages = function() {
 
         // see http://www.plupload.com/
@@ -37,7 +56,7 @@ var EcommerceProductsEdit = function () {
 
                     $('#tab_images_uploader_filelist').on('click', '.added-files .remove', function(){
                         uploader.removeFile($(this).parent('.added-files').attr("id"));    
-                        $(this).parent('.added-files').remove();                     
+                        $(this).parent('.added-files').remove();
                     });
                 },
          
@@ -91,20 +110,55 @@ var EcommerceProductsEdit = function () {
             onError: function (grid) {
                 // execute some code on network or other general error  
             },
-            loadingMessage: 'Loading...',
+            loadingMessage: '载入中...',
             dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
                 "lengthMenu": [
                     [10, 20, 50, 100, 150, -1],
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],
+				columns:[{
+					data:'id',
+				},{
+					data:'time',
+				},{
+					data:'uid',
+				},{
+					data:'content',
+				},{
+					data:'score',
+				},{
+					data:'id',
+				}],
                 "pageLength": 10, // default record count per page
                 "ajax": {
-                    "url": "demo/ecommerce_product_reviews.php", // ajax source
+                    //"url": "demo/ecommerce_product_reviews.php", // ajax source
+					url: "?c=comment&a=ajaxcomment&pid="+$('input[name=id]').val(),
                 },
                 "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                     'orderable': true,
                     'targets': [0]
-                }],
+                },{
+					'orderable':true,
+					'targets':[1],
+					'render':function(data,type,full){
+						return unixtotime(data);
+					}
+				},{
+					'orderable':true,
+					'targets':[2],
+					'render':function(data,type,full){
+						$.ajaxSetup({async:false});
+						var res = '';
+						$.get('?c=user&a=telephone',{id:data},function(response){
+							response = $.parseJSON(response);
+							if(response.code == 1)
+							{
+								res = response.body;
+							}
+						});
+						return res;
+					}
+				}],
                 "order": [
                     [0, "asc"]
                 ] // set first column as a default sort by asc
@@ -124,15 +178,28 @@ var EcommerceProductsEdit = function () {
             onError: function (grid) {
                 // execute some code on network or other general error  
             },
-            loadingMessage: 'Loading...',
+			
+            loadingMessage: '载入中...',
             dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
                 "lengthMenu": [
                     [10, 20, 50, 100, 150, -1],
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],
+				columns:[{
+					data:'swift'
+				},{
+					data:'createtime'
+				},{
+					data:'uid'
+				},{
+					data:'status'
+				},{
+					data:'`orderlist`.id'
+				}],
                 "pageLength": 10, // default record count per page
                 "ajax": {
-                    "url": "demo/ecommerce_product_history.php", // ajax source
+                    //"url": "demo/ecommerce_product_history.php", // ajax source
+					url:"?c=order&a=product&pid="+$('input[name=id]').val()
                 },
                 "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                     'orderable': true,

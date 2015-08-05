@@ -100,9 +100,9 @@ class http
 	 * 页面跳转
 	 * @param unknown $url
 	 */
-	function jump($url)
+	function jump($url,$code = 302)
 	{
-		header('Location: '.$url,'302',true);
+		header('Location: '.$url,$code,true);
 	}
 
 	/**

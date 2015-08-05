@@ -61,7 +61,7 @@ class roleModel extends model
 	 */
 	function checkPower($groupId,$model,$power)
 	{
-		$result = $this->where('id=?',array($groupId))->select($model);
+		$result = $this->where('id=?',array($groupId))->select();
 		if(isset($result[0][$model]))
 		{
 			return ((int)$result[0][$model] & $power) === $power;

@@ -60,6 +60,7 @@ var ProductEditPage = function(){
 						{
 							$('input[name=id]').val(data.id);
 						}
+						collection.save();
 						Metronic.alert({
 							type: 'success',
 							icon: 'success',
@@ -122,6 +123,7 @@ var ProductEditPage = function(){
 								content += '<button class="btn btn-xs btn-circle disabled">'+value[i]+'</button>';
 							}
 							content += '</td>';
+							collection.createPrototype(value,data.body);
 						}
 						var tpl = '<tr><td>'+name+'</td><td>'+type+'</td>'+content+'<td><button data-id="'+data.body+'" class="btn btn-xs btn-circle prototype_remove">删除</button></td></tr>';
 						$('#prototype_container').append(tpl);
@@ -150,12 +152,32 @@ var ProductEditPage = function(){
 								content += '<button class="btn btn-xs btn-circle disabled">'+data.body[i].value[j]+'</button>';
 							}
 							content += '</td>';
-							collection.createPrototype(data.body[i].value);
+							collection.createPrototype(data.body[i].value,data.body[i].id);
 						}
 						var tpl = '<tr><td>'+data.body[i].name+'</td><td>'+type+'</td>'+content+'<td><button data-id="'+data.body[i].id+'" class="btn btn-xs btn-circle prototype_remove">删除</button></td></tr>';
 						$('#prototype_container').append(tpl);
 						$('#form').append('<input type="hidden" name="prototype_id" value="'+data.body[i].id+'"/>');
 					}
+					//获取关系映射					
+					$.each($('input.serverside'),function(index,value){
+						var content = $(value).attr('data-id');
+						var id = $('input[name=id]').val();
+						$.get('?c=collection&a=find',{pid:id,content:content},function(data){
+							data = $.parseJSON(data);
+							if(data.code ==1)
+							{
+								//alert($('input[data-id="'+content+'"]'));
+								if(data.body != null)
+								{
+									
+									$('input[name=price][data-id="'+content+'"]').val(data.body.price);
+									$('input[name=stock][data-id="'+content+'"]').val(data.body.stock);
+									$('input[name=sku][data-id="'+content+'"]').val(data.body.sku);
+								}
+							}
+						});
+					});
+					
 				}
 			});
 			
@@ -190,7 +212,7 @@ var ProductEditPage = function(){
 				defaultText:"添加属性值"
 			});
 			
-
+			
 		}
 		
 		

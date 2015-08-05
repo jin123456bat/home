@@ -10,7 +10,7 @@ class cartControl extends control
 	 * 将一件商品添加到购物车
 	 * @param post pid 商品id
 	 * @param post num 商品数量 不提交或者为空则为1
-	 * @param post cid 能够声明唯一商品的属性集合
+	 * @param post content 能够声明唯一商品的属性集合 字符串或数组
 	 * @param session id 用户id
 	 */
 	function add()
@@ -19,18 +19,34 @@ class cartControl extends control
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$pid = filter::int($this->post->pid);
 		$num = filter::int($this->post->num);
-		$cid = filter::int($this->post->cid);
+		$content = filter::int($this->post->content);
 		$uid = $this->session->id;
 		$num = empty($num)?1:$num;
 		if(empty($pid))
 		{
+			$productModel = $this->model('product');
 			$cartModel = $this->model('cart');
-			if($cartModel->add($uid,$pid,$cid,$num))
+			$prototypeModel = $this->model('prototype');
+			$radioPrototype = $prototypeModel->getByPid($pid,'radio');
+			if($cartModel->add($uid,$pid,$content,$num))
 			{
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				if(empty($radioPrototype))
+				{
+					//不存在可选属性
+					$productModel->increaseStock($pid,-$num);
+					return json_encode(array('code'=>1,'result'=>'ok'));
+				}
+				else
+				{
+					foreach ($radioPrototype as $prototype)
+					{
+						
+					}
+				}
 			}
-			return json_encode(array('code'));
+			return json_encode(array('code'=>2,'result'=>'添加到购物车失败,没有库存了?'));
 		}
+		return json_encode(array('code'=>0,'result'=>'请指定商品'));
 	}
 	
 	/**

@@ -10,6 +10,57 @@ class commentModel extends model
 	}
 	
 	/**
+	 * ajax搜索
+	 * @param unknown $post
+	 * @param unknown $pid
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function searchable($post,$pid)
+	{
+		$this->where('pid=?',array($pid));
+		$parameter = array();
+		foreach($post->columns as $key=>$value)
+		{
+			foreach ($post->order as $orderby)
+			{
+				if($orderby['column'] == $key)
+				{
+					$this->orderby($value['data'],$orderby['dir']);
+				}
+			}
+			$parameter[] = $value['data'];
+		}
+		if(!empty($post->action) && $post->action == 'filter')
+		{
+			if(!empty($post->id))
+			{
+				$this->where('id=?',array($post->id));
+			}
+			if(!empty($post->starttime))
+			{
+				$this->where('time>?',array(strtotime($post->starttime)));
+			}
+			if(!empty($post->endtime))
+			{
+				$this->where('time<?',array(strtotime($post->endtime)));
+			}
+			if(!empty($post->username))
+			{
+				$this->where('uid in (select id from user where telephone like ?)',array('%'.$post->username.'%'));
+			}
+			if(!empty($post->content))
+			{
+				$this->where('content like ?',array('%'.$post->content.'%'));
+			}
+			if(!empty($post->score))
+			{
+				$this->where('score>?',array($post->score));
+			}
+		}
+		return $this->select(implode(',', $parameter));
+	}
+	
+	/**
 	 * 添加文字评论
 	 * @param unknown $uid 用户id
 	 * @param unknown $pid 商品id

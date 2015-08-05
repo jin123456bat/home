@@ -2,16 +2,37 @@
 namespace application\control;
 
 use system\core\control;
-use system\core\validate;
 use system\core\view;
 use application\model\roleModel;
 use system\core\filter;
 use application\classes\login;
 use application\classes\email;
 
+/**
+ * 用户控制器
+ * @author jin12
+ *
+ */
 class userControl extends control
 {
-	
+	/**
+	 * 获取用户个人信息
+	 * @return string
+	 */
+	function information()
+	{
+		if(login::user())
+		{
+			$userModel = $this->model('user');
+			$info = $userModel->get($this->session->id);
+			if(!empty($info))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok','body'=>$info));
+			}
+			return json_encode(array('code'=>2,'result'=>'不存在该用户'));
+		}
+		return json_encode(array('code'=>0,'result'=>'尚未登陆 '));
+	}
 	/**
 	 * 用户遗忘密码
 	 */
@@ -29,6 +50,26 @@ class userControl extends control
 			return json_encode(array('code'=>0,'result'=>'failed'));
 		}
 		return json_encode(array('code'=>2,'result'=>'验证码错误'));
+	}
+	
+	/**
+	 * 根据用户id获取用户手机号
+	 */
+	function telephone()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin())
+		{
+			$id = filter::int($this->get->id);
+			$userModel = $this->model('user');
+			$result = $userModel->where('id=?',array($id))->select('telephone');
+			if(isset($result[0]))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok','body'=>$result[0]['telephone']));
+			}
+			return json_encode(array('code'=>0,'result'=>'failed'));
+		}
+		return json_encode(array('code'=>2,'result'=>'没有权限'));
 	}
 	
 	/**
@@ -92,8 +133,10 @@ class userControl extends control
 		$o2o = $this->session->o2o;
 		$code = $this->post->code;
 		$userModel = $this->model('user');
-		if ($telephone != NULL && validate::telephone($telephone)) {
+		if ($telephone != NULL) {
+			
 			if (login::admin()) {
+				
 				if (empty($password))
 					$password = $telephone;
 				if ($userModel->register($telephone, $password,$o2o)) {
@@ -110,12 +153,13 @@ class userControl extends control
 					));
 				}
 			} else {
+				
 				$smslogModel = $this->model('smslog');
 				if($smslogModel->check($telephone,$code))
 				{
+					
 					if ($userModel->register($telephone, $password))
 					{
-						unset($this->session->code);
 						return json_encode(array(
 							'code' => 1,
 							'result' => 'success'
@@ -129,12 +173,14 @@ class userControl extends control
 						));
 					}
 				}
+				return json_encode(array('code'=>4,'result'=>'验证码不存在或者已过期'));
 			}
 			return json_encode(array(
 				'code' => '2',
 				'result' => '验证码不匹配'
 			));
 		}
+		return json_encode(array('code'=>5,'result'=>'手机号格式不正确'));
 	}
 
 	/**
