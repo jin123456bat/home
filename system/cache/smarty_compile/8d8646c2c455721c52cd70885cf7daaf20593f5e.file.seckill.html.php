@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-07 10:00:12
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-08 03:58:42
          compiled from "D:\wamp\www\home\application\template\admin\seckill.html" */ ?>
 <?php /*%%SmartyHeaderCode:689855c32fc72f7de1-46902396%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8d8646c2c455721c52cd70885cf7daaf20593f5e' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\seckill.html',
-      1 => 1438856490,
+      1 => 1438977517,
       2 => 'file',
     ),
   ),
@@ -51,6 +51,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 /assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css"/>
 <!-- END GLOBAL MANDATORY STYLES -->
 <!-- BEGIN THEME STYLES -->
 <link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
@@ -212,6 +214,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
                         <i class="fa fa-warning fa-lg"></i> 秒杀活动中的商品，库存量按照商品自身属性中的库存计算，可选属性导致的库存变动无效
                     </div>
+                    <div id="alert-msg">
+                    </div>
 					 <div class="portlet box yellow">
 						<div class="portlet-title">
 							<div class="caption">
@@ -280,32 +284,34 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['product']['last']       = ($
 										 <?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['name'];?>
 
 									</td>
-									<td class="serverside" data-type="time">
+									<td class="serverside" data-type="time" data-name="starttime">
 										 <?php echo smarty_modifier_date_format($_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['starttime'],"Y-m-d H:i:s");?>
 
 									</td>
-									<td class="serverside" data-type="time">
+									<td class="serverside" data-type="time" data-name="endtime">
 										 <?php echo smarty_modifier_date_format($_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['endtime'],"Y-m-d H:i:s");?>
 
 									</td>
-									<td class="serverside" data-type="text">
+									<td class="serverside" data-type="text" data-name="price">
 										 <?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['price'];?>
 
 									</td>
-									<td class="serverside" data-type="text">
+									<td class="serverside" data-type="text" data-name="orderby">
 										 <?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['orderby'];?>
 
 									</td>
 									<td>
 										 <div class="btn-group btn-group-circle btn-group-justified">
-                                            <a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'sale','a'=>'remove'),$_smarty_tpl);?>
+                                            <a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'seckill','a'=>'remove'),$_smarty_tpl);?>
 &id=<?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['id'];?>
 " class="btn btn-sm red">
                                             移除 </a>
                                             <a href="#" data-id="<?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['id'];?>
 " class="btn btn-sm blue editBtn">
                                             编辑 </a>
-                                            <a href="#" class="btn btn-sm green">
+                                            <a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'edit'),$_smarty_tpl);?>
+&action=edit&id=<?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['pid'];?>
+" class="btn btn-sm green">
                                             查看 </a>
                                         </div>
 									</td>
@@ -361,6 +367,9 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['product']['last']       = ($
 /assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
 <!-- END CORE PLUGINS -->
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/scripts/metronic.js" type="text/javascript"></script>
@@ -377,22 +386,61 @@ Layout.init(); // init current layout
 QuickSidebar.init(); // init quick sidebar
 Demo.init(); // init demo features
 		$('.editBtn').live('click',function(){
-			var td = $(this).parents('tr').find('.serverside')
-			if($(this).html() == '编辑')
+			var td = $(this).parents('tr').find('.serverside');
+			if($.trim($(this).html()) == '编辑')
 			{
-				$(this).html('完成');
+				if(td.find('input').length>0)
+					return;
 				$.each(td,function(index,value){
 					var old = $.trim($(value).html());
-					var input = $('<input class="form-control" type="text" value="'+old+'">');
+					var input = $('<input class="form-control" type="text" name="'+$(value).data('name')+'" value="'+old+'">');
+					var type = $(value).data('type');
+					if(type == 'time')
+					{
+						input.datetimepicker({
+							autoclose: true,
+							isRTL: Metronic.isRTL(),
+							format: "yyyy-mm-dd hh:ii",
+							todayBtn: true,
+							minuteStep: 5,
+							pickerPosition: (Metronic.isRTL() ? "bottom-right" : "bottom-left")
+						});
+					}
 					$(value).html('');
 					$(value).append(input);
 				});
+				$(this).html('完成');
 			}
 			else
 			{
-				$(this).html('编辑');
-				$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'sale','a'=>'save'),$_smarty_tpl);?>
-',{},function(){
+				btn = this;
+				var id = $(this).data('id');
+				var starttime = td.parent().find('input[name=starttime]').val();
+				var endtime = td.parent().find('input[name=endtime]').val();
+				var orderby = td.parent().find('input[name=orderby]').val();
+				var price = td.parent().find('input[name=price]').val();
+				$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'seckill','a'=>'save'),$_smarty_tpl);?>
+',{id:id,starttime:starttime,endtime:endtime,orderby:orderby,price:price},function(data){
+					data = $.parseJSON(data);
+					if(data.code == 1)
+					{
+						$.each(td,function(index,value){
+							var val = $(value).find('input').val();
+							$(value).html(val);
+						});
+						btn.html('编辑');
+					}
+					else
+					{
+						Metronic.alert({
+							type: 'danger',
+							icon: 'warning',
+							message: data.result,
+							container: $('#alert-msg'),
+							place: 'prepend',
+							closeInSeconds: 5,
+						});
+					}
 				});
 			}
 		});

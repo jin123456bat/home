@@ -475,13 +475,12 @@ jQuery(document).ready(function() {
 	$(".form_datetime").datetimepicker({
 		autoclose: true,
 		isRTL: Metronic.isRTL(),
-		format: "yyyy-mm-dd HH:ii",
+		format: "yyyy-mm-dd hh:ii",
 		todayBtn: true,
 		minuteStep: 5,
-		//beforeShow: getCurrentTime,
-		//showMeridian: true,
 		pickerPosition: (Metronic.isRTL() ? "bottom-right" : "bottom-left")
-    });
+	});
+	
 	$('body').removeClass("modal-open");
 	
 	$('input[name=activity]').on('click',function(){
@@ -505,9 +504,8 @@ jQuery(document).ready(function() {
 	});
 	
 	$('#sale-config-form').on('submit',function(){
-		var modal = $(this);
+		var modal = $('#sale-config-form');
 		var pid = modal.find('input[name=id]').val();
-		console.log(pid);
 		var starttime = modal.find('input[name=starttime]').val();
 		var endtime = modal.find('input[name=endtime]').val();
 		var price = modal.find('input[name=price]').val();

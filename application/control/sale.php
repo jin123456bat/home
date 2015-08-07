@@ -57,7 +57,8 @@ class saleControl extends control
 				}
 				return json_encode(array('code'=>2,'result'=>'添加失败，该商品已经在限时队列'));
 			}
-			return json_encode(array('code'=>3,'result'=>'商品号为空,或该商品不存在'));
+			var_dump($pid);
+			return json_encode(array('code'=>3,'result'=>'该商品已经有活动了'));
 		}
 		return json_encode(array('code'=>4,'result'=>'没有权限'));
 	}

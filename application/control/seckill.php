@@ -18,6 +18,29 @@ class seckillControl extends control
 	}
 	
 	/**
+	 * 保存对秒杀活动信息的修改
+	 */
+	function save()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'seckill',roleModel::POWER_UPDATE))
+		{
+			$id = filter::int($this->post->id);
+			$starttime = $this->post->starttime;
+			$endtime = $this->post->endtime;
+			$price = filter::number($this->post->price);
+			$orderby = filter::int($this->post->orderby);
+			$seckillModel = $this->model('seckill');
+			if($seckillModel->save($id,$starttime,$endtime,$orderby,$price))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'修改失败'));
+		}
+		return json_encode(array('code'=>2,'result'=>'权限不足'));
+	}
+	
+	/**
 	 * 移除秒杀活动
 	 */
 	function remove()

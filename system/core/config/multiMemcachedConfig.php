@@ -11,6 +11,10 @@ class multiMemcachedConfig extends config
 	function __construct()
 	{
 		/**
+		 * 是否开启memcached
+		 */
+		$this->open = false;
+		/**
 		 * 服务器地址
 		 */
 		$this->server = array(

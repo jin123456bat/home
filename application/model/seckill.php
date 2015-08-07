@@ -14,6 +14,23 @@ class seckillModel extends model
 		parent::__construct($table);
 	}
 	
+	/**
+	 * 保存秒杀活动的修改
+	 * @param int $id
+	 * @param string $starttime
+	 * @param string $endtime
+	 * @param int $orderby
+	 * @param double $price
+	 */
+	function save($id,$starttime,$endtime,$orderby,$price)
+	{
+		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
+		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+24*3600:strtotime($endtime);
+		$orderby = empty($orderby)?1:$orderby;
+		$price = empty($price)?0:$price;
+		$this->where('id=?',array($id));
+		return $this->update(array('starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
+	}
 	
 	/**
 	 * 创建秒杀活动
