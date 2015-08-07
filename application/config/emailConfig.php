@@ -9,11 +9,11 @@ class emailConfig extends config
 		$this->relay_host = 'smtp.qq.com';
 		$this->smtp_port = 25;
 		$this->auth = true;
-		$this->user = '326550324@qq.com';
-		$this->pass = 'jcc2164389';
+		$this->user = '';
+		$this->pass = '';
 		
-		$this->from = '326550324@qq.com';
-		$this->fromname = '金程晨';
+		$this->from = '';
+		$this->fromname = '';
 		$this->SMTPSecure = 'ssl';//ssl
 		$this->html = true;
 	}
