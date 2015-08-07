@@ -1,5 +1,5 @@
 <?php
-namespace system\config;
+namespace system\core\config;
 
 use system\core\inter\config;
 class cookieConfig extends config

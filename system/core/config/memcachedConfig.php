@@ -11,6 +11,7 @@ use system\core\inter\config;
  */
 class memcachedConfig extends config
 {
+	public $open = false;
 	/**
 	 * memcached服务器地址
 	 * @var ip地址或域名

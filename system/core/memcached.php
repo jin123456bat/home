@@ -13,19 +13,22 @@ class memcached
 	
 	function __construct(config $config)
 	{
-		$this->_memcached = new \Memcache();
-		if(is_array($config->server))
+		if ($config->open)
 		{
-			foreach ($config->server as $key=>$host)
+			$this->_memcached = new \Memcache();
+			if(is_array($config->server))
 			{
-				$this->_memcached->addserver( $host,  $config->port[$key] , $config->persistent[$key], $config->weight[$key], $config->timeout[$key] , $config->retry_interval[$key],$config->status[$key] , $config->failure_callback[$key]);
+				foreach ($config->server as $key=>$host)
+				{
+					$this->_memcached->addserver( $host,  $config->port[$key] , $config->persistent[$key], $config->weight[$key], $config->timeout[$key] , $config->retry_interval[$key],$config->status[$key] , $config->failure_callback[$key]);
+				}
 			}
-		}
-		else
-		{
-			$this->_memcached->pconnect($config->server,$config->port,$config->timeout);
-			$this->_memcached->setfailurecallback($config->failurecallback);
-			$this->_memcached->setcompressthreshold($config->threshold,$config->min_savings);
+			else
+			{
+				$this->_memcached->pconnect($config->server,$config->port,$config->timeout);
+				$this->_memcached->setfailurecallback($config->failure_callback);
+				$this->_memcached->setcompressthreshold($config->threshold,$config->min_savings);
+			}
 		}
 	}
 	

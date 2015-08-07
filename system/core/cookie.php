@@ -12,7 +12,10 @@ class cookie
 	
 	function __set($name,$value)
 	{
-		setcookie($name,$value,$this->_config->expire,$this->_config->path,$this->_config->domain,$this->_config->secure, $this->_config->httponly);
+		if (!is_object($value))
+		{
+			setcookie($name,$value,$this->_config->expire,$this->_config->path,$this->_config->domain,$this->_config->secure, $this->_config->httponly);
+		}
 	}
 	
 	function __get($name)
@@ -27,6 +30,6 @@ class cookie
 	
 	function __unset($name)
 	{
-		setcookie($name,'');
+		setcookie($name,'',$_SERVER['REQUEST_TIME']-1);
 	}
 }
