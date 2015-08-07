@@ -16,6 +16,16 @@ class comment_picModel extends model
 	}
 	
 	/**
+	 * 删除评论下的所有图片记录
+	 * @param int $cid
+	 * @return \system\core\Ambigous
+	 */
+	function removeByCid($cid)
+	{
+		return $this->where('cid=?',array($cid))->delete();
+	}
+	
+	/**
 	 * 为评论添加图片
 	 * @param unknown $cid 评论id
 	 * @param unknown $file 图片路径

@@ -33,6 +33,7 @@ var ProductEditPage = function(){
 					Metronic.alert({
 						type: 'danger',
 						icon: 'warning',
+						closeInSeconds: 5,
 						message: '起码也要写个名字吧',
 						container: $('#alert'),
 						place: 'prepend'
@@ -212,7 +213,17 @@ var ProductEditPage = function(){
 				defaultText:"添加属性值"
 			});
 			
-			
+			$('button.removeComment').live('click',function(){
+				var id = $(this).attr('data-id');
+				var ths = this;
+				$.post('?c=comment&a=del',{id:id},function(data){
+					data = $.parseJSON(data);
+					if(data.code == 1)
+					{
+						$(ths).parents('tr').remove();
+					}
+				});
+			});
 		}
 		
 		

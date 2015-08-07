@@ -4,7 +4,7 @@
  */
 array_map(function ($filename) {
 	if ($filename != '.' && $filename != '..') {
-		require ROOT . '/system/core/function/' . $filename;
+		require_once ROOT . '/system/core/function/' . $filename;
 	}
 }, scandir(ROOT . '/system/core/function'));
 /*
@@ -12,7 +12,7 @@ array_map(function ($filename) {
  */
 array_map(function ($filename) {
 	if ($filename != '.' && $filename != '..') {
-		require ROOT . '/application/function/' . $filename;
+		require_once ROOT . '/application/function/' . $filename;
 	}
 }, scandir(ROOT . '/application/function/'));
 /*
@@ -21,6 +21,6 @@ array_map(function ($filename) {
 spl_autoload_register(function ($classname) {
 	$path = ROOT . '/' . str_replace('\\', '/', $classname) . '.php';
 	if (file_exists($path)) {
-		include $path;
+		require_once $path;
 	}
 });

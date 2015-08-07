@@ -130,4 +130,14 @@ class filesystem
 	{
 		return dirname(self::path($filename));
 	}
+	
+	/**
+	 * 文件删除
+	 * @param unknown $path
+	 * @return boolean
+	 */
+	public static function unlink($path)
+	{
+		return unlink(self::path($path));
+	}
 }

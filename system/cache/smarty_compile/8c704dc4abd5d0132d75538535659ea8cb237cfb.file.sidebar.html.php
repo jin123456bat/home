@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-05 21:49:53
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-07 15:55:29
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1438782592,
+      1 => 1438934107,
       2 => 'file',
     ),
   ),
@@ -189,29 +189,32 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</li>
 			</ul>
 		</li>
-		<li>
+		<li class="<?php if (($_GET['c']=='sale'&&$_GET['a']=='admin')||($_GET['c']=='seckill'&&$_GET['a']=='admin')||($_GET['c']=='fullcut'&&$_GET['a']=='admin')) {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
 			<span class="title">活动中心</span>
 			<span class="arrow "></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="page_about.html">
+				<li class="<?php if ($_GET['c']=='sale'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'sale','a'=>'admin'),$_smarty_tpl);?>
+">
 					限时折扣</a>
 				</li>
-				<li>
-					<a href="page_contact.html">
+				<li class="<?php if ($_GET['c']=='seckill'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'seckill','a'=>'admin'),$_smarty_tpl);?>
+">
 					秒杀</a>
 				</li>
-				<li>
-					<a href="extra_search.html">
+				<li class="<?php if ($_GET['c']=='fullcut'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'fullcut','a'=>'admin'),$_smarty_tpl);?>
+">
 					满减</a>
 				</li>
-				<li>
+				<!--<li>
 					<a href="extra_invoice.html">
 					组合</a>
-				</li>
+				</li>-->
 				<li>
 					<a href="page_portfolio.html">
 					优惠券</a>

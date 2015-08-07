@@ -2,8 +2,10 @@
 namespace application\control;
 
 use system\core\control;
+use system\core\file;
 use application\classes\login;
 use system\core\filter;
+use system\core\filesystem;
 class commentControl extends control
 {
 
@@ -75,6 +77,15 @@ class commentControl extends control
 			$commentModel = $this->model('comment');
 			if($commentModel->remove($id))
 			{
+				//删除磁盘图片
+				$comment_picModel = $this->model('comment_pic');
+				$comment_pic = $comment_picModel->getByCid($id,'path');
+				foreach ($comment_pic as $pic)
+				{
+					filesystem::unlink($pic);
+				}
+				//删除图片记录
+				$comment_picModel->removeByCid($id);
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
 			return json_encode(array('code'=>0,'result'=>'failed'));

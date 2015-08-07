@@ -35,7 +35,7 @@ class smslogModel extends model
 		}
 		else
 		{
-			$this->where('time>?',array($_SERVER['REQUEST_TIME'] - 180));
+			$this->where('time>?',array($_SERVER['REQUEST_TIME'] - 1800));
 			$result = $this->where('code=? and telephone=?',array($code,$telephone))->select('count(*)');
 			return (isset($result[0]['count(*)']) && $result[0]['count(*)']>0);
 		}

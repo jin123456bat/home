@@ -81,17 +81,22 @@ class userControl extends control
 		$newpwd = $this->post->newpwd;
 		if(login::user())
 		{
-			$id = $this->session->id;
+			$id = $this->post->id;
 			if(!empty($oldepwd) && !empty($newpwd))
 			{
 				$userModel = $this->model('user');
-				if($userModel->authpwd($id,$oldepwd))
+				if($userModel->authpwd($id,$oldepwd,$newpwd))
 				{
 					return json_encode(array('code'=>1,'result'=>'密码更改成功'));
 				}
+				return json_encode(array('code'=>2,'result'=>'旧密码不正确'));
+			}
+			else
+			{
+				return json_encode(array('code'=>3,'result'=>'新密码或旧密码不得为空'));
 			}
 		}
-		return json_encode(array('code'=>0,'result'=>'密码更改失败，旧密码不正确'));
+		return json_encode(array('code'=>0,'result'=>'尚未登陆'));
 	}
 
 	/**

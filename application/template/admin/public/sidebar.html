@@ -167,29 +167,32 @@
 				</li>
 			</ul>
 		</li>
-		<li>
+		<li class="{%if ($smarty.get.c==sale && $smarty.get.a==admin)
+        				||($smarty.get.c==seckill && $smarty.get.a==admin)
+                        ||($smarty.get.c==fullcut && $smarty.get.a==admin)
+        %}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
 			<span class="title">活动中心</span>
 			<span class="arrow "></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="page_about.html">
+				<li class="{%if $smarty.get.c==sale && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=sale a=admin%}">
 					限时折扣</a>
 				</li>
-				<li>
-					<a href="page_contact.html">
+				<li class="{%if $smarty.get.c==seckill && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=seckill a=admin%}">
 					秒杀</a>
 				</li>
-				<li>
-					<a href="extra_search.html">
+				<li class="{%if $smarty.get.c==fullcut && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=fullcut a=admin%}">
 					满减</a>
 				</li>
-				<li>
+				<!--<li>
 					<a href="extra_invoice.html">
 					组合</a>
-				</li>
+				</li>-->
 				<li>
 					<a href="page_portfolio.html">
 					优惠券</a>

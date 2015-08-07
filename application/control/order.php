@@ -55,6 +55,15 @@ class orderControl extends control
 	}
 	
 	/**
+	 * 订单详情页面
+	 */
+	function orderview()
+	{
+		$this->view = new view(config('view'), 'admin/order_detail.html');
+		$this->response->setBody($this->view->display());
+	}
+	
+	/**
 	 * ajax请求所有订单数据
 	 */
 	function ajaxorderlist()

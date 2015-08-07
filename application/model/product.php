@@ -10,9 +10,24 @@ use system\core\model;
  */
 class productModel extends model
 {
-	function __construct()
+	function __construct($table)
 	{
-		parent::__construct('product');
+		parent::__construct($table);
+	}
+	
+	/**
+	 * 设置商品的活动类型
+	 * @param unknown $pid
+	 * @param unknown $activity
+	 */
+	function setActivity($pid,$activity = '')
+	{
+		$activities = array('seckill','fullcut','combine','sale','');
+		if(in_array($activity, $activities))
+		{
+			return $this->where('id=?',array($pid))->update('activity',$activity);
+		}
+		return false;
 	}
 	
 	/**
@@ -22,7 +37,14 @@ class productModel extends model
 	 */
 	function increaseStock($pid,$num)
 	{
-		return $this->where('pid=?',array($pid))->increase('stock',$num);
+		$this->where('pid=?',array($pid))->increase('stock',$num);
+		$result = $this->where('pid=?',array($pid))->select('stock');
+		if(isset($result[0]['stock']) && $result[0]['stock']<0)
+		{
+			$this->where('pid=?',array($pid))->increase('stock',-$num);
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -78,7 +100,7 @@ class productModel extends model
 			'meta_title'=>$post->meta_title,
 			'meta_keywords'=>$post->meta_keywords,
 			'meta_description'=>$post->meta_description,
-			'truth'=>''
+			'activity'=>''
 		);
 		if(empty($post->id))
 		{

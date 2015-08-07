@@ -19,6 +19,20 @@ class filter
 	}
 	
 	/**
+	 * 过滤数字 允许小数
+	 * @param unknown $var
+	 */
+	static public function number($var)
+	{
+		$pattern = '$\d+(\.\d+)?$';
+		if(preg_match($pattern, $var,$match))
+		{
+			return $match[0];
+		}
+		return NULL;
+	}
+	
+	/**
 	 * 过滤手机号码,失败返回NULL
 	 * @param unknown $string
 	 * @return unknown|NULL

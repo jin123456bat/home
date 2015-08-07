@@ -78,7 +78,19 @@ class collectionModel extends model
 	 */
 	function increaseStock($pid,$content,$num)
 	{
-		return $this->where('pid=? and content=?',array($pid,$content))->increase('stock',$num);
+		if (is_array($content))
+		{
+			ksort($content);
+			$content = serialize($content);
+		}
+		$this->where('pid=? and content=?',array($pid,$content))->increase('stock',$num);
+		$result = $this->where('pid=? and content=?',array($pid,$content))->select('stock');
+		if(isset($result[0]['stock']) && $result[0]['stock']<0)
+		{
+			$this->where('pid=? and content=?',array($pid,$content))->increase('stock',-$num);
+			return false;
+		}
+		return true;
 	}
 	
 	/**

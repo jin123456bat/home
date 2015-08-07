@@ -22,11 +22,15 @@ class seckillModel extends model
 	 * @param int $last 单位小时
 	 * @param number $orderby
 	 */
-	function create($name,$time,$last,$orderby = 1,$rate = 1)
+	function create($pid,$starttime,$endtime,$price,$orderby)
 	{
-		$time = strtotime($time);
-		$last = (int)$last * 3600;
-		$array = array(NULL,$name,$time,$last,$orderby,$rate);
+		$result = $this->where('pid=?',array($pid))->select('count(*)');
+		if(isset($result[0]['count(*)']) && $result[0]['count(*)']>0)
+			return false;
+		$orderby = empty($orderby)?1:$orderby;
+		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
+		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+3600*24:strtotime($endtime);
+		$array = array(NULL,$pid,$starttime,$endtime,$orderby,$price);
 		if($this->insert($array))
 			return $this->lastInsertId();
 		return false;
@@ -41,22 +45,32 @@ class seckillModel extends model
 		$this->table('product','join left','seckill.pid=product.id');
 		$this->orderby('orderby');
 		$this->orderby('id','desc');
-		$this->where('time < ?',array($_SERVER['REQUEST_TIME']));
-		$this->where('time + last > ?',array($_SERVER['REQUEST_TIME']));
+		$this->where('starttime < ?',array($_SERVER['REQUEST_TIME']));
+		$this->where('endtime > ?',array($_SERVER['REQUEST_TIME']));
 		return $this->select();
+	}
+	
+	/**
+	 * 获得所有秒杀商品的信息
+	 */
+	function fetchAll($parameter)
+	{
+		$this->table('product','left join','seckill.pid=product.id');
+		return $this->select($parameter);
 	}
 	
 	/**
 	 * 从秒杀活动中移除商品
 	 * 活动id和商品id其中必须只能一个不为空值
-	 * @param int $secid 默认为0 活动id
-	 * @param int $pid 默认为0 商品id
+	 * @param int $secid 活动id
 	 * @return bool
 	 */
-	function remove($secid = 0,$pid = 0)
+	function remove($secid)
 	{
+		$this->table('product','left join','product.id=seckill.pid');
+		$this->where('seckill.id=?',array($secid));
+		$this->update('product.activity','');
 		$this->where('id=?',array($secid));
-		$this->where('pid=?',array($pid),'or');
 		return $this->delete();
 	}
 }

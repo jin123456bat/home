@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 11:12:54
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-07 18:15:14
          compiled from "D:\wamp\www\home\application\template\admin\product.html" */ ?>
 <?php /*%%SmartyHeaderCode:2146955b75011bb78f6-19459824%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'bdff6a78092f080fa7d3d3fd57b1ddf7c97bfefc' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product.html',
-      1 => 1438312369,
+      1 => 1438942511,
       2 => 'file',
     ),
   ),
@@ -20,6 +20,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'variables' => 
   array (
     'VIEW_ROOT' => 0,
+    'fullcut' => 0,
     'category' => 0,
   ),
   'has_nocache_code' => false,
@@ -58,6 +59,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 /assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/bootstrap-datepicker/css/datepicker.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css"/>
 <!-- END PAGE LEVEL STYLES -->
 <!-- BEGIN THEME STYLES -->
 <link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
@@ -96,6 +99,140 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
+        	<div class="modal fade bs-example-modal-lg" id="sale-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+                    	<form class="form-horizontal" role="form" id="sale-config-form">
+                        	<input type="hidden" name="id">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							<h4 class="modal-title">推送到限时折扣</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-body">
+                            	<div class="form-group">
+                                    <label class="col-md-2 control-label">活动类型</label>
+                                    <div class="radio-list col-md-9">
+                                        <label class="radio-inline">
+                                        <input type="radio" name="activity" value="seckill" checked>秒杀</label>
+                                        <label class="radio-inline">
+                                        <input type="radio" name="activity" value="sale">限时折扣</label>
+                                        <label class="radio-inline">
+                                        <input type="radio" name="activity" value="fullcut">满减</label>
+                                        <!--<label class="radio-inline">
+                                        <input type="radio" name="activity" value="combine">组合购买</label>-->
+                                    </div>
+                                </div>
+                                <div class="activity_form seckill sale">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">产品名称</label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="pname" class="form-control" placeholder="" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2">开始时间</label>
+										<div class="col-md-9">
+											<div class="input-group date form_datetime">
+												<input type="text" size="16" name="starttime" class="form-control">
+												<span class="input-group-btn">
+												<button class="btn default date-reset" type="button"><i class="fa fa-times"></i></button>
+												</span>
+												<span class="input-group-btn">
+												<button class="btn default date-set" type="button"><i class="fa fa-calendar"></i></button>
+												</span>
+											</div>
+											<!-- /input-group -->
+										</div>
+									</div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">结束时间</label>
+                                        <div class="col-md-9">
+                                            <div class="input-group date form_datetime">
+                                                <input type="text" size="16" class="form-control" name="endtime">
+                                                <span class="input-group-btn">
+												<button class="btn default date-reset" type="button"><i class="fa fa-times"></i></button>
+												</span>
+												<span class="input-group-btn">
+												<button class="btn default date-set" type="button"><i class="fa fa-calendar"></i></button>
+												</span>
+                                            </div>
+                                            <!-- /input-group -->
+                                            <span class="help-block">
+                                            活动结束时间，注意要在商品上架期间内
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">售价</label>
+                                        <div class="col-md-9">
+                                            <div class="input-icon right">
+                                                <i class="fa"></i>
+                                                <input type="number" class="form-control" name="price"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">排序</label>
+                                        <div class="col-md-9">
+                                            <div class="input-icon right">
+                                                <input type="text" class="form-control" name="orderby" placeholder="1">
+                                                <span class="help-block">
+                                                数字越大越靠后
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity_form fullcut display-none">
+                                	<div class="form-group">
+                                        <label class="col-md-2 control-label">满减类型</label>
+                                        <div class="col-md-9">
+                                            <select class="form-control" name="fullcut">
+                                            	<?php if (isset($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut'])) unset($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['name'] = 'fullcut';
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['loop'] = is_array($_loop=$_smarty_tpl->tpl_vars['fullcut']->value) ? count($_loop) : max(0, (int) $_loop); unset($_loop);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['show'] = true;
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['max'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['loop'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['step'] = 1;
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['start'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['step'] > 0 ? 0 : $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['loop']-1;
+if ($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['show']) {
+    $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['total'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['loop'];
+    if ($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['total'] == 0)
+        $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['show'] = false;
+} else
+    $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['total'] = 0;
+if ($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['show']):
+
+            for ($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['index'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['start'], $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['iteration'] = 1;
+                 $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['iteration'] <= $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['total'];
+                 $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['index'] += $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['step'], $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['iteration']++):
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['rownum'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['iteration'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['index_prev'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['index'] - $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['step'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['index_next'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['index'] + $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['step'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['first']      = ($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['iteration'] == 1);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['last']       = ($_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['iteration'] == $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['total']);
+?>
+												<option value="<?php echo $_smarty_tpl->tpl_vars['fullcut']->value[$_smarty_tpl->getVariable('smarty')->value['section']['fullcut']['index']]['id'];?>
+"><?php echo $_smarty_tpl->tpl_vars['fullcut']->value[$_smarty_tpl->getVariable('smarty')->value['section']['fullcut']['index']]['name'];?>
+</option>
+                                                <?php endfor; endif; ?>
+											</select>
+                                        </div>
+                                    </div>
+                                </div>
+                        	</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn blue">开始推送</button>
+							<button type="button" class="btn default" data-dismiss="modal">取消</button>
+						</div>
+                        </form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
 			<!-- BEGIN STYLE CUSTOMIZER -->
 			<div class="theme-panel hidden-xs hidden-sm">
 				<div class="toggler">
@@ -207,6 +344,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
+                	<div class="col-md-12" id="alert-msg">
+                    </div>
 					<!-- Begin: life time stats -->
 					<div class="portlet">
 						<div class="portlet-title">
@@ -261,7 +400,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 										<input type="checkbox" class="group-checkable">
 									</th>
 									<th width="10%">
-										 产品ID
+										 SKU
 									</th>
 									<th width="15%">
 										 产品名称
@@ -387,16 +526,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 	<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-	<div class="page-footer-inner">
-		 2014 &copy; Metronic by keenthemes.
-	</div>
-	<div class="scroll-to-top">
-		<i class="icon-arrow-up"></i>
-	</div>
-</div>
-<!-- END FOOTER -->
+<?php echo $_smarty_tpl->getSubTemplate ('admin/public/footer.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
@@ -436,6 +567,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 /assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
@@ -458,6 +591,107 @@ jQuery(document).ready(function() {
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
 	EcommerceProducts.init();
+	
+	$(".form_datetime").datetimepicker({
+		autoclose: true,
+		isRTL: Metronic.isRTL(),
+		format: "yyyy-mm-dd HH:ii",
+		todayBtn: true,
+		minuteStep: 5,
+		//beforeShow: getCurrentTime,
+		//showMeridian: true,
+		pickerPosition: (Metronic.isRTL() ? "bottom-right" : "bottom-left")
+    });
+	$('body').removeClass("modal-open");
+	
+	$('input[name=activity]').on('click',function(){
+		$('input[name=activity]').attr('checked',false);
+		$(this).attr('checked',true);
+		var idname = $(this).val();
+		$('.activity_form').addClass('display-none');
+		$('.'+idname).removeClass('display-none');
+	});
+	
+	$('#sale-config').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var pid = button.data('pid');
+		var pname = button.data('pname');
+		var price = button.data('price');
+		
+		var modal = $(this);
+		modal.find('input[name=pname]').attr('placeholder',pname);
+		modal.find('input[name=id]').val(pid);
+		modal.find('input[name=price]').val(price);
+	});
+	
+	$('#sale-config-form').on('submit',function(){
+		var modal = $(this);
+		var pid = modal.find('input[name=id]').val();
+		console.log(pid);
+		var starttime = modal.find('input[name=starttime]').val();
+		var endtime = modal.find('input[name=endtime]').val();
+		var price = modal.find('input[name=price]').val();
+		var activities = modal.find('input[name=activity]');
+		var fullcut = modal.find('select[name=fullcut]').val();
+		var activity = 'seckill';
+		$.each(activities,function(index,value){
+			if($(value).is(':checked'))
+			{
+				activity = $(value).val();
+			}
+		});
+		modal.find('input[name=price]').parents('div:eq(2)').removeClass('has-error');
+		if(price.length == 0)
+		{
+			modal.find('input[name=price]').parents('div:eq(2)').addClass('has-error');
+			return false;
+		}
+		var orderby = modal.find('input[name=orderby]').val();
+		var url = '';
+		switch(activity)
+		{
+			case 'seckill':url = '<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'seckill','a'=>'create'),$_smarty_tpl);?>
+';
+					parameter = {pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
+					break;
+			case 'sale':url = '<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'sale','a'=>'create'),$_smarty_tpl);?>
+';
+					parameter = {pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
+					break;
+			case 'fullcut':url = '<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'fullcutdetail','a'=>'create'),$_smarty_tpl);?>
+';
+					parameter = {pid:pid,fid:fid};
+					break;
+			default:Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: '请选择推送方式',
+                    container: $('#alert-msg'),
+                    place: 'prepend',
+					closeInSeconds: 5,
+                });break;
+		}
+		$.post(url,parameter,function(data){
+			data = $.parseJSON(data);
+			if(data.code == 1)
+			{
+				$('#sale-config').modal('hide');
+				window.location.reload();
+			}
+			else
+			{
+				Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: data.result,
+                    container: $('#alert-msg'),
+                    place: 'prepend',
+					closeInSeconds: 5,
+                });
+			}
+		});
+		return false;
+	});
 });
 </script>
 <!-- END JAVASCRIPTS -->

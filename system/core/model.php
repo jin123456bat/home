@@ -43,7 +43,10 @@ class model
 	 */
 	private function __loadMemcache()
 	{
-		
+		if(memcached::ready())
+		{
+			$this->_memcache = new memcached(config('memcached'));
+		}
 	}
 
 	/**
@@ -130,7 +133,7 @@ class model
 		}
 		else
 		{
-			$sql = 'update ' . $this->_table . ' set ' . $key . ' = ? ' . $this->_temp['where'];
+			$sql = 'update '. $this->_table . ' set ' . $key . ' = ? ' . $this->_temp['where'];
 			$value = array($value);
 		}
 		$value = isset($this->_temp['array'])?array_merge($value,$this->_temp['array']):$value;
@@ -161,9 +164,9 @@ class model
 	 * 
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	public function delete()
+	public function delete($table = '')
 	{
-		$sql = 'delete from ' . $this->_table . ' ' . $this->_temp['where'];
+		$sql = 'delete '.$table.' from ' . $this->_table . ' ' . $this->_temp['where'];
 		$result = $this->_db->query($sql, $this->_temp['array']);
 		unset($this->_temp);
 		return $result;

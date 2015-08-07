@@ -101,7 +101,7 @@ class userModel extends model
 	 */
 	function authpwd($id,$oldpwd,$newpwd)
 	{
-		$result = $this->where('id=?',array($id))->select('salt','password');
+		$result = $this->where('id=?',array($id))->select('password,salt');
 		if(isset($result[0]['salt']) && isset($result[0]['password']))
 		{
 			if(md5($oldpwd.$result[0]['salt']) == $result[0]['password'])

@@ -43,14 +43,15 @@ class control extends base
 	 */
 	function model($name)
 	{
-		$path = ROOT . '/application/model/' . $name . '.php';
-		$instance = NULL;
-		if (file_exists($path)) {
-			require $path;
+		static $instance = array();
+		if(!isset($instance[$name]))
+		{
+			$path = ROOT.'/application/model/'.$name.'.php';
+			include $path;
 			$model = "application\\model\\" . $name . 'Model';
-			$instance = new $model($name);
+			$instance[$name] = new $model($name);
 		}
-		return $instance;
+		return $instance[$name];
 	}
 	
 	/**

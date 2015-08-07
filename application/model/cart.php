@@ -16,23 +16,28 @@ class cartModel extends model
 	
 	/**
 	 * 将商品加入到购物车
-	 * @param unknown $uid 用户id
-	 * @param unknown $pid 货物id
-	 * @param unknown $cid 货物属性id
-	 * @param unknown $num 货物数量 增加的数量
+	 * @param int $uid 用户id
+	 * @param int $pid 货物id
+	 * @param string|array $cid 货物属性集合
+	 * @param int $num 货物数量 增加的数量
 	 * @return \system\core\Ambigous
 	 */
-	function create($uid,$pid,$cid,$num)
+	function create($uid,$pid,$content,$num)
 	{
-		$result = $this->where('uid=? and pid=? and cid=?',array($uid,$pid,$cid))->select('num');
+		if(is_array($content))
+		{
+			ksort($content);
+			$content = serialize($content);
+		}
+		$result = $this->where('uid=? and pid=? and content=?',array($uid,$pid,$content))->select('num');
 		if(isset($result[0]['num']) && !empty($result[0]['num']))
 		{
-			return $this->where('uid=? and pid=? and cid=?',array($uid,$pid,$cid))->increase('num',$num);
+			return $this->where('uid=? and pid=? and content=?',array($uid,$pid,$content))->increase('num',$num);
 		}
 		else
 		{
 			$time = $_SERVER['REQUEST_TIME'];
-			$data = array(NULL,$uid,$pid,$cid,$num,$time);
+			$data = array(NULL,$uid,$pid,$content,$num,$time);
 			return $this->insert($data);
 		}
 	}
@@ -45,9 +50,14 @@ class cartModel extends model
 	 * @param unknown $num
 	 * @return \system\core\Ambigous|boolean
 	 */
-	function remove($uid,$pid,$cid,$num)
+	function remove($uid,$pid,$content,$num)
 	{
-		$result = $this->where('uid=? and pid=? and cid=?',array($uid,$pid,$cid))->select('num');
+		if(is_array($content))
+		{
+			ksort($content);
+			$content = serialize($content);
+		}
+		$result = $this->where('uid=? and pid=? and content=?',array($uid,$pid,$content))->select('num');
 		if(isset($result[0]['num']) && !empty($result[0]['num']))
 		{
 			if($result[0]['num'] - $num > 0)
@@ -56,17 +66,5 @@ class cartModel extends model
 				return $this->where('uid=? and pid=? and cid=?')->delete();
 		}
 		return false;
-	}
-	
-	/**
-	 * 获取用户购物车中的所有商品信息
-	 * @param int $uid
-	 */
-	function get($uid)
-	{
-		$this->where('uid=?',array($uid));//设定用户名
-		$this->table('product','left join','cart.pid=product.id');
-		$this->table('collection','left join','cart.cid=collection.id');
-		return $this->select();
 	}
 }

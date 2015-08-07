@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-05 14:27:31
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-06 18:53:22
          compiled from "D:\wamp\www\home\application\template\admin\product_edit.html" */ ?>
 <?php /*%%SmartyHeaderCode:2754655b8878e9b8403-56204090%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '4acedb3d29c9feaec7e9352736eb1db6c7d44d53' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product_edit.html',
-      1 => 1438755894,
+      1 => 1438856528,
       2 => 'file',
     ),
   ),
@@ -684,16 +684,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
     <!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-	<div class="page-footer-inner">
-		 2014 &copy; Metronic by keenthemes.
-	</div>
-	<div class="scroll-to-top">
-		<i class="icon-arrow-up"></i>
-	</div>
-</div>
-<!-- END FOOTER -->
+<?php echo $_smarty_tpl->getSubTemplate ('admin/public/footer.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>

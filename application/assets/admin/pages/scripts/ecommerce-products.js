@@ -40,6 +40,7 @@ var EcommerceProducts = function () {
                     type: 'danger',
                     icon: 'warning',
                     message: '网络连接失败,请刷新',
+					closeInSeconds: 5,
                     container: grid.getTableWrapper(),
                     place: 'prepend'
                 });
@@ -74,6 +75,8 @@ var EcommerceProducts = function () {
 				}, {
 					"data":"id",
 					"orderable": false
+				},{
+					"data":"activity",
 				}],
 				"lengthMenu": [
                     [10, 20, 50, 100, 150],
@@ -108,8 +111,17 @@ var EcommerceProducts = function () {
 					"targets":[8],
 					"data":"id",
 					"render":function(data,type,full){
-						return '<a href="?c=product&a=edit&action=edit&id='+data+'" class="btn default btn-xs green-stripe">编辑</a>';
+						//console.log(full);
+						var content = '<a href="?c=product&a=edit&action=edit&id='+data+'" class="btn default btn-xs green-stripe">编辑</a>';
+						if(full.activity.length == 0)
+						{
+							content += '<a href="#sale-config" class="btn default btn-xs red-stripe" data-price="'+full.price+'" data-pid="'+data+'" data-pname="'+full.productname+'" data-toggle="modal">推送</a></li>';
+						}
+						return content;
 					}
+				},{
+					targets:9,
+					visible:false
 				}],
 				"processing": true,
                 "pageLength": 10, // default record count per page
@@ -167,7 +179,8 @@ var EcommerceProducts = function () {
                     icon: 'warning',
                     message: '请选择商品',
                     container: grid.getTableWrapper(),
-                    place: 'prepend'
+                    place: 'prepend',
+					closeInSeconds: 5,
                 });
 				return false;
             }

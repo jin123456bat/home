@@ -99,7 +99,15 @@ class productControl extends control
 			$categoryHelper = new category();
 			$category = $categoryHelper->format(0,$category);
 			$this->view->assign('category',$category);
+			$fullcutModel = $this->model('fullcut');
+			$fullcut = $fullcutModel->fetchAll();
+			$this->view->assign('fullcut',$fullcut);
 			$this->response->setBody($this->view->display());
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
 	

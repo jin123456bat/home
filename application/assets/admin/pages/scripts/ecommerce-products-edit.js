@@ -158,6 +158,12 @@ var EcommerceProductsEdit = function () {
 						});
 						return res;
 					}
+				},{
+					'orderable':true,
+					'targets':[5],
+					'render':function(data,type,full){
+						return '<button class="btn btn-xs btn-danger btn-circle removeComment" data-id="'+data+'">删除</button>';
+					}
 				}],
                 "order": [
                     [0, "asc"]

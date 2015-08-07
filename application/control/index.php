@@ -10,7 +10,7 @@ use system\core\filter;
 
 class indexControl extends control
 {
-
+	
 	function index()
 	{
 		if(isset($_POST['post']))

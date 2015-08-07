@@ -37,6 +37,12 @@ class base
 	 * @var unknown
 	 */
 	protected $session;
+	
+	/**
+	 * $_COOKIE
+	 * @var unknown
+	 */
+	protected $cookie;
 
 	/**
 	 * http管理
@@ -52,5 +58,6 @@ class base
 		$this->get = new get();
 		$this->http = new http();
 		$this->file = new file();
+		$this->cookie= new cookie(config('cookie'));
 	}
 }
