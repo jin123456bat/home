@@ -89,6 +89,7 @@ class categoryControl extends control
 				$categoryModel = $this->model('category');
 				$id = $categoryModel->add($this->post->name, $cid);
 				if ($id) {
+					$this->model('log')->write($this->session->username,'添加了一个分类');
 					return json_encode(array(
 						'code' => 1,
 						'result' => 'ok',
@@ -159,6 +160,7 @@ class categoryControl extends control
 				$result = $categoryModel->fetchChild($id);
 				if (empty($result)) {
 					if ($categoryModel->del($id)) {
+						$this->model('log')->write($this->session->username,'删除了一个分类');
 						return json_encode(array(
 							'code' => 1,
 							'result' => 'ok'

@@ -9,6 +9,11 @@ use application\classes\collection;
  */
 class collectionModel extends model
 {
+	function __construct($table)
+	{
+		parent::__construct($table);
+	}
+	
 	/**
 	 * 创建或更新属性组合
 	 * @param int $pid
@@ -85,12 +90,12 @@ class collectionModel extends model
 		}
 		$this->where('pid=? and content=?',array($pid,$content))->increase('stock',$num);
 		$result = $this->where('pid=? and content=?',array($pid,$content))->select('stock');
-		if(isset($result[0]['stock']) && $result[0]['stock']<0)
+		if(isset($result[0]['stock']) && $result[0]['stock']>=0)
 		{
-			$this->where('pid=? and content=?',array($pid,$content))->increase('stock',-$num);
-			return false;
+			return true;
 		}
-		return true;
+		$this->where('pid=? and content=?',array($pid,$content))->increase('stock',-$num);
+		return false;
 	}
 	
 	/**

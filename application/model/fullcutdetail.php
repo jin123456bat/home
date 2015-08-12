@@ -38,6 +38,18 @@ class fullcutdetailModel extends model
 	}
 	
 	/**
+	 * 获得一件商品的满减优惠信息
+	 * @param unknown $pid
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function getByPid($pid)
+	{
+		$this->where('fullcutdetail.pid=?',array($pid));
+		$this->table('fullcut','right join','fullcut.id=fullcutdetail.fid');
+		return $this->select();
+	}
+	
+	/**
 	 * 获得所有满减商品信息
 	 * @param unknown $parameter
 	 * @return Ambigous <boolean, multitype:>

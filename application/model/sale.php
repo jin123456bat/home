@@ -14,6 +14,52 @@ class saleModel extends model
 	}
 	
 	/**
+	 * 获得首页显示的限时特卖商品信息
+	 */
+	function getIndex($length)
+	{
+		$a = $_SERVER['REQUEST_TIME'];
+		$this->where('(sale.starttime<? or sale.starttime=0) and (sale.endtime>? or sale.endtime=0) and (product.starttime<? or product.starttime=0) and (product.endtime>? or product.endtime=0)',array($a,$a,$a,$a));
+		$this->table('product','left join','product.id=sale.pid');
+		$this->limit($length);
+		$this->where('product.stock>?',array(0));
+		$this->where('product.status=?',array(1));
+		$this->orderby('sale.orderby','desc');
+		$result = $this->select('*,sale.starttime as s_starttime,sale.endtime as s_endtime,sale.price as new_price');
+		return $result;
+	}
+	
+	/**
+	 * 获得秒杀活动商品的价格
+	 * @param unknown $pid
+	 * @return NULL
+	 */
+	function getPrice($pid)
+	{
+		$this->where('pid=? and starttime<? and endtime>?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
+		$result = $this->select('price');
+		return isset($result[0]['price'])?$result[0]['price']:NULL;
+	}
+	
+	/**
+	 * 保存对限时特卖规则的更改
+	 * @param unknown $id
+	 * @param unknown $starttime
+	 * @param unknown $endtime
+	 * @param unknown $orderby
+	 * @param unknown $price
+	 * @return \system\core\Ambigous
+	 */
+	function save($id,$starttime,$endtime,$orderby,$price)
+	{
+		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
+		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+24*3600:strtotime($endtime);
+		$orderby = empty($orderby)?1:$orderby;
+		$price = empty($price)?1:$price;
+		return $this->where('id=?',array($id))->update(array('starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
+	}
+	
+	/**
 	 * 添加一件限时折扣商品 对于已经在限时折扣队列中的商品返回false
 	 * @param unknown $pid
 	 * @param unknown $starttime

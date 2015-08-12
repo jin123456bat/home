@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 17:17:35
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-10 14:47:34
          compiled from "D:\wamp\www\home\application\template\admin\adminlist.html" */ ?>
 <?php /*%%SmartyHeaderCode:2616855bb332e940e14-09885229%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '24042f2e6031551fcd083b48108223ff0d5031a2' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\adminlist.html',
-      1 => 1438334204,
+      1 => 1439189253,
       2 => 'file',
     ),
   ),
@@ -95,6 +95,37 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
+        	<div class="modal fade container in" id="resetpwd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form class="form-horizontal" role="form" id="resetpwd_form">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">更改登录密码</h4>
+                            </div>
+                            <div class="modal-body">
+                            	<div class="form-body">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">请输入新密码</label>
+                                        <div class="input-group col-md-8">
+                                            <div class="input-icon">
+                                                <i class="fa fa-lock fa-fw"></i>
+                                                <input class="form-control" type="text" name="password" placeholder="登陆密码">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn blue btn-circle">保存</button>
+                                <button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
+                            </div>
+                        </form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
 			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
@@ -134,88 +165,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			</div>
 			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<!-- BEGIN STYLE CUSTOMIZER -->
-			<div class="theme-panel hidden-xs hidden-sm">
-				<div class="toggler">
-				</div>
-				<div class="toggler-close">
-				</div>
-				<div class="theme-options">
-					<div class="theme-option theme-colors clearfix">
-						<span>
-						THEME COLOR </span>
-						<ul>
-							<li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default">
-							</li>
-							<li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue">
-							</li>
-							<li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue">
-							</li>
-							<li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey">
-							</li>
-							<li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light">
-							</li>
-							<li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2">
-							</li>
-						</ul>
-					</div>
-					<div class="theme-option">
-						<span>
-						Layout </span>
-						<select class="layout-option form-control input-small">
-							<option value="fluid" selected="selected">Fluid</option>
-							<option value="boxed">Boxed</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Header </span>
-						<select class="page-header-option form-control input-small">
-							<option value="fixed" selected="selected">Fixed</option>
-							<option value="default">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Mode</span>
-						<select class="sidebar-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Menu </span>
-						<select class="sidebar-menu-option form-control input-small">
-							<option value="accordion" selected="selected">Accordion</option>
-							<option value="hover">Hover</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Style </span>
-						<select class="sidebar-style-option form-control input-small">
-							<option value="default" selected="selected">Default</option>
-							<option value="light">Light</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Position </span>
-						<select class="sidebar-pos-option form-control input-small">
-							<option value="left" selected="selected">Left</option>
-							<option value="right">Right</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Footer </span>
-						<select class="page-footer-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-				</div>
-			</div>
+			<?php echo $_smarty_tpl->getSubTemplate ('admin/public/style.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 			<!-- END STYLE CUSTOMIZER -->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
@@ -261,7 +212,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 											</button>
 										</div>
                                         <div class="btn-group pull-right">
-											<button class="btn btn-danger btn-circle">
+											<button class="btn btn-danger btn-circle" id="removeAdmin">
 											删除管理员<i class="fa fa-minus"></i>
 											</button>
 										</div>
@@ -278,9 +229,11 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 								<th>
 									 用户名
 								</th>
-								
                                 <th>
                                 	管理组
+                                </th>
+                                <th>
+                                	操作
                                 </th>
 							</tr>
 							</thead>
@@ -297,22 +250,12 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 		</div>
 	</div>
 	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
 	<?php echo $_smarty_tpl->getSubTemplate ('admin/public/quickslider.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
 
-	<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-	<div class="page-footer-inner">
-		 2014 &copy; Metronic by keenthemes.
-	</div>
-	<div class="scroll-to-top">
-		<i class="icon-arrow-up"></i>
-	</div>
-</div>
-<!-- END FOOTER -->
+<?php echo $_smarty_tpl->getSubTemplate ('admin/public/footer.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
@@ -389,6 +332,53 @@ TableManaged.init();
 			if(data.code == 1)
 			{
 				$('#portlet-config').modal('hide');
+			}
+			else
+			{
+				alert(data.result);
+			}
+		});
+		return false;
+	});
+	
+	$('#removeAdmin').on('click',function(event){
+		if(!window.confirm('确定删除管理员账号吗?该操作无法恢复'))
+		return false;
+		var checkbox = $('.checkboxes:checked');
+		$.each(checkbox,function(index,value){
+			$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'admin','a'=>'remove'),$_smarty_tpl);?>
+',{id:$(value).val()},function(data){
+				if(data.code == 1)
+				{
+					$(value).parents('tr').remove();
+				}
+				else
+				{
+					alert(data.result);
+				}
+			});
+		});
+	});
+	
+	$('#resetpwd').bind('show.bs.modal',function(event){
+		var btn = $(event.relatedTarget);
+		var id = btn.data('id');
+		if(id != undefined)
+		{
+			$('#resetpwd_form').append('<input type="hidden" name="id" value="'+id+'">');
+		}
+	}).bind('hide.bs.modal',function(){
+		$('#resetpwd_form').find('input[name=id]').remove();
+	});
+	
+	$('#resetpwd_form').on('submit',function(event){
+		var password=  $(this).find('input[name=password]').val();
+		var id = $(this).find('input[name=id]').val();
+		$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'admin','a'=>'resetpwd'),$_smarty_tpl);?>
+',{id:id,password:password},function(data){
+			if(data.code == 1)
+			{
+				$('#resetpwd').modal('hide');
 			}
 			else
 			{

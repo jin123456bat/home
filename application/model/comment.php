@@ -73,7 +73,15 @@ class commentModel extends model
 		$time = $_SERVER['REQUEST_TIME'];
 		$array = array(NULL,$uid,$pid,$time,$content,$score);
 		$this->insert($array);
-		return $this->lastInsertId();
+		$cid = $this->lastInsertId();
+		if(!empty($files))
+		{
+			foreach($files as $file)
+			{
+				$this->query('insert into comment_pic value (?,?,?)',array(NULL,$cid,$file));
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -91,8 +99,10 @@ class commentModel extends model
 	 * @param unknown $pid
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function getByPid($pid)
+	function getByPid($pid,$start,$length)
 	{
-		return $this->where('pid=>',array($pid))->select();
+		$this->limit($start,$length);
+		$this->orderby('time','desc');
+		return $this->where('pid=?',array($pid))->select();
 	}
 }

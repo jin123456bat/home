@@ -15,6 +15,16 @@ class cartModel extends model
 	}
 	
 	/**
+	 * 获取用户购物车中的所有商品
+	 */
+	function getByUid($uid)
+	{
+		$this->where('cart.uid=?',array($uid));
+		$this->table('product','left join','cart.pid=product.id');
+		return $this->select();
+	}
+	
+	/**
 	 * 将商品加入到购物车
 	 * @param int $uid 用户id
 	 * @param int $pid 货物id
@@ -61,9 +71,9 @@ class cartModel extends model
 		if(isset($result[0]['num']) && !empty($result[0]['num']))
 		{
 			if($result[0]['num'] - $num > 0)
-				return $this->where('uid=? and pid=? and cid=?')->increase('num',-$num);
+				return $this->where('uid=? and pid=? and content=?',array($uid,$pid,$content))->increase('num',-$num);
 			else
-				return $this->where('uid=? and pid=? and cid=?')->delete();
+				return $this->where('uid=? and pid=? and content=?',array($uid,$pid,$content))->delete();
 		}
 		return false;
 	}

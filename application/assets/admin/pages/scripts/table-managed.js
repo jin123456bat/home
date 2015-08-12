@@ -2,6 +2,25 @@ var TableManaged = function () {
 
     var initTable1 = function () {
 
+		var unixtotime = function(unixTime, isFull, timeZone) {
+			if (typeof (timeZone) == 'number')
+			{
+				unixTime = parseInt(unixTime) + parseInt(timeZone) * 60 * 60;
+			}
+			var time = new Date(unixTime * 1000);
+			var ymdhis = "";
+			ymdhis += time.getUTCFullYear() + "-";
+			ymdhis += (time.getUTCMonth()+1) + "-";
+			ymdhis += time.getUTCDate();
+			if (isFull === true)
+			{
+				ymdhis += " " + time.getUTCHours() + ":";
+				ymdhis += time.getUTCMinutes() + ":";
+				ymdhis += time.getUTCSeconds();
+			}
+			return ymdhis;
+		}
+	
         var table = $('#sample_1');
 
         // begin first table
@@ -11,6 +30,12 @@ var TableManaged = function () {
 				"bSortable": false,
                 "orderable": false
             }, {
+				"data":"username",
+				"orderable":true
+			}, {
+				"data":"gravatar",
+				"orderable":false
+			}, {
 				"data":"telephone",
                 "orderable": false
             }, {
@@ -27,6 +52,9 @@ var TableManaged = function () {
                 "orderable": true
             }, {
 				"data":"score",
+				"orderable":true
+			}, {
+				"data":"cost",
 				"orderable":true
 			}, {
 				"data":"ordernum",
@@ -56,17 +84,15 @@ var TableManaged = function () {
                     "first": "第一页"
                 }
             },
-            "columnDefs": [{  // set default column settings
-                'orderable': false,
-                'targets': [0]
-            }, {
+            "columnDefs": [{
 				"targets": [0],
 				"data": "id",
+				"orderable":false,
 				"render": function(data, type, full) {
 					return "<div class=checker><span><input type=checkbox class=checkboxes value="+data+"></span></div>";
 				}
 			}, {
-				"targets":[8],
+				"targets":[10],
 				"data":"close",
 				"render":function(data,type,full){
 					if(data == 0)
@@ -78,7 +104,25 @@ var TableManaged = function () {
 			}, {
                 "searchable": false,
                 "targets": [0]
-            }],
+            }, {
+				"targets":[2],
+				"data":"gravatar",
+				"render":function(data,type,full){
+					return '<img src="'+data+'" width="50" height="50" onerror="this.src=\'./application/assets/gravatar.jpg\'"/>';
+				}
+			}, {
+				"targets":[5],
+				"data":"regtime",
+				"render":function(data,type,full){
+					return unixtotime(data,true,8);
+				}
+			}, {
+				"targets":[6],
+				data:"logtime",
+				"render":function(data,type,full){
+					return unixtotime(data,true,8);
+				}
+			}],
             "order": [
                 [1, "asc"]
             ], // set first column as a default sort by asc

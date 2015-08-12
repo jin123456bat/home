@@ -16,6 +16,17 @@ class productModel extends model
 	}
 	
 	/**
+	 * 检查商品是否可以被购买
+	 * @param unknown $pid
+	 */
+	function check($pid)
+	{
+		$this->where('id=? and starttime<? and endtime>? and status=?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],1));
+		$result = $this->select();
+		return isset($result[0]);
+	}
+	
+	/**
 	 * 设置商品的活动类型
 	 * @param unknown $pid
 	 * @param unknown $activity
@@ -81,10 +92,9 @@ class productModel extends model
 	{
 		$data = array(
 			'name' => $post->name,
-			'sku' => '',
+			'sku' => $post->sku,
 			'category' => $post->category,
-			'cid'=> '',
-			'bid'=>'',
+			'bid'=> $post->bid,
 			'starttime' => strtotime($post->starttime),
 			'endtime' => strtotime($post->endtime),
 			'description' => $post->description,
@@ -96,11 +106,12 @@ class productModel extends model
 			'status' => $post->status,
 			'label' => $post->label,
 			'orderby'=>$post->orderby,
-			'ship'=>'',
 			'meta_title'=>$post->meta_title,
 			'meta_keywords'=>$post->meta_keywords,
 			'meta_description'=>$post->meta_description,
-			'activity'=>''
+			'activity'=>'',
+			'oldprice' => $post->oldprice,
+			'shipchar' => $post->shipchar,
 		);
 		if(empty($post->id))
 		{

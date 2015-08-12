@@ -7,6 +7,10 @@ use application\model\roleModel;
 use system\core\filter;
 use application\classes\login;
 use application\classes\email;
+use application\classes\excel;
+use system\core\image;
+use system\core\filesystem;
+use application\classes\sms;
 
 /**
  * 用户控制器
@@ -15,6 +19,85 @@ use application\classes\email;
  */
 class userControl extends control
 {
+	/**
+	 * 给用户发送短信
+	 */
+	function message()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_ALL))
+		{
+			$content = htmlspecialchars_decode($this->post->content);
+			if(mb_strlen($content,'utf8')>350)
+				return json_encode(array('code'=>2,'result'=>'短信长度不得超过350个字'));
+			if(mb_strlen($content,'utf-8')<10)
+				return json_encode(array('code'=>5,'result'=>'短信长度太短了，为了能通过接口还是多写几个字吧'));
+			$userModel = $this->model('user');
+			if(!empty($this->post->data))
+			{
+				$data = json_decode(htmlspecialchars_decode($this->post->data));
+				$userModel->where('id in (?)',array(implode(',', $data)));
+				$result = $userModel->select('telephone');
+				$telephone = array();
+				if(isset($result[0]['telephone']) && !empty($result[0]['telephone']))
+				{
+					$telephone[] = $result[0]['telephone'];
+				}
+				$sms = new sms();
+				$result = $sms->send($telephone, $content);
+				if((int)$result>0)
+				{
+					$this->model('log')->write($this->session->username,'给'.count($telephone).'个用户发送了短信:'.$content);
+					return json_encode(array('code'=>1,'result'=>'ok'));
+				}
+				else if((int)$result < 0)
+				{
+					return json_encode(array('code'=>5,'result'=>'短信接口异常'.$result));
+				}
+				return json_encode(array('code'=>0,'result'=>'选择人数太多，请控制在100个以内'));
+			}
+			return json_encode(array('code'=>4,'result'=>'参数错误'));
+		}
+		return json_encode(array('code'=>3,'result'=>'没有权限'));
+	}
+	
+	/**
+	 * 导出用户数据
+	 */
+	function export()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_SELECT))
+		{
+			$userModel = $this->model('user');
+			$addressModel = $this->model('address');
+			if(!empty($this->get->data))
+			{
+				$data = json_decode(htmlspecialchars_decode($this->get->data));
+				$userModel->where('id in (?)',array(implode(',', $data)));
+			}
+			$result = $userModel->select('id,telephone,email,username,regtime,logtime,money,score,ordernum,cost');
+			foreach($result as &$user)
+			{
+				$user['regtime'] = date("Y-m-d H:i:s",$user['regtime']);
+				$user['logtime'] = date("Y-m-d H:i:s",$user['logtime']);
+				$address = $addressModel->getHost($user['id']);
+				if(empty($address))
+					$addstr = '';
+				else
+					$addstr = "省份:".$address['province']." 城市:".$address['city']." 详细地址:".$address['address']." 邮编:".$address['zcode'];
+				$user['address'] = $addstr;
+			}
+			$excel = new excel();
+			$excel->xls($result,array('会员ID','手机号','Email','昵称','注册时间','最近登陆时间','余额','积分','订单数','消费金额','会员收货地址信息'),'user.xls');
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
+	}
 	/**
 	 * 获取用户个人信息
 	 * @return string
@@ -33,6 +116,29 @@ class userControl extends control
 		}
 		return json_encode(array('code'=>0,'result'=>'尚未登陆 '));
 	}
+	
+	/**
+	 * 用户设置自己昵称和头像
+	 */
+	function setnamegravatar()
+	{
+		if(login::user())
+		{
+			$username = $this->post->username;
+			$gravatar = $this->file->file;
+			$image = new image();
+			$file = $image->resizeImage($gravatar, 200, 200);
+			filesystem::unlink($gravatar);
+			$userModel = $this->model('user');
+			if($userModel->setNameGravatar($this->session->id,$username,$file))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'添加失败'));
+		}
+		return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+	}
+	
 	/**
 	 * 用户遗忘密码
 	 */
@@ -214,6 +320,32 @@ class userControl extends control
 			'code' => 0,
 			'result' => '请求失败'
 		));
+	}
+	
+	/**
+	 * 删除用户账户
+	 */
+	function remove()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_DELETE))
+		{
+			$id = filter::int($this->post->id);
+			if(!empty($id))
+			{
+				$userModel = $this->model('user');
+				if($userModel->remove($id))
+				{
+					$logModel = $this->model('log');
+					$logModel->write($this->session->username,"删除了一个用户");
+					return json_encode(array('code'=>1,'result'=>'ok'));
+				}
+				return json_encode(array('code'=>0,'result'=>'删除失败'));
+			}
+			return json_encode(array('code'=>2,'result'=>'参数错误 '));
+		}
+		return json_encode(array('code'=>3,'result'=>'没有权限'));
 	}
 
 	/**

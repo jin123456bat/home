@@ -1,7 +1,9 @@
 <?php
 namespace application\control;
 use system\core\control;
+use application\classes\login;
 use system\core\filter;
+use application\model\roleModel;
 /**
  * 商品多属性和商品价格库存编号之间的映射关系控制器
  * @author jin12
@@ -37,23 +39,34 @@ class collectionControl extends control
 	 */
 	function updatevalue()
 	{
-		$data = json_decode(htmlspecialchars_decode($this->post->data));
-		$pid = $this->post->pid;
-		$collectionModel = $this->model('collection');
-		foreach ($data as $value)
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'product',roleModel::POWER_UPDATE))
 		{
-			$array = array();
-			$type = $value->type;
-			$did = $value->did;
-			$val = $value->value;
-			$didd = explode(',', $did);
-			foreach ($didd as $a)
-			{
-				list($x,$y) = explode(':',$a);
-				$array[$x] = $y;
+			try{
+				$data = json_decode(htmlspecialchars_decode($this->post->data));
+				$pid = $this->post->pid;
+				$collectionModel = $this->model('collection');
+				foreach ($data as $value)
+				{
+					$array = array();
+					$type = $value->type;
+					$did = $value->did;
+					$val = $value->value;
+					$didd = explode(',', $did);
+					foreach ($didd as $a)
+					{
+						list($x,$y) = explode(':',$a);
+						$array[$x] = $y;
+					}
+					$collectionModel->create($array,$pid,$type,$val);
+				}
+				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
-			$collectionModel->create($array,$pid,$type,$val);
+			catch (\Exception $e)
+			{
+				return json_encode(array('code'=>0,'result'=>'failed'));
+			}
 		}
-		
+		return json_encode(array('code'=>2,'result'=>'没有权限'));
 	}
 }

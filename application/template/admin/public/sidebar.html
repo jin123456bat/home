@@ -170,6 +170,7 @@
 		<li class="{%if ($smarty.get.c==sale && $smarty.get.a==admin)
         				||($smarty.get.c==seckill && $smarty.get.a==admin)
                         ||($smarty.get.c==fullcut && $smarty.get.a==admin)
+                        ||($smarty.get.c==coupon && $smarty.get.a==admin)
         %}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
@@ -193,34 +194,36 @@
 					<a href="extra_invoice.html">
 					组合</a>
 				</li>-->
-				<li>
-					<a href="page_portfolio.html">
-					优惠券</a>
-				</li>
-				<li>
-					<a href="extra_pricing_table.html">
-					打折码</a>
+				<li class="{%if $smarty.get.c==coupon && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=coupon a=admin%}">
+					优惠券/打折码</a>
 				</li>
 			</ul>
 		</li>
 		
-		<li{%if $smarty.get.c==user && $smarty.get.a==userlist%} class="active open"{%/if%}>
+		<li{%if ($smarty.get.c==user && $smarty.get.a==userlist)
+        		||($smarty.get.c==admin && $smarty.get.a==adminlist)
+                ||($smarty.get.c==role && $smarty.get.a==admin)
+        	%} class="active open"{%/if%}>
 			<a href="javascript:;">
 			<i class="icon-user"></i>
 			<span class="title">用户管理</span>
-			<span class="arrow {%if $smarty.get.c==user && $smarty.get.a==userlist%}open{%/if%}"></span>
+			<span class="arrow {%if $smarty.get.c==user && $smarty.get.a==userlist
+                                ||($smarty.get.c==admin && $smarty.get.a==adminlist)
+                                ||($smarty.get.c==role && $smarty.get.a==admin)
+                                %}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
 				<li{%if $smarty.get.c==user && $smarty.get.a==userlist%} class="active"{%/if%}>
 					<a href="{%url c=user a=userlist%}">
 					会员列表</a>
 				</li>
-				<li>
+				<li{%if $smarty.get.c==admin && $smarty.get.a==adminlist%} class="active"{%/if%}>
 					<a href="{%url c=admin a=adminlist%}">
 					管理员列表</a>
 				</li>
-				<li>
-					<a href="{%url c=admin a=grouplist%}">
+				<li{%if $smarty.get.c==role && $smarty.get.a==admin%} class="active"{%/if%}>
+					<a href="{%url c=role a=admin%}">
 					管理组
 					</a>
 				</li>
@@ -229,16 +232,16 @@
 		<li class="heading">
 			<h3 class="uppercase">设定</h3>
 		</li>
-        <li>
+        <li {%if $smarty.get.c==ship && $smarty.get.a==admin%}class="active open"{%/if%}>
 			<a href="javascript:;">
 			<i class="icon-settings"></i>
 			<span class="title">参数设定</span>
-			<span class="arrow "></span>
+			<span class="arrow {%if $smarty.get.c==ship && $smarty.get.a==admin%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="form_controls.html">
-					Form Controls</a>
+				<li{%if $smarty.get.c==ship && $smarty.get.a==admin%} class="active"{%/if%}>
+					<a href="{%url c=ship a=admin%}">
+					配送方案</a>
 				</li>
 				<li>
 					<a href="form_layouts.html">

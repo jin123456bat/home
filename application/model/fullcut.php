@@ -15,6 +15,21 @@ class fullcutModel extends model
 	}
 	
 	/**
+	 * 用于app首页显示满减优惠  所有商品的满减信息以及商品信息
+	 */
+	function getIndex($length)
+	{
+		$a = $_SERVER['REQUEST_TIME'];
+		$this->table('fullcutdetail','left join','fullcut.id=fullcutdetail.fid');
+		$this->table('product','left join','fullcutdetail.pid=product.id');
+		$this->where('(fullcut.starttime<? or fullcut.starttime=0) and (fullcut.endtime<? or fullcut.endtime=0) and (product.starttime<? or product.starttime=0) and (product.endtime>? or product.endtime=0)',array($a,$a,$a,$a));	
+		$this->where('product.status=?',array(1));
+		$this->where('product.stock>?',array(0));
+		$this->limit($length);
+		return $this->select('*,fullcut.starttime as f_startime,fullcut.endtime as f_endtime,fullcut.name as f_name');
+	}
+	
+	/**
 	 * 保存
 	 */
 	function save($id,$name,$max,$minus,$starttime,$endtime)

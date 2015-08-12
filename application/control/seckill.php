@@ -12,6 +12,31 @@ use system\core\view;
  */
 class seckillControl extends control
 {
+	
+	/**
+	 * app首页的秒杀活动
+	 */
+	function product()
+	{
+		$length = empty($this->get->length)?5:$this->get->length;
+		$seckillModel = $this->model('seckill');
+		$brandModel = $this->model('brand');
+		$result = $seckillModel->getIndex($length);
+		$prototypeModel = $this->model('prototype');
+		$productimgModel = $this->model('productimg');
+		$categoryModel = $this->model('category');
+		foreach ($result as &$product)
+		{
+			unset($product['pid']);
+			$product['brand'] = $brandModel->get($product['bid'],'name');
+			unset($product['bid']);
+			$product['prototype'] = $prototypeModel->getByPid($product['id']);
+			$product['img'] = $productimgModel->getByPid($product['id']);
+			$product['category'] = $categoryModel->get($product['category'],'name');
+		}
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+	}
+	
 	function index()
 	{
 		
@@ -83,16 +108,6 @@ class seckillControl extends control
 			$this->response->setCode(302);
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
-	}
-	
-	/**
-	 * 获得所有秒杀商品信息
-	 */
-	function product()
-	{
-		$seckillModel = $this->model('seckill');
-		$result = $seckillModel->product();
-		return json_encode(array('code'=>1,'result'=>'ok',body=>$result));
 	}
 	
 	/**

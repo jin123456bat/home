@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-06 18:52:25
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-08 22:37:55
          compiled from "D:\wamp\www\home\application\template\admin\sale.html" */ ?>
 <?php /*%%SmartyHeaderCode:734255c244027122e2-54326701%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '11398f2d8e7461e003322e090aa234daede0d097' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\sale.html',
-      1 => 1438856546,
+      1 => 1439044524,
       2 => 'file',
     ),
   ),
@@ -49,8 +49,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 /assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
-<link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
-/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css"/>
 <!-- END GLOBAL MANDATORY STYLES -->
 <!-- BEGIN THEME STYLES -->
 <link href="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
@@ -90,88 +90,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			<!-- BEGIN STYLE CUSTOMIZER -->
-			<div class="theme-panel hidden-xs hidden-sm">
-				<div class="toggler">
-				</div>
-				<div class="toggler-close">
-				</div>
-				<div class="theme-options">
-					<div class="theme-option theme-colors clearfix">
-						<span>
-						THEME COLOR </span>
-						<ul>
-							<li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default">
-							</li>
-							<li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue">
-							</li>
-							<li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue">
-							</li>
-							<li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey">
-							</li>
-							<li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light">
-							</li>
-							<li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2">
-							</li>
-						</ul>
-					</div>
-					<div class="theme-option">
-						<span>
-						Layout </span>
-						<select class="layout-option form-control input-small">
-							<option value="fluid" selected="selected">Fluid</option>
-							<option value="boxed">Boxed</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Header </span>
-						<select class="page-header-option form-control input-small">
-							<option value="fixed" selected="selected">Fixed</option>
-							<option value="default">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Mode</span>
-						<select class="sidebar-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Menu </span>
-						<select class="sidebar-menu-option form-control input-small">
-							<option value="accordion" selected="selected">Accordion</option>
-							<option value="hover">Hover</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Style </span>
-						<select class="sidebar-style-option form-control input-small">
-							<option value="default" selected="selected">Default</option>
-							<option value="light">Light</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Position </span>
-						<select class="sidebar-pos-option form-control input-small">
-							<option value="left" selected="selected">Left</option>
-							<option value="right">Right</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Footer </span>
-						<select class="page-footer-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-				</div>
-			</div>
+			<?php echo $_smarty_tpl->getSubTemplate ('admin/public/style.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 			<!-- END STYLE CUSTOMIZER -->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
@@ -210,6 +130,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
                     <div class="alert alert-success margin-bottom-10">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
                         <i class="fa fa-warning fa-lg"></i> 限时折扣中的商品，库存量按照商品自身属性中的库存计算，可选属性导致的库存变动无效
+                    </div>
+                    <div id="alert-msg">
                     </div>
 					 <div class="portlet box yellow">
 						<div class="portlet-title">
@@ -279,19 +201,19 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['product']['last']       = ($
 										 <?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['name'];?>
 
 									</td>
-									<td class="serverside" data-type="time">
+									<td class="serverside" data-type="time" data-name="starttime">
 										 <?php echo smarty_modifier_date_format($_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['starttime'],"Y-m-d H:i:s");?>
 
 									</td>
-									<td class="serverside" data-type="time">
+									<td class="serverside" data-type="time" data-name="endtime">
 										 <?php echo smarty_modifier_date_format($_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['endtime'],"Y-m-d H:i:s");?>
 
 									</td>
-									<td class="serverside" data-type="text">
+									<td class="serverside" data-type="text" data-name="price">
 										 <?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['price'];?>
 
 									</td>
-									<td class="serverside" data-type="text">
+									<td class="serverside" data-type="text" data-name="orderby">
 										 <?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['orderby'];?>
 
 									</td>
@@ -304,7 +226,9 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['product']['last']       = ($
                                             <a href="#" data-id="<?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['id'];?>
 " class="btn btn-sm blue editBtn">
                                             编辑 </a>
-                                            <a href="#" class="btn btn-sm green">
+                                            <a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'edit'),$_smarty_tpl);?>
+&action=edit&id=<?php echo $_smarty_tpl->tpl_vars['product']->value[$_smarty_tpl->getVariable('smarty')->value['section']['product']['index']]['pid'];?>
+" class="btn btn-sm green">
                                             查看 </a>
                                         </div>
 									</td>
@@ -323,10 +247,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['product']['last']       = ($
 		</div>
 	</div>
 	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
 	<?php echo $_smarty_tpl->getSubTemplate ('admin/public/quickslider.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
 
-	<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <?php echo $_smarty_tpl->getSubTemplate ('admin/public/footer.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
@@ -358,8 +280,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['product']['last']       = ($
 /assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
-/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
+/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 <!-- END CORE PLUGINS -->
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/global/scripts/metronic.js" type="text/javascript"></script>
@@ -370,33 +292,72 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['product']['last']       = ($
 <script src="<?php echo $_smarty_tpl->tpl_vars['VIEW_ROOT']->value;?>
 /assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
 <script>
-      jQuery(document).ready(function() {    
-         Metronic.init(); // init metronic core components
-Layout.init(); // init current layout
-QuickSidebar.init(); // init quick sidebar
-Demo.init(); // init demo features
-		$('.editBtn').live('click',function(){
-			var td = $(this).parents('tr').find('.serverside')
-			if($(this).html() == '编辑')
-			{
-				$(this).html('完成');
-				$.each(td,function(index,value){
-					var old = $.trim($(value).html());
-					var input = $('<input class="form-control" type="text" value="'+old+'">');
-					$(value).html('');
-					$(value).append(input);
-				});
-			}
-			else
-			{
-				$(this).html('编辑');
-				$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'sale','a'=>'save'),$_smarty_tpl);?>
-',{},function(){
-				});
-			}
-		});
-      });
-   </script>
+jQuery(document).ready(function() {    
+	Metronic.init(); // init metronic core components
+	Layout.init(); // init current layout
+	QuickSidebar.init(); // init quick sidebar
+	Demo.init(); // init demo features
+	$('.editBtn').live('click',function(){
+		var td = $(this).parents('tr').find('.serverside')
+		if($.trim($(this).html()) == '编辑')
+		{
+			if(td.find('input').length>0)
+					return;
+			$.each(td,function(index,value){
+				var old = $.trim($(value).html());
+				var input = $('<input class="form-control" type="text" name="'+$(value).data('name')+'" value="'+old+'">');
+				var type = $(value).data('type');
+				if(type == 'time')
+				{
+					input.datetimepicker({
+						autoclose: true,
+						isRTL: Metronic.isRTL(),
+						format: "yyyy-mm-dd hh:ii",
+						todayBtn: true,
+						minuteStep: 5,
+						pickerPosition: (Metronic.isRTL() ? "bottom-right" : "bottom-left")
+					});
+				}
+				$(value).html('');
+				$(value).append(input);
+			});
+			$(this).html('完成');
+		}
+		else
+		{
+			btn = $(this);
+			var id = $(this).data('id');
+			var starttime = td.parent().find('input[name=starttime]').val();
+			var endtime = td.parent().find('input[name=endtime]').val();
+			var orderby = td.parent().find('input[name=orderby]').val();
+			var price = td.parent().find('input[name=price]').val();
+			$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'sale','a'=>'save'),$_smarty_tpl);?>
+',{id:id,starttime:starttime,endtime:endtime,orderby:orderby,price:price},function(data){
+				data = $.parseJSON(data);
+				if(data.code == 1)
+				{
+					$.each(td,function(index,value){
+						var val = $(value).find('input').val();
+						$(value).html(val);
+					});
+					btn.html('编辑');
+				}
+				else
+				{
+					Metronic.alert({
+						type: 'danger',
+						icon: 'warning',
+						message: data.result,
+						container: $('#alert-msg'),
+						place: 'prepend',
+						closeInSeconds: 5,
+					});
+				}
+			});
+		}
+	});
+	});
+</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->

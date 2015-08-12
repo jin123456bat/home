@@ -14,6 +14,40 @@ class addressModel extends model
 	}
 	
 	/**
+	 * 获取用户的地址
+	 * @param unknown $uid
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function fetchAll($uid)
+	{
+		$this->where('uid=?',array($uid));
+		return $this->select();
+	}
+	
+	/**
+	 * 保存用户的地址
+	 * @param unknown $id
+	 * @param unknown $uid
+	 * @param unknown $province
+	 * @param unknown $city
+	 * @param unknown $address
+	 * @param unknown $name
+	 * @param unknown $telephone
+	 * @param unknown $zcode
+	 * @param unknown $host
+	 */
+	function save($id,$uid,$province,$city,$address,$name,$telephone,$zcode,$host = 0)
+	{
+		$host = empty($host)?0:1;
+		if(!empty($host))
+		{
+			//取消其他的默认地址
+			$this->where('uid=?',array($uid))->update('host',0);
+		}
+		$this->where('id=? and uid=?',array($id,$uid))->update(array('provice'=>$province,'city'=>$city,'address'=>$address,'name'=>$name,'telephone'=>$telephone,'zcode'=>$zcode,'host'=>$host));
+	}
+	
+	/**
 	 * 添加收货地址
 	 * @param unknown $uid 用户id
 	 * @param unknown $city 城市
@@ -22,14 +56,14 @@ class addressModel extends model
 	 * @param unknown $telephone 收货人电话
 	 * @param unknown $host 是否为默认地址
 	 */
-	function create($uid,$city,$address,$name,$telephone,$host = 0)
+	function create($uid,$province,$city,$address,$name,$telephone,$host = 0)
 	{
 		if($host)
 		{
 			//取消其他的默认地址
 			$this->where('uid=?',array($uid))->update('host',0);
 		}
-		$array = array(NULL,$uid,$city,$address,$name,$telephone,$host);
+		$array = array(NULL,$uid,$province,$city,$address,$name,$telephone,$host);
 		$this->insert($array);
 		return $this->lastInsertId();
 	}

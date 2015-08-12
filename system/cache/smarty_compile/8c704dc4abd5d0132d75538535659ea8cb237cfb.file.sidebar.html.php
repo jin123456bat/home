@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-07 15:55:29
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-11 14:16:39
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1438934107,
+      1 => 1439273797,
       2 => 'file',
     ),
   ),
@@ -189,7 +189,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</li>
 			</ul>
 		</li>
-		<li class="<?php if (($_GET['c']=='sale'&&$_GET['a']=='admin')||($_GET['c']=='seckill'&&$_GET['a']=='admin')||($_GET['c']=='fullcut'&&$_GET['a']=='admin')) {?>active open<?php }?>">
+		<li class="<?php if (($_GET['c']=='sale'&&$_GET['a']=='admin')||($_GET['c']=='seckill'&&$_GET['a']=='admin')||($_GET['c']=='fullcut'&&$_GET['a']=='admin')||($_GET['c']=='coupon'&&$_GET['a']=='admin')) {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
 			<span class="title">活动中心</span>
@@ -215,22 +215,19 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 					<a href="extra_invoice.html">
 					组合</a>
 				</li>-->
-				<li>
-					<a href="page_portfolio.html">
-					优惠券</a>
-				</li>
-				<li>
-					<a href="extra_pricing_table.html">
-					打折码</a>
+				<li class="<?php if ($_GET['c']=='coupon'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'coupon','a'=>'admin'),$_smarty_tpl);?>
+">
+					优惠券/打折码</a>
 				</li>
 			</ul>
 		</li>
 		
-		<li<?php if ($_GET['c']=='user'&&$_GET['a']=='userlist') {?> class="active open"<?php }?>>
+		<li<?php if (($_GET['c']=='user'&&$_GET['a']=='userlist')||($_GET['c']=='admin'&&$_GET['a']=='adminlist')||($_GET['c']=='role'&&$_GET['a']=='admin')) {?> class="active open"<?php }?>>
 			<a href="javascript:;">
 			<i class="icon-user"></i>
 			<span class="title">用户管理</span>
-			<span class="arrow <?php if ($_GET['c']=='user'&&$_GET['a']=='userlist') {?>open<?php }?>"></span>
+			<span class="arrow <?php if ($_GET['c']=='user'&&$_GET['a']=='userlist'||($_GET['c']=='admin'&&$_GET['a']=='adminlist')||($_GET['c']=='role'&&$_GET['a']=='admin')) {?>open<?php }?>"></span>
 			</a>
 			<ul class="sub-menu">
 				<li<?php if ($_GET['c']=='user'&&$_GET['a']=='userlist') {?> class="active"<?php }?>>
@@ -238,13 +235,13 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 ">
 					会员列表</a>
 				</li>
-				<li>
+				<li<?php if ($_GET['c']=='admin'&&$_GET['a']=='adminlist') {?> class="active"<?php }?>>
 					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'admin','a'=>'adminlist'),$_smarty_tpl);?>
 ">
 					管理员列表</a>
 				</li>
-				<li>
-					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'admin','a'=>'grouplist'),$_smarty_tpl);?>
+				<li<?php if ($_GET['c']=='role'&&$_GET['a']=='admin') {?> class="active"<?php }?>>
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'role','a'=>'admin'),$_smarty_tpl);?>
 ">
 					管理组
 					</a>
@@ -254,16 +251,17 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 		<li class="heading">
 			<h3 class="uppercase">设定</h3>
 		</li>
-        <li>
+        <li <?php if ($_GET['c']=='ship'&&$_GET['a']=='admin') {?>class="active open"<?php }?>>
 			<a href="javascript:;">
 			<i class="icon-settings"></i>
 			<span class="title">参数设定</span>
-			<span class="arrow "></span>
+			<span class="arrow <?php if ($_GET['c']=='ship'&&$_GET['a']=='admin') {?>open<?php }?>"></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="form_controls.html">
-					Form Controls</a>
+				<li<?php if ($_GET['c']=='ship'&&$_GET['a']=='admin') {?> class="active"<?php }?>>
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'ship','a'=>'admin'),$_smarty_tpl);?>
+">
+					配送方案</a>
 				</li>
 				<li>
 					<a href="form_layouts.html">

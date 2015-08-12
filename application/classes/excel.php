@@ -9,7 +9,7 @@ class excel
 	 *   @param $title   excel的第一行标题,一个数组,如果为空则没有标题
 	 *   @param $filename 下载的文件名
 	 *   @example
-	 *		exportexcel($arr,array('id','账户','密码','昵称'),'文件名!');
+	 *		exportexcel($arr,array('id','账户','密码','昵称'),'文件名');
 	 */
 	function xls($data=array(),$title=array(),$filename='report')
 	{
@@ -33,7 +33,6 @@ class excel
 					$data[$key][$ck]=iconv("UTF-8", "GB2312", $cv);
 				}
 				$data[$key]=implode("\t", $data[$key]);
-				 
 			}
 			echo implode("\n",$data);
 		}

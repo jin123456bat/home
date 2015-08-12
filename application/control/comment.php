@@ -2,10 +2,10 @@
 namespace application\control;
 
 use system\core\control;
-use system\core\file;
 use application\classes\login;
 use system\core\filter;
 use system\core\filesystem;
+use application\model\roleModel;
 class commentControl extends control
 {
 
@@ -18,10 +18,13 @@ class commentControl extends control
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$pid = filter::int($this->post->pid);
 		$content = $this->post->content;
+		$files = $this->file->receiveMultiFile($_FILES['file'],config('file'));
+		$score = filter::int($this->post->score);
+		$score = ($score<=5 && $score>=0)?$score:0;
 		if(!empty($pid))
 		{
 			$commentModel = $this->model('comment');
-			if($commentModel->add($this->session->id,$pid,$content))
+			if($commentModel->create($this->session->id,$pid,$content,$score,$files))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
@@ -35,13 +38,19 @@ class commentControl extends control
 	 */
 	function getlist()
 	{
-		if(!login::user())
-			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$start = empty($this->get->start)?0:$this->get->start;
+		$length = empty($this->get->length)?5:$this->get->length;
 		$pid = filter::int($this->get->pid);
 		if(!empty($pid))
 		{
 			$commentModel = $this->model('comment');
-			$result = $commentModel->getByPid($pid);
+			$result = $commentModel->getByPid($pid,$start,$length);
+			foreach($result as &$comment)
+			{
+				$comment['telephone'] = $this->model('user')->get($comment['uid'],'telephone');
+				unset($comment['uid']);
+				$comment['img'] = $this->model('comment_pic')->getByCid($comment['id'],'url');
+			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 		}
 		return json_encode(array('code'=>0,'result'=>'参数错误'));
@@ -71,25 +80,31 @@ class commentControl extends control
 	 */
 	function del()
 	{
-		$id = filter::int($this->post->id);
-		if (!empty($id))
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'comment',roleModel::POWER_DELETE))
 		{
-			$commentModel = $this->model('comment');
-			if($commentModel->remove($id))
+			$id = filter::int($this->post->id);
+			if (!empty($id))
 			{
-				//删除磁盘图片
-				$comment_picModel = $this->model('comment_pic');
-				$comment_pic = $comment_picModel->getByCid($id,'path');
-				foreach ($comment_pic as $pic)
+				$commentModel = $this->model('comment');
+				if($commentModel->remove($id))
 				{
-					filesystem::unlink($pic);
+					//删除磁盘图片
+					$comment_picModel = $this->model('comment_pic');
+					$comment_pic = $comment_picModel->getByCid($id,'path');
+					foreach ($comment_pic as $pic)
+					{
+						filesystem::unlink($pic);
+					}
+					$this->model('log')->write($this->session->username,'删除了一条评论');
+					//删除图片记录
+					$comment_picModel->removeByCid($id);
+					return json_encode(array('code'=>1,'result'=>'ok'));
 				}
-				//删除图片记录
-				$comment_picModel->removeByCid($id);
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return json_encode(array('code'=>0,'result'=>'failed'));
 			}
-			return json_encode(array('code'=>0,'result'=>'failed'));
+			return json_encode(array('code'=>2,'result'=>'参数错误'));
 		}
-		return json_encode(array('code'=>2,'result'=>'参数错误'));
+		return json_encode(array('code'=>3,'result'=>'没有权限'));
 	}
 }

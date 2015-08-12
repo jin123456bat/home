@@ -15,7 +15,51 @@ class adminControl extends control
 	function index()
 	{
 		$this->view = new view(config('view'), 'admin/login.html');
+		
 		return $this->view->display();
+	}
+	
+	/**
+	 * 更改管理员密码
+	 */
+	function resetpwd()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->id,'admin',roleModel::POWER_UPDATE))
+		{
+			$id = filter::int($this->post->id);
+			$password= $this->post->password;
+			$adminModel = $this->model('admin');
+			if($adminModel->changepwd($id,$password))
+			{
+				$this->model('log')->write($this->session->username,"更改了管理员的密码");
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>2,'result'=>'修改失败，可能和原密码相同'));
+		}
+		return json_encode(array('code'=>0,'result'=>'没有权限'));
+	}
+	
+	/**
+	 * 删除管理员账户
+	 */
+	function remove()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'admin',roleModel::POWER_DELETE))
+		{
+			$id = filter::int($this->post->id);
+			$adminModel = $this->model('admin');
+			if($adminModel->remove($id))
+			{
+				$this->model('log')->write($this->session->username,"删除了管理员账户");
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>2,'result'=>'删除失败'));
+		}
+		return json_encode(array('code'=>0,'result'=>'没有权限'));
 	}
 	
 	/**
@@ -24,6 +68,7 @@ class adminControl extends control
 	function dashboard()
 	{
 		$this->view = new view(config('view'), 'admin/dashboard.html');
+		$this->model('log')->write($this->session->username,"登陆了系统");
 		return $this->view->display();
 	}
 	
@@ -55,8 +100,17 @@ class adminControl extends control
 	 */
 	function adminlist()
 	{
-		$this->view = new view(config('view'), 'admin/adminlist.html');
-		$this->response->setBody($this->view->display());
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'admin',roleModel::POWER_SELECT))
+		{
+			$this->view = new view(config('view'), 'admin/adminlist.html');
+			$this->response->setBody($this->view->display());
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
 	}
 	
 	/**
@@ -97,6 +151,7 @@ class adminControl extends control
 			$adminModel = $this->model('admin');
 			if($adminModel->register($username,$password))
 			{
+				$this->model('log')->write($this->session->username,'添加了一个管理员账号'.$username);
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
 			return json_encode(array('code'=>0,'result'=>'用户名已存在'));

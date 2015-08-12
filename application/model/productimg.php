@@ -26,11 +26,12 @@ class productimgModel extends model
 		return $this->where('pid=?',array($pid))->delete();
 	}
 
-	function getByPid($pid)
+	function getByPid($pid,$name = '*')
 	{
+		$this->orderby('orderby','desc');
 		return $this->where('pid=?', array(
 			$pid
-		))->select();
+		))->select($name);
 	}
 
 	/**

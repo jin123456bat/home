@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-31 16:32:27
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-11 01:28:14
          compiled from "D:\wamp\www\home\application\template\admin\userlist.html" */ ?>
 <?php /*%%SmartyHeaderCode:2455055b5a3a7961bd5-95318673%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '10d6e352fb5d895c46dd8525c8eefdf551c739d2' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\userlist.html',
-      1 => 1438331521,
+      1 => 1439227663,
       2 => 'file',
     ),
   ),
@@ -157,91 +157,36 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</div>
 				<!-- /.modal-dialog -->
 			</div>
+            <div class="modal fade container in" id="smssender" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form class="form-horizontal" role="form" id="smssender_form">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">短信群发</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="padding:0px;">
+                                    <div class="col-md-12">
+                                        <textarea class="form-control" rows="6"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn blue btn-circle">发送</button>
+                                <button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
+                            </div>
+                        </form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
 			<!-- /.modal -->
 			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<!-- BEGIN STYLE CUSTOMIZER -->
-			<div class="theme-panel hidden-xs hidden-sm">
-				<div class="toggler">
-				</div>
-				<div class="toggler-close">
-				</div>
-				<div class="theme-options">
-					<div class="theme-option theme-colors clearfix">
-						<span>
-						THEME COLOR </span>
-						<ul>
-							<li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default">
-							</li>
-							<li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue">
-							</li>
-							<li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue">
-							</li>
-							<li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey">
-							</li>
-							<li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light">
-							</li>
-							<li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2">
-							</li>
-						</ul>
-					</div>
-					<div class="theme-option">
-						<span>
-						Layout </span>
-						<select class="layout-option form-control input-small">
-							<option value="fluid" selected="selected">Fluid</option>
-							<option value="boxed">Boxed</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Header </span>
-						<select class="page-header-option form-control input-small">
-							<option value="fixed" selected="selected">Fixed</option>
-							<option value="default">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Mode</span>
-						<select class="sidebar-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Menu </span>
-						<select class="sidebar-menu-option form-control input-small">
-							<option value="accordion" selected="selected">Accordion</option>
-							<option value="hover">Hover</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Style </span>
-						<select class="sidebar-style-option form-control input-small">
-							<option value="default" selected="selected">Default</option>
-							<option value="light">Light</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Position </span>
-						<select class="sidebar-pos-option form-control input-small">
-							<option value="left" selected="selected">Left</option>
-							<option value="right">Right</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Footer </span>
-						<select class="page-footer-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-				</div>
-			</div>
+			<?php echo $_smarty_tpl->getSubTemplate ('admin/public/style.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 			<!-- END STYLE CUSTOMIZER -->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
@@ -280,20 +225,19 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 						<div class="portlet-body">
 							<div class="table-toolbar">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-12">
 										<div class="btn-group">
 											<button class="btn btn-default btn-circle" data-toggle="modal" data-target="#portlet-config">
 											添加新用户 <i class="fa fa-plus"></i>
 											</button>
 										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="btn-group pull-right">
+                                        
+                                        <div class="btn-group pull-right">
 											<button class="btn dropdown-toggle btn-default btn-circle" data-toggle="dropdown">工具 <i class="fa fa-angle-down"></i>
 											</button>
 											<ul class="dropdown-menu pull-right">
 												<li>
-													<a href="#">
+													<a href="#" id="export">
 													导出 </a>
 												</li>
 												<li>
@@ -301,10 +245,15 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 													发送邮件 </a>
 												</li>
 												<li>
-													<a href="#">
+													<a href="#smssender" data-toggle="modal">
 													发送短信 </a>
 												</li>
 											</ul>
+										</div>
+                                        <div class="btn-group pull-right">
+											<button class="btn btn-default btn-circle btn-danger" id="removeUser">
+											删除用户账户 <i class="fa fa-minus"></i>
+											</button>
 										</div>
 									</div>
 								</div>
@@ -314,6 +263,12 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 							<tr>
 								<th class="table-checkbox">
 									<input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"/>
+								</th>
+                                <th>
+									 用户名
+								</th>
+                                <th>
+									 头像
 								</th>
 								<th>
 									 手机号
@@ -332,6 +287,9 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 								</th>
                                 <th>
                                 	积分
+                                </th>
+                                <th>
+                                	消费金额
                                 </th>
                                 <td>
                                 	订单数
@@ -354,22 +312,12 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 		</div>
 	</div>
 	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
 	<?php echo $_smarty_tpl->getSubTemplate ('admin/public/quickslider.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
 
-	<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-	<div class="page-footer-inner">
-		 2014 &copy; Metronic by keenthemes.
-	</div>
-	<div class="scroll-to-top">
-		<i class="icon-arrow-up"></i>
-	</div>
-</div>
-<!-- END FOOTER -->
+<?php echo $_smarty_tpl->getSubTemplate ('admin/public/footer.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
@@ -518,6 +466,91 @@ TableManaged.init();
 		var id = $(this).parents('tr').find('input[type=checkbox]').val();
 		$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'user','a'=>'close'),$_smarty_tpl);?>
 ',{toggle:toggle,id:id});
+	});
+	
+	$('#removeUser').on('click',function(event){
+		if(!window.confirm('确定删除选择的用户账户吗？该操作无法回复'))
+			return false;
+		var checkbox = $('.checkboxes:checked');
+		$.each(checkbox,function(index,value){
+			var id = $(value).val();
+			$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'user','a'=>'remove'),$_smarty_tpl);?>
+',{id:id},function(data){
+				if(data.code == 1)
+				{
+					$(value).parents('tr').remove();
+				}
+				else
+				{
+					alert(data.result);
+				}
+			});
+		});
+	});
+	
+	$('#export').on('click',function(event){
+		var checkbox = $('.checkboxes:checked');
+		var data = [];
+		if(checkbox.length>0)
+		{
+			if(window.confirm('确定只导出选择的数据吗?'))
+			{
+				$.each(checkbox,function(index,value){
+					data.push($(value).val());
+				});
+				data = JSON.stringify(data);
+				window.open('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'user','a'=>'export'),$_smarty_tpl);?>
+&data='+data,'');
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if(window.confirm('导出所有用户数据?'))
+			{
+				window.open('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'user','a'=>'export'),$_smarty_tpl);?>
+','');
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+	});
+	
+	$('#smssender').bind('show.bs.modal',function(event){
+		var checkbox = $('.checkboxes:checked');
+		if(checkbox.length==0)
+		{
+			alert('请先选择要发送的用户');
+			return false;
+		}
+	});
+	
+	$('#smssender_form').on('submit',function(event){
+		var data = [];
+		var checkbox = $('.checkboxes:checked');
+		$.each(checkbox,function(index,value){
+			data.push($(value).val());
+		});
+		var content = $('#smssender_form').find('textarea').val();
+		data = JSON.stringify(data);
+		$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'user','a'=>'message'),$_smarty_tpl);?>
+',{data:data,content:content},function(data){
+			if(data.code == 1)
+			{
+				$('#smssender').modal('hide');
+			}
+			else
+			{
+				alert(data.result);
+			}
+		});
+		return false;
 	});
 });
 </script>

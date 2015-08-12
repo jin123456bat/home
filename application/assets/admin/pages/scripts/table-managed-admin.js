@@ -16,6 +16,8 @@ var TableManaged = function () {
             }, {
 				"data":"role",
 				"orderable": true
+			},{
+				"data":'id'
 			}],
 			"paging":true,
 			"processing": true,
@@ -69,6 +71,11 @@ var TableManaged = function () {
 					});
 					tpl += '</select>';
 					return tpl;
+				}
+			}, {
+				"targets":[3],
+				"render":function(data,type,full){
+					return '<button class="btn btn-xs red-stripe default" href="#resetpwd" data-toggle="modal" data-id="'+data+'">更改登录密码</button>';
 				}
 			}, {
                 "searchable": false,

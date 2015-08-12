@@ -12,6 +12,32 @@ use system\core\view;
  */
 class fullcutControl extends control
 {
+	
+	/**
+	 * 满减活动商品信息
+	 */
+	function product()
+	{
+		$length = $this->get->length;
+		$length = empty($length)?5:$length;
+		$fullcutModel = $this->model('fullcut');
+		$brandModel = $this->model('brand');
+		$result = $fullcutModel->getIndex($length);
+		$categoryModel = $this->model('category');
+		$productimgModel = $this->model('productimg');
+		$prototypeModel = $this->model('prototype');
+		foreach($result as &$product)
+		{
+			$product['brand'] = $brandModel->get($product['bid'],'name');
+			unset($product['bid']);
+			$product['category'] = $categoryModel->get($product['category'],'name');
+			unset($product['pid']);
+			$product['prototype'] = $prototypeModel->getByPid($product['id']);
+			$product['img'] = $productimgModel->getByPid($product['pid']);
+		}
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+	}
+	
 	/**
 	 * 满减活动管理页面
 	 */

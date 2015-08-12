@@ -10,6 +10,14 @@ class categoryModel extends model
 	{
 		parent::__construct('category');
 	}
+	
+	function get($id,$name = '*')
+	{
+		$result = $this->where('id=?',array($id))->select($name);
+		if($name == '*')
+			return isset($result[0])?$result[0]:NULL;
+		return isset($result[0][$name])?$result[0][$name]:NULL;
+	}
 
 	/**
 	 * 创建分类

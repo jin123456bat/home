@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-06 18:53:22
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-12 00:19:55
          compiled from "D:\wamp\www\home\application\template\admin\product_edit.html" */ ?>
 <?php /*%%SmartyHeaderCode:2754655b8878e9b8403-56204090%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '4acedb3d29c9feaec7e9352736eb1db6c7d44d53' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product_edit.html',
-      1 => 1438856528,
+      1 => 1439309881,
       2 => 'file',
     ),
   ),
@@ -22,6 +22,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'VIEW_ROOT' => 0,
     'product' => 0,
     'category' => 0,
+    'brand' => 0,
   ),
   'has_nocache_code' => false,
 ),false); /*/%%SmartyHeaderCode%%*/?>
@@ -105,88 +106,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			<!-- BEGIN STYLE CUSTOMIZER -->
-			<div class="theme-panel hidden-xs hidden-sm">
-				<div class="toggler">
-				</div>
-				<div class="toggler-close">
-				</div>
-				<div class="theme-options">
-					<div class="theme-option theme-colors clearfix">
-						<span>
-						THEME COLOR </span>
-						<ul>
-							<li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default">
-							</li>
-							<li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue">
-							</li>
-							<li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue">
-							</li>
-							<li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey">
-							</li>
-							<li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light">
-							</li>
-							<li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2">
-							</li>
-						</ul>
-					</div>
-					<div class="theme-option">
-						<span>
-						Layout </span>
-						<select class="layout-option form-control input-small">
-							<option value="fluid" selected="selected">Fluid</option>
-							<option value="boxed">Boxed</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Header </span>
-						<select class="page-header-option form-control input-small">
-							<option value="fixed" selected="selected">Fixed</option>
-							<option value="default">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Mode</span>
-						<select class="sidebar-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Menu </span>
-						<select class="sidebar-menu-option form-control input-small">
-							<option value="accordion" selected="selected">Accordion</option>
-							<option value="hover">Hover</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Style </span>
-						<select class="sidebar-style-option form-control input-small">
-							<option value="default" selected="selected">Default</option>
-							<option value="light">Light</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Position </span>
-						<select class="sidebar-pos-option form-control input-small">
-							<option value="left" selected="selected">Left</option>
-							<option value="right">Right</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Footer </span>
-						<select class="page-footer-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-				</div>
-			</div>
+			<?php echo $_smarty_tpl->getSubTemplate ('admin/public/style.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 			<!-- END STYLE CUSTOMIZER -->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
@@ -296,6 +217,15 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 ">
 													</div>
 												</div>
+                                                <div class="form-group">
+													<label class="col-md-2 control-label">编码: <span class="required">
+													* </span>
+													</label>
+													<div class="col-md-10">
+														<input type="text" class="form-control" name="sku" placeholder="" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['sku'])===null||$tmp==='' ? '' : $tmp);?>
+">
+													</div>
+												</div>
 												<div class="form-group">
 													<label class="col-md-2 control-label">分类: <span class="required">
 													* </span>
@@ -334,6 +264,44 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
                                                         </select>
 													</div>
 												</div>
+                                                <div class="form-group">
+													<label class="col-md-2 control-label">品牌: <span class="required">
+													* </span>
+													</label>
+													<div class="col-md-10">
+														<select name="bid" class="form-control form-filter input-sm">
+                                                            <option value="0" selected="selected">请选择</option>
+                                                            <?php if (isset($_smarty_tpl->tpl_vars['smarty']->value['section']['brand'])) unset($_smarty_tpl->tpl_vars['smarty']->value['section']['brand']);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['name'] = 'brand';
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['loop'] = is_array($_loop=$_smarty_tpl->tpl_vars['brand']->value) ? count($_loop) : max(0, (int) $_loop); unset($_loop);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['show'] = true;
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['max'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['loop'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['step'] = 1;
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['start'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['step'] > 0 ? 0 : $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['loop']-1;
+if ($_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['show']) {
+    $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['total'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['loop'];
+    if ($_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['total'] == 0)
+        $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['show'] = false;
+} else
+    $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['total'] = 0;
+if ($_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['show']):
+
+            for ($_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['index'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['start'], $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['iteration'] = 1;
+                 $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['iteration'] <= $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['total'];
+                 $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['index'] += $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['step'], $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['iteration']++):
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['rownum'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['iteration'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['index_prev'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['index'] - $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['step'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['index_next'] = $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['index'] + $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['step'];
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['first']      = ($_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['iteration'] == 1);
+$_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['last']       = ($_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['iteration'] == $_smarty_tpl->tpl_vars['smarty']->value['section']['brand']['total']);
+?>
+                                                            <option value="<?php echo $_smarty_tpl->tpl_vars['brand']->value[$_smarty_tpl->getVariable('smarty')->value['section']['brand']['index']]['id'];?>
+" <?php if (isset($_smarty_tpl->tpl_vars['product']->value['bid'])&&$_smarty_tpl->tpl_vars['brand']->value[$_smarty_tpl->getVariable('smarty')->value['section']['brand']['index']]['id']==$_smarty_tpl->tpl_vars['product']->value['bid']) {?>selected="selected"<?php }?>><?php echo $_smarty_tpl->tpl_vars['brand']->value[$_smarty_tpl->getVariable('smarty')->value['section']['brand']['index']]['name'];?>
+</option>
+                                                            <?php endfor; endif; ?>
+                                                        </select>
+													</div>
+												</div>
 												<div class="form-group">
 													<label class="col-md-2 control-label">销售时间: <span class="required">
 													* </span>
@@ -353,11 +321,21 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 												</div>
 												
 												<div class="form-group">
-													<label class="col-md-2 control-label">价格: <span class="required">
+													<label class="col-md-2 control-label">标价: <span class="required">
 													* </span>
 													</label>
 													<div class="col-md-10">
-														<input type="text" class="form-control" name="price" placeholder="">
+														<input type="text" class="form-control" name="price" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['price'])===null||$tmp==='' ? '' : $tmp);?>
+" placeholder="">
+													</div>
+												</div>
+                                                <div class="form-group">
+													<label class="col-md-2 control-label">市场价: <span class="required">
+													* </span>
+													</label>
+													<div class="col-md-10">
+														<input type="text" class="form-control" name="oldprice" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['oldprice'])===null||$tmp==='' ? '' : $tmp);?>
+" placeholder="">
 													</div>
 												</div>
                                                 <div class="form-group">
@@ -365,7 +343,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 													* </span>
 													</label>
 													<div class="col-md-10">
-														<input type="text" class="form-control" name="stock" placeholder="">
+														<input type="text" class="form-control" name="stock" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['stock'])===null||$tmp==='' ? '' : $tmp);?>
+" placeholder="">
 													</div>
 												</div>
 												<div class="form-group">
@@ -404,6 +383,15 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 													</div>
 												</div>
                                                 <div class="form-group">
+													<label class="col-md-2 control-label">邮递字段: 
+													</label>
+													<div class="col-md-10">
+														<input type="text" class="form-control" name="shipchar" placeholder="" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['shipchar'])===null||$tmp==='' ? '' : $tmp);?>
+">						<span class="help-block">
+														仅仅用于APP列表页显示 </span>
+													</div>
+												</div>
+                                                <div class="form-group">
 													<label class="col-md-2 control-label">产品标签: 
 													</label>
 													<div class="col-md-10">
@@ -427,7 +415,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 													* </span>
 													</label>
 													<div class="col-md-10">
-														<input type="text" class="form-control" name="orderby" placeholder="数字越大越靠后">
+														<input type="text" class="form-control" name="orderby" value="<?php echo (($tmp = @$_smarty_tpl->tpl_vars['product']->value['orderby'])===null||$tmp==='' ? '' : $tmp);?>
+" placeholder="数字越大越靠后">
 													</div>
 												</div>
 											</div>
@@ -678,10 +667,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 		</div>
 	</div>
 	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
 	<?php echo $_smarty_tpl->getSubTemplate ('admin/public/quickslider.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
 
-    <!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <?php echo $_smarty_tpl->getSubTemplate ('admin/public/footer.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>

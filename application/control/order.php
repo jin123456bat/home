@@ -12,6 +12,16 @@ use application\classes\login;
  */
 class orderControl extends control
 {
+	
+	/**
+	 * 创建订单
+	 * @param unknown $array
+	 */
+	function create($array)
+	{
+		return $this->insert($array);
+	}
+	
 	/**
 	 * 获得某商品下的所有订单
 	 */

@@ -21,15 +21,12 @@ class fullcutdetailControl extends control
 		{
 			$fid = filter::int($this->post->fid);
 			$pid = filter::int($this->post->pid);
-			if(empty($fid)||empty($pid))
+			if(!(empty($fid) || empty($pid)))
 			{
 				$productModel = $this->model('product');
 				$resut = $productModel->get($pid);
 				if(empty($resut) || !empty($resut['activity']))
-					return json_encode(array('code'=>2,'result'=>'商品不存在或者该商品已经有优惠政策了'));
-				$fullcutModel = $this->model('fullcut');
-				if(!$fullcutModel->exist($fid))
-					return json_encode(array('code'=>4,'result'=>'满减优惠不存在'));
+					return json_encode(array('code'=>2,'result'=>'该商品已经有优惠政策了或者商品不存在'));
 				$fullcutdetailModel = $this->model('fullcutdetail');
 				if(!$fullcutdetailModel->exist($pid))
 				{

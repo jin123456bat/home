@@ -12,10 +12,30 @@ class userModel extends model
 		parent::__construct('user');
 	}
 	
-	function get($id)
+	/**
+	 * 获取某一个用户的信息
+	 * @param unknown $id
+	 * @return NULL
+	 */
+	function get($id,$name = '*')
 	{
-		$result = $this->where('id=?',array($id))->select();
-		return isset($result[0])?$result[0]:NULL;
+		$result = $this->where('id=?',array($id))->select($name);
+		if($name == '*')
+			return isset($result[0])?$result[0]:NULL;
+		return isset($result[0][$name])?$result[0][$name]:NULL;
+	}
+	
+	/**
+	 * 更改用户昵称和头像
+	 * @param unknown $id
+	 * @param unknown $name
+	 * @param unknown $gravatar
+	 * @return \system\core\Ambigous
+	 */
+	function setNameGravatar($id,$name,$gravatar)
+	{
+		$this->where('id=?',array($id));
+		return $this->update(array('username'=>$name,'gravatar'=>$gravatar));
 	}
 	
 	/**
@@ -59,7 +79,10 @@ class userModel extends model
 		$score = 0;
 		$close = 0;
 		$ordernum = 0;
-		$array = array(NULL,$telephone,$email,$password,$regtime,$logtime,$money,$score,$ordernum,$salt,$close,$o2o);
+		$cost = 0;
+		$gravatar = '';
+		$username = '';
+		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o);
 		return $this->insert($array);
 	}
 
@@ -79,6 +102,16 @@ class userModel extends model
 				return $result[0];
 		}
 		return false;
+	}
+	
+	/**
+	 * 删除用户
+	 * @param unknown $id
+	 * @return \system\core\Ambigous
+	 */
+	function remove($id)
+	{
+		return $this->where('id=?',array($id))->delete();
 	}
 	
 	/**

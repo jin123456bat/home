@@ -13,6 +13,52 @@ use application\classes\login;
 class saleControl extends control
 {
 	/**
+	 * 获得限时商品的信息
+	 */
+	function product()
+	{
+		$length = empty($this->get->length)?5:$this->get->length;
+		$saleModel = $this->model('sale');
+		$brandModel = $this->model('brand');
+		$result = $saleModel->getIndex($length);
+		$prototypeModel = $this->model('prototype');
+		$productimgModel = $this->model('productimg');
+		$categoryModel = $this->model('category');
+		foreach ($result as &$product)
+		{
+			unset($product['pid']);
+			$product['brand'] = $brandModel->get($product['bid'],'name');
+			unset($product['bid']);
+			$product['prototype'] = $prototypeModel->getByPid($product['id']);
+			$product['img'] = $productimgModel->getByPid($product['id']);
+			$product['category'] = $categoryModel->get($product['category'],'name');
+		}
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+	}
+	
+	/**
+	 * 保存限时特卖活动的信息
+	 */
+	function save()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'sale',roleModel::POWER_UPDATE))
+		{
+			$id = filter::int($this->post->id);
+			$starttime = $this->post->starttime;
+			$endtime = $this->post->endtime;
+			$price = filter::number($this->post->price);
+			$orderby = filter::int($this->post->orderby);
+			$seckillModel = $this->model('sale');
+			if($seckillModel->save($id,$starttime,$endtime,$orderby,$price))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'修改失败'));
+		}
+	}
+	
+	/**
 	 * 管理页面
 	 */
 	function admin()
@@ -45,19 +91,19 @@ class saleControl extends control
 			$starttime = $this->post->starttime;
 			$endtime = $this->post->endtime;
 			$price = filter::number($this->post->price);
+			$orderby = filter::int($this->post->orderby);
 			$productModel = $this->model('product');
 			$result = $productModel->get($pid);
 			if(!empty($pid) && !empty($result) && empty($result['activity']))
 			{
 				$saleModel = $this->model('sale');
-				if($saleModel->create($pid,$starttime,$endtime,$price))
+				if($saleModel->create($pid,$starttime,$endtime,$price,$orderby))
 				{
 					$productModel->setActivity($pid,'sale');
 					return json_encode(array('code'=>1,'result'=>'ok'));
 				}
 				return json_encode(array('code'=>2,'result'=>'添加失败，该商品已经在限时队列'));
 			}
-			var_dump($pid);
 			return json_encode(array('code'=>3,'result'=>'该商品已经有活动了'));
 		}
 		return json_encode(array('code'=>4,'result'=>'没有权限'));

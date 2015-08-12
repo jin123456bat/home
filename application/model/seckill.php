@@ -15,6 +15,33 @@ class seckillModel extends model
 	}
 	
 	/**
+	 * 获得首页显示的限时特卖商品信息
+	 */
+	function getIndex($length)
+	{
+		$a = $_SERVER['REQUEST_TIME'];
+		$this->where('(seckill.starttime<? or seckill.starttime=0) and (seckill.endtime>? or seckill.endtime=0) and (product.starttime<? or product.endtime=0) and (product.endtime>? or product.endtime=0)',array($a,$a,$a,$a));
+		$this->table('product','left join','product.id=seckill.pid');
+		$this->limit($length);
+		$this->where('product.status=?',array(1));
+		$this->orderby('seckill.orderby','desc');
+		$result = $this->select('*,seckill.starttime as s_starttime,seckill.endtime as s_endtime,seckill.price as new_price');
+		return $result;
+	}
+	
+	/**
+	 * 获得秒杀活动商品的价格
+	 * @param unknown $pid
+	 * @return NULL
+	 */
+	function getPrice($pid)
+	{
+		$this->where('pid=? and starttime<? and endtime>?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
+		$result = $this->select('price');
+		return isset($result[0]['price'])?$result[0]['price']:NULL;
+	}
+	
+	/**
 	 * 保存秒杀活动的修改
 	 * @param int $id
 	 * @param string $starttime
@@ -51,20 +78,6 @@ class seckillModel extends model
 		if($this->insert($array))
 			return $this->lastInsertId();
 		return false;
-	}
-	
-	/**
-	 * 获得秒杀活动商品信息
-	 * 过期的活动或未开始的不会获得
-	 */
-	function product()
-	{
-		$this->table('product','join left','seckill.pid=product.id');
-		$this->orderby('orderby');
-		$this->orderby('id','desc');
-		$this->where('starttime < ?',array($_SERVER['REQUEST_TIME']));
-		$this->where('endtime > ?',array($_SERVER['REQUEST_TIME']));
-		return $this->select();
 	}
 	
 	/**

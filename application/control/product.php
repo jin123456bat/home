@@ -7,8 +7,30 @@ use system\core\view;
 use application\model\roleModel;
 use application\classes\category;
 use system\core\filter;
+use application\classes\excel;
 class productControl extends control
 {
+	/**
+	 * 导出商品数据
+	 */
+	function export()
+	{
+		$data = json_decode(htmlspecialchars_decode($this->get->data));
+		$productModel = $this->model('product');
+		if(!empty($data))
+		{
+			$productModel->where('id in (?)',array(implode(',', $data)));
+		}
+		$product = $productModel->select('id,sku,name,category,price,oldprice,stock,short_description,time');
+		foreach($product as &$good)
+		{
+			$good['time'] = date('Y-m-d H:i:s',$good['time']);
+			$good['category'] = $this->model('category')->get($good['id'],'name');
+			unset($good['id']);
+		}
+		$excel = new excel();
+		$excel->xls($product,array('商品货号','商品名称','分类','标价','市场价','库存','描述','添加时间'));
+	}
 	
 	/**
 	 * 获得一个商品的所有详细信息
@@ -26,6 +48,9 @@ class productControl extends control
 			$collectionModel = $this->model('collection');
 			$collection = $collectionModel->getByPid($pid);
 			$product['collection'] = $collection;
+			$product['category'] = $this->model('category')->get($product['id'],'name');
+			$product['brand'] = $this->model('brand')->get($product['bid'],'name');
+			unset($product['bid']);
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
 		}
 		return json_encode(array('code'=>0,'result'=>'商品不存在'));
@@ -78,6 +103,7 @@ class productControl extends control
 					$prototypeModel = $this->model('prototype');
 					$prototypeModel->updatepid($prototype_id,$pid);
 				}
+				$this->model('log')->write($this->session->username,'修改了商品属性'.$id);
 				return json_encode(array('code'=>1,'result'=>'ok','id'=>$id));
 			}
 			return json_encode(array('code'=>2,'result'=>'failed'));
@@ -133,6 +159,12 @@ class productControl extends control
 			$categoryModel = $this->model('category');
 			$category = $categoryModel->select();
 			$category = (new category())->format(0,$category);
+			$brandModel = $this->model('brand');
+			$brand = $brandModel->fetchAll();
+			$shipModel = $this->model('ship');
+			$ship = $shipModel->select();
+			$this->view->assign('ship',$ship);
+			$this->view->assign('brand',$brand);
 			$this->view->assign('category',$category);
 			$this->response->setBody($this->view->display());
 		}
@@ -154,8 +186,10 @@ class productControl extends control
 				{
 					if(!empty($this->post->customActionName))
 					{
+						$logModel = $this->model('log');
 						foreach ($this->post->id as $id)
 						{
+							$logModel->write($this->session->username,'修改了商品('.$id.')的操作方式:'.$this->post->customActionName);
 							switch ($this->post->customActionName)
 							{
 								case 1:

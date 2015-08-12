@@ -27,10 +27,10 @@ class brandControl extends control
 		$description = $this->post->description;
 		$brandModel = $this->model('brand');
 		if ($brandModel->add($name, $logo, $description))
-			return json_encode(array(
-				'code' => 1,
-				'result' => '成功'
-			));
+		{
+			$this->model('log')->write($this->session->username,'添加了一个品牌'.$name);
+			return json_encode(array('code' => 1,'result' => '成功'));
+		}
 		return json_encode(array(
 			'code' => 0,
 			'result' => '失败'

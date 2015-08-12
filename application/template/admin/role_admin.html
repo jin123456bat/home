@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+<meta charset="utf-8"/>
+<title>Metronic | Page Layouts - Blank Page</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+<!-- END GLOBAL MANDATORY STYLES -->
+<!-- BEGIN THEME STYLES -->
+<link href="{%$VIEW_ROOT%}/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
+<link id="style_color" href="{%$VIEW_ROOT%}/assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME STYLES -->
+<link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+<body class="page-header-fixed page-quick-sidebar-over-content">
+{%include file='admin/public/header.html'%}
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+	{%include file='admin/public/sidebar.html'%}
+    <!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			
+			<!-- BEGIN STYLE CUSTOMIZER -->
+			<div class="theme-panel hidden-xs hidden-sm">
+				<div class="toggler">
+				</div>
+				<div class="toggler-close">
+				</div>
+				<div class="theme-options">
+					<div class="theme-option theme-colors clearfix">
+						<span>
+						THEME COLOR </span>
+						<ul>
+							<li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default">
+							</li>
+							<li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue">
+							</li>
+							<li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue">
+							</li>
+							<li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey">
+							</li>
+							<li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light">
+							</li>
+							<li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2">
+							</li>
+						</ul>
+					</div>
+					<div class="theme-option">
+						<span>
+						Layout </span>
+						<select class="layout-option form-control input-small">
+							<option value="fluid" selected="selected">Fluid</option>
+							<option value="boxed">Boxed</option>
+						</select>
+					</div>
+					<div class="theme-option">
+						<span>
+						Header </span>
+						<select class="page-header-option form-control input-small">
+							<option value="fixed" selected="selected">Fixed</option>
+							<option value="default">Default</option>
+						</select>
+					</div>
+					<div class="theme-option">
+						<span>
+						Sidebar Mode</span>
+						<select class="sidebar-option form-control input-small">
+							<option value="fixed">Fixed</option>
+							<option value="default" selected="selected">Default</option>
+						</select>
+					</div>
+					<div class="theme-option">
+						<span>
+						Sidebar Menu </span>
+						<select class="sidebar-menu-option form-control input-small">
+							<option value="accordion" selected="selected">Accordion</option>
+							<option value="hover">Hover</option>
+						</select>
+					</div>
+					<div class="theme-option">
+						<span>
+						Sidebar Style </span>
+						<select class="sidebar-style-option form-control input-small">
+							<option value="default" selected="selected">Default</option>
+							<option value="light">Light</option>
+						</select>
+					</div>
+					<div class="theme-option">
+						<span>
+						Sidebar Position </span>
+						<select class="sidebar-pos-option form-control input-small">
+							<option value="left" selected="selected">Left</option>
+							<option value="right">Right</option>
+						</select>
+					</div>
+					<div class="theme-option">
+						<span>
+						Footer </span>
+						<select class="page-footer-option form-control input-small">
+							<option value="fixed">Fixed</option>
+							<option value="default" selected="selected">Default</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<!-- END STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<h3 class="page-title">
+			用户管理 <small>管理组</small>
+			</h3>
+			<div class="page-bar">
+				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="{%url c=index a=index%}">首页</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<a href="#">用户管理</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<a href="{%url c=role a=admin%}">管理组</a>
+					</li>
+				</ul>
+			</div>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12">
+                	<div id="alert-msg">
+                    </div>
+					 <div class="portlet box red">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-cogs"></i>管理组
+							</div>
+						</div>
+						<div class="portlet-body">
+                        	<div class="form-group">
+                                <div class="input-group col-md-3">
+                                    <span class="input-group-btn">
+                                    <button class="btn blue-stripe" id="createBtn" type="button">创建管理组</button>
+                                    </span>
+                                    <input type="text" name="name" class="form-control hide" placeholder="管理员">
+                                    <span class="input-group-btn hide">
+                                    <button class="btn blue" type="button" id="okBtn">完成</button>
+                                    </span>
+                                </div>
+                            </div>
+							<div class="table-scrollable">
+								<table class="table table-hover">
+								<thead>
+								<tr>
+									<th>
+										 组名
+									</th>
+									<th>
+										 地址
+									</th>
+									<th>
+										 品牌
+									</th>
+									<th>
+										 分类
+									</th>
+                                    <th>
+										 组合
+									</th>
+                                    <th>
+										 评论
+									</th>
+                                    <th>
+										 优惠
+									</th>
+                                    <th>
+										 满减
+									</th>
+                                    <th>
+										 商品
+									</th>
+                                    <th>
+										 用户
+									</th>
+                                    <th>
+										 管理员
+									</th>
+                                    <th>
+										 订单
+									</th>
+                                    <th>
+										 限时
+									</th>
+                                    <th>
+										 秒杀
+									</th>
+                                    <th>
+										 角色
+									</th>
+                                    <th>
+										 配送
+									</th>
+                                    <th>
+                                    	#
+                                    </th>
+								</tr>
+								</thead>
+								<tbody>
+                                {%section name=role loop=$role%}
+								<tr>
+									<td name="name">
+										 {%$role[role].name%}
+									</td>
+									<td>
+										 <input type="checkbox" data-id="{%$role[role].id%}" name="address" {%if !empty($role[role].address)%}checked="checked"{%/if%}>
+									</td>
+									<td>
+										 <input type="checkbox" data-id="{%$role[role].id%}" name="brand" {%if !empty($role[role].brand)%}checked="checked"{%/if%}>
+									</td>
+									<td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="category" {%if !empty($role[role].category)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="combine" {%if !empty($role[role].combine)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="comment" {%if !empty($role[role].comment)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="coupon" {%if !empty($role[role].coupon)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="fullcut" {%if !empty($role[role].fullcut)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="product" {%if !empty($role[role].product)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="user" {%if !empty($role[role].user)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="admin" {%if !empty($role[role].admin)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="orderlist" {%if !empty($role[role].orderlist)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="sale" {%if !empty($role[role].sale)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="seckill" {%if !empty($role[role].seckill)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="role" {%if !empty($role[role].role)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="ship" {%if !empty($role[role].ship)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+                                    	<button class="btn btn-xs red-stripe removeBtn" data-id="{%$role[role].id%}">删除</button>
+                                    </td>
+								</tr>
+								{%/section%}
+								</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+	<!-- END CONTENT -->
+	{%include file='admin/public/quickslider.html'%}
+</div>
+<!-- END CONTAINER -->
+{%include file='admin/public/footer.html'%}
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
+<!--[if lt IE 9]>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/respond.min.js"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/excanvas.min.js"></script> 
+<![endif]-->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<!-- END CORE PLUGINS -->
+<script src="{%$VIEW_ROOT%}/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
+<script>
+jQuery(document).ready(function() {    
+	Metronic.init(); // init metronic core components
+	Layout.init(); // init current layout
+	QuickSidebar.init(); // init quick sidebar
+	Demo.init(); // init demo features
+	
+	$('input[type=checkbox]').on('click',function(event){
+		var checked = $(this).attr('checked');
+		var value = 0;
+		if(checked=='checked')
+		{
+			value = 1;
+		}
+		var name = $(this).attr('name');
+		var id = $(this).data('id');
+		$.post('{%url c=role a=set%}',{id:id,name:name,value:value},function(data){
+			if(data.code != 1)
+			{
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					message: data.result,
+					container: $('#alert-msg'),
+					place: 'prepend',
+					closeInSeconds: 5,
+				});
+			}
+		});
+	});
+	
+	$('.removeBtn').on('click',function(event){
+		var id = $(this).data('id');
+		var ths = $(this);
+		$.post('{%url c=role a=remove%}',{id:id},function(data){
+			if(data.code != 1)
+			{
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					message: data.result,
+					container: $('#alert-msg'),
+					place: 'prepend',
+					closeInSeconds: 5,
+				});
+			}
+			else
+			{
+				ths.parents('tr').remove();
+			}
+		});
+	});
+	
+	$('#createBtn').on('click',function(event){
+		$('.hide').removeClass('hide');
+	});
+	
+	$('#okBtn').on('click',function(event){
+		var name = $('input[name=name]').val();
+		$.post('{%url c=role a=create%}',{name:name},function(data){
+			if(data.code == 1)
+			{
+				window.location.reload();
+			}
+			else
+			{
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					message: data.result,
+					container: $('#alert-msg'),
+					place: 'prepend',
+					closeInSeconds: 5,
+				});
+			}
+		});
+	});
+});
+   </script>
+<!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>

@@ -14,13 +14,13 @@ class smsConfig
 	/*
 	 * 用户名
 	 */
-	public $uid = 'jin123456bat';
+	public $uid = 'womanjia';
 	/*
 	 * md5密钥
 	 */
-	public $key = '0acc44172cc9023b5062';
+	public $key = '57fdd24d6d8244d3ccda';
 	/*
 	 * 签名
 	 */
-	public $sign = '杭州棱水科技';
+	public $sign = '我们家';
 }

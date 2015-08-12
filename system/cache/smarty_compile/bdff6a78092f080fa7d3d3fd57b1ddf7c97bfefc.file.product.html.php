@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-08 03:58:56
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-11 22:53:58
          compiled from "D:\wamp\www\home\application\template\admin\product.html" */ ?>
 <?php /*%%SmartyHeaderCode:2146955b75011bb78f6-19459824%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'bdff6a78092f080fa7d3d3fd57b1ddf7c97bfefc' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\product.html',
-      1 => 1438976313,
+      1 => 1439304834,
       2 => 'file',
     ),
   ),
@@ -234,88 +234,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['last']       = ($
 				<!-- /.modal-dialog -->
 			</div>
 			<!-- BEGIN STYLE CUSTOMIZER -->
-			<div class="theme-panel hidden-xs hidden-sm">
-				<div class="toggler">
-				</div>
-				<div class="toggler-close">
-				</div>
-				<div class="theme-options">
-					<div class="theme-option theme-colors clearfix">
-						<span>
-						THEME COLOR </span>
-						<ul>
-							<li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default">
-							</li>
-							<li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue">
-							</li>
-							<li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue">
-							</li>
-							<li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey">
-							</li>
-							<li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light">
-							</li>
-							<li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2">
-							</li>
-						</ul>
-					</div>
-					<div class="theme-option">
-						<span>
-						Layout </span>
-						<select class="layout-option form-control input-small">
-							<option value="fluid" selected="selected">Fluid</option>
-							<option value="boxed">Boxed</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Header </span>
-						<select class="page-header-option form-control input-small">
-							<option value="fixed" selected="selected">Fixed</option>
-							<option value="default">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Mode</span>
-						<select class="sidebar-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Menu </span>
-						<select class="sidebar-menu-option form-control input-small">
-							<option value="accordion" selected="selected">Accordion</option>
-							<option value="hover">Hover</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Style </span>
-						<select class="sidebar-style-option form-control input-small">
-							<option value="default" selected="selected">Default</option>
-							<option value="light">Light</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Sidebar Position </span>
-						<select class="sidebar-pos-option form-control input-small">
-							<option value="left" selected="selected">Left</option>
-							<option value="right">Right</option>
-						</select>
-					</div>
-					<div class="theme-option">
-						<span>
-						Footer </span>
-						<select class="page-footer-option form-control input-small">
-							<option value="fixed">Fixed</option>
-							<option value="default" selected="selected">Default</option>
-						</select>
-					</div>
-				</div>
-			</div>
+			<?php echo $_smarty_tpl->getSubTemplate ('admin/public/style.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
+
 			<!-- END STYLE CUSTOMIZER -->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
@@ -359,16 +279,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['fullcut']['last']       = ($
 									</a>
 									<ul class="dropdown-menu pull-right">
 										<li>
-											<a href="#">
-											导出到EXCEL </a>
-										</li>
-										<li>
-											<a href="#">
-											导出CSV </a>
-										</li>
-										<li>
-											<a href="#">
-											导出XML </a>
+											<a href="#" id="export">
+											导出 </a>
 										</li>
 										<li class="divider">
 										</li>
@@ -520,10 +432,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 		</div>
 	</div>
 	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
 	<?php echo $_smarty_tpl->getSubTemplate ('admin/public/quickslider.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
 
-	<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <?php echo $_smarty_tpl->getSubTemplate ('admin/public/footer.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
@@ -616,17 +526,18 @@ jQuery(document).ready(function() {
 		var pid = button.data('pid');
 		var pname = button.data('pname');
 		var price = button.data('price');
-		
-		var modal = $(this);
-		modal.find('input[name=pname]').attr('placeholder',pname);
-		modal.find('input[name=id]').val(pid);
-		modal.find('input[name=price]').val(price);
+		if(pid != undefined)
+		{
+			var modal = $(this);
+			modal.find('input[name=pname]').attr('placeholder',pname);
+			modal.find('input[name=id]').val(pid);
+			modal.find('input[name=price]').val(price);
+		}
 	});
 	
 	$('#sale-config-form').on('submit',function(){
-		var modal = $(this);
+		var modal = $('#sale-config-form');
 		var pid = modal.find('input[name=id]').val();
-		console.log(pid);
 		var starttime = modal.find('input[name=starttime]').val();
 		var endtime = modal.find('input[name=endtime]').val();
 		var price = modal.find('input[name=price]').val();
@@ -659,7 +570,7 @@ jQuery(document).ready(function() {
 					break;
 			case 'fullcut':url = '<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'fullcutdetail','a'=>'create'),$_smarty_tpl);?>
 ';
-					parameter = {pid:pid,fid:fid};
+					parameter = {pid:pid,fid:fullcut};
 					break;
 			default:Metronic.alert({
                     type: 'danger',
@@ -690,6 +601,30 @@ jQuery(document).ready(function() {
 			}
 		});
 		return false;
+	});
+	
+	$('#export').on('click',function(event){
+		var checkbox = $('input[type=checkbox]',$('tbody'));
+		var data = [];
+		$.each(checkbox,function(index,value){
+			data.push($(value).val());
+		});
+		if(data.length == 0)
+		{
+			if(window.confirm('您确定要导出所有商品数据?'))
+			{
+				window.open('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'export'),$_smarty_tpl);?>
+','');
+			}
+		}
+		else
+		{
+			if(window.confirm('您确定要导出选择的商品数据?'))
+			{
+				window.open('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'product','a'=>'export'),$_smarty_tpl);?>
+&data='+JSON.stringify(data),'');
+			}
+		}
 	});
 });
 </script>

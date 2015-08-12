@@ -9,6 +9,11 @@ class adminModel extends model
 		parent::__construct($table);
 	}
 	
+	function remove($id)
+	{
+		return $this->where('id=?',array($id))->delete();
+	}
+	
 	/**
 	 * 根据json对象搜索
 	 */
@@ -45,6 +50,17 @@ class adminModel extends model
 			$roleid
 		);
 		return $this->insert($array);
+	}
+	
+	/**
+	 * 更改密码
+	 * @param unknown $id
+	 * @param unknown $password
+	 */
+	function changepwd($id,$password)
+	{
+		$password = md5($password);
+		return $this->where('id=?',array($id))->update('password',$password);
 	}
 	
 	/**

@@ -26,8 +26,11 @@ var ProductEditPage = function(){
 					orderby = $('input[name=orderby]').val(),
 					meta_title = $('input[name=meta_title]').val(),
 					meta_keywords = $('textarea[name=meta_keywords]').val(),
-					meta_description = $('textarea[name=meta_description]').val();
-					
+					meta_description = $('textarea[name=meta_description]').val(),
+					bid = $('select[name=bid]').val(),
+					sku = $('input[name=sku]').val(),
+					oldprice = $('input[name=oldprice]').val(),
+					shipchar = $('input[name=shipchar]').val();
 				if(name.length == 0)
 				{
 					Metronic.alert({
@@ -53,7 +56,7 @@ var ProductEditPage = function(){
 					prototype_id.push($(value).val());
 				});
 				prototype_id = JSON.stringify(prototype_id);
-				$.post('?c=product&a=save',{prototype_id:prototype_id,label:label,picid:picid,id:id,name:name,category:category,starttime:starttime,endtime:endtime,price:price,stock:stock,origin:origin,short_description:short_description,description:description,status:status,orderby:orderby,meta_title:meta_title,meta_keywords:meta_keywords,meta_description:meta_description},function(data){
+				$.post('?c=product&a=save',{oldprice:oldprice,shipchar:shipchar,sku:sku,bid:bid,prototype_id:prototype_id,label:label,picid:picid,id:id,name:name,category:category,starttime:starttime,endtime:endtime,price:price,stock:stock,origin:origin,short_description:short_description,description:description,status:status,orderby:orderby,meta_title:meta_title,meta_keywords:meta_keywords,meta_description:meta_description},function(data){
 					data = $.parseJSON(data);
 					if(data.code == 1)
 					{
@@ -129,6 +132,9 @@ var ProductEditPage = function(){
 						var tpl = '<tr><td>'+name+'</td><td>'+type+'</td>'+content+'<td><button data-id="'+data.body+'" class="btn btn-xs btn-circle prototype_remove">删除</button></td></tr>';
 						$('#prototype_container').append(tpl);
 						$('#form').append('<input type="hidden" name="prototype_id" value="'+data.body+'"/>');
+						$('input[name=prototype_name]').val('');
+						$('#prototype_text').find('input').val('');
+						$('#prototype_radio').find('input').val('');
 					}
 				});
 				return false;

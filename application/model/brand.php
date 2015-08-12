@@ -29,12 +29,14 @@ class brandModel extends model
 	 * @param int $id 品牌id
 	 * @return array|NULL
 	 */
-	function get($id)
+	function get($id,$name = '*')
 	{
 		$result = $this->where('id=?', array(
 			$id
-		))->select();
-		return isset($result[0]) ? $result[0] : NULL;
+		))->select($name);
+		if($name == '*')
+			return isset($result[0]) ? $result[0] : NULL;
+		return isset($result[0][$name])?$result[0][$name]:NULL;
 	}
 
 	/**

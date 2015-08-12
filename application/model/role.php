@@ -16,6 +16,23 @@ class roleModel extends model
 	}
 	
 	/**
+	 * 移除管理组
+	 * @param unknown $id
+	 */
+	function remove($id)
+	{
+		return $this->where('id=?',array($id))->delete();
+	}
+	
+	/**
+	 * 
+	 */
+	function fetchAll()
+	{
+		return $this->select();
+	}
+	
+	/**
 	 * 删除权限组
 	 */
 	function del($id)
@@ -42,15 +59,12 @@ class roleModel extends model
 		$array = array(
 			NULL,
 			$name,
-			self::POWER_ALL,
-			self::POWER_ALL,
-			self::POWER_ALL,
-			self::POWER_ALL,
-			self::POWER_ALL,
-			self::POWER_ALL,
-			self::POWER_ALL
 		);
-		$this->insert($array);
+		$array = array_pad($array, 17, self::POWER_ALL);
+		if($this->insert($array))
+		{
+			return $this->lastInsertId();
+		}
 	}
 	
 	/**

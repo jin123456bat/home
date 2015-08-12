@@ -6,7 +6,6 @@ use system\core\view;
 use application\classes\sms;
 use system\core\validate;
 use system\core\random;
-use system\core\filter;
 
 class indexControl extends control
 {
