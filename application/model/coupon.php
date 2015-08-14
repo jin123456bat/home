@@ -19,6 +19,7 @@ class couponModel extends model
 	 */
 	function searchable($post)
 	{
+		//var_dump($post->display);
 		$parameter = array();
 		foreach($post->columns as $key=>$value)
 		{
@@ -37,7 +38,7 @@ class couponModel extends model
 		{
 			if(!empty($post->coupon_id))
 			{
-				$this->where('id=?',array($post->coupon_id));
+				$this->where('couponno=?',array($post->coupon_id));
 			}
 			if(!empty($post->starttime_from))
 			{
@@ -63,6 +64,7 @@ class couponModel extends model
 			{
 				$this->where('times>?',array($post->times));
 			}
+			//$this->where('display=?',array($post->display));
 			if(!empty($post->value))
 			{
 				if((int)$post->value > 1)

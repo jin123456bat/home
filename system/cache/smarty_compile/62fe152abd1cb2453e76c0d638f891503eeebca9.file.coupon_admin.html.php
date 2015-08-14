@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 15:09:54
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 16:09:55
          compiled from "D:\wamp\www\home\application\template\admin\coupon_admin.html" */ ?>
 <?php /*%%SmartyHeaderCode:484955c61045229306-37159868%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '62fe152abd1cb2453e76c0d638f891503eeebca9' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\coupon_admin.html',
-      1 => 1439536192,
+      1 => 1439539794,
       2 => 'file',
     ),
   ),
@@ -370,7 +370,10 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 										<input type="text" class="form-control form-filter input-sm" name="times" placeholder="剩余次数"/>
 									</td>
                                     <td>
-                                    	<input type="checkbox" name="display">
+                                    	<select name="display" class="form-control input-sm">
+                                        	<option value="1">公开</option>
+                                            <option value="0">非公开</option>
+                                        </select>
                                     </td>
                                     <td>
 										<input type="text" class="form-control form-filter input-sm" name="value" placeholder="折扣"/>
