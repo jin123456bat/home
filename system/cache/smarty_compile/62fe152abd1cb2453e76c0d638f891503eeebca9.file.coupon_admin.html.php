@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-10 12:02:51
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 15:09:54
          compiled from "D:\wamp\www\home\application\template\admin\coupon_admin.html" */ ?>
 <?php /*%%SmartyHeaderCode:484955c61045229306-37159868%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '62fe152abd1cb2453e76c0d638f891503eeebca9' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\coupon_admin.html',
-      1 => 1439179369,
+      1 => 1439536192,
       2 => 'file',
     ),
   ),
@@ -152,6 +152,12 @@ $_valid = $_smarty_tpl->decodeProperties(array (
                                     <input type="text" name="value" class="form-control" placeholder="0.7/200">
                                     <span class="help-block">
                                     7折请填写0.7，减免200元请填写200 </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">公开</label>
+                                <div class="col-md-9">
+                                	<button class="btn col-md-12 public contorl-control green">公开使用</button>
                                 </div>
                             </div>
                             <div class="form-group category">
@@ -313,6 +319,9 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
                                     <th width="15%">
 										 剩余次数
 									</th>
+                                    <th>
+                                    	公开
+                                    </th>
                                     <th width="10%">
                                     	折扣价
                                     </th>
@@ -360,6 +369,9 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['category']['last']       = (
 									<td>
 										<input type="text" class="form-control form-filter input-sm" name="times" placeholder="剩余次数"/>
 									</td>
+                                    <td>
+                                    	<input type="checkbox" name="display">
+                                    </td>
                                     <td>
 										<input type="text" class="form-control form-filter input-sm" name="value" placeholder="折扣"/>
 									</td>
@@ -486,6 +498,7 @@ jQuery(document).ready(function() {
 			});
 			return false;
 		}
+		var display = $('button.public').hasClass('green');
 		var starttime = $('input[name=starttime]',ths).val();
 		var endtime = $('input[name=endtime]',ths).val();
 		var total = $('input[name=total]',ths).val();
@@ -498,7 +511,7 @@ jQuery(document).ready(function() {
 		});
 		category = JSON.stringify(category);
 		$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'coupon','a'=>'create'),$_smarty_tpl);?>
-',{couponno:couponno,starttime:starttime,endtime:endtime,total:total,category:category,type:type,value:value},function(data){
+',{couponno:couponno,starttime:starttime,endtime:endtime,total:total,category:category,type:type,value:value,display:display},function(data){
 			if(data.code == 1)
 			{
 				$('#coupon').modal('hide');
@@ -528,6 +541,18 @@ jQuery(document).ready(function() {
 				btn.parents('tr').remove();
 			}
 		});
+	});
+	
+	$('button.public').on('click',function(){
+		if($(this).hasClass('green'))
+		{
+			$(this).removeClass('green').addClass('red').html('非公开使用');
+		}
+		else
+		{
+			$(this).removeClass('red').addClass('green').html('公开使用');
+		}
+		return false;
 	});
 });
    </script>

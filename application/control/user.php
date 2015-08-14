@@ -239,18 +239,19 @@ class userControl extends control
 	 */
 	function register()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
-		$o2o = $this->session->o2o;
+		$o2o = $this->post->o2o;
 		$code = $this->post->code;
 		$userModel = $this->model('user');
 		if ($telephone != NULL) {
 			
 			if (login::admin()) {
-				
 				if (empty($password))
 					$password = $telephone;
 				if ($userModel->register($telephone, $password,$o2o)) {
+					
 					return json_encode(array(
 						'code' => 1,
 						'result' => 'success'
@@ -264,13 +265,21 @@ class userControl extends control
 					));
 				}
 			} else {
-				
 				$smslogModel = $this->model('smslog');
 				if($smslogModel->check($telephone,$code))
 				{
-					
-					if ($userModel->register($telephone, $password))
+					if(!empty($o2o))
 					{
+						$o2oModel = $this->model('o2ouser');
+						$o2o = $o2oModel->check($o2o);
+						if(empty($oid))
+						{
+							return json_encode(array('code'=>6,'result'=>'推广员手机号错误'));
+						}
+					}
+					if ($userModel->register($telephone, $password,$o2o))
+					{
+						$o2oModel->where('uid=?',array($o2o))->increase('num',1);
 						return json_encode(array(
 							'code' => 1,
 							'result' => 'success'
@@ -287,7 +296,7 @@ class userControl extends control
 				return json_encode(array('code'=>4,'result'=>'验证码不存在或者已过期'));
 			}
 			return json_encode(array(
-				'code' => '2',
+				'code' => 2,
 				'result' => '验证码不匹配'
 			));
 		}

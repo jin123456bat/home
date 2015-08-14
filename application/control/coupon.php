@@ -20,11 +20,21 @@ class couponControl extends control
 	 */
 	function getavaliable()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$couponModel = $this->model('coupon');
 		$cartModel = $this->model('cart');
+		//获取用户所有商品
 		$cart = $cartModel->getByUid($this->session->id);
+		$coupondetailModel = $this->model('coupondetail');
+		foreach($cart as $goods)
+		{
+			if(isset($goods['activity']) && empty($goods['activity']))
+			{
+				//$coupondetailModel->
+			}
+		}
 	}
 	
 	/**
@@ -80,9 +90,10 @@ class couponControl extends control
 			$total = filter::int($this->post->total);
 			$category = json_decode(htmlspecialchars_decode($this->post->category));
 			$type = $this->post->type;
+			$display = $this->post->display;
 			$value = filter::number($this->post->value);
 			$couponModel = $this->model('coupon');
-			$result = $couponModel->create($couponno,$total,$starttime,$endtime,$type,$value);
+			$result = $couponModel->create($couponno,$total,$starttime,$endtime,$display,$type,$value);
 			if($result)
 			{
 				$this->model('coupondetail')->create($result,$category);

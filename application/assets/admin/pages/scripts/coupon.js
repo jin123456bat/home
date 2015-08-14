@@ -71,6 +71,9 @@ var Coupon = function () {
 					"data":"times",
 					"orderable": true
 				}, {
+					"data":"display",
+					"orderable":true
+				}, {
 					"data":"value",
 					"orderable":true
 				}, {
@@ -101,7 +104,7 @@ var Coupon = function () {
 						return unixtotime(data,true,8);
 					}
 				},{
-					"targets":[6],
+					"targets":[7],
 					"data":"value",
 					"render":function(data,type,full){
 						if(data>1)
@@ -110,7 +113,7 @@ var Coupon = function () {
 						return data*10+'折';
 					}
 				},{
-					"targets":[7],
+					"targets":[8],
 					"data":"id",
 					"render":function(data,type,full){
 						return '<a data-id='+data+' class="btn btn-xs default red-stripen removeBtn">删除</a>';

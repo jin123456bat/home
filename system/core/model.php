@@ -59,7 +59,7 @@ class model
 
 	public function select($field = '*')
 	{
-		$sql = 'select ' . $field . ' from ' . $this->_table . ' ' . (isset($this->_temp['where'])?$this->_temp['where']:'') .(isset($this->_temp['groupby'])?$this->_temp['groupby']:'').' '.(isset($this->_temp['orderby'])?$this->_temp['orderby']:'').' '.(isset($this->_temp['limit'])?$this->_temp['limit']:'');
+		$sql = 'select ' . $field . ' from ' . $this->_table.(isset($this->_temp['table'])?$this->_temp['table']:'') . ' ' . (isset($this->_temp['where'])?$this->_temp['where']:'') .(isset($this->_temp['groupby'])?$this->_temp['groupby']:'').' '.(isset($this->_temp['orderby'])?$this->_temp['orderby']:'').' '.(isset($this->_temp['limit'])?$this->_temp['limit']:'');
 		$result = $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
 		unset($this->_temp);
 		return $result;
@@ -104,7 +104,7 @@ class model
 			}
 		}
 		$parameter = rtrim($parameter, ',');
-		$sql = 'insert into ' . $this->_table . ' values (' . $parameter . ')';
+		$sql = 'insert into ' . $this->_table.(isset($this->_temp['table'])?$this->_temp['table']:'') . ' values (' . $parameter . ')';
 		$result = $this->_db->query($sql, $array);
 		unset($this->_temp);
 		return $result;
@@ -129,11 +129,11 @@ class model
 				$value[] = $b;
 			}
 			$parameter = rtrim($parameter,',');
-			$sql = 'update '.$this->_table.' set '.$parameter.' '.$this->_temp['where'];
+			$sql = 'update '.$this->_table.(isset($this->_temp['table'])?$this->_temp['table']:'').' set '.$parameter.' '.$this->_temp['where'];
 		}
 		else
 		{
-			$sql = 'update '. $this->_table . ' set ' . $key . ' = ? ' . $this->_temp['where'];
+			$sql = 'update '. $this->_table.(isset($this->_temp['table'])?$this->_temp['table']:'') . ' set ' . $key . ' = ? ' . $this->_temp['where'];
 			$value = array($value);
 		}
 		$value = isset($this->_temp['array'])?array_merge($value,$this->_temp['array']):$value;
@@ -151,7 +151,7 @@ class model
 	 */
 	public function increase($key, $num = 1)
 	{
-		$sql = 'update ' . $this->_table . ' set ' . $key . ' = ' . $key . ' + ? ' . $this->_temp['where'];
+		$sql = 'update ' . $this->_table.(isset($this->_temp['table'])?$this->_temp['table']:'') . ' set ' . $key . ' = ' . $key . ' + ? ' . $this->_temp['where'];
 		$result = $this->_db->query($sql, array_merge(array(
 			$num
 		), $this->_temp['array']));
@@ -166,7 +166,7 @@ class model
 	 */
 	public function delete($table = '')
 	{
-		$sql = 'delete '.$table.' from ' . $this->_table . ' ' . $this->_temp['where'];
+		$sql = 'delete '.$table.(isset($this->_temp['table'])?$this->_temp['table']:'').' from ' . $this->_table . ' ' . $this->_temp['where'];
 		$result = $this->_db->query($sql, $this->_temp['array']);
 		unset($this->_temp);
 		return $result;
@@ -223,12 +223,19 @@ class model
 	 */
 	public function table($table,$mode = ',',$on = '')
 	{
-		$this->_table .= ' '.$mode.' '.$table.' on '.$on;
+		if(!isset($this->_temp['table']))
+		{
+			$this->_temp['table'] = ' '.$mode.' '.$table.' on '.$on;
+		}
+		else
+		{
+			$this->_temp['table'] .= ' '.$mode.' '.$table.' on '.$on;
+		}
 	}
 	
-	public function query($sql)
+	public function query($sql,array $array = array())
 	{
-		return $this->_db->query($sql);
+		return $this->_db->query($sql,$array);
 	}
 	
 	public function transaction()

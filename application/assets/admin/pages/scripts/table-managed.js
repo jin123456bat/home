@@ -92,7 +92,7 @@ var TableManaged = function () {
 					return "<div class=checker><span><input type=checkbox class=checkboxes value="+data+"></span></div>";
 				}
 			}, {
-				"targets":[10],
+				"targets":[11],
 				"data":"close",
 				"render":function(data,type,full){
 					if(data == 0)

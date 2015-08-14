@@ -17,7 +17,7 @@ class fullcutdetailControl extends control
 	function create()
 	{
 		$roleModel = $this->model('role');
-		if(login::admin() && $roleModel->checkPower($this->session->role,'fullcutdetail',roleModel::POWER_INSERT))
+		if(login::admin() && $roleModel->checkPower($this->session->role,'fullcut',roleModel::POWER_INSERT))
 		{
 			$fid = filter::int($this->post->fid);
 			$pid = filter::int($this->post->pid);

@@ -46,10 +46,9 @@ var ProductEditPage = function(){
 				var picid = [];
 				var input = $('input[name=picid]');
 				$.each(input,function(index,value){
-					picid.push($(valule).val());
-				});				
+					picid.push($(value).val());
+				});
 				picid = JSON.stringify(picid);
-				
 				var prototype_id = [];
 				var input = $('input[name=prototype_id]');
 				$.each(input,function(index,value){

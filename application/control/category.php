@@ -11,11 +11,22 @@ use system\core\filter;
 class categoryControl extends control
 {
 	
+	function test()
+	{
+		$this->view = new view(config('view'), 'mobile/test.html');
+		$this->view->assign('test','Hello world');
+		$product = $this->model('product');
+		$goods = $product->select();
+		$this->view->assign('goods',$goods);
+		$this->response->setBody($this->view->display());
+	}
+	
 	/**
 	 * 获得一个分类下的子分类
 	 */
 	function getchild()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$this->response->addHeader('Cache-Control','nocache');
 		$cid = empty(filter::int($this->get->cid))?0:filter::int($this->get->cid);
 		$categoryModel = $this->model('category');

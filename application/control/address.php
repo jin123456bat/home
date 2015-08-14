@@ -16,6 +16,9 @@ class addressControl extends control
 	 */
 	function gethost()
 	{
+		$this->response->addHeader('Content-Type','application/json');
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$result = $this->model('address')->getHost($this->session->id);
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
@@ -25,6 +28,7 @@ class addressControl extends control
 	 */
 	function fetchall()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		if(login::user())
 		{
 			$addressModel = $this->model('address');
@@ -53,7 +57,7 @@ class addressControl extends control
 			$result = $addressModel->save($id,$this->session->id,$province,$city,$address,$name,$telephone,$zcode,$host);
 			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
-		return json_encode(array('code'=>0,'result'=>'failed','尚未登陆'));
+		return json_encode(array('code'=>0,'result'=>'尚未登陆'));
 	}
 	
 	/**
@@ -84,6 +88,7 @@ class addressControl extends control
 	 */
 	function remove()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$id = filter::int($this->post->id);
 		if(!empty($id))
 		{

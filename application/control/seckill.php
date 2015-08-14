@@ -1,6 +1,7 @@
 <?php
 namespace application\control;
 use system\core\control;
+use system\core\file;
 use system\core\filter;
 use application\model\roleModel;
 use application\classes\login;
@@ -18,6 +19,7 @@ class seckillControl extends control
 	 */
 	function product()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$length = empty($this->get->length)?5:$this->get->length;
 		$seckillModel = $this->model('seckill');
 		$brandModel = $this->model('brand');
@@ -32,6 +34,12 @@ class seckillControl extends control
 			unset($product['bid']);
 			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			$product['img'] = $productimgModel->getByPid($product['id']);
+			foreach ($product['img'] as &$img)
+			{
+				$img['thumbnail_path'] = file::realpathToUrl($img['thumbnail_path']);
+				$img['small_path'] = file::realpathToUrl($img['small_path']);
+				$img['base_path'] = file::realpathToUrl($img['base_path']);
+			}
 			$product['category'] = $categoryModel->get($product['category'],'name');
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));

@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-08 22:23:15
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 13:55:10
          compiled from "D:\wamp\www\home\application\template\admin\public\style.html" */ ?>
 <?php /*%%SmartyHeaderCode:1778955c610d3650627-58739758%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '97ddf07c803cad9741ff166dc2742b89702001a5' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\style.html',
-      1 => 1439043774,
+      1 => 1439531628,
       2 => 'file',
     ),
   ),
@@ -15,9 +15,9 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'function' => 
   array (
   ),
-  'has_nocache_code' => false,
   'version' => 'Smarty-3.1.16',
   'unifunc' => 'content_55c610d36539a2_04769542',
+  'has_nocache_code' => false,
 ),false); /*/%%SmartyHeaderCode%%*/?>
 <?php if ($_valid && !is_callable('content_55c610d36539a2_04769542')) {function content_55c610d36539a2_04769542($_smarty_tpl) {?><div class="theme-panel hidden-xs hidden-sm">
 <div class="toggler">

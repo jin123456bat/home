@@ -12,6 +12,11 @@ class themeModel extends model
 		parent::__construct($table);
 	}
 	
+	function create($name,$description,$big,$middle,$small)
+	{
+		return $this->insert(array(NULL,$name,$description,$big,$middle,$small));
+	}
+	
 	/**
 	 * 获取一个主题信息
 	 * @param unknown $name
@@ -40,9 +45,10 @@ class themeModel extends model
 	/**
 	 * 后台获取所有主题
 	 */
-	function fetchAll($length)
+	function fetchAll($length = 0)
 	{
-		$this->limit($length);
+		if(!empty($length))
+			$this->limit($length);
 		return $this->select();
 	}
 }

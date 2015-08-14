@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-07-29 16:07:04
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 13:55:10
          compiled from "D:\wamp\www\home\application\template\admin\public\quickslider.html" */ ?>
 <?php /*%%SmartyHeaderCode:2451255b889a86eaf66-12029982%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '2e22dab18418a52546bbaa44fbcae1956f77ff5f' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\quickslider.html',
-      1 => 1438157149,
+      1 => 1439531628,
       2 => 'file',
     ),
   ),
@@ -15,13 +15,13 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'function' => 
   array (
   ),
+  'version' => 'Smarty-3.1.16',
+  'unifunc' => 'content_55b889a8766632_46596481',
   'variables' => 
   array (
     'VIEW_ROOT' => 0,
   ),
   'has_nocache_code' => false,
-  'version' => 'Smarty-3.1.16',
-  'unifunc' => 'content_55b889a8766632_46596481',
 ),false); /*/%%SmartyHeaderCode%%*/?>
 <?php if ($_valid && !is_callable('content_55b889a8766632_46596481')) {function content_55b889a8766632_46596481($_smarty_tpl) {?><a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
 <div class="page-quick-sidebar-wrapper">

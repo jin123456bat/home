@@ -99,8 +99,14 @@ class seckillModel extends model
 	{
 		$this->table('product','left join','product.id=seckill.pid');
 		$this->where('seckill.id=?',array($secid));
-		$this->update('product.activity','');
-		$this->where('id=?',array($secid));
-		return $this->delete();
+		$result = $this->select('product.id');
+		if(isset($result[0]['id']))
+		{
+			if(false !== $this->query('update product set activity = ? where id=?',array('',$result[0]['id'])))
+			{
+				return $this->where('id=?',array($secid))->delete();
+			}
+		}
+		return false;
 	}
 }

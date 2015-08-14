@@ -3,9 +3,8 @@ namespace application\control;
 use system\core\control;
 use application\classes\login;
 use system\core\filter;
-use system\core\image;
-use system\core\file;
 use application\model\roleModel;
+use system\core\view;
 /**
  * o2o店铺相关Api
  * @author jin12
@@ -14,51 +13,79 @@ use application\model\roleModel;
 class o2oControl extends control
 {
 	/**
-	 * 用户通过此方法进入首页
+	 * o2o用户管理页面
 	 */
-	function userenter()
+	function admin()
 	{
-		$id = filter::int($this->get->id);
-		$o2oModel = $this->model('o2oshop');
-		if($o2oModel->exist($id))
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'o2ouser',roleModel::POWER_ALL))
 		{
-			$this->session->o2o = $id;
+			$this->view = new view(config('view'), 'admin/o2ouser.html');
+			$this->view->assign('o2o',$this->model('o2ouser')->fetchAll());
+			$this->response->setBody($this->view->display());
 		}
-		//跳转到首页
-		$this->http->jump($this->http->url('index','index'));
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
+	}
+	
+	function o2oclient()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'o2ouser',roleModel::POWER_ALL))
+		{
+			$id = filter::int($this->get->id);
+			if(!empty($id))
+			{
+				$this->view = new view(config('view'), 'admin/o2oclient.html');
+				//$this->view->assign('')
+				$o2oModel = $this->model('o2ouser');
+				$o2o = $o2oModel->get($id);
+				$userModel = $this->model('user');
+				$client = $userModel->getByOid($id);
+				$this->view->assign('client',$client);
+				$this->view->assign('o2o',$o2o);
+				$this->response->setBody($this->view->display());
+			}
+			else
+			{
+				$this->response->setCode(302);
+				$this->response->addHeader('Location',$this->http->url('index','__404'));
+			}
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
 	}
 	
 	/**
 	 * 管理员添加o2o账户
-	 * @param post name 不得为空
-	 * @param post telephone 电话号码不的为空
+	 * @param post uid 不得为空
 	 */
 	function create()
 	{
-		$name = $this->post->name;
-		$address = $this->post->address;
-		$telephone = filter::telephone($this->post->telephone);
-		$backrate = $this->post->backrate;
-		$logo = $this->file->logo;
-		
-		if(empty($telephone) || empty($name))
-			return json_encode(array('code'=>0,'result'=>'参数错误'));
-		
-		$o2oshopModel = $this->model('o2oshop');
-		$oid = $o2oshopModel->create($name,$address,$telephone,$backrate,$logo);
-		if($oid)
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'o2ouser',roleModel::POWER_INSERT))
 		{
-			$image = new image();
-			$filename = ROOT.'/application/upload/'.md5($oid.$name).'.png';
-			$image->QRCode($this->http->url('o2o','userenter',array('id'=>$oid)),$filename,$logo);
-			if(file::path($filename))
+			$uid = $this->post->uid;
+			$uid = json_decode(htmlspecialchars_decode($uid));
+			$rate = $this->post->rate;
+			$o2oModel = $this->model('o2ouser');
+			foreach ($uid as $id)
 			{
-				$o2oshopModel->updateEQ($oid,$filename);
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				$o2oModel->create($id,$rate);
 			}
-			return json_encode(array('code'=>2,'result'=>'创建成功，但是二维码创建失败'));
+			return json_encode(array('code'=>'1','result'=>'ok'));
 		}
-		return json_encode(array('code'=>3,'result'=>'创建失败'));
+		else
+		{
+			return json_encode(array('code'=>0,'result'=>'没有权限'));
+		}
 	}
 	
 	/**
@@ -68,19 +95,21 @@ class o2oControl extends control
 	function remove()
 	{
 		$roleModel = $this->model('role');
-		if(login::admin() && $roleModel->checkPower($this->session->role,'o2o',roleModel::POWER_DELETE))
+		if(login::admin() && $roleModel->checkPower($this->session->role,'o2ouser',roleModel::POWER_DELETE))
 		{
-			$id = filter::int($this->get->id);
-			if(!empty($id))
-			{
-				$o2oModel = $this->model('o2oshop');
-				if($o2oModel->remove($id))
-					return json_encode(array('code'=>1,'result'=>'ok'));
-				return json_encode(array('code'=>0,'result'=>'failed'));
-			}
-			return json_encode(array('code'=>2,'result'=>'参数错误'));
+			$id = $this->get->id;
+			$o2oModel = $this->model('o2ouser');
+			$o2oModel->remove($id);
+			$userModel = $this->model('user');
+			$userModel->clearOid($id);
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('o2o','admin'));
 		}
-		return json_encode(array('code'=>3,'result'=>'权限不足'));
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
 	}
 	
 }

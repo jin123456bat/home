@@ -1,6 +1,7 @@
 <?php
 namespace application\control;
 use system\core\control;
+use system\core\file;
 use system\core\filter;
 use system\core\view;
 use application\model\roleModel;
@@ -17,6 +18,7 @@ class saleControl extends control
 	 */
 	function product()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$length = empty($this->get->length)?5:$this->get->length;
 		$saleModel = $this->model('sale');
 		$brandModel = $this->model('brand');
@@ -31,6 +33,12 @@ class saleControl extends control
 			unset($product['bid']);
 			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			$product['img'] = $productimgModel->getByPid($product['id']);
+			foreach ($product['img'] as &$img)
+			{
+				$img['thumbnail_path'] = file::realpathToUrl($img['thumbnail_path']);
+				$img['small_path'] = file::realpathToUrl($img['small_path']);
+				$img['base_path'] = file::realpathToUrl($img['base_path']);
+			}
 			$product['category'] = $categoryModel->get($product['category'],'name');
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));

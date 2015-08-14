@@ -33,7 +33,7 @@ class logModel extends model
 	function write($username,$content)
 	{
 		$array = array(
-			'NULL',
+			NULL,
 			$username,
 			$_SERVER['REQUEST_TIME'],
 			$content

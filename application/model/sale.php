@@ -89,10 +89,12 @@ class saleModel extends model
 	 * @param unknown $id
 	 * @return NULL
 	 */
-	function get($id)
+	function get($id,$name = '*')
 	{
-		$result = $this->where('id=?',array($id))->select();
-		return isset($result[0])?$result[0]:NULL;
+		$result = $this->where('id=?',array($id))->select($name);
+		if($name == '*')
+			return isset($result[0])?$result[0]:NULL;
+		return isset($result[0][$name])?$result[0][$name]:NULL;
 	}
 	
 	/**

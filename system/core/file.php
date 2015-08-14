@@ -18,7 +18,9 @@ class file
 
 	function __get($name)
 	{
-		return $this->receive($_FILES[$name], config('file'));
+		if(isset($_FILES[$name]))
+			return $this->receive($_FILES[$name], config('file'));
+		return false;
 	}
 
 	/**

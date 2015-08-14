@@ -2,6 +2,7 @@
 namespace application\control;
 
 use system\core\control;
+use system\core\file;
 use application\classes\login;
 use system\core\view;
 use application\model\roleModel;
@@ -61,19 +62,35 @@ class productControl extends control
 	 */
 	function category()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$cid = empty(filter::int($this->get->cid))?0:filter::int($this->get->cid);
 		$array = array($cid);
 		//获得子分类信息
 		$categoryModel = $this->model('category');
-		$result = $categoryModel->fetchChild($cid);
-		foreach($result as $category)
+		while (current($array))
 		{
-			//将子分类id加入数组
-			$array[] = $category['id'];
+			$result = $categoryModel->fetchChild(current($array));
+			foreach($result as $category)
+			{
+				//将子分类id加入数组
+				$array[] = $category['id'];
+			}
+			next($array);
 		}
 		$array = implode(',', $array);
 		$productModel = $this->model('product');
+		$brandModel = $this->model('brand');
+		$prototypeModel = $this->model('prototype');
+		$productimgModel = $this->model('productimg');
 		$product = $productModel->where('category in (?)',array($array))->select();
+		foreach ($product as &$goods)
+		{
+			$goods['category'] = $categoryModel->get($goods['category'],'name');
+			$goods['brand'] = $brandModel->get($goods['bid'],'name');
+			unset($product['bid']);
+			$goods['prototype'] = $prototypeModel->getByPid($goods['id']);
+			$goods['img'] = $productimgModel->getByPid($goods['id']);
+		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
 	}
 	
@@ -213,6 +230,33 @@ class productControl extends control
 			$resultObj->recordsTotal = $productModel->count();
 			$resultObj->recordsFiltered = count($result);
 			$result = array_slice($result, $this->post->start,$this->post->length);
+			$brandModel = $this->model('brand');
+			$prototypeModel = $this->model('prototype');
+			$categoryModel = $this->model('category');
+			$productimgModel = $this->model('productimg');
+			foreach ($result as &$product)
+			{
+				if(isset($product['id']))
+				{
+					if(isset($product['bid']))
+					{
+						$product['brand'] = $brandModel->get($product['bid'],'name');
+						unset($product['bid']);
+					}
+					$product['prototype'] = $prototypeModel->getByPid($product['id']);
+					$product['img'] = $productimgModel->getByPid($product['id']);
+					foreach ($product['img'] as &$img)
+					{
+						$img['thumbnail_path'] = file::realpathToUrl($img['thumbnail_path']);
+						$img['small_path'] = file::realpathToUrl($img['small_path']);
+						$img['base_path'] = file::realpathToUrl($img['base_path']);
+					}
+					if(isset($product['category']))
+					{
+						$product['category'] = $categoryModel->get($product['category'],'name');
+					}
+				}
+			}
 			$resultObj->data = $result;
 		}
 		return json_encode($resultObj);

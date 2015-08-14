@@ -132,8 +132,8 @@
 			</a>
 			<ul class="sub-menu">
 				<li>
-					<a href="portlet_general.html">
-					General Portlets</a>
+					<a href="{%url c=theme a=admin%}">
+					主题管理</a>
 				</li>
 				<li>
 					<a href="portlet_general2.html">
@@ -153,17 +153,17 @@
 				</li>
 			</ul>
 		</li>
-		<li>
+		<li class="{%if $smarty.get.c==o2o && $smarty.get.a==admin%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-docs"></i>
 			<span class="title">推广</span>
-			<span class="arrow "></span>
+			<span class="arrow {%if $smarty.get.c==o2o && $smarty.get.a==admin%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="extra_profile.html">
+				<li class="{%if $smarty.get.c==o2o && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=o2o a=admin%}">
 					<i class="icon-user"></i>
-					o2o商户</a>
+					o2o会员</a>
 				</li>
 			</ul>
 		</li>

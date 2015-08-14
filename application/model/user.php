@@ -147,4 +147,14 @@ class userModel extends model
 		}
 		return false;
 	}
+	
+	function getByOid($id)
+	{
+		return $this->where('oid=?',array($id))->select();
+	}
+	
+	function clearOid($oid)
+	{
+		$this->where('oid=?',array($oid))->update('oid',0);
+	}
 }

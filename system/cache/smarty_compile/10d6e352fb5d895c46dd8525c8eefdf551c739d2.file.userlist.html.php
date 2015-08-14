@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-11 01:28:14
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 14:46:56
          compiled from "D:\wamp\www\home\application\template\admin\userlist.html" */ ?>
 <?php /*%%SmartyHeaderCode:2455055b5a3a7961bd5-95318673%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '10d6e352fb5d895c46dd8525c8eefdf551c739d2' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\userlist.html',
-      1 => 1439227663,
+      1 => 1439531628,
       2 => 'file',
     ),
   ),
@@ -183,6 +183,32 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				<!-- /.modal-dialog -->
 			</div>
 			<!-- /.modal -->
+            <div class="modal fade container in" id="o2o" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form class="form-horizontal" role="form" id="o2o_form">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">设定为o2o推广员</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="padding:0px;">
+                                    	<label class="col-md-2 control-label">佣金比例</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" name="rate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn blue btn-circle">发送</button>
+                                <button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
+                            </div>
+                        </form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
 			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<!-- BEGIN STYLE CUSTOMIZER -->
 			<?php echo $_smarty_tpl->getSubTemplate ('admin/public/style.html', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, null, array(), 0);?>
@@ -247,6 +273,11 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 												<li>
 													<a href="#smssender" data-toggle="modal">
 													发送短信 </a>
+												</li>
+                                                <li class="divider"></li>
+                                                <li>
+													<a href="#o2o" data-toggle="modal">
+													设为o2o推广员 </a>
 												</li>
 											</ul>
 										</div>
@@ -544,6 +575,36 @@ TableManaged.init();
 			if(data.code == 1)
 			{
 				$('#smssender').modal('hide');
+			}
+			else
+			{
+				alert(data.result);
+			}
+		});
+		return false;
+	});
+	
+	$('#o2o').bind('show.bs.modal',function(event){
+		var checkbox = $('#sample_1 .checkboxes:checked');
+		if(checkbox.length==0)
+		{
+			alert('请先选择用户');
+			return false;
+		}
+	});
+	
+	$('#o2o_form').on('submit',function(){
+		var checkbox = $('#sample_1 .checkboxes:checked');
+		var data = [];
+		$.each(checkbox,function(index,value){
+			data.push($(value).val());
+		});
+		var rate = $(this).find('input[name=rate]').val();
+		$.post('<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'o2o','a'=>'create'),$_smarty_tpl);?>
+',{uid:JSON.stringify(data),rate:rate},function(data){
+			if(data.code == 1)
+			{
+				$('#o2o').modal('hide');
 			}
 			else
 			{

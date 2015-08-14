@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-11 14:16:39
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 13:55:09
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1439273797,
+      1 => 1439531628,
       2 => 'file',
     ),
   ),
@@ -154,8 +154,9 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 			</a>
 			<ul class="sub-menu">
 				<li>
-					<a href="portlet_general.html">
-					General Portlets</a>
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'theme','a'=>'admin'),$_smarty_tpl);?>
+">
+					主题管理</a>
 				</li>
 				<li>
 					<a href="portlet_general2.html">
@@ -175,17 +176,18 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</li>
 			</ul>
 		</li>
-		<li>
+		<li class="<?php if ($_GET['c']=='o2o'&&$_GET['a']=='admin') {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-docs"></i>
 			<span class="title">推广</span>
-			<span class="arrow "></span>
+			<span class="arrow <?php if ($_GET['c']=='o2o'&&$_GET['a']=='admin') {?>open<?php }?>"></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="extra_profile.html">
+				<li class="<?php if ($_GET['c']=='o2o'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'o2o','a'=>'admin'),$_smarty_tpl);?>
+">
 					<i class="icon-user"></i>
-					o2o商户</a>
+					o2o会员</a>
 				</li>
 			</ul>
 		</li>

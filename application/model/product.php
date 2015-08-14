@@ -76,7 +76,7 @@ class productModel extends model
 	 */
 	function add($product)
 	{
-		$product = array_merge(array('id'=>NULL),$product);
+		$product = array_merge(array('id'=>NULL,'activity'=>''),$product);
 		if($this->insert($product))
 		{
 			return $this->lastInsertId();
@@ -109,7 +109,6 @@ class productModel extends model
 			'meta_title'=>$post->meta_title,
 			'meta_keywords'=>$post->meta_keywords,
 			'meta_description'=>$post->meta_description,
-			'activity'=>'',
 			'oldprice' => $post->oldprice,
 			'shipchar' => $post->shipchar,
 		);
@@ -142,15 +141,20 @@ class productModel extends model
 	function searchable($json)
 	{
 		$parameter = '';
+		if(!is_array($json['columns']))
+			return array();
 		foreach($json['columns'] as $key => $value)
 		{
 			if(!empty($json['order']))
 			{
-				foreach($json['order'] as $orderby)
+				if(is_array($json['order']))
 				{
-					if($orderby['column'] == $key)
+					foreach($json['order'] as $orderby)
 					{
-						$this->orderby($value['data'],$orderby['dir']);
+						if($orderby['column'] == $key)
+						{
+							$this->orderby($value['data'],$orderby['dir']);
+						}
 					}
 				}
 			}

@@ -100,7 +100,7 @@ class couponModel extends model
 	/**
 	 * 创建优惠
 	 */
-	function create($couponno,$total,$starttime,$endtime,$type,$value)
+	function create($couponno,$total,$starttime,$endtime,$display,$type,$value)
 	{
 		$couponno = strtoupper($couponno);
 		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
@@ -108,7 +108,8 @@ class couponModel extends model
 		$total = empty($total)?100:$total;
 		$value = empty($value)?1:$value;
 		$times = $total;
-		$data = array(NULL,$couponno,$total,$starttime,$endtime,$times,$type,$value);
+		$display = empty($display)?0:1;
+		$data = array(NULL,$couponno,$total,$starttime,$endtime,$times,$display,$type,$value);
 		if($this->insert($data))
 		{
 			return $this->lastInsertId();
