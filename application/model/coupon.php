@@ -64,7 +64,8 @@ class couponModel extends model
 			{
 				$this->where('times>?',array($post->times));
 			}
-			//$this->where('display=?',array($post->display));
+			if($post->display != 2)
+				$this->where('display=?',array($post->display));
 			if(!empty($post->value))
 			{
 				if((int)$post->value > 1)

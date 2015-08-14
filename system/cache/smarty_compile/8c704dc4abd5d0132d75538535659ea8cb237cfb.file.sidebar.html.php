@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 13:55:09
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 16:35:36
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1439531628,
+      1 => 1439541294,
       2 => 'file',
     ),
   ),
@@ -146,7 +146,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</li>
 			</ul>
 		</li>
-		<li>
+		<li class="<?php if ($_GET['c']=='theme'&&$_GET['a']=='admin') {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-wallet"></i>
 			<span class="title">静态页</span>

@@ -28,6 +28,7 @@ class couponControl extends control
 		//获取用户所有商品
 		$cart = $cartModel->getByUid($this->session->id);
 		$coupondetailModel = $this->model('coupondetail');
+		$prodcut_array = array();
 		foreach($cart as $goods)
 		{
 			if(isset($goods['activity']) && empty($goods['activity']))
