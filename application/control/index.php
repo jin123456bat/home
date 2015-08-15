@@ -60,6 +60,7 @@ class indexControl extends control
 	 */
 	function __404()
 	{
-		
+		$this->view = new view(config('view'), '__404.html');
+		return $this->view->display();
 	}
 }

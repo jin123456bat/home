@@ -158,4 +158,14 @@ class adminControl extends control
 		}
 		return json_encode(array('code'=>3,'result'=>'权限不足'));
 	}
+	
+	/**
+	 * __404
+	 * optional
+	 */
+	function __404()
+	{
+		$this->view = new view(config('view'), 'admin/__404.html');
+		return $this->view->display();
+	}
 }

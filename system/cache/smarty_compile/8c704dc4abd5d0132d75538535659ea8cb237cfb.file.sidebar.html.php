@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-15 14:13:26
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-15 16:42:47
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1439619205,
+      1 => 1439628166,
       2 => 'file',
     ),
   ),
@@ -166,7 +166,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
                     </a>
 				</li>
                 <li class="<?php if ($_GET['c']=='carousel'&&$_GET['a']=='admin') {?>active<?php }?>">
-					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'help','a'=>'admin'),$_smarty_tpl);?>
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'carousel','a'=>'admin'),$_smarty_tpl);?>
 ">
 					<i class="fa fa-desktop"></i> 滚动图
                     </a>

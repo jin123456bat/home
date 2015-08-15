@@ -55,10 +55,14 @@ class control extends base
 	}
 	
 	/**
-	 * 后台运行另外一个control中的action方法
+	 * 调用另外一个control中的action方法
 	 */
 	function call($c,$a)
 	{
-		return file_get_contents($this->http->url($c,$a));
+		$path = ROOT.'/application/control/'.$c.'.php';
+		include $path;
+		$control = 'application\\control\\'.$c.'Control';
+		return (new $control)->$a();
+		//return file_get_contents($this->http->url($c,$a));
 	}
 }

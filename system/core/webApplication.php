@@ -137,13 +137,28 @@ class webApplication extends base
 	 */
 	function __404($control, $action)
 	{
-		if (method_exists($control, '__404')) {
-			return $control->__404();
-		} else {
-			$viewConfig = new viewConfig();
-			$view = new view($viewConfig, '404.html');
-			return $view->display();
+		//调用模块内的404
+		$path = ROOT.'/application/control/'.$control.'.php';
+		if(realpath($path))
+		{
+			include_once $path;
+			$class = 'application\\control\\'.$control.'Control';
+			if(class_exists($class))
+			{
+				$control = new $class;
+				if (method_exists($control, '__404')) {
+					return $control->__404();
+				}
+			}
 		}
+		//主模块的404
+		$index404 = $this->__404('index', '__404');
+		if(!empty($index404))
+			return $index404;
+		//系统404
+		$viewConfig = new viewConfig();
+		$view = new view($viewConfig, '404.html');
+		return $view->display();
 	}
 
 	/**

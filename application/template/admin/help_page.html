@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+<meta charset="utf-8"/>
+<title>Metronic | Page Layouts - Blank Page</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+<!-- END GLOBAL MANDATORY STYLES -->
+<link href="{%$VIEW_ROOT%}/assets/admin/pages/css/blog.css" rel="stylesheet" type="text/css"/>
+<!-- BEGIN THEME STYLES -->
+<link href="{%$VIEW_ROOT%}/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
+<link id="style_color" href="{%$VIEW_ROOT%}/assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME STYLES -->
+<link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+<body class="page-header-fixed page-quick-sidebar-over-content">
+{%include file='admin/public/header.html'%}
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+	<!-- BEGIN SIDEBAR -->
+	{%include file='admin/public/sidebar.html'%}
+	<!-- END SIDEBAR -->
+	<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			{%include file='admin/public/style.html'%}
+            <!-- BEGIN PAGE HEADER-->
+			<h3 class="page-title">
+			Blank Page <small>blank page</small>
+			</h3>
+			<div class="page-bar">
+				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="{%url c=index a=index%}">首页</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<a href="#">静态页</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<a href="{%url c=help a=admin%}">自定义页面</a>
+                        <i class="fa fa-angle-right"></i>
+					</li>
+                    <li>
+						<a href="{%url c=help a=page%}&admin=1&id={%$help.id%}">{%$help.title%}</a>
+						
+					</li>
+				</ul>
+			</div>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12 blog-page">
+					 <div class="row">
+                     	<div class="col-md-12 article-block">
+                        	<h3>{%$help.title|default:""%}</h3>
+                            <div class="blog-tag-data">
+								<div class="row">
+									<div class="col-md-6">
+										<ul class="list-inline blog-tags">
+											<li>
+												<i class="fa fa-tags"></i>
+												<a href="#" id="removeBtn" data-id="{%$help.id%}">
+												删除 </a>
+												<a href="{%url c=help a=edit%}&id={%$help.id%}">
+												编辑 </a>
+												<a href="#" id="getLink">
+												获取API连接 </a>
+                                                	<input id="link" style="width:0px;" class="display-none" type="text" readonly value="{%url c=help a=page%}&id={%$help.id%}">
+                                                <a href="{%url c=help a=admin%}">
+                                                返回</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div>
+								{%$help.content|htmlspecialchars_decode|default:""%}
+							</div>
+							<hr />
+						</div>
+                     </div>
+				</div>
+			</div>
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+	<!-- END CONTENT -->
+	{%include file='admin/public/quickslider.html'%}
+</div>
+<!-- END CONTAINER -->
+{%include file='admin/public/footer.html'%}
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
+<!--[if lt IE 9]>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/respond.min.js"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/excanvas.min.js"></script> 
+<![endif]-->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<!-- END CORE PLUGINS -->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
+<script>
+jQuery(document).ready(function() {    
+	Metronic.init(); // init metronic core components
+	Layout.init(); // init current layout
+	QuickSidebar.init(); // init quick sidebar
+	Demo.init(); // init demo features
+	$('#removeBtn').on('click',function(){
+		bootbox.dialog({
+			message: "尽管不推荐删除该页面，这可能导致所有指向该页面的连接失效切无法恢复",
+			title: "确定删除？",
+			buttons:{
+				danger: {
+					label: "确定!",
+					className: "red btn-sm",
+					callback: function(event) {
+						$.post('{%url c=help a=remove%}',{id:$('#removeBtn').data('id')},function(data){
+							window.location.href="{%url c=help a=admin%}";
+						});
+					}
+				},
+				main: {
+					label: "取消!",
+					className: "blue btn-sm"
+				}
+			}
+		});
+	});
+	
+	$('#getLink').on('click',function(){
+		$('#link').removeClass('display-none').animate({width:'250px'});
+	});
+});
+</script>
+<!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>

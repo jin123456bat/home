@@ -148,4 +148,9 @@ class helpControl extends control
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
+	
+	function __404()
+	{
+		return $this->call('admin','__404');
+	}
 }
