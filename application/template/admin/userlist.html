@@ -370,6 +370,7 @@ TableManaged.init();
 	});
 	
 	window.um = UM.getEditor('email_container');
+	$(".edui-container").css('z-index','').css('width','100%');
 	
 	$('#sendemail').on('submit',function(data){
 		if(window.um.hasContents())

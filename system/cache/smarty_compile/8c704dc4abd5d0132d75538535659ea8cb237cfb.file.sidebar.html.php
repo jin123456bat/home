@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 16:35:36
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-15 14:13:26
          compiled from "D:\wamp\www\home\application\template\admin\public\sidebar.html" */ ?>
 <?php /*%%SmartyHeaderCode:1838855b5a3a7d1e756-54879822%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '8c704dc4abd5d0132d75538535659ea8cb237cfb' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\public\\sidebar.html',
-      1 => 1439541294,
+      1 => 1439619205,
       2 => 'file',
     ),
   ),
@@ -146,33 +146,30 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</li>
 			</ul>
 		</li>
-		<li class="<?php if ($_GET['c']=='theme'&&$_GET['a']=='admin') {?>active open<?php }?>">
+		<li class="<?php if (($_GET['c']=='help'&&($_GET['a']=='admin'||$_GET['a']=='edit'||$_GET['a']=='page'))||($_GET['c']=='help'&&$_GET['a']=='create')) {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-wallet"></i>
 			<span class="title">静态页</span>
-			<span class="arrow "></span>
+			<span class="arrow <?php if (($_GET['c']=='help'&&($_GET['a']=='admin'||$_GET['a']=='edit'||$_GET['a']=='page'))||($_GET['c']=='help'&&$_GET['a']=='create')) {?>open<?php }?>"></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'theme','a'=>'admin'),$_smarty_tpl);?>
+            	<li class="<?php if ($_GET['c']=='help'&&$_GET['a']=='create') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'help','a'=>'create'),$_smarty_tpl);?>
 ">
-					主题管理</a>
+					<i class="fa fa-plus"></i> 添加页面
+                    </a>
 				</li>
-				<li>
-					<a href="portlet_general2.html">
-					<span class="badge badge-roundless badge-danger">new</span>New Portlets #1</a>
+				<li class="<?php if ($_GET['c']=='help'&&($_GET['a']=='admin'||$_GET['a']=='edit'||$_GET['a']=='page')) {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'help','a'=>'admin'),$_smarty_tpl);?>
+">
+					<i class="fa fa-file-o"></i> 自定义页面
+                    </a>
 				</li>
-				<li>
-					<a href="portlet_general3.html">
-					<span class="badge badge-roundless badge-danger">new</span>New Portlets #2</a>
-				</li>
-				<li>
-					<a href="portlet_ajax.html">
-					Ajax Portlets</a>
-				</li>
-				<li>
-					<a href="portlet_draggable.html">
-					Draggable Portlets</a>
+                <li class="<?php if ($_GET['c']=='carousel'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'help','a'=>'admin'),$_smarty_tpl);?>
+">
+					<i class="fa fa-desktop"></i> 滚动图
+                    </a>
 				</li>
 			</ul>
 		</li>
@@ -191,11 +188,11 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 				</li>
 			</ul>
 		</li>
-		<li class="<?php if (($_GET['c']=='sale'&&$_GET['a']=='admin')||($_GET['c']=='seckill'&&$_GET['a']=='admin')||($_GET['c']=='fullcut'&&$_GET['a']=='admin')||($_GET['c']=='coupon'&&$_GET['a']=='admin')) {?>active open<?php }?>">
+		<li class="<?php if (($_GET['c']=='sale'&&$_GET['a']=='admin')||($_GET['c']=='seckill'&&$_GET['a']=='admin')||($_GET['c']=='fullcut'&&$_GET['a']=='admin')||($_GET['c']=='coupon'&&$_GET['a']=='admin')||($_GET['c']=='theme'&&$_GET['a']=='admin')) {?>active open<?php }?>">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
 			<span class="title">活动中心</span>
-			<span class="arrow "></span>
+			<span class="arrow <?php if (($_GET['c']=='theme'&&$_GET['a']=='admin')||($_GET['c']=='sale'&&$_GET['a']=='admin')||($_GET['c']=='seckill'&&$_GET['a']=='admin')||($_GET['c']=='fullcut'&&$_GET['a']=='admin')||($_GET['c']=='coupon'&&$_GET['a']=='admin')) {?>open<?php }?>"></span>
 			</a>
 			<ul class="sub-menu">
 				<li class="<?php if ($_GET['c']=='sale'&&$_GET['a']=='admin') {?>active<?php }?>">
@@ -221,6 +218,11 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'coupon','a'=>'admin'),$_smarty_tpl);?>
 ">
 					优惠券/打折码</a>
+				</li>
+                <li class="<?php if ($_GET['c']=='theme'&&$_GET['a']=='admin') {?>active<?php }?>">
+					<a href="<?php echo $_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['url'][0][0]->url(array('c'=>'theme','a'=>'admin'),$_smarty_tpl);?>
+">
+					主题管理</a>
 				</li>
 			</ul>
 		</li>

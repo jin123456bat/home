@@ -28,14 +28,22 @@ class couponControl extends control
 		//获取用户所有商品
 		$cart = $cartModel->getByUid($this->session->id);
 		$coupondetailModel = $this->model('coupondetail');
-		$prodcut_array = array();
+		$prodcut_category_array = array();
 		foreach($cart as $goods)
 		{
 			if(isset($goods['activity']) && empty($goods['activity']))
 			{
-				//$coupondetailModel->
+				$product_category_array[] = $goods['category'];
 			}
 		}
+		$result = $coupondetailModel->where('categoryid in (?)',array(implode(',', $product_category_array)))->select('couponid');
+		$coupon_id_array = array();
+		foreach($result as $coupon)
+		{
+			$coupon_id_array[] = $coupon['couponid'];
+		}
+		$body = $couponModel->where('id in (?) and display=? and starttime>? and endtime<? and times>?',array(implode(',', $coupon_id_array),1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0));
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
 	}
 	
 	/**

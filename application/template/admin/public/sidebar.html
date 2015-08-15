@@ -124,32 +124,31 @@
 				</li>
 			</ul>
 		</li>
-		<li class="{%if $smarty.get.c==theme && $smarty.get.a==admin%}active open{%/if%}">
+		<li class="{%if ($smarty.get.c==help && ($smarty.get.a==admin ||$smarty.get.a==edit || $smarty.get.a==page))
+        			||($smarty.get.c==help && $smarty.get.a==create)
+                    %}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-wallet"></i>
 			<span class="title">静态页</span>
-			<span class="arrow "></span>
+			<span class="arrow {%if ($smarty.get.c==help && ($smarty.get.a==admin || $smarty.get.a==edit || $smarty.get.a==page))
+            					||($smarty.get.c==help && $smarty.get.a==create)
+                                %}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
-				<li>
-					<a href="{%url c=theme a=admin%}">
-					主题管理</a>
+            	<li class="{%if $smarty.get.c==help && $smarty.get.a==create%}active{%/if%}">
+					<a href="{%url c=help a=create%}">
+					<i class="fa fa-plus"></i> 添加页面
+                    </a>
 				</li>
-				<li>
-					<a href="portlet_general2.html">
-					<span class="badge badge-roundless badge-danger">new</span>New Portlets #1</a>
+				<li class="{%if $smarty.get.c==help && ($smarty.get.a==admin || $smarty.get.a==edit || $smarty.get.a==page)%}active{%/if%}">
+					<a href="{%url c=help a=admin%}">
+					<i class="fa fa-file-o"></i> 自定义页面
+                    </a>
 				</li>
-				<li>
-					<a href="portlet_general3.html">
-					<span class="badge badge-roundless badge-danger">new</span>New Portlets #2</a>
-				</li>
-				<li>
-					<a href="portlet_ajax.html">
-					Ajax Portlets</a>
-				</li>
-				<li>
-					<a href="portlet_draggable.html">
-					Draggable Portlets</a>
+                <li class="{%if $smarty.get.c==carousel && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=help a=admin%}">
+					<i class="fa fa-desktop"></i> 滚动图
+                    </a>
 				</li>
 			</ul>
 		</li>
@@ -171,11 +170,17 @@
         				||($smarty.get.c==seckill && $smarty.get.a==admin)
                         ||($smarty.get.c==fullcut && $smarty.get.a==admin)
                         ||($smarty.get.c==coupon && $smarty.get.a==admin)
+                        ||($smarty.get.c==theme && $smarty.get.a==admin)
         %}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
 			<span class="title">活动中心</span>
-			<span class="arrow "></span>
+			<span class="arrow {%if ($smarty.get.c==theme && $smarty.get.a==admin)
+            					||($smarty.get.c==sale && $smarty.get.a==admin)
+                                ||($smarty.get.c==seckill && $smarty.get.a==admin)
+                                ||($smarty.get.c==fullcut && $smarty.get.a==admin)
+                                ||($smarty.get.c==coupon && $smarty.get.a==admin)
+            					%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
 				<li class="{%if $smarty.get.c==sale && $smarty.get.a==admin%}active{%/if%}">
@@ -197,6 +202,10 @@
 				<li class="{%if $smarty.get.c==coupon && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=coupon a=admin%}">
 					优惠券/打折码</a>
+				</li>
+                <li class="{%if $smarty.get.c==theme && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=theme a=admin%}">
+					主题管理</a>
 				</li>
 			</ul>
 		</li>

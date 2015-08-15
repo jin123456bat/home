@@ -8,7 +8,6 @@ namespace system\core;
  */
 class http
 {
-
 	/**
 	 * 获取当前url或者根据设置的控制器名称，方法名称，以及其他参数生成一个url
 	 *
@@ -130,7 +129,7 @@ class http
 	 *
 	 * @return mixed
 	 */
-	function agnet()
+	function agent()
 	{
 		return get_browser(NULL, true);
 	}

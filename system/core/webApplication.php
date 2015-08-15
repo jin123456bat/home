@@ -53,17 +53,17 @@ class webApplication extends base
 							$response->appendBody($this->__200($class, $action));
 						} else {
 							$response->setCode(404);
-							$response->appendBody($this->__404($class, $action));
+							$response->appendBody($this->__404($control, $action));
 						}
 					} else {
 						$response->setCode(404);
-						$response->appendBody($this->__404($class, $action));
+						$response->appendBody($this->__404($control, $action));
 					}
 				}
 				else
 				{
 					$response->setCode(404);
-					$response->appendBody($this->__404($class, $action));
+					$response->appendBody($this->__404($control, $action));
 				}
 			} else {
 				include ROOT . '/application/thread/' . $handler . '.php';

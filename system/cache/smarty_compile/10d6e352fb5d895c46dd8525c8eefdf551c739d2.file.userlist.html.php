@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 14:46:56
+<?php /* Smarty version Smarty-3.1.16, created on 2015-08-14 21:52:02
          compiled from "D:\wamp\www\home\application\template\admin\userlist.html" */ ?>
 <?php /*%%SmartyHeaderCode:2455055b5a3a7961bd5-95318673%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '10d6e352fb5d895c46dd8525c8eefdf551c739d2' => 
     array (
       0 => 'D:\\wamp\\www\\home\\application\\template\\admin\\userlist.html',
-      1 => 1439531628,
+      1 => 1439560321,
       2 => 'file',
     ),
   ),
@@ -439,6 +439,7 @@ TableManaged.init();
 	});
 	
 	window.um = UM.getEditor('email_container');
+	$(".edui-container").css('z-index','').css('width','100%');
 	
 	$('#sendemail').on('submit',function(data){
 		if(window.um.hasContents())

@@ -6,7 +6,7 @@ class helpModel extends model
 {
 	function __construct($table)
 	{
-		parent::__construt($table);
+		parent::__construct($table);
 	}
 	
 	/**
@@ -21,6 +21,11 @@ class helpModel extends model
 			return $this->lastInsertId();
 		}
 		return false;
+	}
+	
+	function save($id,$title,$content)
+	{
+		return $this->where('id=?',array($id))->update(array('title'=>$title,'content'=>$content));
 	}
 	
 	/**
