@@ -28,6 +28,16 @@ class model
 		$this->__loadMemcache();
 		$this->__loadRedis();
 	}
+	
+	/**
+	 * 额外加载一张数据表
+	 * @param unknown $table
+	 */
+	protected function model($table)
+	{
+		$this->_table = $table;
+		return $this;
+	}
 
 	/**
 	 * 载入数据库

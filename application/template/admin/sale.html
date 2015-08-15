@@ -14,6 +14,8 @@
 <meta content="" name="description"/>
 <meta content="" name="author"/>
 <!-- BEGIN GLOBAL MANDATORY STYLES -->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/pace/pace.min.js" type="text/javascript"></script>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/pace/themes/pace-theme-barber-shop.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
@@ -77,20 +79,20 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-                	<div class="alert alert-success margin-bottom-10">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                        <i class="fa fa-warning fa-lg"></i> 商品的开始时间和结束时间记得要保证在商品上架期间
-                    </div>
-                    <div class="alert alert-success margin-bottom-10">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                        <i class="fa fa-warning fa-lg"></i> 对于拥有可选属性的商品，设置为限时活动商品后售价一律按照限时活动商品计算，可选属性对应的价格无效
-                    </div>
-                    <div class="alert alert-success margin-bottom-10">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                        <i class="fa fa-warning fa-lg"></i> 限时折扣中的商品，库存量按照商品自身属性中的库存计算，可选属性导致的库存变动无效
-                    </div>
-                    <div id="alert-msg">
-                    </div>
+					<div class="alert alert-success margin-bottom-10">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+						<i class="fa fa-warning fa-lg"></i> 商品的开始时间和结束时间记得要保证在商品上架期间
+					</div>
+					<div class="alert alert-success margin-bottom-10">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+						<i class="fa fa-warning fa-lg"></i> 对于拥有可选属性的商品，设置为限时活动商品后售价一律按照限时活动商品计算，可选属性对应的价格无效
+					</div>
+					<div class="alert alert-success margin-bottom-10">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+						<i class="fa fa-warning fa-lg"></i> 限时折扣中的商品，库存量按照商品自身属性中的库存计算，可选属性导致的库存变动无效
+					</div>
+					<div id="alert-msg">
+					</div>
 					 <div class="portlet box yellow">
 						<div class="portlet-title">
 							<div class="caption">
@@ -126,7 +128,7 @@
 								</tr>
 								</thead>
 								<tbody>
-                                {%section name=product loop=$product%}
+								{%section name=product loop=$product%}
 								<tr>
 									<td>
 										 {%$product[product].pid%}
@@ -148,17 +150,17 @@
 									</td>
 									<td>
 										 <div class="btn-group btn-group-circle btn-group-justified">
-                                            <a href="{%url c=sale a=remove%}&id={%$product[product].id%}" class="btn btn-sm red">
-                                            移除 </a>
-                                            <a href="#" data-id="{%$product[product].id%}" class="btn btn-sm blue editBtn">
-                                            编辑 </a>
-                                            <a href="{%url c=product a=edit%}&action=edit&id={%$product[product].pid%}" class="btn btn-sm green">
-                                            查看 </a>
-                                        </div>
+											<a href="{%url c=sale a=remove%}&id={%$product[product].id%}" class="btn btn-sm red">
+											移除 </a>
+											<a href="#" data-id="{%$product[product].id%}" class="btn btn-sm blue editBtn">
+											编辑 </a>
+											<a href="{%url c=product a=edit%}&action=edit&id={%$product[product].pid%}" class="btn btn-sm green">
+											查看 </a>
+										</div>
 									</td>
 								</tr>
-                                {%sectionelse%}
-                                	<tr><td colspan="7">No Data</td></tr>
+								{%sectionelse%}
+									<tr><td colspan="7">No Data</td></tr>
 								{%/section%}
 								</tbody>
 								</table>
@@ -198,7 +200,7 @@
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
 <script>
-jQuery(document).ready(function() {    
+jQuery(document).ready(function() {	
 	Metronic.init(); // init metronic core components
 	Layout.init(); // init current layout
 	QuickSidebar.init(); // init quick sidebar

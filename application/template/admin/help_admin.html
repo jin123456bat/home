@@ -14,6 +14,8 @@
 <meta content="" name="description"/>
 <meta content="" name="author"/>
 <!-- BEGIN GLOBAL MANDATORY STYLES -->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/pace/pace.min.js" data-pace-options='{ "ajax": true }' type="text/javascript"></script>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/pace/themes/pace-theme-barber-shop.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
@@ -83,7 +85,7 @@
 				<div class="col-md-12 blog-page">
 					<div class="row">
 						{%section name=help loop=$help%}
-                        <div class="col-md-12 col-sm-6 article-block">
+						<div class="col-md-12 col-sm-6 article-block">
 							<div class="row">
 								<div class="col-md-2 blog-img blog-tag-data">
 									<img src="{%$help[help].pic%}" alt="" class="img-responsive">
@@ -108,7 +110,7 @@
 											编辑 </a>
 											<a href="#" class="getLink">
 											获取API连接 </a>
-                                            <input type="text" style="width:0px;" class="display-none" value="{%url c=help a=page%}&id={%$help[help].id%}" readonly>
+											<input type="text" style="width:0px;" class="display-none" value="{%url c=help a=page%}&id={%$help[help].id%}" readonly>
 										</li>
 									</ul>
 								</div>
