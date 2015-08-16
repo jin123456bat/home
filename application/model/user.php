@@ -65,7 +65,7 @@ class userModel extends model
 	/**
 	 * 普通用户注册数据模型
 	 */
-	function register($telephone, $password,$o2o = 0)
+	function register($telephone, $password,$o2o = 0,$client = 'web')
 	{
 		$result = $this->where('telephone=?',array($telephone))->select();
 		if(isset($result[0]))
@@ -82,7 +82,7 @@ class userModel extends model
 		$cost = 0;
 		$gravatar = '';
 		$username = '';
-		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o);
+		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o,$client);
 		return $this->insert($array);
 	}
 

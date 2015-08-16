@@ -36,7 +36,8 @@ class indexControl extends control
 			if($smslogModel->check($telephone))
 			{
 				$code = random::number(6);
-				$template = "您的验证码:".$code;
+				$template = $this->model('system')->get('smstemplate','system');
+				$template = sprintf($template,$code);
 				$sms = new sms();
 				$result = $sms->send($telephone, $template);
 				if($result > 0)

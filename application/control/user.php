@@ -11,6 +11,7 @@ use application\classes\excel;
 use system\core\image;
 use system\core\filesystem;
 use application\classes\sms;
+use system\core\file;
 
 /**
  * 用户控制器
@@ -108,6 +109,7 @@ class userControl extends control
 		{
 			$userModel = $this->model('user');
 			$info = $userModel->get($this->session->id);
+			$info['gravatar'] = file::realpathToUrl($info['gravatar']);
 			if(!empty($info))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok','body'=>$info));
@@ -126,6 +128,10 @@ class userControl extends control
 		{
 			$username = $this->post->username;
 			$gravatar = $this->file->file;
+			if(!is_file($gravatar) || empty($username))
+			{
+				return json_encode(array('code'=>3,'result'=>'参数错误'));
+			}
 			$image = new image();
 			$file = $image->resizeImage($gravatar, 200, 200);
 			filesystem::unlink($gravatar);
@@ -244,13 +250,14 @@ class userControl extends control
 		$password = $this->post->password;
 		$o2o = $this->post->o2o;
 		$code = $this->post->code;
+		$client = $this->post->client;
 		$userModel = $this->model('user');
 		if ($telephone != NULL) {
 			
 			if (login::admin()) {
 				if (empty($password))
 					$password = $telephone;
-				if ($userModel->register($telephone, $password,$o2o)) {
+				if ($userModel->register($telephone, $password,$o2o,$client)) {
 					
 					return json_encode(array(
 						'code' => 1,

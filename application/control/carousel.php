@@ -6,12 +6,28 @@ use system\core\view;
 use application\model\roleModel;
 use application\classes\login;
 use system\core\image;
+use system\core\file;
 /**
  * 滚动图控制器
  * @author jin12
  */
 class carouselControl extends control
 {
+	
+	/**
+	 * app获取滚动图接口
+	 */
+	function getlist()
+	{
+		$carousel = $this->model('carousel');
+		$result = $carousel->select();
+		foreach($result as &$carousel)
+		{
+			$carousel['pic'] = file::realpathToUrl($carousel['pic']);
+		}
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+	}
+	
 	/**
 	 * 滚动图管理页面
 	 */
