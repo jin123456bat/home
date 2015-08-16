@@ -107,6 +107,9 @@
 									<th>
 										 ID
 									</th>
+                                    <th>
+										 活动名称
+									</th>
 									<th>
 										 商品名称
 									</th>
@@ -132,6 +135,9 @@
 								<tr>
 									<td>
 										 {%$product[product].pid%}
+									</td>
+                                    <td class="serverside" data-type="text" data-name="sname">
+										 {%$product[product].sname%}
 									</td>
 									<td>
 										 {%$product[product].name%}
@@ -235,11 +241,12 @@ jQuery(document).ready(function() {
 		{
 			btn = $(this);
 			var id = $(this).data('id');
+			var sname = td.parent().find('input[name=sname]').val();
 			var starttime = td.parent().find('input[name=starttime]').val();
 			var endtime = td.parent().find('input[name=endtime]').val();
 			var orderby = td.parent().find('input[name=orderby]').val();
 			var price = td.parent().find('input[name=price]').val();
-			$.post('{%url c=sale a=save%}',{id:id,starttime:starttime,endtime:endtime,orderby:orderby,price:price},function(data){
+			$.post('{%url c=sale a=save%}',{id:id,sname:sname,starttime:starttime,endtime:endtime,orderby:orderby,price:price},function(data){
 				data = $.parseJSON(data);
 				if(data.code == 1)
 				{

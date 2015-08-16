@@ -108,6 +108,14 @@
 									<input type="radio" name="type" value="discount"> 百分比折扣 </label>
 								</div>
 							</div>
+                            <div class="form-group">
+								<label class="col-md-2 control-label">使用条件</label>
+								<div class="col-md-9">
+									<input type="text" name="max" class="form-control" placeholder="100">
+									<span class="help-block">
+									当购物车中所有商品价格超过使用条件的价格则可以使用 </span>
+								</div>
+							</div>
 							<div class="form-group">
 								<label class="col-md-2 control-label">优惠价格</label>
 								<div class="col-md-9">
@@ -253,6 +261,9 @@
 									<th width="15%">
 										 剩余次数
 									</th>
+                                    <th width="10%">
+                                    	使用条件
+                                    </th>
 									<th>
 										公开
 									</th>
@@ -302,6 +313,9 @@
 									</td>
 									<td>
 										<input type="text" class="form-control form-filter input-sm" name="times" placeholder="剩余次数"/>
+									</td>
+                                    <td>
+										<input type="text" class="form-control form-filter input-sm" name="max" placeholder="使用条件"/>
 									</td>
 									<td>
 										<select name="display" class="form-control form-filter input-sm">
@@ -416,6 +430,7 @@ jQuery(document).ready(function() {
 		var starttime = $('input[name=starttime]',ths).val();
 		var endtime = $('input[name=endtime]',ths).val();
 		var total = $('input[name=total]',ths).val();
+		var max = $('input[name=max]',ths).val();
 		var category = [];
 		var categories = $('select',ths);
 		var type = $('input[name=type]:checked',ths).val();
@@ -424,7 +439,7 @@ jQuery(document).ready(function() {
 			category.push($(value).val());
 		});
 		category = JSON.stringify(category);
-		$.post('{%url c=coupon a=create%}',{couponno:couponno,starttime:starttime,endtime:endtime,total:total,category:category,type:type,value:value,display:display},function(data){
+		$.post('{%url c=coupon a=create%}',{couponno:couponno,starttime:starttime,endtime:endtime,total:total,category:category,type:type,value:value,max:max,display:display},function(data){
 			if(data.code == 1)
 			{
 				$('#coupon').modal('hide');

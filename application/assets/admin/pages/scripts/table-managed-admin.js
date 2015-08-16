@@ -54,7 +54,7 @@ var TableManaged = function () {
 				"data":"close",
 				"render":function(data,type,full){
 					$.ajaxSetup({async:false});
-					var tpl = '<select>';
+					var tpl = '<select class="form-control input-sm roleSelector">';
 					$.get('?c=role&a=fetch',{},function(data){
 						data = $.parseJSON(data);
 						if(data.code == 1)

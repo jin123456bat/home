@@ -49,14 +49,14 @@ class seckillModel extends model
 	 * @param int $orderby
 	 * @param double $price
 	 */
-	function save($id,$starttime,$endtime,$orderby,$price)
+	function save($id,$sname,$starttime,$endtime,$orderby,$price)
 	{
 		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
 		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+24*3600:strtotime($endtime);
 		$orderby = empty($orderby)?1:$orderby;
 		$price = empty($price)?0:$price;
 		$this->where('id=?',array($id));
-		return $this->update(array('starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
+		return $this->update(array('sname'=>$sname,'starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
 	}
 	
 	/**
@@ -66,7 +66,7 @@ class seckillModel extends model
 	 * @param int $last 单位小时
 	 * @param number $orderby
 	 */
-	function create($pid,$starttime,$endtime,$price,$orderby)
+	function create($sname,$pid,$starttime,$endtime,$price,$orderby)
 	{
 		$result = $this->where('pid=?',array($pid))->select('count(*)');
 		if(isset($result[0]['count(*)']) && $result[0]['count(*)']>0)
@@ -74,7 +74,7 @@ class seckillModel extends model
 		$orderby = empty($orderby)?1:$orderby;
 		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
 		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+3600*24:strtotime($endtime);
-		$array = array(NULL,$pid,$starttime,$endtime,$orderby,$price);
+		$array = array(NULL,$sname,$pid,$starttime,$endtime,$orderby,$price);
 		if($this->insert($array))
 			return $this->lastInsertId();
 		return false;

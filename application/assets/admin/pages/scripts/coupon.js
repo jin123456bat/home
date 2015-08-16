@@ -71,6 +71,9 @@ var Coupon = function () {
 					"data":"times",
 					"orderable": true
 				}, {
+					"data":"max",
+					"orderable": true
+				}, {
 					"data":"display",
 					"orderable":true
 				}, {
@@ -105,6 +108,12 @@ var Coupon = function () {
 					}
 				},{
 					"targets":[7],
+					"data":"display",
+					"render":function(data,type,full){
+						return (data=="1")?"公开":"非公开";
+					}
+				},{
+					"targets":[8],
 					"data":"value",
 					"render":function(data,type,full){
 						if(data>1)
@@ -113,7 +122,7 @@ var Coupon = function () {
 						return data*10+'折';
 					}
 				},{
-					"targets":[8],
+					"targets":[9],
 					"data":"id",
 					"render":function(data,type,full){
 						return '<a data-id='+data+' class="btn btn-xs default red-stripen removeBtn">删除</a>';

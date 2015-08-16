@@ -83,10 +83,65 @@
                 	<button class="btn green" id="createBtn">添加一张幻灯图 <i class="fa fa-plus"></i></button>
                     <div class="content-page">
                       <div class="row margin-bottom-40 portlet">
-                        
-                        <div class="col-md-3 col-sm-3 gallery-item" id="gallery-item">
+                        {%section name=carousel loop=$carousel%}
+                        <div class="col-md-3 col-sm-12 gallery-item">
+                            <a data-rel="fancybox-button" title="Project Name" href="{%$carousel[carousel].pic%}" class="fancybox-button">
+                                <img alt="" src="{%$carousel[carousel].pic%}" style="height:258px;" class="img-responsive">
+                                <div class="zoomix">
+                                    <i class="fa fa-search"></i>
+                                </div>
+                            </a>
+                            <div class="caption">
+                            	<form action="{%url c=carousel a=save%}" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="id" value="{%$carousel[carousel].id%}">
+                                <h4><input type="text" name="title" value="{%$carousel[carousel].title|default:""%}" class="form-control display-block input-sm" placeholder="标题"></h4>
+                                <p>
+                                	<div class="form-group">
+                                        <div class="col-md-4" style="padding-right:0px;">
+	                                        <input type="text" name="stop" value="{%$carousel[carousel].stop%}" class="input-sm form-control" placeholder="停留时间/秒"> 
+                                        </div>
+                                    	<div class="col-md-4" style="padding:0px;">
+                                            <select name="type" class="input-sm form-control">
+                                                <option value="theme" {%if $carousel[carousel].type==theme%}selected="selected"{%/if%}>连接到主题</option>
+                                                <option value="product" {%if $carousel[carousel].type==product%}selected="selected"{%/if%}>连接到商品</option>
+                                                <option value="url" {%if $carousel[carousel].type==url%}selected="selected"{%/if%}>连接到地址</option>
+                                                <option value="none" {%if $carousel[carousel].type==none%}selected="selected"{%/if%}>无连接</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4" style="padding-left:0px;">
+                                            <input type="text" name="src_url" class="form-control input-sm {%if $carousel[carousel].type!=url%}hide{%/if%}" value="{%if $carousel[carousel].type==url%}{%$carousel[carousel].src%}{%/if%}" placeholder="以http://开头">
+                                            <select name="src_theme" class="input-sm form-control {%if $carousel[carousel].type!=theme%}hide{%/if%}">
+                                                {%section name=theme loop=$theme%}
+                                                <option value="{%$theme[theme].id%}" {%if $carousel[carousel].src==$theme[theme].id && $carousel[carousel].type==theme%}selected="selected"{%/if%}>{%$theme[theme].name%}</option>
+                                                {%/section%}
+                                            </select>
+                                            <select name="src_product" class="input-sm form-control {%if $carousel[carousel].type!=product%}hide{%/if%}">
+                                                {%section name=product loop=$product%}
+                                                <option value="{%$product[product].id%}" {%if $carousel[carousel].src==$product[product].id && $carousel[carousel].type==product%}selected="selected"{%/if%}>{%$product[product].name%}</option>
+                                                {%/section%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </p>
+                                <p>
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group-solid">
+                                            <input type="submit" class="btn blue display-inline col-md-4" value="保存">
+                                            <button class="btn red display-inline col-md-4 removeBtn" data-id="{%$carousel[carousel].id%}">
+                                            删除 </button>
+                                            <button class="btn yellow display-inline col-md-4 selectpic">
+                                            更改图片 </button>
+                                            <input type="file" class="display-none hide" name="pic">
+                                        </div>
+                                    </div>
+                                </p>
+                                </form>
+                            </div>
+                        </div>
+                        {%/section%}
+                        <div class="col-md-3 col-sm-3 gallery-item display-none" id="gallery-item">
                             <a data-rel="fancybox-button" title="Project Name" href="{%$VIEW_ROOT%}/assets/global/plugins/jcrop/demos/demo_files/image3.jpg" class="fancybox-button">
-                                <img alt="" src="{%$VIEW_ROOT%}/assets/global/plugins/jcrop/demos/demo_files/image3.jpg" class="img-responsive">
+                                <img alt="" src="{%$VIEW_ROOT%}/assets/global/plugins/jcrop/demos/demo_files/image3.jpg" style="height:258px;" class="img-responsive">
                                 <div class="zoomix">
                                     <i class="fa fa-search"></i>
                                 </div>
@@ -108,13 +163,13 @@
                                             </select>
                                         </div>
                                         <div class="col-md-4" style="padding-left:0px;">
-                                            <input type="text" name="src_url" class="form-control input-sm" placeholder="以http://开头">
-                                            <select name="src_theme" class="input-sm form-control">
+                                            <input type="text" name="src_url" class="form-control input-sm hide" placeholder="以http://开头">
+                                            <select name="src_theme" class="input-sm form-control hide">
                                                 {%section name=theme loop=$theme%}
                                                 <option value="{%$theme[theme].id%}">{%$theme[theme].name%}</option>
                                                 {%/section%}
                                             </select>
-                                            <select name="src_product" class="input-sm form-control">
+                                            <select name="src_product" class="input-sm form-control hide">
                                                 {%section name=product loop=$product%}
                                                 <option value="{%$product[product].id%}">{%$product[product].name%}</option>
                                                 {%/section%}
@@ -127,18 +182,17 @@
                                         <div class="btn-group-solid">
                                             <input type="submit" class="btn blue display-inline col-md-4" value="保存">
                                             
-                                            <button class="btn red display-inline col-md-4">
+                                            <button class="btn red display-inline col-md-4 removeBtn">
                                             删除 </button>
                                             <button class="btn yellow display-inline col-md-4 selectpic">
                                             更改图片 </button>
-                                            <input type="file" class="display-none hide" name="pic">
+                                            <input type="file" class="display-none hide" name="pic" accept="image/gif,image/png,image/jpg,image/bmp,image/jpeg">
                                         </div>
                                     </div>
                                 </p>
                                 </form>
                             </div>
-                        </div>                
-                        
+                        </div>            
                       </div>
                     </div>
 		  
@@ -184,16 +238,13 @@ jQuery(document).ready(function() {
 	Demo.init(); // init demo features
 	$('.selectpic').on('click',function(){
 		$(this).next().click();
+		return false;
 	});
 	
 	$('#createBtn').on('click',function(){
 		var tpl = $('#gallery-item').clone().removeClass('display-none');
 		$('.portlet').append(tpl);
 	});
-	
-	$('input[name=src_url]').hide();
-	$('select[name=src_product]').hide();
-	$('select[name=src_theme]').hide();
 	
 	$('select[name=type]').live('change',function(){
 		switch($(this).val())
@@ -205,21 +256,30 @@ jQuery(document).ready(function() {
 			break;
 			case 'product':
 				$(this).parents('form').find('input[name=src_url]').hide();
-				$(this).parents('form').find('select[name=src_product]').show();
+				$(this).parents('form').find('select[name=src_product]').show().removeClass('hide');
 				$(this).parents('form').find('select[name=src_theme]').hide();
 			break;
 			case 'theme':
 				$(this).parents('form').find('input[name=src_url]').hide();
 				$(this).parents('form').find('select[name=src_product]').hide();
-				$(this).parents('form').find('select[name=src_theme]').show();
+				$(this).parents('form').find('select[name=src_theme]').show().removeClass('hide');
 			break;
 			case 'url':
-				$(this).parents('form').find('input[name=src_url]').show();
+				$(this).parents('form').find('input[name=src_url]').show().removeClass('hide');
 				$(this).parents('form').find('select[name=src_product]').hide();
 				$(this).parents('form').find('select[name=src_theme]').hide();
 			break;
 			default:alert('没有该类型');break;
 		}
+	});
+	
+	$('.removeBtn').on('click',function(event){
+		$(this).parents('.gallery-item').remove();
+		var id = $(this).data('id');
+		if(id != 'undefined')
+		$.post('{%url c=carousel a=remove%}',{id:id},function(data){
+		});
+		return false;
 	});
 });
 </script>

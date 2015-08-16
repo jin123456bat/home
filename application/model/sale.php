@@ -50,13 +50,13 @@ class saleModel extends model
 	 * @param unknown $price
 	 * @return \system\core\Ambigous
 	 */
-	function save($id,$starttime,$endtime,$orderby,$price)
+	function save($id,$sname,$starttime,$endtime,$orderby,$price)
 	{
 		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
 		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+24*3600:strtotime($endtime);
 		$orderby = empty($orderby)?1:$orderby;
 		$price = empty($price)?1:$price;
-		return $this->where('id=?',array($id))->update(array('starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
+		return $this->where('id=?',array($id))->update(array('sname'=>$sname,'starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
 	}
 	
 	/**
@@ -68,7 +68,7 @@ class saleModel extends model
 	 * @param number $orderby
 	 * @return \system\core\Ambigous
 	 */
-	function create($pid,$starttime,$endtime,$price,$orderby)
+	function create($sname,$pid,$starttime,$endtime,$price,$orderby)
 	{
 		$result = $this->where('pid=?',array($pid))->select('count(*)');
 		if(isset($result[0]['count(*)']) && $result[0]['count(*)']>0)
@@ -76,7 +76,7 @@ class saleModel extends model
 		$orderby = empty($orderby)?1:$orderby;
 		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
 		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+3600*24:strtotime($endtime);
-		$array = array(NULL,$pid,$starttime,$endtime,$price,$orderby);
+		$array = array(NULL,$sname,$pid,$starttime,$endtime,$price,$orderby);
 		if($this->insert($array))
 		{
 			return $this->lastInsertId();

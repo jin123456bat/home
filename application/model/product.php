@@ -21,7 +21,7 @@ class productModel extends model
 	 */
 	function check($pid)
 	{
-		$this->where('id=? and starttime<? and endtime>? and status=?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],1));
+		$this->where('id=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and status=?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],1));
 		$result = $this->select();
 		return isset($result[0]);
 	}
@@ -48,11 +48,11 @@ class productModel extends model
 	 */
 	function increaseStock($pid,$num)
 	{
-		$this->where('pid=?',array($pid))->increase('stock',$num);
-		$result = $this->where('pid=?',array($pid))->select('stock');
+		$this->where('id=?',array($pid))->increase('stock',$num);
+		$result = $this->where('id=?',array($pid))->select('stock');
 		if(isset($result[0]['stock']) && $result[0]['stock']<0)
 		{
-			$this->where('pid=?',array($pid))->increase('stock',-$num);
+			$this->where('id=?',array($pid))->increase('stock',-$num);
 			return false;
 		}
 		return true;

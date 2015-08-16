@@ -83,6 +83,12 @@
 									</div>
 								</div>
 								<div class="activity_form seckill sale">
+                                	<div class="form-group">
+										<label class="col-md-2 control-label">活动名称</label>
+										<div class="col-md-9">
+											<input type="text" name="sname" class="form-control" placeholder="八月促销">
+										</div>
+									</div>
 									<div class="form-group">
 										<label class="col-md-2 control-label">产品名称</label>
 										<div class="col-md-9">
@@ -418,6 +424,7 @@ jQuery(document).ready(function() {
 	
 	$('#sale-config-form').on('submit',function(){
 		var modal = $('#sale-config-form');
+		var sname = modal.find('input[name=sname]').val();
 		var pid = modal.find('input[name=id]').val();
 		var starttime = modal.find('input[name=starttime]').val();
 		var endtime = modal.find('input[name=endtime]').val();
@@ -431,10 +438,16 @@ jQuery(document).ready(function() {
 				activity = $(value).val();
 			}
 		});
-		modal.find('input[name=price]').parents('div:eq(2)').removeClass('has-error');
-		if(price.length == 0)
+		modal.find('input[name=price]').parents('.form-group').removeClass('has-error');
+		modal.find('input[name=sname]').parents('.form-group').removeClass('has-error');
+		if(sname.length == 0)
 		{
-			modal.find('input[name=price]').parents('div:eq(2)').addClass('has-error');
+			modal.find('input[name=sname]').focus().parents('.form-group').addClass('has-error');
+			return false;
+		}
+		if(parseFloat(price) == 0)
+		{
+			modal.find('input[name=price]').focus().parents('.form-group').addClass('has-error');
 			return false;
 		}
 		var orderby = modal.find('input[name=orderby]').val();
@@ -442,10 +455,10 @@ jQuery(document).ready(function() {
 		switch(activity)
 		{
 			case 'seckill':url = '{%url c=seckill a=create%}';
-					parameter = {pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
+					parameter = {sname:sname,pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
 					break;
 			case 'sale':url = '{%url c=sale a=create%}';
-					parameter = {pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
+					parameter = {sname:sname,pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
 					break;
 			case 'fullcut':url = '{%url c=fullcutdetail a=create%}';
 					parameter = {pid:pid,fid:fullcut};

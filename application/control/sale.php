@@ -53,12 +53,13 @@ class saleControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'sale',roleModel::POWER_UPDATE))
 		{
 			$id = filter::int($this->post->id);
+			$sname = $this->post->sname;
 			$starttime = $this->post->starttime;
 			$endtime = $this->post->endtime;
 			$price = filter::number($this->post->price);
 			$orderby = filter::int($this->post->orderby);
 			$seckillModel = $this->model('sale');
-			if($seckillModel->save($id,$starttime,$endtime,$orderby,$price))
+			if($seckillModel->save($id,$sname,$starttime,$endtime,$orderby,$price))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
@@ -76,7 +77,7 @@ class saleControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/sale.html');
 			$saleModel = $this->model('sale');
-			$result = $saleModel->fetchAll('product.id as pid,product.name,sale.starttime,sale.endtime,sale.price,sale.orderby,sale.id');
+			$result = $saleModel->fetchAll('sale.sname,product.id as pid,product.name,sale.starttime,sale.endtime,sale.price,sale.orderby,sale.id');
 			$this->view->assign('product',$result);
 			$this->response->setBody($this->view->display());
 		}
@@ -95,6 +96,7 @@ class saleControl extends control
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'sale',roleModel::POWER_INSERT))
 		{
+			$sname = $this->post->sname;
 			$pid = filter::int($this->post->pid);
 			$starttime = $this->post->starttime;
 			$endtime = $this->post->endtime;
@@ -105,7 +107,7 @@ class saleControl extends control
 			if(!empty($pid) && !empty($result) && empty($result['activity']))
 			{
 				$saleModel = $this->model('sale');
-				if($saleModel->create($pid,$starttime,$endtime,$price,$orderby))
+				if($saleModel->create($sname,$pid,$starttime,$endtime,$price,$orderby))
 				{
 					$productModel->setActivity($pid,'sale');
 					return json_encode(array('code'=>1,'result'=>'ok'));

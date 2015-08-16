@@ -6,6 +6,7 @@ use system\core\view;
 use application\classes\sms;
 use system\core\validate;
 use system\core\random;
+use system\core\image;
 
 class indexControl extends control
 {
@@ -53,6 +54,18 @@ class indexControl extends control
 				'result' => '手机号码不合法'
 			));
 		}
+	}
+	
+	/**
+	 * 根据传入内容生成二维码
+	 */
+	function eqcode()
+	{
+		$content = htmlspecialchars_decode($this->get->content);
+		$image = new image();
+		$file = $image->QRCode($content);
+		$this->response->addHeader('Content-Type','image/png');
+		echo file_get_contents($file);
 	}
 
 	/**

@@ -160,6 +160,31 @@ class adminControl extends control
 	}
 	
 	/**
+	 * 更改管理员的管理组
+	 */
+	function setrole()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'admin',roleModel::POWER_UPDATE))
+		{
+			$aid = $this->post->id;
+			$roleid = $this->post->role;
+			$adminModel = $this->model('admin');
+			if($adminModel->where('id=?',array($aid))->update('role',$roleid))
+			{
+				$this->model('log')->write($this->session->username,'更改了管理员的管理组id=>'.$aid.'role=>'.$roleid);
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'failed'));
+		}
+		else
+		{
+			return json_encode(array('code'=>2,'result'=>'没有权限'));
+		}
+	}
+	
+	/**
 	 * __404
 	 * optional
 	 */

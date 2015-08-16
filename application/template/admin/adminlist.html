@@ -322,6 +322,17 @@ TableManaged.init();
 		});
 		return false;
 	});
+	
+	$('.roleSelector').live('change',function(){
+		var id = $(this).parents('tr').find('input.checkboxes').val();
+		var role = $(this).val();
+		$.post('{%url c=admin a=setrole%}',{id:id,role:role},function(data){
+			if(data.code != 1)
+			{
+				alert(data.result);
+			}
+		});
+	});
 });
 </script>
 </body>

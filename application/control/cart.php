@@ -52,7 +52,12 @@ class cartControl extends control
 			}
 			else
 			{
+				
 				$collectionModel = $this->model('collection');
+				if(empty($collectionModel->find($pid,$content)))
+				{
+					return json_encode(array('code'=>5,'result'=>'可选属性值错误'));
+				}
 				if($collectionModel->increaseStock($pid,$content,-$num))
 				{
 					if($cartModel->create($uid,$pid,$content,$num))
@@ -119,6 +124,7 @@ class cartControl extends control
 		$seckillModel = $this->model('seckill');
 		$saleModel = $this->model('sale');
 		$collectionModel = $this->model('collection');
+		$prototypeModel = $this->model('prototype');
 		$fullcutdetailModel = $this->model('fullcutdetail');
 		$product = $cartModel->getByUid($this->session->id);
 		$totalPrice = 0;
@@ -149,12 +155,12 @@ class cartControl extends control
 						$totalPrice += $price*$value['num'];
 				case 'fullcut':
 					$fullcut = $fullcutdetailModel->getByPid($value['pid']);
-					if($value['price']*$value['num']>$fullcut['max'])
-						$totalPrice += ($value['price']*$value['num']-$fullcut['minus']);
+					if($value['price']*$value['num']>$fullcut[0]['max'])
+						$totalPrice += ($value['price']*$value['num']-$fullcut[0]['minus']);
 					else
 						$totalPrice += $value['price']*$value['num'];
 					break;
-				default:
+				default:		
 					$totalPrice += $value['price']*$value['num'];
 					break;
 			}
@@ -168,8 +174,8 @@ class cartControl extends control
 	function order()
 	{
 		$this->session->id = 3;
-		//if(!login::user())
-		//	return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$cartModel = $this->model('cart');
 		$cart = $cartModel->getByUid($this->session->id);
 		//流水号

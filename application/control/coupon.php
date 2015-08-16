@@ -42,7 +42,7 @@ class couponControl extends control
 		{
 			$coupon_id_array[] = $coupon['couponid'];
 		}
-		$body = $couponModel->where('id in (?) and display=? and starttime>? and endtime<? and times>?',array(implode(',', $coupon_id_array),1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0));
+		$body = $couponModel->where('id in (?) and display=? and (starttime>? or starttime=0) and (endtime<? or endtime=0) and times>?',array(implode(',', $coupon_id_array),1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0));
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
 	}
 	
@@ -99,10 +99,11 @@ class couponControl extends control
 			$total = filter::int($this->post->total);
 			$category = json_decode(htmlspecialchars_decode($this->post->category));
 			$type = $this->post->type;
-			$display = $this->post->display;
+			$display = filter::int($this->post->display);
+			$max = filter::number($this->post->max);
 			$value = filter::number($this->post->value);
 			$couponModel = $this->model('coupon');
-			$result = $couponModel->create($couponno,$total,$starttime,$endtime,$display,$type,$value);
+			$result = $couponModel->create($couponno,$total,$starttime,$endtime,$max,$display,$type,$value);
 			if($result)
 			{
 				$this->model('coupondetail')->create($result,$category);

@@ -55,16 +55,18 @@ class seckillControl extends control
 	 */
 	function save()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'seckill',roleModel::POWER_UPDATE))
 		{
 			$id = filter::int($this->post->id);
+			$sname = $this->post->sname;
 			$starttime = $this->post->starttime;
 			$endtime = $this->post->endtime;
 			$price = filter::number($this->post->price);
 			$orderby = filter::int($this->post->orderby);
 			$seckillModel = $this->model('seckill');
-			if($seckillModel->save($id,$starttime,$endtime,$orderby,$price))
+			if($seckillModel->save($id,$sname,$starttime,$endtime,$orderby,$price))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
@@ -107,7 +109,7 @@ class seckillControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/seckill.html');
 			$seckillModel = $this->model('seckill');
-			$seckill = $seckillModel->fetchAll('product.id as pid,product.name,seckill.starttime,seckill.endtime,seckill.price,seckill.orderby,seckill.id');
+			$seckill = $seckillModel->fetchAll('seckill.sname,product.id as pid,product.name,seckill.starttime,seckill.endtime,seckill.price,seckill.orderby,seckill.id');
 			$this->view->assign('product',$seckill);
 			$this->response->setBody($this->view->display());
 		}
@@ -126,6 +128,7 @@ class seckillControl extends control
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'seckill',roleModel::POWER_INSERT))
 		{
+			$sname = $this->post->sname;
 			$pid = filter::int($this->post->pid);
 			$starttime = $this->post->starttime;
 			$endtime = $this->post->endtime;
@@ -138,7 +141,7 @@ class seckillControl extends control
 				if(empty($product) || !empty($product['activity']))
 					return json_encode(array('code'=>4,'result'=>'商品不存在或者该商品已经有优惠政策了'));
 				$seckillModel = $this->model('seckill');
-				if($seckillModel->create($pid,$starttime,$endtime,$price,$orderby))
+				if($seckillModel->create($sname,$pid,$starttime,$endtime,$price,$orderby))
 				{
 					$productModel->setActivity($pid,'seckill');
 					return json_encode(array('code'=>1,'result'=>'推送成功'));
