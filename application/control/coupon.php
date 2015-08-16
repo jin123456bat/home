@@ -31,12 +31,13 @@ class couponControl extends control
 		$prodcut_category_array = array();
 		foreach($cart as $goods)
 		{
+			//参加了活动的商品不能使用优惠券
 			if(isset($goods['activity']) && empty($goods['activity']))
 			{
 				$product_category_array[] = $goods['category'];
 			}
 		}
-		$result = $coupondetailModel->where('categoryid in (?)',array(implode(',', $product_category_array)))->select('couponid');
+		$result = $coupondetailModel->where('categoryid in (?) or categoryid=0',array(implode(',', $product_category_array)))->select('couponid');
 		$coupon_id_array = array();
 		foreach($result as $coupon)
 		{

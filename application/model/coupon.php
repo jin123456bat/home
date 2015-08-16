@@ -14,6 +14,21 @@ class couponModel extends model
 	}
 	
 	/**
+	 * 验证商品是否可以使用折扣 并返回折扣信息
+	 * @param unknown $couponno
+	 * @param unknown $product
+	 */
+	function check($couponno,$product)
+	{
+		$this->where('starttime<? and (endtime>? or endtime=0)',array($_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
+		$this->where('times>?',array(0));
+		$this->where('coupondetail.categoryid=? or coupondetail.categoryid=?',array($product['category'],0));
+		$this->table('coupondetail','left join','coupondetail.couponid=coupon.id');
+		$this->where('couponno=?',array($couponno));
+		return $this->select();
+	}
+	
+	/**
 	 * ajax搜索
 	 * @param unknown $post
 	 */
@@ -105,6 +120,28 @@ class couponModel extends model
 	}
 	
 	/**
+	 * 获得一张优惠券信息
+	 * @param unknown $couponno
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function get($couponno,$name = '*')
+	{
+		$result = $this->where('couponno=?',array($couponno))->select($name);
+		if($name == '*')
+			return isset($result[0])?$result[0]:NULL;
+		return isset($result[0][$name])?$result[0][$name]:NULL;
+	}
+	
+	/**
+	 * 获得一张优惠卷所有信息
+	 */
+	function getByCouponno($couponno)
+	{
+		$this->table('coupondetail','left join','coupondetail.couponid=coupon.id');
+		return $this->where('couponno=?',array($couponno))->select();
+	}
+	
+	/**
 	 * 创建优惠
 	 */
 	function create($couponno,$total,$starttime,$endtime,$max,$display,$type,$value)
@@ -130,5 +167,13 @@ class couponModel extends model
 		$this->where('coupon.id=?',array($id));
 		$this->table('coupondetail','left join','coupon.id=coupondetail.couponid');
 		return $this->delete('coupon,coupondetail');
+	}
+	
+	/**
+	 * 减少优惠券使用次数
+	 */
+	function increaseTimes($couponno,$num = 1)
+	{
+		return $this->where('couponno=?',array($couponno))->increase('times',-$num);
 	}
 }

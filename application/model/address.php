@@ -13,6 +13,14 @@ class addressModel extends model
 		parent::__construct($table);
 	}
 	
+	function get($id,$name = '*')
+	{
+		$result = $this->where('id=?',array($id))->select($name);
+		if($name == '*')
+			return isset($result[0])?$result[0]:NULL;
+		return isset($result[0][$name])?$result[0][$name]:NULL;
+	}
+	
 	/**
 	 * 获取用户的地址
 	 * @param unknown $uid

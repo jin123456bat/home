@@ -83,6 +83,19 @@ class addressControl extends control
 	}
 	
 	/**
+	 * 获得指定地址id的信息
+	 */
+	function information()
+	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$id = filter::int($this->get->id);
+		$addressModel = $this->model('address');
+		$address = $addressModel->get($id);
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$address));
+	}
+	
+	/**
 	 * 用户删除配送地址
 	 * @return string
 	 */

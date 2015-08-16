@@ -13,6 +13,15 @@ class orderlistModel extends model
 		parent::__construct($table);
 	}
 	
+	function create($data)
+	{
+		if($this->insert($data))
+		{
+			return $this->lastInsertId();
+		}
+		return false;
+	}
+	
 	/**
 	 * ajxa搜索
 	 * @param unknown $post

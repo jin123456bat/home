@@ -21,7 +21,8 @@ class cartModel extends model
 	{
 		$this->where('cart.uid=?',array($uid));
 		$this->table('product','left join','cart.pid=product.id');
-		return $this->select();
+		$this->table('brand','left join','product.bid=brand.id');
+		return $this->select('*,brand.name as brand');
 	}
 	
 	/**
