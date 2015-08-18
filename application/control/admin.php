@@ -137,6 +137,16 @@ class adminControl extends control
 	}
 	
 	/**
+	 * 管理员注销
+	 */
+	function logout()
+	{
+		unset($this->session->id);
+		unset($this->session->role);
+		unset($this->session->username);
+	}
+	
+	/**
 	 * 添加管理员 接口
 	 */
 	function register()

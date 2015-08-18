@@ -133,7 +133,7 @@ var EcommerceProducts = function () {
 					'url':'?c=product&a=ajaxdatatable',
                 },
                 "order": [
-                    [1, "asc"]
+                    [0, "asc"]
                 ], // set first column as a default sort by asc
 				'language':{
 					'emptyTable': '没有数据',  
@@ -151,7 +151,7 @@ var EcommerceProducts = function () {
 					'info': '第 _PAGE_ 页 / 总 _PAGES_ 页',  
 					'infoEmpty': '没有数据',  
 					'infoFiltered': '(过滤总件数 _MAX_ 条)'  
-				}  
+				}
             }
         });
 

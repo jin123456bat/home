@@ -50,6 +50,8 @@ class fullcutModel extends model
 		return isset($result[0])?$result[0]:NULL;
 	}
 	
+	
+	
 	/**
 	 * 获得所有满减组合数据
 	 * @return Ambigous <boolean, multitype:>

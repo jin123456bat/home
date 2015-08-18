@@ -14,7 +14,15 @@ use application\classes\login;
 class saleControl extends control
 {
 	/**
-	 * 获得限时商品的信息
+	 * 活动详情
+	 */
+	function information()
+	{
+		
+	}
+	
+	/**
+	 * 获得限时商品的信息  商品列表
 	 */
 	function product()
 	{

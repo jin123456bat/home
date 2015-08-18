@@ -12,14 +12,21 @@ use application\classes\login;
  */
 class orderControl extends control
 {
+	function export()
+	{
+		$roleModel = $this->model('order');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist'))
+		{
+			
+		}
+	}
 	
 	/**
-	 * 创建订单
-	 * @param unknown $array
+	 * 订单结算
 	 */
-	function create($array)
+	function payment()
 	{
-		return $this->insert($array);
+		
 	}
 	
 	/**
@@ -81,6 +88,15 @@ class orderControl extends control
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_ALL))
 		{
+			if(!empty($this->post->customActionType) && $this->post->customActionType == 'group_action')
+			{
+				$orderlistModel = $this->model('orderlist');
+				$id = $this->post->id;
+				switch ($this->post->customActionName)
+				{
+					case 'remove':$orderlistModel->remove($id);break;
+				}
+			}
 			$resultObj = new \stdClass();
 			$resultObj->draw = $this->post->draw;
 			$orderModel = $this->model('orderlist');

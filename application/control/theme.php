@@ -15,9 +15,12 @@ class themeControl extends control
 	function information()
 	{
 		$this->response->addHeader('Content-Type','application/json');
-		$id = $this->get->id;
+		$id = filter::int($this->get->id);
 		$themeModel = $this->model('theme');
 		$result = $themeModel->get($id);
+		$result['bigpic'] = empty($result['bigpic'])?'':file::realpathToUrl($result['bigpic']);
+		$result['middlepic'] = empty($result['middlepic'])?'':file::realpathToUrl($result['middlepic']);
+		$result['smallpic'] = empty($result['smallpic'])?'':file::realpathToUrl($result['smallpic']);
 		$result['product'] = $themeModel->product($id);
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}

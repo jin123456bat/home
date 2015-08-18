@@ -195,7 +195,7 @@ class file
 		{
 			$path = str_replace(realpath(ROOT), '', $path);
 			$http = new http();
-			return rtrim('http://'.$http->host().$http->path(),'/').$path;
+			return str_replace('\\', '/',rtrim('http://'.$http->host().$http->path(),'/\\'). $path);
 		}
 		return NULL;
 	}

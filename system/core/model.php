@@ -36,7 +36,7 @@ class model
 	protected function model($table)
 	{
 		$this->_table = $table;
-		return $this;
+		return clone $this;
 	}
 
 	/**

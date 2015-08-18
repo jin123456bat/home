@@ -1,6 +1,7 @@
 <?php
 namespace application\model;
 use system\core\model;
+use system\core\file;
 /**
  * @author jin12
  *
@@ -36,10 +37,26 @@ class themeModel extends model
 	 */
 	function product($tid)
 	{
-		$this->where('id=?',array($tid));
+		$this->where('theme.id=?',array($tid));
 		$this->table('theme_product','left join','theme.id=theme_product.tid');
 		$this->table('product','left join','product.id=theme_product.pid');
-		return $this->select();
+		$result = $this->select();
+		$productimgModel = $this->model('productimg');
+		foreach($result as &$product)
+		{
+			unset($product['smallpic']);
+			unset($product['bigpic']);
+			unset($product['middlepic']);
+			$img = $productimgModel->where('pid=?',array($product['id']))->select();
+			foreach ($img as &$image)
+			{
+				$image['base_path'] = empty($image['base_path'])?'':file::realpathToUrl($image['base_path']);
+				$image['small_path'] = empty($image['small_path'])?'':file::realpathToUrl($image['small_path']);
+				$image['thumbnail_path'] = empty($image['thumbnail_path'])?'':file::realpathToUrl($image['thumbnail_path']);
+			}
+			$product['img'] = $img;
+		}
+		return $result;
 	}
 	
 	/**

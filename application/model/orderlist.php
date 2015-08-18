@@ -14,6 +14,25 @@ class orderlistModel extends model
 	}
 	
 	/**
+	 * 删除订单
+	 * @param unknown $id
+	 * @return boolean|\system\core\Ambigous
+	 */
+	function remove($id)
+	{
+		if(is_array($id))
+		{
+			foreach ($id as $remove_id)
+			{
+				$this->where('id=?',array($remove_id))->delete();
+			}
+			return true;
+		}
+		return $this->where('id=?',array($id))->delete();
+		
+	}
+	
+	/**
 	 * 创建一个订单
 	 * @param unknown $data
 	 * @return string|boolean
@@ -36,7 +55,7 @@ class orderlistModel extends model
 				}
 				$orderdetailModel->insert($detail);
 			}
-			return true;
+			return $oid;
 		}
 		return false;
 	}
@@ -49,7 +68,7 @@ class orderlistModel extends model
 	 */
 	function searchable($post,$pid = NULL)
 	{
-		if(!empty($pid))
+		if($pid !=NULL)
 		{
 			//当存在商品的是偶
 			$this->where('orderdetail.pid=?',array($pid));
@@ -60,7 +79,7 @@ class orderlistModel extends model
 		{
 			foreach ($post->order as $orderby)
 			{
-				if($orderby['column'] == $key)
+				if($orderby['column']+1 == $key)
 				{
 					$this->orderby($value['data'],$orderby['dir']);
 				}
@@ -69,23 +88,63 @@ class orderlistModel extends model
 		}
 		if(!empty($post->action) && $post->action == 'filter')
 		{
-			if(!empty($post->swift))
+			if(!empty($post->orderno))
 			{
-				$this->where('swift like ?',array('%'.$post->swift.'%'));
+				$this->where('orderno like ?',array('%'.$post->orderno.'%'));
 			}
-			if(!empty($post->starttime))
+			if(!empty($post->createtime_from))
 			{
-				$this->where('createtime > ?',array(strtotime($post->starttime)));
+				$this->where('createtime > ?',array(strtotime($post->createtime_from)));
 			}
-			if(!empty($post->endtime))
+			if(!empty($post->createtime_to))
 			{
-				$this->where('createtime < ?',array(strtotime($post->endtime)));
+				$this->where('createtime > ?',array(strtotime($post->createtime_to)));
 			}
 			if(!empty($post->telephone))
 			{
 				$this->where('uid in (select id from user where telephone like ?)',array('%'.$post->telephone.'%'));
 			}
-			if(!empty($post->status))
+			if(!empty($post->uid))
+			{
+				$this->where('uid=?',array($post->uid));
+			}
+			if(!empty($post->postmode))
+			{
+				$this->where('postmode like ?',array('%'.$post->postmode.'%'));
+			}
+			if(!empty($post->paytype))
+			{
+				$this->where('paytype like ?',array('%'.$post->paytype.'%'));
+			}
+			if(!empty($post->client))
+			{
+				$this->where('client = ?',array($post->client));
+			}
+			if(!empty($post->ordertotalamount_from))
+			{
+				$this->where('ordertotalamount >?',array($post->ordertotalamount_from));
+			}
+			if(!empty($post->ordertotalamount_to))
+			{
+				$this->where('ordertotalamount <?',array($post->ordertotalamount_to));
+			}
+			if(!empty($post->ordergoodsamount_from))
+			{
+				$this->where('ordergoodsamount > ?',array($post->ordergoodsamount_from));
+			}
+			if(!empty($post->ordergoodsamount_to))
+			{
+				$this->where('ordergoodsamount < ?',array($post->ordergoodsamount_to));
+			}
+			if(!empty($post->totalamount_from))
+			{
+				$this->where('totalamount > ?',array($post->totalamount_from));
+			}
+			if(!empty($post->totalamount_to))
+			{
+				$this->where('totalamount < ?',array($post->totalamount_to));
+			}
+			if($post->status != '')
 			{
 				$this->where('status=?',array($post->status));
 			}

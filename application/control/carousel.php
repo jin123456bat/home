@@ -50,7 +50,7 @@ class carouselControl extends control
 		else
 		{
 			$this->response->setCode(302);
-			$this->response->addHeader('Location',$this->http->url('carousel','admin'));
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
 	

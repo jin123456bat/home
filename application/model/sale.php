@@ -84,6 +84,11 @@ class saleModel extends model
 		return false;
 	}
 	
+	function getByPid($pid)
+	{
+		return $this->where('pid=?',array($pid))->select();
+	}
+	
 	/**
 	 * 取得一条限时折扣信息
 	 * @param unknown $id

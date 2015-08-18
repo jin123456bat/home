@@ -120,6 +120,14 @@ class userControl extends control
 	}
 	
 	/**
+	 * 用户注销
+	 */
+	function logout()
+	{
+		unset($this->session->id);
+	}
+	
+	/**
 	 * 用户设置自己昵称和头像
 	 */
 	function setnamegravatar()
@@ -248,7 +256,7 @@ class userControl extends control
 		$this->response->addHeader('Content-Type','application/json');
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
-		$o2o = $this->post->o2o;
+		$o2o = empty(filter::telephone($this->post->o2o))?0:filter::telephone($this->post->o2o);
 		$code = $this->post->code;
 		$client = $this->post->client;
 		$userModel = $this->model('user');
@@ -286,7 +294,10 @@ class userControl extends control
 					}
 					if ($userModel->register($telephone, $password,$o2o))
 					{
-						$o2oModel->where('uid=?',array($o2o))->increase('num',1);
+						if(!empty($o2o))
+						{
+							$o2oModel->where('uid=?',array($o2o))->increase('num',1);
+						}
 						return json_encode(array(
 							'code' => 1,
 							'result' => 'success'
@@ -296,7 +307,7 @@ class userControl extends control
 					{
 						return json_encode(array(
 							'code' => 3,
-							'result' => '手机号重复注册'
+							'result' => '手机号重复注册或其他问题无法注册'
 						));
 					}
 				}

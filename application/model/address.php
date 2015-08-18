@@ -64,16 +64,20 @@ class addressModel extends model
 	 * @param unknown $telephone 收货人电话
 	 * @param unknown $host 是否为默认地址
 	 */
-	function create($uid,$province,$city,$address,$name,$telephone,$host = 0)
+	function create($uid,$province,$city,$address,$name,$telephone,$zcode,$host = 0)
 	{
+		$host = empty($host)?0:1;
 		if($host)
 		{
 			//取消其他的默认地址
 			$this->where('uid=?',array($uid))->update('host',0);
 		}
-		$array = array(NULL,$uid,$province,$city,$address,$name,$telephone,$host);
-		$this->insert($array);
-		return $this->lastInsertId();
+		$array = array(NULL,$uid,$province,$city,$address,$name,$telephone,$zcode,$host);
+		if($this->insert($array))
+		{
+			return $this->lastInsertId();
+		}
+		return false;
 	}
 	
 	/**

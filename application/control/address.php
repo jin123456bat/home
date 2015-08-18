@@ -66,13 +66,19 @@ class addressControl extends control
 	 */
 	function create()
 	{
-		$province = htmlspecialchars_decode($this->post->province);
-		$city = htmlspecialchars_decode($this->post->city);
-		$address = htmlspecialchars_decode($this->post->address);
-		$name = htmlspecialchars_decode($this->post->name);
+		$province = $this->post->province;
+		$city = $this->post->city;
+		$address = $this->post->address;
+		$name = $this->post->name;
 		$telephone = filter::telephone($this->post->telephone);
-		$zcode = filter::int($this->post->zcode);
-		$host = filter::int($this->post->host);
+		$zcode = empty(filter::int($this->post->zcode))?'':filter::int($this->post->zcode);
+		$host = empty(filter::int($this->post->host))?0:filter::int($this->post->host);
+		if(empty($telephone))
+			return json_encode(array('code'=>2,'result'=>'请填写正确的手机号码'));
+		if(empty($address) || empty($city) || empty($province))
+			return json_encode(array('code'=>3,'result'=>'收货地址不完整'));
+		if(empty($name))
+			return json_encode(array('code'=>4,'result'=>'收货人姓名不能为空'));
 		if(login::user())
 		{
 			$addressModel = $this->model('address');

@@ -51,8 +51,15 @@ class productControl extends control
 			$collection = $collectionModel->getByPid($pid);
 			$product['collection'] = $collection;
 			$product['category'] = $this->model('category')->get($product['id'],'name');
-			$product['brand'] = $this->model('brand')->get($product['bid'],'name');
+			$product['img'] = $this->model('productimg')->getByPid($pid);
 			unset($product['bid']);
+			switch ($product['activity'])
+			{
+				case 'sale':$product['activity'] = $this->model('sale')->getByPid($product['id']);break;
+				case 'seckill':$product['activity'] = $this->model('seckill')->getByPid($product['id']);break;
+				case 'fullcut':$product['activity'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
+				default:break;
+			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
 		}
 		return json_encode(array('code'=>0,'result'=>'商品不存在'));

@@ -83,10 +83,7 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-					<div class="note note-danger">
-						<p>
-							 NOTE: The below datatable is not connected to a real database so the filter and sorting is just simulated for demo purposes only.
-						</p>
+					<div id="alert">
 					</div>
 					<!-- Begin: life time stats -->
 					<div class="portlet">
@@ -95,11 +92,6 @@
 								<i class="fa fa-shopping-cart"></i>订单列表
 							</div>
 							<div class="actions">
-								<a href="#" class="btn default yellow-stripe">
-								<i class="fa fa-plus"></i>
-								<span class="hidden-480">
-								新建订单 </span>
-								</a>
 								<div class="btn-group">
 									<a class="btn default yellow-stripe" href="#" data-toggle="dropdown">
 									<i class="fa fa-share"></i>
@@ -109,16 +101,8 @@
 									</a>
 									<ul class="dropdown-menu pull-right">
 										<li>
-											<a href="#">
-											导出到excel </a>
-										</li>
-										<li>
-											<a href="#">
-											导出到CSV </a>
-										</li>
-										<li>
-											<a href="#">
-											导出到XML </a>
+											<a href="#" id="export">
+											导出 </a>
 										</li>
 										<li class="divider">
 										</li>
@@ -137,8 +121,6 @@
 									</span>
 									<select class="table-group-action-input form-control input-inline input-small input-sm">
 										<option value="">请选择</option>
-										<option value="kouan">报关</option>
-										<option value="pay">已支付</option>
 										<option value="remove">删除</option>
 									</select>
 									<button class="btn btn-sm yellow table-group-action-submit"><i class="fa fa-check"></i> 提交</button>
@@ -150,22 +132,28 @@
 										<input type="checkbox" class="group-checkable">
 									</th>
 									<th width="5%">
-										流水号
+										订单编号
 									</th>
-									<th width="15%">
+									<th width="10%">
 										 生成时间
 									</th>
-									<th width="15%">
-										 购买者
+									<th width="10%">
+										 下单账号
 									</th>
 									<th width="10%">
 										 配送方案
 									</th>
-									<th width="10%">
-										 原价
+                                    <th width="10%">
+										 支付方式
+									</th>
+                                    <th width="10%">
+										 订单来源
 									</th>
 									<th width="10%">
-										 购买价
+										 订单价
+									</th>
+									<th width="10%">
+										 已支付
 									</th>
 									<th width="10%">
 										 状态
@@ -178,47 +166,53 @@
 									<td>
 									</td>
 									<td>
-										<input type="text" class="form-control form-filter input-sm" name="order_id">
+										<input type="text" class="form-control form-filter input-sm" name="orderno">
 									</td>
 									<td>
 										<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
-											<input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
+											<input type="text" class="form-control form-filter input-sm" readonly name="createtime_from" placeholder="从">
 											<span class="input-group-btn">
 											<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
 											</span>
 										</div>
 										<div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
-											<input type="text" class="form-control form-filter input-sm" readonly name="order_date_to" placeholder="To">
+											<input type="text" class="form-control form-filter input-sm" readonly name="createtime_to" placeholder="到">
 											<span class="input-group-btn">
 											<button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
 											</span>
 										</div>
 									</td>
 									<td>
-										<input type="text" class="form-control form-filter input-sm" name="order_customer_name">
+										<input type="text" class="form-control form-filter input-sm" name="telephone">
 									</td>
 									<td>
-										<input type="text" class="form-control form-filter input-sm" name="order_ship_to">
+										<input type="text" class="form-control form-filter input-sm" name="postmode">
+									</td>
+                                    <td>
+										<input type="text" class="form-control form-filter input-sm" name="paytype">
+									</td>
+                                    <td>
+										<input type="text" class="form-control form-filter input-sm" name="client">
 									</td>
 									<td>
 										<div class="margin-bottom-5">
-											<input type="text" class="form-control form-filter input-sm" name="order_base_price_from" placeholder="从"/>
+											<input type="text" class="form-control form-filter input-sm" name="ordertotalamount_from" placeholder="从"/>
 										</div>
-										<input type="text" class="form-control form-filter input-sm" name="order_base_price_to" placeholder="到"/>
+										<input type="text" class="form-control form-filter input-sm" name="ordertotalamount_to" placeholder="到"/>
 									</td>
 									<td>
 										<div class="margin-bottom-5">
-											<input type="text" class="form-control form-filter input-sm margin-bottom-5 clearfix" name="order_purchase_price_from" placeholder="从"/>
+											<input type="text" class="form-control form-filter input-sm margin-bottom-5 clearfix" name="totalamount_from" placeholder="从"/>
 										</div>
-										<input type="text" class="form-control form-filter input-sm" name="order_purchase_price_to" placeholder="到"/>
+										<input type="text" class="form-control form-filter input-sm" name="totalamount_to" placeholder="到"/>
 									</td>
 									<td>
-										<select name="order_status" class="form-control form-filter input-sm">
+										<select name="status" class="form-control form-filter input-sm">
 											<option value="">请选择</option>
-											<option value="pending">待定</option>
-											<option value="closed">关闭</option>
-											<option value="hold">成功</option>
-											<option value="fraud">报关</option>
+											<option value="0">等待支付</option>
+                                            <option value="1">支付成功</option>
+											<option value="2">支付失败</option>
+											<option value="3">用户取消</option>
 										</select>
 									</td>
 									<td>
@@ -279,13 +273,34 @@
 <script src="{%$VIEW_ROOT%}/assets/admin/pages/scripts/ecommerce-orders.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
-		jQuery(document).ready(function() {	
-		   Metronic.init(); // init metronic core components
+jQuery(document).ready(function() {	
+Metronic.init(); // init metronic core components
 Layout.init(); // init current layout
 QuickSidebar.init(); // init quick sidebar
 Demo.init(); // init demo features
-		   EcommerceOrders.init();
-		});
+EcommerceOrders.init();
+	$('.popovers').live('hover',function(){
+		$('.popovers').popover();
+	});
+	
+	$('#export').on('click',function(){
+		var box = $('.checkboxes:checked');
+		if(box.length == 0)
+		{
+			if(window.confirm('您确定要导出所有订单输出?'))
+			{
+			}
+		}
+		else
+		{
+			var data =[];
+			$.each(box,function(index,value){
+				data.push();
+			});
+			if()
+		}
+	});
+});
 	</script>
 <!-- END JAVASCRIPTS -->
 </body>

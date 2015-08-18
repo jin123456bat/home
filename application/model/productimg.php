@@ -29,9 +29,16 @@ class productimgModel extends model
 	function getByPid($pid,$name = '*')
 	{
 		$this->orderby('orderby','desc');
-		return $this->where('pid=?', array(
+		$result = $this->where('pid=?', array(
 			$pid
 		))->select($name);
+		foreach ($result as &$img)
+		{
+			$img['base_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
+			$img['small_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
+			$img['thumbnail_path'] = empty($img['thumbnail_path'])?'':file::realpathToUrl($img['thumbnail_path']);
+		}
+		return $result;
 	}
 
 	/**

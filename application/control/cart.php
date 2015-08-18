@@ -337,10 +337,11 @@ class cartControl extends control
 			,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client
 		);
 		$orderModel = $this->model('orderlist');
-		if($orderModel->create($data,$orderdetail))
+		$oid = $orderModel->create($data,$orderdetail);
+		if($oid)
 		{
 			$cartModel->clear($uid);
-			return json_encode(array('code'=>1,'result'=>'ok'));
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$oid));
 		}
 		return json_encode(array('code'=>2,'result'=>'创建订单失败'));
 	}

@@ -59,6 +59,11 @@ class seckillModel extends model
 		return $this->update(array('sname'=>$sname,'starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
 	}
 	
+	function getByPid($pid)
+	{
+		return $this->where('pid=?',array($pid))->select();
+	}
+	
 	/**
 	 * 创建秒杀活动
 	 * @param int $pid 产品id
