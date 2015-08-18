@@ -13,11 +13,30 @@ class orderlistModel extends model
 		parent::__construct($table);
 	}
 	
-	function create($data)
+	/**
+	 * 创建一个订单
+	 * @param unknown $data
+	 * @return string|boolean
+	 */
+	function create($data,$orderdetail)
 	{
 		if($this->insert($data))
 		{
-			return $this->lastInsertId();
+			$oid = $this->lastInsertId();
+			$orderdetailModel = $this->model('orderdetail');
+			foreach ($orderdetail as $detail)
+			{
+				$detail = array_merge(array(NULL,$oid),$detail);
+				foreach ($detail as &$array)
+				{
+					if(is_array($array))
+					{
+						$array = serialize($array);
+					}
+				}
+				$orderdetailModel->insert($detail);
+			}
+			return true;
 		}
 		return false;
 	}

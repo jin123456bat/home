@@ -38,6 +38,7 @@ class productControl extends control
 	 */
 	function information()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$pid = empty(filter::int($this->get->pid))?0:filter::int($this->get->pid);
 		$productModel = $this->model('product');
 		$product = $productModel->get($pid);
@@ -64,25 +65,34 @@ class productControl extends control
 	{
 		$this->response->addHeader('Content-Type','application/json');
 		$cid = empty(filter::int($this->get->cid))?0:filter::int($this->get->cid);
+		$start = empty(filter::int($this->get->start))?0:filter::int($this->get->start);
+		$length = empty(filter::int($this->get->length))?5:filter::int($this->get->length);
 		$array = array($cid);
 		//获得子分类信息
 		$categoryModel = $this->model('category');
-		while (current($array))
+		while (current($array) !== false)
 		{
 			$result = $categoryModel->fetchChild(current($array));
 			foreach($result as $category)
 			{
-				//将子分类id加入数组
-				$array[] = $category['id'];
+				if (!in_array($category['id'], $array))
+				{
+					//将子分类id加入数组
+					$array[] = $category['id'];
+				}
 			}
 			next($array);
 		}
-		$array = implode(',', $array);
+		//$array = implode(',', $array);
 		$productModel = $this->model('product');
 		$brandModel = $this->model('brand');
 		$prototypeModel = $this->model('prototype');
 		$productimgModel = $this->model('productimg');
-		$product = $productModel->where('category in (?)',array($array))->select();
+		$productModel->limit($start,$length);
+		$productModel->where('status=?',array(1));
+		$productModel->where('stock>?',array(0));
+		$productModel->where('(starttime=? or starttime<?) and (endtime=? or endtime>?)',array(0,$_SERVER['REQUEST_TIME'],0,$_SERVER['REQUEST_TIME']));
+		$product = $productModel->where('category in (?)',$array)->select();
 		foreach ($product as &$goods)
 		{
 			$goods['category'] = $categoryModel->get($goods['category'],'name');

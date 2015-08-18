@@ -5,7 +5,7 @@ var UITree = function () {
         var tree = $("#tree_4").jstree({
             "core" : {
                 "themes" : {
-                    "responsive": false
+                    "responsive": true
                 }, 
                 // so that create works
                 "check_callback" : true,
@@ -19,13 +19,19 @@ var UITree = function () {
             },
             "types" : {
                 "default" : {
-                    "icon" : "fa fa-folder icon-state-warning icon-lg"
+                	"icon" : "fa fa-folder icon-state-warning icon-lg",
+					//"icon" : "http://localhost/home/application/assets/gravatar.jpg"
+					
                 },
                 "file" : {
                     "icon" : "fa fa-file icon-state-warning icon-lg"
-                }
+                },
+				
             },
-            "plugins" :[ "dnd", "types","contextmenu" ]
+            "plugins" :["themes","dnd", "types","contextmenu" ],
+			"contextmenu":{
+			
+			}
         }).bind('create_node.jstree',function(e,data){
 			//console.log(data);
 			//var obj = $('#'+data.node.id);

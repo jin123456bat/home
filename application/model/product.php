@@ -111,6 +111,7 @@ class productModel extends model
 			'meta_description'=>$post->meta_description,
 			'oldprice' => $post->oldprice,
 			'shipchar' => $post->shipchar,
+			'score' => $post->score
 		);
 		if(empty($post->id))
 		{
@@ -219,6 +220,10 @@ class productModel extends model
 				if(!empty($json['product_bid']))
 				{
 					$this->where('bid=?',array($json['product_bid']));
+				}
+				if(!empty($json['product_score']))
+				{
+					$this->where('score>?',array($json['product_score']));
 				}
 			}
 		}

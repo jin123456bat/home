@@ -73,7 +73,8 @@ class categoryControl extends control
 				$temp = array();
 				$temp['id'] = $category['id'];
 				$temp['text'] = $category['name'];
-				$temp['icon'] = "fa fa-folder icon-lg " . $icon[array_rand($icon)];
+				//$temp['icon'] = "fa fa-folder icon-lg " . $icon[array_rand($icon)];
+				$temp['icon'] = 'http://localhost/home/application/assets/gravatar.jpg';
 				$result = $categoryModel->fetchChild($category['id']);
 				$temp['children'] = ! empty($result);
 				if ($parent == 0)
@@ -98,7 +99,8 @@ class categoryControl extends control
 			$cid = empty($this->post->parent)?0:$this->post->parent;
 			if (! empty($this->post->name)) {
 				$categoryModel = $this->model('category');
-				$id = $categoryModel->add($this->post->name, $cid);
+				$pic= '';
+				$id = $categoryModel->add($this->post->name,$pic, $cid);
 				if ($id) {
 					$this->model('log')->write($this->session->username,'添加了一个分类');
 					return json_encode(array(

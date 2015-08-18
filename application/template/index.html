@@ -4,12 +4,17 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
 <body>
-<form action="{%url c=index a=index%}" enctype="multipart/form-data" method="post">
-<input type="file" name="file[]">
-<input type="file" name="file[]">
-<input type="hidden" name="post" value="1">
-<input type="submit">
-</form>
+
 </body>
+<script type="text/javascript">
+$(document).ready(function(e) {
+	alert('123');
+    $.get('http://121.40.52.39/index.php',{c:'category',a:'getchild',cid:0},function(data){
+		console.log(data);
+	});
+});
+</script>
 </html>

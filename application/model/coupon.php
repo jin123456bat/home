@@ -133,15 +133,6 @@ class couponModel extends model
 	}
 	
 	/**
-	 * 获得一张优惠卷所有信息
-	 */
-	function getByCouponno($couponno)
-	{
-		$this->table('coupondetail','left join','coupondetail.couponid=coupon.id');
-		return $this->where('couponno=?',array($couponno))->select();
-	}
-	
-	/**
 	 * 创建优惠
 	 */
 	function create($couponno,$total,$starttime,$endtime,$max,$display,$type,$value)
@@ -174,6 +165,13 @@ class couponModel extends model
 	 */
 	function increaseTimes($couponno,$num = 1)
 	{
-		return $this->where('couponno=?',array($couponno))->increase('times',-$num);
+		$this->where('couponno=?',array($couponno))->increase('times',-$num);
+		$result = $this->where('couponno=?',array($couponno))->select('times');
+		if(isset($result[0]['times']) && $result[0]['times']<0)
+		{
+			$this->where('couponno=?',array($couponno))->increase('times',$num);
+			return false;
+		}
+		return true;
 	}
 }

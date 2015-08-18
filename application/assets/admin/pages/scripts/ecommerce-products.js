@@ -66,6 +66,9 @@ var EcommerceProducts = function () {
 				}, {
 					"data":"stock",
 					"orderable": true
+				},{
+					"data":"score",
+					"orderable": true
 				}, {
 					"data":"time",
 					"orderable": true
@@ -90,13 +93,13 @@ var EcommerceProducts = function () {
 						return '<input type="checkbox" name="id[]" value='+data+'>';
 					}
 				},{
-					"targets":[6],
+					"targets":[7],
 					"data":"time",
 					"render":function(data,type,full){
 						return unixtotime(data,true,8);
 					}
 				},{
-					"targets":[7],
+					"targets":[8],
 					"data":"status",
 					"render":function(data,type,full){
 						switch(data)
@@ -108,7 +111,7 @@ var EcommerceProducts = function () {
 						}
 					}
 				},{
-					"targets":[8],
+					"targets":[9],
 					"data":"id",
 					"render":function(data,type,full){
 						//console.log(full);
@@ -120,7 +123,7 @@ var EcommerceProducts = function () {
 						return content;
 					}
 				},{
-					targets:9,
+					targets:10,
 					visible:false
 				}],
 				"processing": true,

@@ -26,11 +26,12 @@ class categoryModel extends model
 	 * @param number $cid
 	 *        	上级分类ｉｄ
 	 */
-	function add($name, $cid = 0)
+	function add($name,$icon, $cid = 0)
 	{
 		$array = array(
 			NULL,
 			$name,
+			$icon,
 			$cid
 		);
 		$this->insert($array);

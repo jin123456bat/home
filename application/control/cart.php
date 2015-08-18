@@ -7,6 +7,7 @@ use system\core\filter;
 use application\classes\login;
 use application\classes\collection;
 use system\core\random;
+use application\classes\prototype;
 class cartControl extends control
 {
 	/**
@@ -96,6 +97,18 @@ class cartControl extends control
 		$cartModel = $this->model('cart');
 		if($cartModel->remove($uid,$pid,$content,$num))
 		{
+			$productModel = $this->model('product');
+			$collection = $this->model('collection');
+			if(empty($content))
+			{
+				//不存在可选属性
+				$productModel->increaseStock($pid,$num);
+			}
+			else
+			{
+				//存在可选属性
+				$collection->increaseStock($pid,$content,$num);
+			}
 			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
 		return json_encode(array('code'=>0,'result'=>'购物车中不存在该物品'));
@@ -191,12 +204,15 @@ class cartControl extends control
 	 */
 	function order()
 	{
+		/*
 		$this->session->id = 3;
 		$this->post->paytype = 'alipay';
 		$this->post->shipid = 1;
 		$this->post->addressid = 2;
-		//if(!login::user())
-		//	return json_encode(array('code'=>3,'result'=>'尚未登陆'));
+		$this->post->client = 'web';
+		*/
+		if(!login::user())
+			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$response = json_decode($this->calculation($this->session->id));
 		//总金额 优惠前的价格
 		$totalMoney = $response->body;
@@ -207,6 +223,25 @@ class cartControl extends control
 		//计算折扣
 		$uid = $this->session->id;
 		$cart = $cartModel->getByUid($uid);
+		//订单详情
+		$orderdetail = array();
+		$collectionModel = $this->model('collection');
+		$prototypeModel = $this->model('prototype');
+		foreach ($cart as $product)
+		{
+			$pricestocksku = $collectionModel->find($product['pid'],unserialize($product['content']));
+			$prototype = $prototypeModel->getByPid($product['pid']);
+			$prototype = (new prototype())->format($prototype,$product['content']);
+			if(!empty($pricestocksku))
+			{
+				$orderdetail[] = array($product['pid'],$product['name'],$pricestocksku['price'],$prototype,$product['origin'],$product['score'],$product['num']);
+			}
+			else
+			{
+				$orderdetail[] = array($product['pid'],$product['name'],$product['price'],$prototype,$product['origin'],$product['score'],$product['num']);
+			}
+		}
+		
 		if(empty($this->post->coupon))
 		{
 			//没有使用任何优惠
@@ -216,17 +251,33 @@ class cartControl extends control
 		{
 			$discount = $this->post->coupon;
 			$couponModel = $this->model('coupon');
-			$coupon = $couponModel->getByCouponno($discount);
-			if(!empty($coupon))
+			foreach($cart as $product)
 			{
-			}
-			else
-			{
-				return json_encode(array('code'=>7,'result'=>'不可使用的优惠券'));
+				$orderdetail[] = array($product['pid'],$product['name']);
+				if($product['activity'] == '')
+				{
+					$used = $couponModel->check($discount,$product);
+					if($used)
+					{
+						if($product['num'] * $product['price'] >= $used['max'])
+						{
+							if($couponModel->increaseTimes($used['couponno']))
+							{
+								$ordergoodsamount = $ordergoodsamount - ($product['num']*$product['price']);
+								$mon = $product['num'] * $product['price'];
+								$mon = ($used['type'] == 'discount')?$mon-$used['value']:$mon*$used['value'];
+								$ordergoodsamount += $mon;
+								break;
+							}
+							else
+							{
+								return json_encode(array('code'=>7,'result'=>'优惠券使用次数不足'));
+							}
+						}
+					}
+				}
 			}
 		}
-		
-		
 		//支付方式
 		$paytype = $this->post->paytype;
 		if(empty($paytype))
@@ -278,17 +329,19 @@ class cartControl extends control
 		$note = '';
 		//订单状态
 		$status = 0;
-		
+		//订单来源
+		$client = $this->post->client;
 		$data = array(
 			NULL,$uid,$paytype,$paynumber,$ordertotalamount,$orderno,$ordertaxamount,$ordergoodsamount
 			,$feeamount,$tradetime,$createtime,$totalamount,$consignee,$consigneetel,$consigneeaddress
-			,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount
+			,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client
 		);
 		$orderModel = $this->model('orderlist');
-		if($orderModel->create($data))
+		if($orderModel->create($data,$orderdetail))
 		{
+			$cartModel->clear($uid);
 			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
-		return json_encode(array('code'=>2,'result'=>'failed'));
+		return json_encode(array('code'=>2,'result'=>'创建订单失败'));
 	}
 }

@@ -18,6 +18,7 @@ var ProductEditPage = function(){
 					endtime = $('input[name=endtime]').val(),
 					price = $('input[name=price]').val(),
 					stock = $('input[name=stock]').val(),
+					score = $('input[name=score]').val(),
 					short_description = $('textarea[name=short_description]').val(),
 					description = $('textarea[name=description]').val(),
 					origin = $('input[name=origin]').val(),
@@ -55,7 +56,7 @@ var ProductEditPage = function(){
 					prototype_id.push($(value).val());
 				});
 				prototype_id = JSON.stringify(prototype_id);
-				$.post('?c=product&a=save',{oldprice:oldprice,shipchar:shipchar,sku:sku,bid:bid,prototype_id:prototype_id,label:label,picid:picid,id:id,name:name,category:category,starttime:starttime,endtime:endtime,price:price,stock:stock,origin:origin,short_description:short_description,description:description,status:status,orderby:orderby,meta_title:meta_title,meta_keywords:meta_keywords,meta_description:meta_description},function(data){
+				$.post('?c=product&a=save',{oldprice:oldprice,shipchar:shipchar,sku:sku,bid:bid,prototype_id:prototype_id,label:label,picid:picid,id:id,name:name,category:category,starttime:starttime,endtime:endtime,price:price,stock:stock,score:score,origin:origin,short_description:short_description,description:description,status:status,orderby:orderby,meta_title:meta_title,meta_keywords:meta_keywords,meta_description:meta_description},function(data){
 					data = $.parseJSON(data);
 					if(data.code == 1)
 					{

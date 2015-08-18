@@ -84,6 +84,11 @@ class model
 	 */
 	public function where($sql, array $array = array(),$combine = 'and')
 	{
+		if (count($array)>substr_count($sql, '?') && substr_count($sql, 'in')==1)
+		{
+			$replace = implode(',', array_fill(0, count($array), '?'));
+			$sql = str_replace('?', $replace, $sql);
+		}
 		if (isset($this->_temp['where'])) {
 			$this->_temp['where'] = $this->_temp['where'] .' '. $combine.' ' . $sql;
 		} else {

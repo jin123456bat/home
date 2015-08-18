@@ -15,6 +15,15 @@ class cartModel extends model
 	}
 	
 	/**
+	 * 清空用户的购物车
+	 * @param unknown $uid
+	 */
+	function clear($uid)
+	{
+		return $this->where('cart.uid=?',array($uid))->delete();
+	}
+	
+	/**
 	 * 获取用户购物车中的所有商品
 	 */
 	function getByUid($uid)
@@ -22,7 +31,8 @@ class cartModel extends model
 		$this->where('cart.uid=?',array($uid));
 		$this->table('product','left join','cart.pid=product.id');
 		$this->table('brand','left join','product.bid=brand.id');
-		return $this->select('*,brand.name as brand');
+		$result = $this->select('*,brand.name as brand');
+		return $result;
 	}
 	
 	/**

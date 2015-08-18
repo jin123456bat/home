@@ -60,6 +60,9 @@ var TableManaged = function () {
 				"data":"ordernum",
 				"orderable": true
 			}, {
+				"data":"oid",
+				"orderable":true
+			}, {
 				"data":"close",
 				"orderable": false
 			}],
@@ -93,6 +96,21 @@ var TableManaged = function () {
 				}
 			}, {
 				"targets":[11],
+				"data":"oid",
+				"render":function(data,type,full){
+					$.ajaxSetup({async:false});
+					var telephone = '无推荐人';
+					if(data != 0)
+					{
+						$.get('?c=user&a=telephone',{id:data},function(data){
+							data = $.parseJSON(data);
+							telephone = data.body;
+						});
+					}
+					return telephone;
+				}
+			}, {
+				"targets":[12],
 				"data":"close",
 				"render":function(data,type,full){
 					if(data == 0)
