@@ -426,7 +426,7 @@ jQuery(document).ready(function() {
 			});
 			return false;
 		}
-		var display = $('button.public').hasClass('green');
+		var display = $('button.public').hasClass('green')?1:0;
 		var starttime = $('input[name=starttime]',ths).val();
 		var endtime = $('input[name=endtime]',ths).val();
 		var total = $('input[name=total]',ths).val();

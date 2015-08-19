@@ -6,6 +6,7 @@ use system\core\view;
 use application\model\roleModel;
 use application\classes\login;
 use application\classes\excel;
+use application\classes\alipay_gateway;
 /**
  * 订单控制器
  * @author jin12
@@ -13,6 +14,9 @@ use application\classes\excel;
  */
 class orderControl extends control
 {
+	/**
+	 * 订单导出
+	 */
 	function export()
 	{
 		$roleModel = $this->model('role');
@@ -54,12 +58,43 @@ class orderControl extends control
 				{
 					case 'weixin':
 					case 'alipay':
+						$alipay = new alipay_gateway(config('alipay'));
+						$alipay->submit($order);
+						break;
 					default:return json_encode(array('code'=>4,'result'=>'支付类型错误'));
 				}
 			}
 			return json_encode(array('code'=>2,'result'=>'订单不存在'));
 		}
 		return json_encode(array('code'=>3,'result'=>'参数错误'));
+	}
+	
+	/**
+	 * 订单完成同步页面
+	 */
+	function thankyou()
+	{
+		$id = filter::int($this->get->id);
+		if(!empty($id))
+		{
+			$order = $this->model('orderlist');
+			if(isset($order['status']))
+			{
+				switch ($order['status'])
+				{
+					case 0:echo "尚未支付";break;
+					case 1:echo "支付成功";break;
+					case 2:echo "支付失败";break;
+					case 3:echo "用户取消";break;
+					default:echo "订单状态未知";break;
+				}
+			}
+		}
+		else
+		{
+			echo "没有找到账单id";
+			//$this->view = new view(config('view'), 'notice.html');
+		}
 	}
 	
 	/**

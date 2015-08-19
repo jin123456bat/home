@@ -20,6 +20,7 @@ class couponControl extends control
 	 */
 	function getavaliable()
 	{
+		$this->session->id = 3;
 		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
@@ -28,22 +29,25 @@ class couponControl extends control
 		//获取用户所有商品
 		$cart = $cartModel->getByUid($this->session->id);
 		$coupondetailModel = $this->model('coupondetail');
-		$prodcut_category_array = array();
+		$product_category_array = array();
 		foreach($cart as $goods)
 		{
 			//参加了活动的商品不能使用优惠券
-			if(isset($goods['activity']) && empty($goods['activity']))
+			if(isset($goods['activity']) && $goods['activity'] === '')
 			{
 				$product_category_array[] = $goods['category'];
 			}
 		}
-		$result = $coupondetailModel->where('categoryid in (?) or categoryid=0',array(implode(',', $product_category_array)))->select('couponid');
+		$result = $coupondetailModel->where('categoryid in (?) or categoryid=0',$product_category_array)->select();
 		$coupon_id_array = array();
 		foreach($result as $coupon)
 		{
 			$coupon_id_array[] = $coupon['couponid'];
 		}
-		$body = $couponModel->where('id in (?) and display=? and (starttime>? or starttime=0) and (endtime<? or endtime=0) and times>?',array(implode(',', $coupon_id_array),1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0));
+		$couponModel->where('id in (?)',$coupon_id_array);
+		$body = $couponModel->where('display=? and (starttime>? or starttime=0) and (endtime<? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
+		var_dump($coupon_id_array);
+		//var_dump($body);
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
 	}
 	

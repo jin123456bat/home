@@ -84,8 +84,13 @@ class model
 	 */
 	public function where($sql, array $array = array(),$combine = 'and')
 	{
-		if (count($array)>substr_count($sql, '?') && substr_count($sql, 'in')==1)
+		//where语句中的in操作符单独使用
+		if (substr_count($sql, 'in')==1)
 		{
+			if(empty($array))
+			{
+				return $this;
+			}
 			$replace = implode(',', array_fill(0, count($array), '?'));
 			$sql = str_replace('?', $replace, $sql);
 		}
