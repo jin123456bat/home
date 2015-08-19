@@ -14,6 +14,34 @@ class orderlistModel extends model
 	}
 	
 	/**
+	 * 获取订单信息
+	 */
+	function get($id,$name = '*')
+	{
+		$result = $this->where('id=?',array($id))->select($name);
+		if($name == '*')
+			return isset($result[0])?$result[0]:NULL;
+		return isset($result[0][$name])?$result[0][$name]:NULL;
+	}
+	
+	/**
+	 * 自定义导出
+	 * @param unknown $parameter
+	 * @param array $id
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function export($parameter,array $id)
+	{
+		if(!empty($id))
+		{
+			$this->where('id in (?)',$id);
+		}
+		$this->table('user','left join','user.id=orderlist.uid');
+		$this->table('orderdetail','left join','orderdetail.oid=orderlist.id');
+		return $this->select($parameter);
+	}
+	
+	/**
 	 * 删除订单
 	 * @param unknown $id
 	 * @return boolean|\system\core\Ambigous
@@ -29,7 +57,6 @@ class orderlistModel extends model
 			return true;
 		}
 		return $this->where('id=?',array($id))->delete();
-		
 	}
 	
 	/**

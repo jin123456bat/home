@@ -5,6 +5,7 @@ use system\core\filter;
 use system\core\view;
 use application\model\roleModel;
 use application\classes\login;
+use application\classes\excel;
 /**
  * 订单控制器
  * @author jin12
@@ -14,10 +15,26 @@ class orderControl extends control
 {
 	function export()
 	{
-		$roleModel = $this->model('order');
-		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist'))
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_SELECT))
 		{
-			
+			if(!empty($this->get->id))
+			{
+				$id = json_decode(htmlspecialchars_decode($this->get->id));
+			}
+			else
+			{
+				$id = array();
+			}
+			$orderModel = $this->model('orderlist');
+			$order = $orderModel->export('orderno,paytype,paynumber,ordertotalamount,ordertaxamount,ordergoodsamount,feeamount,tradetime,totalamount,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneeaddress,postmode,telephone,sku,productname,unitprice,num',$id);
+			$excel = new excel();
+			$excel->xls($order,array('订单号','支付方式','支付编号','订单总金额','订单税额','订单货款','运费','成交时间','成交总价','收件人联系方式','收件人姓名','收件人邮编','收件人省','收件人市','收件人地址','物流公司编码','购买人ID','商品编码','商品名称','申报单价','申报数量'),'order');
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
 	
@@ -26,7 +43,23 @@ class orderControl extends control
 	 */
 	function payment()
 	{
-		
+		$id = filter::int($this->get->id);
+		if(!empty($id))
+		{
+			$orderModel = $this->model('orderlist');
+			$order = $orderModel->get($id);
+			if(!empty($order))
+			{
+				switch($order['paytype'])
+				{
+					case 'weixin':
+					case 'alipay':
+					default:return json_encode(array('code'=>4,'result'=>'支付类型错误'));
+				}
+			}
+			return json_encode(array('code'=>2,'result'=>'订单不存在'));
+		}
+		return json_encode(array('code'=>3,'result'=>'参数错误'));
 	}
 	
 	/**

@@ -289,6 +289,7 @@ EcommerceOrders.init();
 		{
 			if(window.confirm('您确定要导出所有订单输出?'))
 			{
+				window.open('{%url c=order a=export%}','');
 			}
 		}
 		else
@@ -297,7 +298,8 @@ EcommerceOrders.init();
 			$.each(box,function(index,value){
 				data.push();
 			});
-			if()
+			data = JSON.stringify(data);
+			window.open('{%url c=order a=export%}&data='+data,'');
 		}
 	});
 });

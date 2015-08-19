@@ -52,7 +52,7 @@ class addressModel extends model
 			//取消其他的默认地址
 			$this->where('uid=?',array($uid))->update('host',0);
 		}
-		$this->where('id=? and uid=?',array($id,$uid))->update(array('provice'=>$province,'city'=>$city,'address'=>$address,'name'=>$name,'telephone'=>$telephone,'zcode'=>$zcode,'host'=>$host));
+		$this->where('id=? and uid=?',array($id,$uid))->update(array('province'=>$province,'city'=>$city,'address'=>$address,'name'=>$name,'telephone'=>$telephone,'zcode'=>$zcode,'host'=>$host));
 	}
 	
 	/**

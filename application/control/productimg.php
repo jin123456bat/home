@@ -61,18 +61,11 @@ class productimgControl extends control
 	 */
 	function getproductimg()
 	{
-		$this->response->addHeader('Cache-Contorl','nocache');
 		$pid = filter::int($this->get->pid);
 		if(!empty($pid))
 		{
 			$productimgModel = $this->model('productimg');
 			$img = $productimgModel->getByPid($pid);
-			$img = array_map(function($imginfo){
-				$imginfo['base_path'] = file::realpathToUrl($imginfo['base_path']);
-				$imginfo['small_path'] = file::realpathToUrl($imginfo['base_path']);
-				$imginfo['thumbnail_path'] = file::realpathToUrl($imginfo['base_path']);
-				return $imginfo;
-			}, $img);
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$img));
 		}
 		return json_encode(array('code'=>0,'result'=>'no pic'));

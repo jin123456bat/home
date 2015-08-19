@@ -23,6 +23,11 @@ class indexControl extends control
 			return $view->display();
 		}
 	}
+	
+	function time()
+	{
+		return time();
+	}
 
 	/**
 	 * 发送手机验证码

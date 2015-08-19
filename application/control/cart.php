@@ -234,11 +234,11 @@ class cartControl extends control
 			$prototype = (new prototype())->format($prototype,$product['content']);
 			if(!empty($pricestocksku))
 			{
-				$orderdetail[] = array($product['pid'],$product['name'],$pricestocksku['price'],$prototype,$product['origin'],$product['score'],$product['num']);
+				$orderdetail[] = array($pricestocksku['sku'],$product['pid'],$product['name'],$pricestocksku['price'],$prototype,$product['origin'],$product['score'],$product['num']);
 			}
 			else
 			{
-				$orderdetail[] = array($product['pid'],$product['name'],$product['price'],$prototype,$product['origin'],$product['score'],$product['num']);
+				$orderdetail[] = array($product['sku'],$product['pid'],$product['name'],$product['price'],$prototype,$product['origin'],$product['score'],$product['num']);
 			}
 		}
 		
@@ -253,7 +253,7 @@ class cartControl extends control
 			$couponModel = $this->model('coupon');
 			foreach($cart as $product)
 			{
-				$orderdetail[] = array($product['pid'],$product['name']);
+				//$orderdetail[] = array($product['pid'],$product['name']);
 				if($product['activity'] == '')
 				{
 					$used = $couponModel->check($discount,$product);
@@ -261,17 +261,13 @@ class cartControl extends control
 					{
 						if($product['num'] * $product['price'] >= $used['max'])
 						{
-							if($couponModel->increaseTimes($used['couponno']))
+							if($couponModel->increaseTimes($used['couponno'],-1))
 							{
 								$ordergoodsamount = $ordergoodsamount - ($product['num']*$product['price']);
 								$mon = $product['num'] * $product['price'];
 								$mon = ($used['type'] == 'discount')?$mon-$used['value']:$mon*$used['value'];
 								$ordergoodsamount += $mon;
 								break;
-							}
-							else
-							{
-								return json_encode(array('code'=>7,'result'=>'优惠券使用次数不足'));
 							}
 						}
 					}
@@ -282,7 +278,7 @@ class cartControl extends control
 		$paytype = $this->post->paytype;
 		if(empty($paytype))
 		{
-			return json_encode(array('code'=>4,'result'=>'错误的支付方式'));
+			return json_encode(array('code'=>4,'result'=>'没有支付方式'));
 		}
 		$paynumber = '';
 		//运费  根据订单金额计算运费
@@ -315,7 +311,9 @@ class cartControl extends control
 		}
 		$consignee = $address['name'];
 		$consigneetel = $address['telephone'];
-		$consigneeaddress = $address['province'].$address['city'].$address['address'];
+		$consigneeaddress = $address['address'];
+		$consigneeprovince = $address['province'];
+		$consigneecity = $address['city'];
 		$zipcode = $address['zcode'];
 		//物流方式
 		$postmode = $ship['code'];
@@ -334,7 +332,7 @@ class cartControl extends control
 		$data = array(
 			NULL,$uid,$paytype,$paynumber,$ordertotalamount,$orderno,$ordertaxamount,$ordergoodsamount
 			,$feeamount,$tradetime,$createtime,$totalamount,$consignee,$consigneetel,$consigneeaddress
-			,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client
+			,$consigneeprovince,$consigneecity,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client
 		);
 		$orderModel = $this->model('orderlist');
 		$oid = $orderModel->create($data,$orderdetail);

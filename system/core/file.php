@@ -190,10 +190,11 @@ class file
 	 */
 	static function realpathToUrl($path)
 	{
-		$path = realpath($path);
-		if($path)
+		if(empty($path))
+			return '';
+		if(is_file($path))
 		{
-			$path = str_replace(realpath(ROOT), '', $path);
+			$path = str_replace(realpath(ROOT), '', realpath($path));
 			$http = new http();
 			return str_replace('\\', '/',rtrim('http://'.$http->host().$http->path(),'/\\'). $path);
 		}
