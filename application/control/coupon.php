@@ -45,9 +45,7 @@ class couponControl extends control
 			$coupon_id_array[] = $coupon['couponid'];
 		}
 		$couponModel->where('id in (?)',$coupon_id_array);
-		$body = $couponModel->where('display=? and (starttime>? or starttime=0) and (endtime<? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
-		var_dump($coupon_id_array);
-		//var_dump($body);
+		$body = $couponModel->where('display=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
 	}
 	

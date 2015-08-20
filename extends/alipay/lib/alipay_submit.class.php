@@ -9,8 +9,8 @@
  * 以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己网站的需要，按照技术文档编写,并非一定要使用该代码。
  * 该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
  */
-require_once("alipay_core.function.php");
-require_once("alipay_md5.function.php");
+require_once(ALIPAY_ROOT."/lib/alipay_core.function.php");
+require_once(ALIPAY_ROOT."/lib/alipay_md5.function.php");
 
 class AlipaySubmit {
 
@@ -35,7 +35,7 @@ class AlipaySubmit {
 	function buildRequestMysign($para_sort) {
 		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
 		$prestr = createLinkstring($para_sort);
-		
+	
 		$mysign = "";
 		switch (strtoupper(trim($this->alipay_config['sign_type']))) {
 			case "MD5" :
@@ -56,10 +56,10 @@ class AlipaySubmit {
 	function buildRequestPara($para_temp) {
 		//除去待签名参数数组中的空值和签名参数
 		$para_filter = paraFilter($para_temp);
-
+		
 		//对待签名参数数组排序
 		$para_sort = argSort($para_filter);
-
+		
 		//生成签名结果
 		$mysign = $this->buildRequestMysign($para_sort);
 		
@@ -97,7 +97,11 @@ class AlipaySubmit {
 		$para = $this->buildRequestPara($para_temp);
 		
 		$sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->alipay_gateway_new."_input_charset=".trim(strtolower($this->alipay_config['input_charset']))."' method='".$method."'>";
+		//$sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->alipay_gateway_new."' method='".$method."'>";
+		
 		while (list ($key, $val) = each ($para)) {
+			//if($key == '_input_charset')
+			//	continue;
             $sHtml.= "<input type='hidden' name='".$key."' value='".$val."'/>";
         }
 
@@ -151,6 +155,7 @@ class AlipaySubmit {
      * return 时间戳字符串
 	 */
 	function query_timestamp() {
+		
 		$url = $this->alipay_gateway_new."service=query_timestamp&partner=".trim(strtolower($this->alipay_config['partner']))."&_input_charset=".trim(strtolower($this->alipay_config['input_charset']));
 		$encrypt_key = "";		
 

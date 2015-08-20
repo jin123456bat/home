@@ -28,14 +28,6 @@ function md5Sign($prestr, $key) {
  * return 签名结果
  */
 function md5Verify($prestr, $sign, $key) {
-	$prestr = $prestr . $key;
-	$mysgin = md5($prestr);
-
-	if($mysgin == $sign) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return (md5Sign($prestr, $key) == $sign);
 }
 ?>

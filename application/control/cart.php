@@ -329,10 +329,16 @@ class cartControl extends control
 		$status = 0;
 		//订单来源
 		$client = $this->post->client;
+		/**
+		 * 财付通专用，标注是否已经报过报过接口  1没有 2已经报过
+		 */
+		$action_type = '1';
+		
 		$data = array(
 			NULL,$uid,$paytype,$paynumber,$ordertotalamount,$orderno,$ordertaxamount,$ordergoodsamount
 			,$feeamount,$tradetime,$createtime,$totalamount,$consignee,$consigneetel,$consigneeaddress
-			,$consigneeprovince,$consigneecity,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client
+			,$consigneeprovince,$consigneecity,$postmode,$waybills,$sendername,$companyname,$zipcode
+			,$note,$status,$discount,$client,$action_type
 		);
 		$orderModel = $this->model('orderlist');
 		$oid = $orderModel->create($data,$orderdetail);

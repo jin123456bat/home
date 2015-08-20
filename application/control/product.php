@@ -55,9 +55,9 @@ class productControl extends control
 			unset($product['bid']);
 			switch ($product['activity'])
 			{
-				case 'sale':$product['activity'] = $this->model('sale')->getByPid($product['id']);break;
-				case 'seckill':$product['activity'] = $this->model('seckill')->getByPid($product['id']);break;
-				case 'fullcut':$product['activity'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
+				case 'sale':$product['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
+				case 'seckill':$product['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
+				case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
 				default:break;
 			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));

@@ -17,11 +17,10 @@
 function createLinkstring($para) {
 	$arg  = "";
 	while (list ($key, $val) = each ($para)) {
-		$arg.=$key."=".$val."&";
+		$arg.=($key."=".$val."&");
 	}
 	//去掉最后一个&字符
 	$arg = substr($arg,0,count($arg)-2);
-	
 	//如果存在转义字符，那么去掉转义
 	if(get_magic_quotes_gpc()){$arg = stripslashes($arg);}
 	
@@ -33,17 +32,7 @@ function createLinkstring($para) {
  * return 拼接完成以后的字符串
  */
 function createLinkstringUrlencode($para) {
-	$arg  = "";
-	while (list ($key, $val) = each ($para)) {
-		$arg.=$key."=".urlencode($val)."&";
-	}
-	//去掉最后一个&字符
-	$arg = substr($arg,0,count($arg)-2);
-	
-	//如果存在转义字符，那么去掉转义
-	if(get_magic_quotes_gpc()){$arg = stripslashes($arg);}
-	
-	return $arg;
+	return http_build_query($para);
 }
 /**
  * 除去数组中的空值和签名参数
@@ -53,8 +42,9 @@ function createLinkstringUrlencode($para) {
 function paraFilter($para) {
 	$para_filter = array();
 	while (list ($key, $val) = each ($para)) {
-		if($key == "sign" || $key == "sign_type" || $val == "")continue;
-		else	$para_filter[$key] = $para[$key];
+		if($key == "sign" || $key == "sign_type" || $val == "")
+			continue;
+		$para_filter[$key] = $para[$key];
 	}
 	return $para_filter;
 }

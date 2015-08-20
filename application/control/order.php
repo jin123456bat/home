@@ -7,6 +7,8 @@ use application\model\roleModel;
 use application\classes\login;
 use application\classes\excel;
 use application\classes\alipay_gateway;
+use application\classes\tenpay_gateway;
+use application\classes\weixin_gateway;
 /**
  * 订单控制器
  * @author jin12
@@ -52,21 +54,52 @@ class orderControl extends control
 		{
 			$orderModel = $this->model('orderlist');
 			$order = $orderModel->get($id);
+			$orderdetail = $orderModel->getOrderDetail($id);
+			
 			if(!empty($order))
 			{
 				switch($order['paytype'])
 				{
 					case 'weixin':
-					case 'alipay':
-						$alipay = new alipay_gateway(config('alipay'));
-						$alipay->submit($order);
+						$weixin = new weixin_gateway(config('weixin'));
+						$weixin->createPrepay($order, $orderdetail);
 						break;
+					case 'alipay':
+						$this->response->addHeader('Content-Type','text/html;charset=utf-8');
+						$alipay = new alipay_gateway(config('alipay'));
+						$result = $alipay->submit($order,$orderdetail);
+						return $result;
+						break;
+					case 'tenpay':
+						$tenpay = new tenpay_gateway(config('tenpay'));
+						return $tenpay->submit($order, $orderdetail);
 					default:return json_encode(array('code'=>4,'result'=>'支付类型错误'));
 				}
 			}
 			return json_encode(array('code'=>2,'result'=>'订单不存在'));
 		}
 		return json_encode(array('code'=>3,'result'=>'参数错误'));
+	}
+	
+	/**
+	 * 退款接口
+	 */
+	function refund()
+	{
+		
+	}
+	
+	/**
+	 * 对gateway网关接应
+	 */
+	function alipay()
+	{
+		switch ($this->get->action)
+		{
+			case 'return':break;
+			case 'notify':break;
+			default:break;
+		}
 	}
 	
 	/**

@@ -25,6 +25,15 @@ class orderlistModel extends model
 	}
 	
 	/**
+	 * 获取订单商品信息
+	 */
+	function getOrderDetail($id)
+	{
+		$orderdetailModel = $this->model('orderdetail');
+		return $orderdetailModel->where('oid=?',array($id))->select();
+	}
+	
+	/**
 	 * 自定义导出
 	 * @param unknown $parameter
 	 * @param array $id

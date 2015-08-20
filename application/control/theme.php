@@ -35,6 +35,12 @@ class themeControl extends control
 		$length = empty($length)?3:$length;
 		$themeModel = $this->model('theme');
 		$result = $themeModel->fetchAll($length);
+		foreach ($result as &$value)
+		{
+			$value['smallpic'] = file::realpathToUrl($value['smallpic']);
+			$value['middlepic'] = file::realpathToUrl($value['middlepic']);
+			$value['bigpic'] = file::realpathToUrl($value['bigpic']);
+		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
 	
