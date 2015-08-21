@@ -16,6 +16,42 @@ use application\classes\weixin_gateway;
  */
 class orderControl extends control
 {
+	
+	/**
+	 * 订单详情页面
+	 */
+	function information()
+	{
+		$id = filter::int($this->get->id);
+		if(!empty($id))
+		{
+			$this->view = new view(config('view'), 'admin/order_information.html');
+			$orderModel = $this->model('orderlist');
+			$orderModel->table('user','left join','user.id=orderlist.uid');
+			$result = $orderModel->where('orderlist.id=?',array($id))->select();
+			$goods = $orderModel->getOrderDetail($id);
+			if(isset($result[0]))
+			{
+				$this->view->assign('order',$result[0]);
+				$this->view->assign('goods',$goods);
+				if(!empty($_SERVER['HTTP_REFERER']))
+				{
+					$this->view->assign('last_page',$_SERVER['HTTP_REFERER']);
+				}
+				return $this->view->display();
+			}
+			else
+			{
+				$this->call('index', '__404');
+			}
+			
+		}
+		else
+		{
+			$this->call('index', '__404');
+		}
+	}
+	
 	/**
 	 * 订单导出
 	 */
@@ -61,8 +97,13 @@ class orderControl extends control
 				switch($order['paytype'])
 				{
 					case 'weixin':
+						//假如是微信，则将所有参数转发给weixin由weixin来处理各种参数
 						$weixin = new weixin_gateway(config('weixin'));
-						$weixin->createPrepay($order, $orderdetail);
+						$weixin->setGetParameter($this->get);
+						$weixin->setPostParameter($this->post);
+						$response = $weixin->submit($order, $orderdetail);
+						$this->response->setCode(302);
+						$this->response->addHeader('Location',$response);
 						break;
 					case 'alipay':
 						$this->response->addHeader('Content-Type','text/html;charset=utf-8');
@@ -73,20 +114,13 @@ class orderControl extends control
 					case 'tenpay':
 						$tenpay = new tenpay_gateway(config('tenpay'));
 						return $tenpay->submit($order, $orderdetail);
+						
 					default:return json_encode(array('code'=>4,'result'=>'支付类型错误'));
 				}
 			}
 			return json_encode(array('code'=>2,'result'=>'订单不存在'));
 		}
 		return json_encode(array('code'=>3,'result'=>'参数错误'));
-	}
-	
-	/**
-	 * 退款接口
-	 */
-	function refund()
-	{
-		
 	}
 	
 	/**
@@ -163,6 +197,11 @@ class orderControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/order_orderlist.html');
+			$telephone = $this->get->telephone;
+			if($telephone !== NULL)
+			{
+				$this->view->assign('telephone',$telephone);
+			}
 			$this->response->setBody($this->view->display());
 		}
 		else

@@ -41,12 +41,6 @@ class saleControl extends control
 			unset($product['bid']);
 			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			$product['img'] = $productimgModel->getByPid($product['id']);
-			foreach ($product['img'] as &$img)
-			{
-				$img['thumbnail_path'] = file::realpathToUrl($img['thumbnail_path']);
-				$img['small_path'] = file::realpathToUrl($img['small_path']);
-				$img['base_path'] = file::realpathToUrl($img['base_path']);
-			}
 			$product['category'] = $categoryModel->get($product['category'],'name');
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));

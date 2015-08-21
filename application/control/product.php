@@ -9,8 +9,32 @@ use application\model\roleModel;
 use application\classes\category;
 use system\core\filter;
 use application\classes\excel;
+/**
+ * 商品控制器
+ * @author jin12
+ *
+ */
 class productControl extends control
 {
+	function getlist()
+	{
+		$product = $this->model('product')->select();
+		foreach($product as &$good)
+		{
+			$good['img'] = $this->model('productimg')->getByPid($product['id']);
+			switch ($good['activity'])
+			{
+				case 'sale':$good['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
+				case 'seckill':$good['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
+				case 'fullcut':$good['activity_description'] = $this->model('fullcutdetail')->get->getByPid($product['id']);break;
+				default:break;
+			}
+			$goods['prototype'] = $this->model('prototype')->getByPid($good['id']);
+			$goods['collection'] = $this->model('collection')->getByPid($good['id']);
+		}
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
+	}
+	
 	/**
 	 * 导出商品数据
 	 */
@@ -107,6 +131,13 @@ class productControl extends control
 			unset($product['bid']);
 			$goods['prototype'] = $prototypeModel->getByPid($goods['id']);
 			$goods['img'] = $productimgModel->getByPid($goods['id']);
+			switch ($goods['activity'])
+			{
+				case 'sale':$goods['activity_description'] = $this->model('sale')->getByPid($goods['id']);break;
+				case 'seckill':$goods['activity_description'] = $this->model('seckill')->getByPid($goods['id']);break;
+				case 'fullcut':$goods['activity_description'] = $this->model('fullcutdetail')->getByPid($goods['id']);break;
+				default:break;
+			}
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
 	}

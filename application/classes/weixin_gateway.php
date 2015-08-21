@@ -21,6 +21,18 @@ class weixin_gateway
 	private $_order;
 	
 	/**
+	 * 存储微信发送的get参数
+	 * @var unknown
+	 */
+	private $_get;
+	
+	/**
+	 * 存储微信发送的post参数
+	 * @var unknown
+	 */
+	private $_post;
+	
+	/**
 	 * 订单商品信息
 	 * @var unknown
 	 */
@@ -29,6 +41,52 @@ class weixin_gateway
 	function __construct($config)
 	{
 		$this->_config = $config;
+	}
+	
+	function setGetParameter($parameter)
+	{
+		$this->_get = $parameter;
+	}
+	
+	function setPostParameter($parameter)
+	{
+		$this->_post = $parameter;
+	}
+	
+	/**
+	 * 根据url和get参数创建一个请求，extends是附加参数
+	 * @param unknown $url
+	 * @param unknown $parameter
+	 * @param unknown $extends
+	 */
+	function createGetRequest($url,$parameter,$extends = '')
+	{
+		$url .= ('?'.http_build_query($parameter)).(empty($extends)?'':('#'.$extends));
+	}
+	
+	function submit($order,$orderdetail)
+	{
+		$this->_order = $order;
+		$this->_orderdetail = $orderdetail;
+		$http = new http();
+		if(empty($this->_get->code))
+		{
+			$url = 'https://open.weixin.qq.com/connect/oauth2/authorize';
+			$parameter = array(
+				'appid' => $this->_config['APPID'],
+				'redirect_uri' => 'http://'.$http->host().$http->path().$_SERVER['QUERY_STRING'],
+				'response_type' => 'code',
+				'scope' => 'snsapi_base',
+				'state' => ''
+			);
+			$extends = 'wechat_redirect';
+			$url = $this->createGetRequest($url, $parameter,$extends);
+			return $url;
+		}
+		else
+		{
+			var_dump($_GET);
+		}
 	}
 	
 	/**

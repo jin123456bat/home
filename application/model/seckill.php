@@ -61,7 +61,8 @@ class seckillModel extends model
 	
 	function getByPid($pid)
 	{
-		return $this->where('pid=?',array($pid))->select();
+		$result = $this->where('pid=?',array($pid))->select();
+		return isset($result[0])?$result[0]:array();
 	}
 	
 	/**

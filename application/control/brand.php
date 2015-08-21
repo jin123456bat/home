@@ -17,6 +17,8 @@ class brandControl extends control
 	function add()
 	{
 		$name = $this->post->name;
+		if(empty($name))
+			return json_encode(array('code'=>2,'result'=>'品牌名称不能为空'));
 		$logo = $this->file->logo;
 		if (! file_exists($logo)) {
 			return json_encode(array(
@@ -24,12 +26,13 @@ class brandControl extends control
 				'result' => 'logo上传失败'
 			));
 		}
-		$description = $this->post->description;
+		$description = empty($this->post->description)?'':$this->post->description;
 		$brandModel = $this->model('brand');
-		if ($brandModel->add($name, $logo, $description))
+		if ($brandModel->create($name, $logo, $description))
 		{
 			$this->model('log')->write($this->session->username,'添加了一个品牌'.$name);
-			return json_encode(array('code' => 1,'result' => '成功'));
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('brand','manager'));
 		}
 		return json_encode(array(
 			'code' => 0,

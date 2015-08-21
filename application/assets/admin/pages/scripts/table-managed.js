@@ -95,6 +95,13 @@ var TableManaged = function () {
 					return "<div class=checker><span><input type=checkbox class=checkboxes value="+data+"></span></div>";
 				}
 			}, {
+				"targets":10,
+				"data":'ordernum',
+				render:function(data,type,full){
+					content = '<span class="badge badge-default">'+data+'</span>';
+					return '<a href="index.php?c=order&a=orderlist&telephone='+full.telephone+'">'+content+'</a>';
+				}
+			}, {
 				"targets":[11],
 				"data":"oid",
 				"render":function(data,type,full){

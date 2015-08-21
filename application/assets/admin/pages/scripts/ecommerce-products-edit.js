@@ -40,10 +40,10 @@ var EcommerceProductsEdit = function () {
 			headers:{id:$('input[name=id]').val()},
          
             // Flash settings
-            flash_swf_url : 'http://localhost/home/application/assets/global/plugins/plupload/js/Moxie.swf',
+            flash_swf_url : 'http://localhost/application/assets/global/plugins/plupload/js/Moxie.swf',
      
             // Silverlight settings
-            silverlight_xap_url : 'http://localhost/home/application/assets/global/plugins/plupload/js/Moxie.xap',             
+            silverlight_xap_url : 'http://localhost/application/assets/global/plugins/plupload/js/Moxie.xap',             
          
             init: {
                 PostInit: function() {
@@ -192,7 +192,7 @@ var EcommerceProductsEdit = function () {
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],
 				columns:[{
-					data:'swift'
+					data:'orderno'
 				},{
 					data:'createtime'
 				},{
@@ -200,7 +200,7 @@ var EcommerceProductsEdit = function () {
 				},{
 					data:'status'
 				},{
-					data:'`orderlist`.id'
+					data:'id'
 				}],
                 "pageLength": 10, // default record count per page
                 "ajax": {
@@ -210,7 +210,44 @@ var EcommerceProductsEdit = function () {
                 "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                     'orderable': true,
                     'targets': [0]
-                }],
+                },{
+					'targets':1,
+					render:function(data,type,full){
+						return unixtotime(data,true,8);
+					}
+				},{
+					targets:2,
+					render:function(data,type,full){
+						var telephone = '';
+						$.ajax({
+							async:false,
+							method:'get',
+							url:'?c=user&a=telephone',
+							data:{id:data},
+							success: function(response){
+								telephone = $.parseJSON(response).body;
+							}
+						});
+						return telephone;
+					}
+				},{
+					targets:3,
+					render:function(data,type,full){
+						switch(data)
+						{
+							case '0':return '等待支付';
+							case '1':return '支付成功';
+							case '2':return '支付失败';
+							case '3':return '用户取消';
+							default:return "未知状态";
+						}
+					}
+				},{
+					targets:4,
+					render:function(data,type,full){
+						return '<a class="btn default btn-xs green-stripe" href="index.php?c=order&a=information&id='+data+'">查看详情</a>';
+					}
+				}],
                 "order": [
                     [0, "asc"]
                 ] // set first column as a default sort by asc

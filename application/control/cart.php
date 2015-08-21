@@ -265,7 +265,7 @@ class cartControl extends control
 							{
 								$ordergoodsamount = $ordergoodsamount - ($product['num']*$product['price']);
 								$mon = $product['num'] * $product['price'];
-								$mon = ($used['type'] == 'discount')?$mon-$used['value']:$mon*$used['value'];
+								$mon = ($used['type'] == 'fixed')?$mon-$used['value']:$mon*$used['value'];
 								$ordergoodsamount += $mon;
 								break;
 							}

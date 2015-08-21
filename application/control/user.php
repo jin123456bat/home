@@ -120,6 +120,14 @@ class userControl extends control
 	}
 	
 	/**
+	 * 个人充值接口
+	 */
+	function encharge()
+	{
+		
+	}
+	
+	/**
 	 * 用户注销
 	 */
 	function logout()

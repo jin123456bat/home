@@ -73,8 +73,8 @@ class categoryControl extends control
 				$temp = array();
 				$temp['id'] = $category['id'];
 				$temp['text'] = $category['name'];
-				//$temp['icon'] = "fa fa-folder icon-lg " . $icon[array_rand($icon)];
-				$temp['icon'] = 'http://localhost/home/application/assets/gravatar.jpg';
+				$temp['icon'] = "fa fa-folder icon-lg " . $icon[array_rand($icon)];
+				//$temp['icon'] = 'http://localhost/home/application/assets/gravatar.jpg';
 				$result = $categoryModel->fetchChild($category['id']);
 				$temp['children'] = ! empty($result);
 				if ($parent == 0)

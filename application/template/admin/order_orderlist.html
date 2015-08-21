@@ -183,7 +183,7 @@
 										</div>
 									</td>
 									<td>
-										<input type="text" class="form-control form-filter input-sm" name="telephone">
+										<input type="text" value="{%$telephone|default:''%}" class="form-control form-filter input-sm" name="telephone">
 									</td>
 									<td>
 										<input type="text" class="form-control form-filter input-sm" name="postmode">
@@ -302,8 +302,9 @@ EcommerceOrders.init();
 			window.open('{%url c=order a=export%}&data='+data,'');
 		}
 	});
+	
 });
-	</script>
+</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->

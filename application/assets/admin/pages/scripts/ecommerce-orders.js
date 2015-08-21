@@ -60,7 +60,7 @@ var EcommerceOrders = function () {
 					"url":"?c=order&a=ajaxorderlist"
                 },
 				"processing": true,
-				
+				autofill:true,
 				"columnDefs":[{
 					"targets":[0],
 					"data":"id",
@@ -102,6 +102,11 @@ var EcommerceOrders = function () {
 							case '3':return '客户取消';break;
 							default:return '未知状态';break;
 						}
+					}
+				},{
+					targets:10,
+					render:function(data,type,full){
+						return '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a>';
 					}
 				},{
 					"targets":[11,12,13],

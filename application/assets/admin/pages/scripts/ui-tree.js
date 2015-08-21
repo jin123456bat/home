@@ -19,13 +19,16 @@ var UITree = function () {
             },
             "types" : {
                 "default" : {
-                	"icon" : "fa fa-folder icon-state-warning icon-lg",
+                	"icon" : "fa fa-file icon-state-warning icon-lg",
 					//"icon" : "http://localhost/home/application/assets/gravatar.jpg"
 					
                 },
                 "file" : {
                     "icon" : "fa fa-file icon-state-warning icon-lg"
                 },
+				"folder":{
+					"icon" : "fa fa-folder icon-state-warning icon-lg"
+				}
 				
             },
             "plugins" :["themes","dnd", "types","contextmenu" ],

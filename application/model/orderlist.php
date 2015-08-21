@@ -120,6 +120,8 @@ class orderlistModel extends model
 					$this->orderby($value['data'],$orderby['dir']);
 				}
 			}
+			if($pid !== NULL && $value['data'] == 'id')
+				$value['data'] = '`orderlist`.id';
 			$array[] = $value['data'];
 		}
 		if(!empty($post->action) && $post->action == 'filter')

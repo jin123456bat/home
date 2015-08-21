@@ -53,7 +53,11 @@ class collectionModel extends model
 	 */
 	function getByPid($pid)
 	{
-		return $this->where('pid=?',array($pid))->select();
+		$result = $this->where('pid=?',array($pid))->select();
+		foreach ($result as &$value) {
+			$value['content'] = unserialize($value['content']);
+		}
+		return $result;
 	}
 	
 	/**

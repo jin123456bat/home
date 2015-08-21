@@ -46,7 +46,8 @@ class fullcutdetailModel extends model
 	{
 		$this->where('fullcutdetail.pid=?',array($pid));
 		$this->table('fullcut','right join','fullcut.id=fullcutdetail.fid');
-		return $this->select();
+		$result = $this->select();
+		return isset($result[0])?$result[0]:array();
 	}
 	
 	/**

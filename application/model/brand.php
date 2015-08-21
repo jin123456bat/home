@@ -2,6 +2,7 @@
 namespace application\model;
 
 use system\core\model;
+use system\core\file;
 
 class brandModel extends model
 {
@@ -16,12 +17,22 @@ class brandModel extends model
 	 */
 	function fetchByProduct($start,$length)
 	{
-		$this->table('product','left join','product.bid=brand.id');
-		$this->orderby('num','desc');
-		$this->orderby('id','asc');
-		$this->groupby('product.bid');
-		$this->limit($start,$length);
-		return $this->select('count(*) as num,brand.name,brand.id');
+		$this->where('close=?',array(0));
+		$brand = $this->select();
+		$productModel = $this->model('product');
+		foreach ($brand as &$value)
+		{
+			$value['logo'] = file::realpathToUrl($value['logo']);
+			$productModel->where('bid=?',array($value['id']));
+			$result = $productModel->select('count(*)');
+			$value['num'] = $result[0]['count(*)'];
+		}
+		usort($brand, function($a,$b){
+			if($a['num'] == $b['num'])
+				return 0;
+			return ($a['num']>$b['num'])?-1:1;
+		});
+		return $brand;
 	}
 	
 	/**
