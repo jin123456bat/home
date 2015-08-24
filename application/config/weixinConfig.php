@@ -10,9 +10,9 @@ class weixinConfig extends config
 {
 	function __construct()
 	{
-		$this->MCHID = '1251529901';
-		$this->APPID = 'wx714c70a7a6b93632';
-		$this->KEY = 'b02a45a596bfb86fe2578bde75ff54440759f0c52cda38a5d280f7514f120f64';
-		$this->APPSECRET = '4dd9d79acafd65972898623410b02a5b';
+		$this->MCHID = '1226923702';
+		$this->APPID = 'wxacf21161e3c578f1';
+		$this->KEY = 'Zhy781525073AsDfGh12ZgdZxCvBnMlK';
+		$this->APPSECRET = 'a9edccfb3018342657334dabd8873357';
 	}
 }

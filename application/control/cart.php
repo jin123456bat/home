@@ -19,6 +19,7 @@ class cartControl extends control
 	 */
 	function add()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$pid = filter::int($this->post->pid);
@@ -40,7 +41,7 @@ class cartControl extends control
 				//不存在可选属性
 				if($productModel->increaseStock($pid,-$num))
 				{
-					$content = '';
+					$content = array();
 					if($cartModel->create($uid,$pid,$content,$num))
 					{
 						return json_encode(array('code'=>1,'result'=>'ok'));
@@ -54,7 +55,6 @@ class cartControl extends control
 			}
 			else
 			{
-				
 				$collectionModel = $this->model('collection');
 				if(empty($collectionModel->find($pid,$content)))
 				{
@@ -86,6 +86,7 @@ class cartControl extends control
 	 */
 	function remove()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$pid = filter::int($this->post->pid);
@@ -119,6 +120,7 @@ class cartControl extends control
 	 */
 	function mycart()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$cartModel = $this->model('cart');
@@ -126,18 +128,26 @@ class cartControl extends control
 		$prototypeModel = $this->model('prototype');
 		$productimgModel = $this->model('productimg');
 		$categoryModel = $this->model('category');
-		foreach ($result as $product)
+		foreach ($result as &$product)
 		{
 			unset($product['bid']);
+			$product['content'] = unserialize($product['content']);
 			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			$product['img'] = $productimgModel->getByPid($product['id']);
-			foreach ($product['img'] as &$img)
-			{
-				$img['thumbnail_path'] = file::realpathToUrl($img['thumbnail_path']);
-				$img['small_path'] = file::realpathToUrl($img['small_path']);
-				$img['base_path'] = file::realpathToUrl($img['base_path']);
+			switch ($product['activity']) {
+				case 'seckill':
+					$product['activity_description'] = $this->model('seckill')->getByPid($product['id']);
+					break;
+				case 'fullcut':
+					$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);
+					break;
+				case 'sale':
+					$product['activity_description'] = $this->model('sale')->getByPid($product['id']);
+					break;
+				default:
+					$product['activity_description'] = '';
+					break;
 			}
-			$product['category'] = $categoryModel->get($product['category'],'name');
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
@@ -148,6 +158,7 @@ class cartControl extends control
 	 */
 	function calculation($uid = NULL)
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		if (!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$uid = empty($uid)?$this->session->id:$uid;
@@ -204,13 +215,7 @@ class cartControl extends control
 	 */
 	function order()
 	{
-		/*
-		$this->session->id = 3;
-		$this->post->paytype = 'alipay';
-		$this->post->shipid = 1;
-		$this->post->addressid = 2;
-		$this->post->client = 'web';
-		*/
+		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$response = json_decode($this->calculation($this->session->id));
@@ -344,7 +349,10 @@ class cartControl extends control
 		$oid = $orderModel->create($data,$orderdetail);
 		if($oid)
 		{
+			//清空购物车
 			$cartModel->clear($uid);
+			//用户订单数量+1
+			$this->model('user')->where('id=?',array($uid))->increase('ordernum',1);
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$oid));
 		}
 		return json_encode(array('code'=>2,'result'=>'创建订单失败'));

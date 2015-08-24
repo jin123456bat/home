@@ -12,6 +12,8 @@ class collection
 		{
 			try
 			{
+				if (empty($string))
+					return array();
 				$array = array();
 				$content = explode(',', $string);
 				foreach ($content as $value)

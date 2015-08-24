@@ -55,7 +55,8 @@ class file
 			if ($file['size'] > $config['size']) {
 				return UPLOAD_ERR_INI_SIZE;
 			}
-			if (!in_array($file['type'], $config['type'])) {
+			$mimetype = filesystem::mimetype($file['tmp_name']);
+			if (!in_array($mimetype, $config['type'])) {
 				return 8;
 			}
 			if (! is_writable(filesystem::path($config['path'])) || !is_dir(filesystem::path($config['path']))) {
@@ -89,7 +90,8 @@ class file
 			{
 				if (!isset($config['size']) || $files['size'][$index] < $config['size'])
 				{
-					if(!isset($config['type']) || in_array($files['type'][$index],$config['type']))
+					$mimetype = filesystem::mimetype($files['tmp_name'][$index]);
+					if(!isset($config['type']) || in_array($mimetype,$config['type']))
 					{
 						$type = empty(filesystem::type($files['name'][$index])) ? 'tmpuploadfile' : filesystem::type($files['name'][$index]);
 						$filename = rtrim($config['path'], '/') . '/' . md5_file($files['tmp_name'][$index]) . sha1_file($files['tmp_name'][$index]) . '.' . $type;

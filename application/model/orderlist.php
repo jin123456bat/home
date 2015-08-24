@@ -13,6 +13,7 @@ class orderlistModel extends model
 		parent::__construct($table);
 	}
 	
+	
 	/**
 	 * 获取订单信息
 	 */
@@ -22,6 +23,18 @@ class orderlistModel extends model
 		if($name == '*')
 			return isset($result[0])?$result[0]:NULL;
 		return isset($result[0][$name])?$result[0][$name]:NULL;
+	}
+	
+	/**
+	 * 更改订单状态
+	 */
+	function setStatus($id,$status,$endtime,$money,$transaction_id)
+	{
+		if(!empty($endtime))
+		{
+			$endtime = strtotime($endtime);
+		}
+		return $this->where('id=?',array($id))->update(array('status'=>$status,'tradetime'=>$endtime,'totalamount'=>$money,'paynumber'=>$transaction_id));
 	}
 	
 	/**

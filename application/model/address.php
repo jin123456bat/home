@@ -98,7 +98,7 @@ class addressModel extends model
 	 */
 	function remove($id)
 	{
-		$this->where('id=?',array($id))->delete();
+		return $this->where('id=?',array($id))->delete();
 	}
 	
 	/**

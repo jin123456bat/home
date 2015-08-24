@@ -37,7 +37,7 @@ class response
 	/**
 	 * 设置状态码
 	 *
-	 * @param unknown $code        	
+	 * @param unknown $code
 	 */
 	public function setCode($code)
 	{
