@@ -10,23 +10,21 @@ class collection
 	{
 		if(is_string($string))
 		{
-			try
+			if (empty($string))
+				return array();
+			$string = trim($string,',');
+			$array = array();
+			$content = explode(',', $string);
+			foreach ($content as $value)
 			{
-				if (empty($string))
-					return array();
-				$array = array();
-				$content = explode(',', $string);
-				foreach ($content as $value)
-				{
-					list($key,$val) = explode(':', $value);
-					$array[$key] = $val;
-				}
-				return $array;
+				list($key,$val) = explode(':', $value);
+				$array[$key] = $val;
 			}
-			catch (\Exception $e)
-			{
-				return false;
-			}
+			return $array;
+		}
+		elseif (is_array($string))
+		{
+			return $string;
 		}
 		return false;
 	}

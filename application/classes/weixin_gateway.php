@@ -120,7 +120,7 @@ class weixin_gateway
 				'device_info' => 'WEB',
 				'attach' => '',
 				'time_start' => date("YmdHis",$order['createtime']),
-				'time_expire' => date("YmdHis",$order['createtime']+1800),
+				'time_expire' => date("YmdHis",$order['createtime']+1800),//订单需要在30分钟之内完成支付
 				'appid' => $this->_config->APPID,
 				'fee_type' => 'CNY',
 				'mch_id' => $this->_config->MCHID,

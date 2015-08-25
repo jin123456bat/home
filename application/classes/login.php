@@ -19,7 +19,7 @@ class login
 	static function user()
 	{
 		$session = new session();
-		return $session->id != NULL;
+		return $session->id != NULL && $session->telephone != NULL && $session->username != NULL;
 	}
 
 }

@@ -10,6 +10,19 @@ use system\core\model;
  */
 class productModel extends model
 {
+	
+	/**
+	 * 商品状态在销售
+	 * @var unknown
+	 */
+	const ONSALE = 1;
+	
+	/**
+	 * 商品状态不在销售
+	 * @var unknown
+	 */
+	const NOSALE = 2;
+	
 	function __construct($table)
 	{
 		parent::__construct($table);
@@ -21,7 +34,7 @@ class productModel extends model
 	 */
 	function check($pid)
 	{
-		$this->where('id=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and status=?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],1));
+		$this->where('id=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and status=? and stock>?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],self::ONSALE,0));
 		$result = $this->select();
 		return isset($result[0]);
 	}
@@ -76,7 +89,7 @@ class productModel extends model
 	 */
 	function add($product)
 	{
-		$product = array_merge(array('id'=>NULL,'activity'=>''),$product);
+		$product = array_merge(array('id'=>NULL,'activity'=>''),$product,array('ordernum'=>0,'complete_ordernum'=>0));
 		if($this->insert($product))
 		{
 			return $this->lastInsertId();

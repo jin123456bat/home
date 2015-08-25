@@ -9,6 +9,7 @@ use application\classes\excel;
 use application\classes\alipay_gateway;
 use application\classes\tenpay_gateway;
 use application\classes\weixin_gateway;
+use application\classes\product;
 /**
  * 订单控制器
  * @author jin12
@@ -25,24 +26,28 @@ class orderControl extends control
 		$orderModel = $this->model('orderlist');
 		$weixinprepayModel = $this->model('weixinprepay');
 		$weixin = new weixin_gateway(config('weixin'));
-		$result = $orderModel->where('status=?',array(0))->select();
+		$result = $orderModel->where('status=? and createtime < ?',array(0,$_SERVER['REQUEST_TIME']-1800))->select();
 		foreach($result as $order)
 		{
-			if($order['status'] == 0 && $_SERVER['REQUEST_TIME']-$order['createtime']>1800)
+			switch ($order['paytype'])
 			{
-				switch ($order['paytype'])
-				{
-					case 'weixin':
-						//删除数据库的预支付订单
-						$weixinprepayModel->remove($order['orderno']);
-						//关闭微信的预支付订单
-						$weixin->close($order);
-						break;
-					default:
-						break;
-				}
-				//设置订单状态为关闭
-				$orderModel->setStatus($order['id'],2,0,0,'');
+				case 'weixin':
+					//删除数据库的预支付订单
+					$weixinprepayModel->remove($order['orderno']);
+					//关闭微信的预支付订单
+					$weixin->close($order);
+					break;
+				default:
+					break;
+			}
+			//设置订单状态为关闭
+			$orderModel->setStatus($order['id'],2,$_SERVER['REQUEST_TIME'],0,'');
+			//将商品库存回退
+			$goods = $orderModel->getOrderDetail($order['id']);
+			$productHelper = new product();
+			foreach ($goods as $product)
+			{
+				$productHelper->increaseNum($this->model('product'), $this->model('collection'), $product['pid'], $product['content'],$product['num']);
 			}
 		}
 	}
@@ -130,18 +135,17 @@ class orderControl extends control
 					case 'weixin':
 						if(empty($this->get->trade_type))
 							return json_encode(array('code'=>5,'result'=>'需要指定支付方式'));
-						//假如是微信，则将所有参数转发给weixin由weixin来处理各种参数
+						//假如是微信，则将所有参数转发给weixin_gateway由weixin_gateway来处理各种参数
 						$weixin = new weixin_gateway(config('weixin'));
 						$weixinprepayModel = $this->model('weixinprepay');
 						$result = $weixinprepayModel->get($order['orderno']);
-						if(!empty($result) && $_SERVER['REQUEST_TIME']-$result['createtime']<2*3600)
+						if(!empty($result) && $_SERVER['REQUEST_TIME']-$result['createtime']<1800)
 						{
+							//假如缓存中的预支付订单存在则处理缓存中的预支付订单
 							$view = new view(config('view'), 'wechatpay.html');
 							$data = $weixin->output($result['prepay_id']);
 							$view->assign('data', $data);
 							return $view->display();
-							//这里找到了预订单信息
-							//return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 						}
 						
 						$weixin->setGetParameter($this->get);
@@ -156,19 +160,16 @@ class orderControl extends control
 						}
 						else if($response['action'] == 'return')
 						{
-							//$this->response->addHeader('Content-Type','text/html; charset=utf-8');
+							//success
 							$weixinprepayModel->create($order['orderno'],$response['content']);
 							$view = new view(config('view'), 'wechatpay.html');
 							$data = $weixin->output($response['content']['prepay_id']);
 							$view->assign('data', $data);
 							return $view->display();
-							//return $weixin->output($response['content']['prepay_id']);
-							//这里找到了预订单信息
-							//return json_encode(array('code'=>1,'result'=>'ok','body'=>$response['content']));
 						}
 						else if($response['action'] =='error')
 						{
-							//微信那边出现错误
+							//订单支付过程中出现错误
 							return json_encode(array('code'=>0,'result'=>'failed','body'=>$response['content']));
 						}
 						break;
@@ -221,6 +222,17 @@ class orderControl extends control
 							{
 								//增加一下用户的消费金额
 								$this->model('user')->where('id=?',array($order['uid']))->increase('cost',$content['cash_fee']/100);
+								//给用户一定的积分
+								$orderdetail = $orderModel->getOrderDetail($order['id']);
+								foreach ($orderdetail as $ordergoods)
+								{
+									if($ordergoods['score'] != 0)
+									$this->model('user')->where('id=?',array($order['uid']))->increase('score',$ordergoods['score']);
+									//增加商品的销售量
+									$this->model('product')->where('id=?',array($ordergoods['pid']))->increase('complete_ordernum',$ordergoods['num']);
+								}
+								//删除数据缓存的预支付订单
+								$this->model('weixinprepay')->remove($order['orderno']);
 								return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
 							}
 							else
@@ -230,6 +242,18 @@ class orderControl extends control
 						}
 						else
 						{
+							//交易失败，关闭订单
+							$this->model('orderlist')->setStatus($content['out_trade_no'],2,$_SERVER['REQUEST_TIME'],0,'');
+							//删除数据缓存的预支付订单
+							$this->model('weixinprepay')->remove($order['orderno']);
+							//关闭微信的订单
+							$weixin->close($order);
+							$productHelper = new product();
+							$goods = $orderModel->getOrderDetail($order['id']);
+							foreach ($goods as $product)
+							{
+								$productHelper->increaseNum($this->model('product'), $this->model('collection'), $product['pid'], $product['content'],$product['num']);
+							}
 							return '<xml><return_code><![CDATA[FAILED]]></return_code><return_msg><![CDATA[不给钱还想通过?]]></return_msg></xml>';
 						}
 					}
@@ -257,7 +281,7 @@ class orderControl extends control
 		$id = filter::int($this->get->id);
 		if(!empty($id))
 		{
-			$order = $this->model('orderlist');
+			$order = $this->model('orderlist')->get($id);
 			if(isset($order['status']))
 			{
 				switch ($order['status'])
@@ -272,8 +296,7 @@ class orderControl extends control
 		}
 		else
 		{
-			echo "没有找到账单id";
-			//$this->view = new view(config('view'), 'notice.html');
+			$this->call('index', '__404');
 		}
 	}
 	
@@ -325,12 +348,15 @@ class orderControl extends control
 	}
 	
 	/**
-	 * 订单详情页面
+	 * 获取用户的所有订单信息
 	 */
-	function orderview()
+	function myorder()
 	{
-		$this->view = new view(config('view'), 'admin/order_detail.html');
-		$this->response->setBody($this->view->display());
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$orderModel = $this->model('orderlist');
+		$result = $orderModel->fetchAll($this->session->id);
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
 	
 	/**

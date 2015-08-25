@@ -12,7 +12,7 @@ class prototype
 	 */
 	function format($prototype_array,$collection)
 	{
-		$collection = unserialize($collection);
+		$collection = is_array($collection)?$collection:unserialize($collection);
 		$return = '';
 		
 		foreach($prototype_array as $prototype)

@@ -8,8 +8,26 @@ use application\classes\login;
 use application\classes\collection;
 use system\core\random;
 use application\classes\prototype;
+use application\classes\product;
 class cartControl extends control
 {
+	/**
+	 * 对于30分钟内尚未结算的购物车经行清空
+	 */
+	function crontab()
+	{
+		//清空30分钟内尚未结算的购物车商品
+		$cartModel = $this->model('cart');
+		//商品库存回归
+		$cart = $cartModel->where('time < ?',array($_SERVER['REQUEST_TIME']-1800))->select();
+		$productHelper = new product();
+		foreach($cart as $product)
+		{
+			$productHelper->increaseNum($this->model('product'), $this->model('collection'), $product['pid'], $product['collection'],$product['num']);
+		}
+		$cartModel->where('time < ?',array($_SERVER['REQUEST_TIME']-1800))->delete();
+	}
+	
 	/**
 	 * 将一件商品添加到购物车
 	 * @param post pid 商品id
@@ -196,11 +214,11 @@ class cartControl extends control
 					if($price != NULL)
 						$totalPrice += $price*$value['num'];
 				case 'fullcut':
-					$fullcut = $fullcutdetailModel->getByPid($value['pid']);
-					if($value['price']*$value['num']>$fullcut[0]['max'])
-						$totalPrice += ($value['price']*$value['num']-$fullcut[0]['minus']);
-					else
-						$totalPrice += $value['price']*$value['num'];
+					$fullcut = $fullcutdetailModel->getPrice($value['pid'],$value['price']*$value['num']);
+					if($fullcut != NULL)
+					{
+						$totalPrice += ($value['price']*$value['num'] - $fullcut['minus']);
+					}
 					break;
 				default:
 					$totalPrice += $value['price']*$value['num'];
@@ -239,11 +257,13 @@ class cartControl extends control
 			$prototype = (new prototype())->format($prototype,$product['content']);
 			if(!empty($pricestocksku))
 			{
-				$orderdetail[] = array($pricestocksku['sku'],$product['pid'],$product['name'],$pricestocksku['price'],$prototype,$product['origin'],$product['score'],$product['num']);
+				$ordergoodsamount += $pricestocksku['price'];
+				$orderdetail[] = array('sku'=>$pricestocksku['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'unitprice'=>$pricestocksku['price'],'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
 			}
 			else
 			{
-				$orderdetail[] = array($product['sku'],$product['pid'],$product['name'],$product['price'],$prototype,$product['origin'],$product['score'],$product['num']);
+				$ordergoodsamount += $product['price'];
+				$orderdetail[] = array('sku'=>$product['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'unitprice'=>$product['price'],'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
 			}
 		}
 		
@@ -258,25 +278,51 @@ class cartControl extends control
 			$couponModel = $this->model('coupon');
 			foreach($cart as $product)
 			{
-				//$orderdetail[] = array($product['pid'],$product['name']);
-				if($product['activity'] == '')
+				//计算商品使用优惠卷后的价格  注意订单的最终价格已经经过了活动计算  这里不用在计算了！！
+				switch ($product['activity'])
 				{
-					$used = $couponModel->check($discount,$product);
-					if($used)
-					{
-						if($product['num'] * $product['price'] >= $used['max'])
+					case 'fullcut':
+						/*$fullcut = $this->model('fullcut')->getPrice($product['pid'],$product['price']*$product['num']);
+						if($fullcut !== NULL)
 						{
-							if($couponModel->increaseTimes($used['couponno'],-1))
+							$ordergoodsamount -= $fullcut['minus'];
+						}*/
+						break;
+					case 'sale':
+						/*$price = $this->model('sale')->getPrice($product['pid']);
+						if($price !== NULL)
+						{
+							$ordergoodsamount -= ($product['num']*$product['price']);
+							$ordergoodsamount += ($product['num']*$price);
+						}*/
+						break;
+					case 'seckill':
+						/*$price = $this->model('seckill')->getPrice($product['pid']);
+						if($price !== NULL)
+						{
+							$ordergoodsamount -= ($product['num']*$product['price']);
+							$ordergoodsamount += ($product['num']*$price);
+						}*/
+						break;
+					default:
+						$used = $couponModel->check($discount,$product);
+						if(!empty($used))
+						{
+							if($product['num'] * $product['price'] >= $used['max'])
 							{
-								$ordergoodsamount = $ordergoodsamount - ($product['num']*$product['price']);
-								$mon = $product['num'] * $product['price'];
-								$mon = ($used['type'] == 'fixed')?$mon-$used['value']:$mon*$used['value'];
-								$ordergoodsamount += $mon;
-								break;
+								if($couponModel->increaseTimes($used['couponno'],-1))
+								{
+									//对于没有参加活动的商品计算活动价格
+									$ordergoodsamount = $ordergoodsamount - ($product['num']*$product['price']);
+									$mon = $product['num'] * $product['price'];
+									$mon = ($used['type'] == 'fixed')?$mon-$used['value']:$mon*$used['value'];
+									$ordergoodsamount += $mon;
+									break;
+								}
 							}
 						}
+						break;
 					}
-				}
 			}
 		}
 		//支付方式
@@ -287,7 +333,9 @@ class cartControl extends control
 		}
 		$paynumber = '';
 		//运费  根据订单金额计算运费
-		$shipid = $this->post->shipid;
+		$shipid = filter::int($this->post->shipid);
+		if(empty($shipid))
+			return json_encode(array('code'=>5,'result'=>'错误的配送方案'));
 		$shipModel = $this->model('ship');
 		$ship = $shipModel->get($shipid);
 		if(empty($ship))
@@ -296,7 +344,7 @@ class cartControl extends control
 		}
 		$feeamount = $shipModel->getPrice($shipid,$totalMoney);
 		//订单编号
-		$swift = $orderno = date('YmdHis').$this->session->id.random::number(4);
+		$orderno = date('YmdHis').$this->session->id.random::number(4);
 		//订单税款 免税
 		$ordertaxamount = 0;
 		
@@ -309,7 +357,10 @@ class cartControl extends control
 		//成交总价  已经支付的价格
 		$totalamount = 0;
 		//收件人
-		$address = $this->model('address')->get($this->post->addressid);
+		$addressid = filter::int($this->post->addressid);
+		if(empty($addressid))
+			return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
+		$address = $this->model('address')->get($addressid);
 		if(empty($address))
 		{
 			return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
@@ -353,6 +404,11 @@ class cartControl extends control
 			$cartModel->clear($uid);
 			//用户订单数量+1
 			$this->model('user')->where('id=?',array($uid))->increase('ordernum',1);
+			//商品订单数量+1
+			foreach ($orderdetail as $ordergoods)
+			{
+				$this->model('product')->where('id=?',array($ordergoods['pid']))->increase('ordernum',1);
+			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$oid));
 		}
 		return json_encode(array('code'=>2,'result'=>'创建订单失败'));

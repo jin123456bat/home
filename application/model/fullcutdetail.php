@@ -38,6 +38,24 @@ class fullcutdetailModel extends model
 	}
 	
 	/**
+	 * 获得符合满减优惠的最佳条件
+	 * @param unknown $pid
+	 * @param unknown $totalprice
+	 * @return NULL
+	 */
+	function getPrice($pid,$totalprice)
+	{
+		$this->where('fullcutdetail.pid=?',array($pid));
+		$this->where('fullcut.max<?',array($totalprice));
+		$this->where('(starttime=0 or starttime<?) and (endtime=0 or endtime>?)',array($_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
+		$this->table('fullcut','right join','fullcut.id=fullcutdetail.fid');
+		$this->orderby('fullcut.max','desc');
+		$this->limit(1);
+		$result = $this->select();
+		return isset($result[0])?$result[0]:NULL;
+	}
+	
+	/**
 	 * 获得一件商品的满减优惠信息
 	 * @param unknown $pid
 	 * @return Ambigous <boolean, multitype:>

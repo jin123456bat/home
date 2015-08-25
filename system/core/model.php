@@ -35,8 +35,13 @@ class model
 	 */
 	protected function model($table)
 	{
-		$this->_table = $table;
-		return clone $this;
+		static $model = array();
+		if(!isset($model[$table]))
+		{
+			$this->_table = $table;
+			$model[$table] = clone $this;
+		}
+		return $model[$table];
 	}
 
 	/**

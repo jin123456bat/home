@@ -1,104 +1,138 @@
 <?php
 namespace application\model;
+
 use system\core\model;
+
 /**
  * 订单数据模型
+ * 
  * @author jin12
- *
+ *        
  */
 class orderlistModel extends model
 {
+
 	function __construct($table)
 	{
 		parent::__construct($table);
 	}
-	
-	
+
+	/**
+	 * 获得用户订单详情
+	 * 
+	 * @param unknown $uid        	
+	 * @return Ambigous <unknown, boolean, multitype:>
+	 */
+	function fetchAll($uid)
+	{
+		$result = $this->where('uid=?', array(
+			$uid
+		))->select();
+		foreach ($result as &$order) {
+			$order['orderdetail'] = $this->getOrderDetail($order['id']);
+		}
+		return $result;
+	}
+
+
 	/**
 	 * 获取订单信息
 	 */
-	function get($id,$name = '*')
+	function get($id, $name = '*')
 	{
-		$result = $this->where('id=?',array($id))->select($name);
-		if($name == '*')
-			return isset($result[0])?$result[0]:NULL;
-		return isset($result[0][$name])?$result[0][$name]:NULL;
+		$result = $this->where('id=?', array(
+			$id
+		))->select($name);
+		if ($name == '*')
+			return isset($result[0]) ? $result[0] : NULL;
+		return isset($result[0][$name]) ? $result[0][$name] : NULL;
 	}
-	
+
 	/**
 	 * 更改订单状态
 	 */
-	function setStatus($id,$status,$endtime,$money,$transaction_id)
+	function setStatus($id, $status, $endtime, $money, $transaction_id)
 	{
-		if(!empty($endtime))
-		{
+		if (! empty($endtime)) {
 			$endtime = strtotime($endtime);
 		}
-		return $this->where('id=?',array($id))->update(array('status'=>$status,'tradetime'=>$endtime,'totalamount'=>$money,'paynumber'=>$transaction_id));
+		return $this->where('id=?', array(
+			$id
+		))->update(array(
+			'status' => $status,
+			'tradetime' => $endtime,
+			'totalamount' => $money,
+			'paynumber' => $transaction_id
+		));
 	}
-	
+
 	/**
 	 * 获取订单商品信息
 	 */
 	function getOrderDetail($id)
 	{
 		$orderdetailModel = $this->model('orderdetail');
-		return $orderdetailModel->where('oid=?',array($id))->select();
+		return $orderdetailModel->where('oid=?', array(
+			$id
+		))->select();
 	}
-	
+
 	/**
 	 * 自定义导出
-	 * @param unknown $parameter
-	 * @param array $id
+	 * 
+	 * @param unknown $parameter        	
+	 * @param array $id        	
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function export($parameter,array $id)
+	function export($parameter, array $id)
 	{
-		if(!empty($id))
-		{
-			$this->where('id in (?)',$id);
+		if (! empty($id)) {
+			$this->where('id in (?)', $id);
 		}
-		$this->table('user','left join','user.id=orderlist.uid');
-		$this->table('orderdetail','left join','orderdetail.oid=orderlist.id');
+		$this->table('user', 'left join', 'user.id=orderlist.uid');
+		$this->table('orderdetail', 'left join', 'orderdetail.oid=orderlist.id');
 		return $this->select($parameter);
 	}
-	
+
 	/**
 	 * 删除订单
-	 * @param unknown $id
+	 * 
+	 * @param unknown $id        	
 	 * @return boolean|\system\core\Ambigous
 	 */
 	function remove($id)
 	{
-		if(is_array($id))
-		{
-			foreach ($id as $remove_id)
-			{
-				$this->where('id=?',array($remove_id))->delete();
+		if (is_array($id)) {
+			foreach ($id as $remove_id) {
+				$this->where('id=?', array(
+					$remove_id
+				))->delete();
 			}
 			return true;
 		}
-		return $this->where('id=?',array($id))->delete();
+		return $this->where('id=?', array(
+			$id
+		))->delete();
 	}
-	
+
 	/**
 	 * 创建一个订单
-	 * @param unknown $data
+	 * 
+	 * @param unknown $data        	
 	 * @return string|boolean
 	 */
-	function create($data,$orderdetail)
+	function create($data, $orderdetail)
 	{
-		if($this->insert($data))
-		{
+		if ($this->insert($data)) {
 			$oid = $this->lastInsertId();
 			$orderdetailModel = $this->model('orderdetail');
-			foreach ($orderdetail as $detail)
-			{
-				$detail = array_merge(array(NULL,$oid),$detail);
-				foreach ($detail as &$array)
-				{
-					if(is_array($array))
-					{
+			foreach ($orderdetail as $detail) {
+				$detail = array_merge(array(
+					NULL,
+					$oid
+				), $detail);
+				foreach ($detail as &$array) {
+					if (is_array($array)) {
 						$array = serialize($array);
 					}
 				}
@@ -108,101 +142,114 @@ class orderlistModel extends model
 		}
 		return false;
 	}
-	
+
 	/**
 	 * ajxa搜索
-	 * @param unknown $post
-	 * @param unknown $pid
+	 * 
+	 * @param unknown $post        	
+	 * @param unknown $pid        	
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function searchable($post,$pid = NULL)
+	function searchable($post, $pid = NULL)
 	{
-		if($pid !=NULL)
-		{
-			//当存在商品的是偶
-			$this->where('orderdetail.pid=?',array($pid));
-			$this->table('orderdetail','right join','orderlist.id=orderdetail.oid');
+		if ($pid != NULL) {
+			// 当存在商品的是偶
+			$this->where('orderdetail.pid=?', array(
+				$pid
+			));
+			$this->table('orderdetail', 'right join', 'orderlist.id=orderdetail.oid');
 		}
 		$array = array();
-		foreach($post->columns as $key => $value)
-		{
-			foreach ($post->order as $orderby)
-			{
-				if($orderby['column']+1 == $key)
-				{
-					$this->orderby($value['data'],$orderby['dir']);
+		foreach ($post->columns as $key => $value) {
+			foreach ($post->order as $orderby) {
+				if ($orderby['column'] + 1 == $key) {
+					$this->orderby($value['data'], $orderby['dir']);
 				}
 			}
-			if($pid !== NULL && $value['data'] == 'id')
+			if ($pid !== NULL && $value['data'] == 'id')
 				$value['data'] = '`orderlist`.id';
 			$array[] = $value['data'];
 		}
-		if(!empty($post->action) && $post->action == 'filter')
-		{
-			if(!empty($post->orderno))
-			{
-				$this->where('orderno like ?',array('%'.$post->orderno.'%'));
+		if (! empty($post->action) && $post->action == 'filter') {
+			if (! empty($post->orderno)) {
+				$this->where('orderno like ?', array(
+					'%' . $post->orderno . '%'
+				));
 			}
-			if(!empty($post->createtime_from))
-			{
-				$this->where('createtime > ?',array(strtotime($post->createtime_from)));
+			if (! empty($post->createtime_from)) {
+				$this->where('createtime > ?', array(
+					strtotime($post->createtime_from)
+				));
 			}
-			if(!empty($post->createtime_to))
-			{
-				$this->where('createtime > ?',array(strtotime($post->createtime_to)));
+			if (! empty($post->createtime_to)) {
+				$this->where('createtime > ?', array(
+					strtotime($post->createtime_to)
+				));
 			}
-			if(!empty($post->telephone))
-			{
-				$this->where('uid in (select id from user where telephone like ?)',array('%'.$post->telephone.'%'));
+			if (! empty($post->telephone)) {
+				$this->where('uid in (select id from user where telephone like ?)', array(
+					'%' . $post->telephone . '%'
+				));
 			}
-			if(!empty($post->uid))
-			{
-				$this->where('uid=?',array($post->uid));
+			if (! empty($post->uid)) {
+				$this->where('uid=?', array(
+					$post->uid
+				));
 			}
-			if(!empty($post->postmode))
-			{
-				$this->where('postmode like ?',array('%'.$post->postmode.'%'));
+			if (! empty($post->postmode)) {
+				$this->where('postmode like ?', array(
+					'%' . $post->postmode . '%'
+				));
 			}
-			if(!empty($post->paytype))
-			{
-				$this->where('paytype like ?',array('%'.$post->paytype.'%'));
+			if (! empty($post->paytype)) {
+				$this->where('paytype like ?', array(
+					'%' . $post->paytype . '%'
+				));
 			}
-			if(!empty($post->client))
-			{
-				$this->where('client = ?',array($post->client));
+			if (! empty($post->client)) {
+				$this->where('client = ?', array(
+					$post->client
+				));
 			}
-			if(!empty($post->ordertotalamount_from))
-			{
-				$this->where('ordertotalamount >?',array($post->ordertotalamount_from));
+			if (! empty($post->ordertotalamount_from)) {
+				$this->where('ordertotalamount >?', array(
+					$post->ordertotalamount_from
+				));
 			}
-			if(!empty($post->ordertotalamount_to))
-			{
-				$this->where('ordertotalamount <?',array($post->ordertotalamount_to));
+			if (! empty($post->ordertotalamount_to)) {
+				$this->where('ordertotalamount <?', array(
+					$post->ordertotalamount_to
+				));
 			}
-			if(!empty($post->ordergoodsamount_from))
-			{
-				$this->where('ordergoodsamount > ?',array($post->ordergoodsamount_from));
+			if (! empty($post->ordergoodsamount_from)) {
+				$this->where('ordergoodsamount > ?', array(
+					$post->ordergoodsamount_from
+				));
 			}
-			if(!empty($post->ordergoodsamount_to))
-			{
-				$this->where('ordergoodsamount < ?',array($post->ordergoodsamount_to));
+			if (! empty($post->ordergoodsamount_to)) {
+				$this->where('ordergoodsamount < ?', array(
+					$post->ordergoodsamount_to
+				));
 			}
-			if(!empty($post->totalamount_from))
-			{
-				$this->where('totalamount > ?',array($post->totalamount_from));
+			if (! empty($post->totalamount_from)) {
+				$this->where('totalamount > ?', array(
+					$post->totalamount_from
+				));
 			}
-			if(!empty($post->totalamount_to))
-			{
-				$this->where('totalamount < ?',array($post->totalamount_to));
+			if (! empty($post->totalamount_to)) {
+				$this->where('totalamount < ?', array(
+					$post->totalamount_to
+				));
 			}
-			if($post->status != '')
-			{
-				$this->where('status=?',array($post->status));
+			if ($post->status != '') {
+				$this->where('status=?', array(
+					$post->status
+				));
 			}
 		}
 		return $this->select(implode(',', $array));
 	}
-	
+
 	/**
 	 * 所有订单数量
 	 */

@@ -345,6 +345,8 @@ class userControl extends control
 				if(empty($uinfo['close']))
 				{
 					$this->session->id = $uinfo['id'];
+					$this->session->telephone = $uinfo['telephone'];
+					$this->session->username = $uinfo['username'];
 					return json_encode(array('code'=>1,'result'=>'ok'));
 				}
 				return json_encode(array('code'=>2,'result'=>'被管理员封印ing'));

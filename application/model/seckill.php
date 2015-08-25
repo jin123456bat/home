@@ -36,7 +36,7 @@ class seckillModel extends model
 	 */
 	function getPrice($pid)
 	{
-		$this->where('pid=? and starttime<? and endtime>?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
+		$this->where('pid=? and (starttime<? or starttime=0) and (endtime>? or endtime=0)',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
 		$result = $this->select('price');
 		return isset($result[0]['price'])?$result[0]['price']:NULL;
 	}
@@ -59,6 +59,11 @@ class seckillModel extends model
 		return $this->update(array('sname'=>$sname,'starttime'=>$starttime,'endtime'=>$endtime,'orderby'=>$orderby,'price'=>$price));
 	}
 	
+	/**
+	 * 获取商品的活动信息
+	 * @param unknown $pid
+	 * @return multitype:
+	 */
 	function getByPid($pid)
 	{
 		$result = $this->where('pid=?',array($pid))->select();

@@ -9,6 +9,10 @@ use application\model\roleModel;
 use application\classes\category;
 use system\core\filter;
 use application\classes\excel;
+use application\classes\collection;
+use system\core\random;
+use application\classes\prototype;
+use application\classes\product;
 /**
  * 商品控制器
  * @author jin12
@@ -16,6 +20,203 @@ use application\classes\excel;
  */
 class productControl extends control
 {
+	/**
+	 * 对于超过时间或者不在时间之内的商品自动上下架
+	 */
+	function crontab()
+	{
+		$productModel = $this->model('product');
+		$time = $_SERVER['REQUEST_TIME'];
+		//更改商品自动上架
+		$productModel->where('(starttime < ? or starttime = 0) and (endtime > ? or endtime=0) and status!=1',array($time,$time))->update('status',self::ONSALE);
+		//商品自动下架
+		$productModel->where('starttime > ? or (endtime < ? and endtime!=0) and status != 2',array($time,$time))->update('status',self::NOSALE);
+	}
+	
+	/**
+	 * 直接购买一件商品 而不通过购物车
+	 */
+	function order()
+	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		//商品id
+		$pid = $this->post->pid;
+		$uid = $this->session->id;
+		if(empty($pid))
+			return json_encode(array('code'=>3,'result'=>'参数错误'));
+		//购买数量
+		$num = filter::int($this->post->num);
+		$num = empty($num)?1:$num;
+		//支付方式
+		$paytype = $this->post->paytype;
+		if(empty($paytype))
+			return json_encode(array('code'=>5,'result'=>'没有支付方式'));
+		//商品属性组合
+		$content = $this->post->content;
+		$content = (new collection())->stringToArray($content);//:,转数组
+		
+		$product = $this->model('product')->get($pid);
+		//订单货款
+		$ordergoodsamount = $product['price']*$num;
+		//订单商品详情
+		$orderdetail = array();
+		//商品属性  可以看到的明白的额
+		$prototype = $this->model('prototype')->getByPid($pid);
+		
+		if(!empty($content))
+		{
+			//存在多选属性的话价格以多选属性中的价格为准
+			$skupricestock = $this->model('collection')->find($pid,$content);
+			if($skupricestock == NULL)
+				return json_encode(array('code'=>4,'result'=>'可选属性组合错误'));
+			$prototype = (new prototype())->format($prototype,$content);
+			$ordergoodsamount = $skupricestock['price']*$num;
+			$orderdetail[] = array('sku'=>$skupricestock['sku'],'pid'=>$product['id'],'productname'=>$product['name'],'unitprice'=>$skupricestock['price'],'content'=>serialize($content),'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$num);
+		}
+		else
+		{
+			$prototype = (new prototype())->format($prototype,$content);
+			$orderdetail[] = array('sku'=>$product['sku'],'pid'=>$product['id'],'productname'=>$product['name'],'unitprice'=>$product['price'],'content'=>serialize($content),'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$num);
+		}
+		//收货地址id
+		$addressid = $this->post->addressid;
+		if(empty($addressid))
+			return json_encode(array('code'=>8,'result'=>'收货地址不能为空'));
+		//优惠代码
+		$discount = $this->post->coupon;
+		//判断商品是否参加了活动
+		switch ($product['activity'])
+		{
+			case 'fullcut':
+				$fullcut = $this->model('fullcutdetail')->getPrice($pid,$ordergoodsamount);
+				if($fullcut !== NULL)
+				{
+					$ordergoodsamount -= $fullcut['minus'];
+				}
+				break;
+			case 'sale':
+				$sale = $this->model('sale')->getPrice($pid);
+				if($sale !== NULL)
+				{
+					$ordergoodsamount = $sale*$num;
+				}
+				break;
+			case 'seckill':
+				$seckill = $this->model('seckill')->getPrice($pid);
+				if($seckill !== NULL)
+				{
+					$ordergoodsamount = $seckill*$num;
+				}
+				break;
+			default:
+				if(empty($discount))
+				{
+					$discount = '';
+				}
+				else
+				{
+					$couponModel = $this->model('coupon');
+					$used = $couponModel->check($discount,$product);
+					if(!empty($used))
+					{
+						if($ordergoodsamount >= $used['max'])
+						{
+							if($couponModel->increaseTimes($used['couponno'],-1))
+							{
+								$ordergoodsamount = ($used['type'] == 'fixed')?$ordergoodsamount-$used['value']:$ordergoodsamount*$used['value'];
+								break;
+							}
+						}
+					}
+				}
+			break;
+		}
+		//计算运费
+		$shipid = filter::int($this->post->shipid);
+		if (empty($shipid))
+			return json_encode(array('code'=>7,'result'=>'没有配送方案'));
+		$shipModel = $this->model('ship');
+		$ship = $shipModel->get($shipid);
+		if(empty($ship))
+		{
+			return json_encode(array('code'=>5,'result'=>'错误的配送方案'));
+		}
+		//物流方式
+		$postmode = $ship['code'];
+		//配送费用
+		$feeamount = $shipModel->getPrice($shipid,$ordergoodsamount);
+		//订单税款  免税
+		$ordertaxamount = 0;
+		//订单总金额
+		$ordertotalamount = $ordertaxamount + $ordergoodsamount + $feeamount;
+		//支付单号
+		$paynumber = '';
+		//订单编号
+		$orderno = date('YmdHis').$this->session->id.random::number(4);
+		//成交时间
+		$tradetime = 0;
+		//创建时间
+		$createtime = $_SERVER['REQUEST_TIME'];
+		//成交总价
+		$totalamount = 0;
+		//收件人
+		$address = $this->model('address')->get($this->post->addressid);
+		if(empty($address))
+		{
+			return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
+		}
+		$consignee = $address['name'];
+		$consigneetel = $address['telephone'];
+		$consigneeaddress = $address['address'];
+		$consigneeprovince = $address['province'];
+		$consigneecity = $address['city'];
+		$zipcode = $address['zcode'];
+		//运单号
+		$waybills = '';
+		//发件人
+		$sendername = $this->model('system')->get('sendername','system');
+		//公司名称
+		$companyname = $this->model('system')->get('companyname','system');
+		//备注信息
+		$note = '';
+		//订单状态
+		$status = 0;
+		//订单来源
+		$client = $this->post->client;
+		/**
+		 * 财付通专用，标注是否已经报过报过接口  1没有 2已经报过
+		 */
+		$action_type = '1';
+		
+		
+		$order = array(
+			NULL,$uid,$paytype,$paynumber,$ordertotalamount,$orderno,$ordertaxamount,$ordergoodsamount
+			,$feeamount,$tradetime,$totalamount,$consignee,$consigneetel,$consigneeaddress,$consigneeprovince
+			,$consigneecity,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client,
+			$action_type
+		);
+		
+		$orderModel = $this->model('orderlist');
+		$oid = $orderModel->create($order,$orderdetail);
+		if($oid)
+		{
+			//用户订单数量+1
+			$this->model('user')->where('id=?',array($uid))->increase('ordernum',1);
+			//商品订单数量+1
+			$this->model('product')->where('id=?',array($pid))->increase('ordernum',1);
+			//商品库存减少
+			$productHelper = new product();
+			$productHelper->increaseNum($this->model('product'), $this->model('collection'), $pid, $content,-$num);
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$oid));
+		}
+		return json_encode(array('code'=>2,'result'=>'订单创建失败'));
+	}
+	
+	/**
+	 * 获取商品列表
+	 * @return string
+	 */
 	function getlist()
 	{
 		$product = $this->model('product')->select();
