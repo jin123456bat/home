@@ -16,6 +16,7 @@ class fullcutdetailControl extends control
 	 */
 	function create()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'fullcut',roleModel::POWER_INSERT))
 		{

@@ -95,6 +95,7 @@ class saleControl extends control
 	 */
 	function create()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'sale',roleModel::POWER_INSERT))
 		{

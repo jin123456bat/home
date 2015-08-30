@@ -65,7 +65,7 @@
 							<input type="hidden" name="id">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-							<h4 class="modal-title">推送到限时折扣</h4>
+							<h4 class="modal-title">推送</h4>
 						</div>
 						<div class="modal-body">
 							<div class="form-body">
@@ -78,8 +78,8 @@
 										<input type="radio" name="activity" value="sale">限时折扣</label>
 										<label class="radio-inline">
 										<input type="radio" name="activity" value="fullcut">满减</label>
-										<!--<label class="radio-inline">
-										<input type="radio" name="activity" value="combine">组合购买</label>-->
+										<label class="radio-inline">
+										<input type="radio" name="activity" value="theme">主题</label>
 									</div>
 								</div>
 								<div class="activity_form seckill sale">
@@ -156,6 +156,18 @@
 											<select class="form-control" name="fullcut">
 												{%section name=fullcut loop=$fullcut%}
 												<option value="{%$fullcut[fullcut].id%}">{%$fullcut[fullcut].name%}</option>
+												{%/section%}
+											</select>
+										</div>
+									</div>
+								</div>
+                                <div class="activity_form theme display-none">
+									<div class="form-group">
+										<label class="col-md-2 control-label">主题</label>
+										<div class="col-md-9">
+											<select class="form-control" name="theme">
+												{%section name=theme loop=$theme%}
+												<option value="{%$theme[theme].id%}">{%$theme[theme].name%}</option>
 												{%/section%}
 											</select>
 										</div>
@@ -414,7 +426,7 @@ jQuery(document).ready(function() {
 		$('.'+idname).removeClass('display-none');
 	});
 	
-	$('#sale-config').on('show.bs.modal', function (event) {
+	$('#sale-config').bind('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget);
 		var pid = button.data('pid');
 		var pname = button.data('pname');
@@ -422,21 +434,20 @@ jQuery(document).ready(function() {
 		if(pid != undefined)
 		{
 			var modal = $(this);
+			modal.find('input[name=activity]:first').trigger('click');
 			modal.find('input[name=pname]').attr('placeholder',pname);
 			modal.find('input[name=id]').val(pid);
-			modal.find('input[name=price]').val(price);
+			modal.find('input[name=price]').val(price).parents('.form-group').removeClass('has-error');
+			modal.find('input[name=sname]').val('').parents('.form-group').removeClass('has-error');
+			modal.find('input[name=starttime]').val('');
+			modal.find('input[name=endtime]').val('');
+			modal.find('input[name=orderby]').val(1);
 		}
 	});
 	
 	$('#sale-config-form').on('submit',function(){
 		var modal = $('#sale-config-form');
-		var sname = modal.find('input[name=sname]').val();
-		var pid = modal.find('input[name=id]').val();
-		var starttime = modal.find('input[name=starttime]').val();
-		var endtime = modal.find('input[name=endtime]').val();
-		var price = modal.find('input[name=price]').val();
 		var activities = modal.find('input[name=activity]');
-		var fullcut = modal.find('select[name=fullcut]').val();
 		var activity = 'seckill';
 		$.each(activities,function(index,value){
 			if($(value).is(':checked'))
@@ -444,30 +455,56 @@ jQuery(document).ready(function() {
 				activity = $(value).val();
 			}
 		});
-		modal.find('input[name=price]').parents('.form-group').removeClass('has-error');
-		modal.find('input[name=sname]').parents('.form-group').removeClass('has-error');
-		if(sname.length == 0)
-		{
-			modal.find('input[name=sname]').focus().parents('.form-group').addClass('has-error');
-			return false;
-		}
-		if(parseFloat(price) == 0)
-		{
-			modal.find('input[name=price]').focus().parents('.form-group').addClass('has-error');
-			return false;
-		}
-		var orderby = modal.find('input[name=orderby]').val();
 		var url = '';
 		switch(activity)
 		{
 			case 'seckill':url = '{%url c=seckill a=create%}';
+					var sname = modal.find('input[name=sname]').val();
+					var pid = modal.find('input[name=id]').val();
+					var starttime = modal.find('input[name=starttime]').val();
+					var endtime = modal.find('input[name=endtime]').val();
+					var price = modal.find('input[name=price]').val();
+					var orderby = modal.find('input[name=orderby]').val();
+					if(parseFloat(price) == 0)
+					{
+						modal.find('input[name=price]').trigger('focus').parents('.form-group').addClass('has-error');
+						return false;
+					}
+					if(sname.length == 0)
+					{
+						modal.find('input[name=sname]').trigger('focus').parents('.form-group').addClass('has-error');
+						return false;
+					}
 					parameter = {sname:sname,pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
 					break;
 			case 'sale':url = '{%url c=sale a=create%}';
+					var sname = modal.find('input[name=sname]').val();
+					var pid = modal.find('input[name=id]').val();
+					var starttime = modal.find('input[name=starttime]').val();
+					var endtime = modal.find('input[name=endtime]').val();
+					var price = modal.find('input[name=price]').val();
+					var orderby = modal.find('input[name=orderby]').val();
+					if(parseFloat(price) == 0)
+					{
+						modal.find('input[name=price]').focus().parents('.form-group').addClass('has-error');
+						return false;
+					}
+					if(sname.length == 0)
+					{
+						modal.find('input[name=sname]').focus().parents('.form-group').addClass('has-error');
+						return false;
+					}
 					parameter = {sname:sname,pid:pid,starttime:starttime,endtime:endtime,price:price,orderby:orderby};
 					break;
 			case 'fullcut':url = '{%url c=fullcutdetail a=create%}';
+					var pid = modal.find('input[name=id]').val();
+					var fullcut = modal.find('select[name=fullcut]').val();//选择的满减
 					parameter = {pid:pid,fid:fullcut};
+					break;
+			case 'theme':url = '{%url c=theme a=product%}';
+					var pid = modal.find('input[name=id]').val();
+					var tid = modal.find('select[name=theme]').val();//选择的主题
+					parameter = {tid:tid,pid:pid};
 					break;
 			default:Metronic.alert({
 					type: 'danger',
@@ -479,7 +516,6 @@ jQuery(document).ready(function() {
 				});break;
 		}
 		$.post(url,parameter,function(data){
-			data = $.parseJSON(data);
 			if(data.code == 1)
 			{
 				$('#sale-config').modal('hide');

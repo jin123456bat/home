@@ -207,4 +207,25 @@ class themeControl extends control
 		}
 		return json_encode(array('code'=>2,'result'=>'没有权限'));
 	}
+	
+	/**
+	 * 将产品推送到主题
+	 */
+	function product()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'theme',roleModel::POWER_UPDATE))
+		{
+			$tid = filter::int($this->post->tid);
+			$pid = filter::int($this->post->pid);
+			$themeModel = $this->model('theme');
+			if($themeModel->insertProduct($tid,$pid))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'商品已经添加到主题了，换一个吧？'));
+		}
+		return json_encode(array('code'=>2,'result'=>'权限不足'));
+	}
 }

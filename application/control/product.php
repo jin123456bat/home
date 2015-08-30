@@ -390,14 +390,21 @@ class productControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'product',roleModel::POWER_SELECT))
 		{
 			$this->view = new view(config('view'), 'admin/product.html');
+			
 			$categoryModel = $this->model('category');
 			$category = $categoryModel->select();
 			$categoryHelper = new category();
 			$category = $categoryHelper->format(0,$category);
 			$this->view->assign('category',$category);
+			
 			$fullcutModel = $this->model('fullcut');
 			$fullcut = $fullcutModel->fetchAll();
 			$this->view->assign('fullcut',$fullcut);
+			
+			$themeModel = $this->model('theme');
+			$theme = $themeModel->fetchAll();
+			$this->view->assign('theme',$theme);
+			
 			$this->response->setBody($this->view->display());
 		}
 		else

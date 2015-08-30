@@ -129,8 +129,6 @@ class fullcutControl extends control
 			$id = filter::int($this->get->id);
 			if(!empty($id))
 			{
-				$fullcutdetailModel = $this->model('fullcutdetail');
-				$fullcutdetailModel->setProductActivity($id);
 				$fullcutModel = $this->model('fullcut');
 				$fullcutModel->remove($id);
 			}

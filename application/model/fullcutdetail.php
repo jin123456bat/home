@@ -78,16 +78,4 @@ class fullcutdetailModel extends model
 		$this->table('product','left join','product.id=fullcutdetail.pid');
 		return $this->select($parameter);
 	}
-	
-	/**
-	 * 设置产品的activity
-	 * @param int $id fullcut的id
-	 * @param enum $activity 活动名称 
-	 */
-	function clearProductActivity($id)
-	{
-		$this->where('fullcutdetail.fid=?',array($id));
-		$this->table('product','left join','product.id=fullcutdetail.pid');
-		$this->update('activity','');
-	}
 }

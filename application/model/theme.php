@@ -13,6 +13,15 @@ class themeModel extends model
 		parent::__construct($table);
 	}
 	
+	/**
+	 * 创建主题
+	 * @param unknown $name
+	 * @param unknown $description
+	 * @param unknown $big
+	 * @param unknown $middle
+	 * @param unknown $small
+	 * @return \system\core\Ambigous
+	 */
 	function create($name,$description,$big,$middle,$small)
 	{
 		return $this->insert(array(NULL,$name,$description,$big,$middle,$small));
@@ -57,6 +66,20 @@ class themeModel extends model
 			$product['img'] = $img;
 		}
 		return $result;
+	}
+	
+	/**
+	 * 将产品推送到主题
+	 */
+	function insertProduct($tid,$pid)
+	{
+		$theme_productModel = $this->model('theme_product');
+		$result = $theme_productModel->where('tid=? and pid=?',array($tid,$pid))->select();
+		if(empty($result))
+		{
+			return $theme_productModel->insert(array(NULL,$tid,$pid));
+		}
+		return false;
 	}
 	
 	/**

@@ -60,11 +60,8 @@ class seckillControl extends control
 			$price = filter::number($this->post->price);
 			$orderby = filter::int($this->post->orderby);
 			$seckillModel = $this->model('seckill');
-			if($seckillModel->save($id,$sname,$starttime,$endtime,$orderby,$price))
-			{
-				return json_encode(array('code'=>1,'result'=>'ok'));
-			}
-			return json_encode(array('code'=>0,'result'=>'修改失败'));
+			$seckillModel->save($id,$sname,$starttime,$endtime,$orderby,$price);
+			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
 		return json_encode(array('code'=>2,'result'=>'权限不足'));
 	}
@@ -119,6 +116,7 @@ class seckillControl extends control
 	 */
 	function create()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'seckill',roleModel::POWER_INSERT))
 		{

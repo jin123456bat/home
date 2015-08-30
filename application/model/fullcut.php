@@ -79,9 +79,13 @@ class fullcutModel extends model
 	 */
 	function remove($id)
 	{
-		$this->table('fullcutdetail','left join','fullcut.id=fullcutdetail.fid');
+		//清空activity
+		$productModel = $this->model('product');
+		$productModel->where('id in (select pid from fullcutdetail where fullcutdetail.fid=?)',array($id));
+		$productModel->update('activity','');
+		//删除fullcut
 		$this->where('fullcut.id=?',array($id));
-		return $this->delete('fullcut,fullcutdetail');
+		return $this->delete();
 	}
 	
 	

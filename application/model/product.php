@@ -108,7 +108,7 @@ class productModel extends model
 	function add($product)
 	{
 		
-		$product = array_merge(array('id'=>NULL),$product,array('activity'=>'','ordernum'=>0,'complete_ordernum'=>0));
+		$product = array_merge(array('id'=>NULL),$product,array('activity'=>'','ordernum'=>0,'complete_ordernum'=>0,'time'=>$_SERVER['REQUEST_TIME']));
 		if($this->insert($product))
 		{
 			return $this->lastInsertId();
@@ -131,7 +131,6 @@ class productModel extends model
 			'endtime' => strtotime($post->endtime),
 			'description' => $post->description,
 			'short_description' => $post->short_description,
-			'time' => $_SERVER['REQUEST_TIME'],
 			'price' => $post->price,
 			'stock' => $post->stock,
 			'origin' => $post->origin,
