@@ -149,6 +149,10 @@ class couponControl extends control
 		return json_encode($resultObj);
 	}
 	
+	/**
+	 * 删除优惠券
+	 * @return string
+	 */
 	function remove()
 	{
 		$this->response->addHeader('Content-Type','appication/json');

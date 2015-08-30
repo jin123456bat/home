@@ -167,11 +167,15 @@ class couponModel extends model
 		return false;
 	}
 	
+	/**
+	 * 删除优惠券
+	 * @param unknown $id
+	 * @return \system\core\Ambigous
+	 */
 	function remove($id)
 	{
 		$this->where('coupon.id=?',array($id));
-		$this->table('coupondetail','left join','coupon.id=coupondetail.couponid');
-		return $this->delete('coupon,coupondetail');
+		return $this->delete();
 	}
 	
 	/**
