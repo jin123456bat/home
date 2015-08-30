@@ -2,6 +2,7 @@
 namespace application\model;
 
 use system\core\model;
+use system\core\filesystem;
 
 /**
  * 商品数据模型
@@ -37,6 +38,23 @@ class productModel extends model
 		$this->where('id=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and status=? and stock>?',array($pid,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],self::ONSALE,0));
 		$result = $this->select();
 		return isset($result[0]);
+	}
+	
+	/**
+	 * 商品移除
+	 */
+	function remove($id)
+	{
+		$productimgModel = $this->model('productimg');
+		$result = $productimgModel->where('pid=?',array($id))->select();
+		foreach ($result as $img)
+		{
+			filesystem::unlink($img['base_path']);
+			filesystem::unlink($img['small_path']);
+			filesystem::unlink($img['thumbnail_path']);
+		}
+		$productimgModel->where('pid=?',array($id))->delete();
+		return $this->where('id=?',array($id))->delete();
 	}
 	
 	/**
@@ -89,7 +107,8 @@ class productModel extends model
 	 */
 	function add($product)
 	{
-		$product = array_merge(array('id'=>NULL,'activity'=>''),$product,array('ordernum'=>0,'complete_ordernum'=>0));
+		
+		$product = array_merge(array('id'=>NULL),$product,array('activity'=>'','ordernum'=>0,'complete_ordernum'=>0));
 		if($this->insert($product))
 		{
 			return $this->lastInsertId();
@@ -167,7 +186,7 @@ class productModel extends model
 					{
 						if($orderby['column'] == $key)
 						{
-							$this->orderby($value['data'],$orderby['dir']);
+							$this->orderby($value['data'],empty($orderby['dir'])?'desc':$orderby['dir']);
 						}
 					}
 				}
@@ -196,7 +215,7 @@ class productModel extends model
 				}
 				if(!empty($json['product_name']))
 				{
-					$this->where('name like ?',array('%'.$json['product_name'].'%'),'and');
+					$this->where('product.name like ?',array('%'.str_replace(' ', '%', $json['product_name'].'%')),'and');
 				}
 				if(!empty($json['product_category']))
 				{

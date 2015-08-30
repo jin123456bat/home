@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+<meta charset="utf-8"/>
+<title>Metronic | Page Layouts - Blank Page</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/pace/pace.min.js" type="text/javascript"></script>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/pace/themes/pace-theme-barber-shop.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+<!-- END GLOBAL MANDATORY STYLES -->
+<!-- BEGIN THEME STYLES -->
+<link href="{%$VIEW_ROOT%}/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
+<link id="style_color" href="{%$VIEW_ROOT%}/assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
+<link href="{%$VIEW_ROOT%}/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME STYLES -->
+<link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+<body class="page-header-fixed page-quick-sidebar-over-content">
+{%include file='admin/public/header.html'%}
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+	{%include file='admin/public/sidebar.html'%}
+    <!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			{%include file='admin/public/style.html'%}
+			<!-- BEGIN PAGE HEADER-->
+			<h3 class="page-title">
+			结算 <small>用户支付方式</small>
+			</h3>
+			<div class="page-bar">
+				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="{%url c=index a=index%}">首页</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<a href="#">系统配置</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<a href="{%url c=payment a=admin%}">结算</a>
+					</li>
+				</ul>
+			</div>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="col-md-3">
+                        <ul class="ver-inline-menu tabbable margin-bottom-10">
+                        	<li class="active">
+                            	<a data-toggle="tab" href="#base">
+                                	<i class="fa fa-briefcase"></i> 基础设定
+                                </a>
+                                <span class="after">
+                                </span>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#weixin">
+                                <i class="fa fa-briefcase"></i> 微信支付 </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#alipay">
+                                <i class="fa fa-group"></i> 支付宝 </a>
+                            </li>
+                        </ul>
+                   	</div>
+					<div class="col-md-9">
+						<div class="tab-content">
+                        	<div id="base" class="tab-pane active">
+                            	<form action="{%url c=system a=save%}" method="post" class="form-horizontal" role="form">
+                                	<div class="form-group">
+                                        <label class="col-md-2 control-label">支付超时</label>
+                                        <div class="col-md-10">
+                                            <input type="text" name="system_payment_timeout" value="{%$system.system_payment_timeout|default:"30"%}" class="form-control" placeholder="30">
+                                            <span class="help-block">
+                                            当订单在规定时间内没有支付，则按照取消订单处理. 单位分钟</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<label class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <button type="submit" class="btn green col-md-12">保存</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+							<div id="weixin" class="tab-pane">
+								<form action="{%url c=system a=save%}" method="post" class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">MCHID</label>
+                                        <div class="col-md-10">
+                                            <input type="text" name="system_weixin_mchid" value="{%$system.system_weixin_mchid|default:""%}" class="form-control" placeholder="1226923702">
+                                            <span class="help-block">
+                                            微信商户编码. </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">APPID</label>
+                                        <div class="col-md-10">
+                                            <input type="text" name="system_weixin_appid" value="{%$system.system_weixin_appid|default:""%}" class="form-control" placeholder="wxacf21161e3c578f1">
+                                            <span class="help-block">
+                                            微信公众平台上的APPID. </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">Key</label>
+                                        <div class="col-md-10">
+                                            <input type="text" name="system_weixin_key" value="{%$system.system_weixin_key|default:""%}" class="form-control" placeholder="Zhy781525073AsDfGh12ZgdZxCvBnMlK">
+                                            <span class="help-block">
+                                            加密密钥. </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">APPSECRET</label>
+                                        <div class="col-md-10">
+                                            <input type="text" name="system_weixin_appsecret" value="{%$system.system_weixin_appsecret|default:""%}" class="form-control" placeholder="a9edccfb3018342657334dabd8873357">
+                                            <span class="help-block">
+                                            微信公众平台上的appsecret. </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<label class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <button type="submit" class="btn green col-md-12">保存</button>
+                                        </div>
+                                    </div>
+                                </form>
+							</div>
+                            <div id="alipay" class="tab-pane">
+                            	<form action="{%url c=system a=save%}" method="post" class="form-horizontal" role="form">
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">Partner</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_alipay_partner" value="{%$system.system_alipay_partner|default:""%}" class="form-control" placeholder="2088021017666931">
+                                        <span class="help-block">
+                                        支付宝的商户编号以2088开头的. </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Key</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_alipay_key" value="{%$system.system_alipay_key|default:""%}" class="form-control" placeholder="4508mayei5zbmsmopp6tlobdf83d2kz6">
+                                        <span class="help-block">
+                                        加密密钥. </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">货币代码</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_alipay_currency" class="form-control" placeholder="EUR" value="{%$system.system_alipay_currency|default:""%}">
+                                        <span class="help-block">
+                                        货币代号，前提是需要在支付宝开通. </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">分账Partner</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_alipay_splitpartner" value="{%$system.system_alipay_splitpartner|default:""%}" class="form-control" placeholder="2088801766902304">
+                                        <span class="help-block">
+                                        支付宝的商户编号以2088开头的. </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">分账比例</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_alipay_splitrate" value="{%$system.system_alipay_splitrate|default:""%}" class="form-control" placeholder="0.5">
+                                        <span class="help-block">
+                                        小于1并且大于0的数字，不能等于1或等于0. </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">分账货币</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_alipay_splitcurrency" class="form-control" placeholder="CNY" value="{%$system.system_alipay_splitcurrency|default:""%}">
+                                        <span class="help-block">
+                                        分账账号的货币. </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <button type="submit" class="btn green col-md-12">保存</button>
+                                    </div>
+                                </div>
+                                </form>
+							</div>
+						</div>
+                    </div>
+				</div>
+			</div>
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+	<!-- END CONTENT -->
+	{%include file='admin/public/quickslider.html'%}
+</div>
+<!-- END CONTAINER -->
+{%include file='admin/public/footer.html'%}
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
+<!--[if lt IE 9]>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/respond.min.js"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/excanvas.min.js"></script> 
+<![endif]-->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<!-- END CORE PLUGINS -->
+<script src="{%$VIEW_ROOT%}/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+<script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
+<script>
+	  jQuery(document).ready(function() {	
+		 Metronic.init(); // init metronic core components
+Layout.init(); // init current layout
+QuickSidebar.init(); // init quick sidebar
+Demo.init(); // init demo features
+	  });
+   </script>
+<!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>

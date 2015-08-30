@@ -16,28 +16,33 @@ class brandControl extends control
 	 */
 	function add()
 	{
-		$name = $this->post->name;
-		if(empty($name))
-			return json_encode(array('code'=>2,'result'=>'品牌名称不能为空'));
-		$logo = $this->file->logo;
-		if (! file_exists($logo)) {
-			return json_encode(array(
-				'code' > 3,
-				'result' => 'logo上传失败'
-			));
-		}
-		$description = empty($this->post->description)?'':$this->post->description;
-		$brandModel = $this->model('brand');
-		if ($brandModel->create($name, $logo, $description))
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPoer($this->session->role,'brand',roleModel::POWER_ALL))
 		{
-			$this->model('log')->write($this->session->username,'添加了一个品牌'.$name);
-			$this->response->setCode(302);
-			$this->response->addHeader('Location',$this->http->url('brand','manager'));
+			$name = $this->post->name;
+			if(empty($name))
+				return json_encode(array('code'=>2,'result'=>'品牌名称不能为空'));
+			$logo = $this->file->logo;
+			if (! file_exists($logo)) {
+				return json_encode(array(
+					'code' > 3,
+					'result' => 'logo上传失败'
+				));
+			}
+			$description = empty($this->post->description)?'':$this->post->description;
+			$brandModel = $this->model('brand');
+			if ($brandModel->create($name, $logo, $description))
+			{
+				$this->model('log')->write($this->session->username,'添加了一个品牌'.$name);
+				$this->response->setCode(302);
+				$this->response->addHeader('Location',$this->http->url('brand','manager'));
+			}
 		}
-		return json_encode(array(
-			'code' => 0,
-			'result' => '失败'
-		));
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
 	}
 
 	/**
@@ -66,24 +71,32 @@ class brandControl extends control
 	 */
 	function setClose()
 	{
-		$id = $this->post->id;
-		if (validate::int($id)) {
-			$brandModel = $this->model('brand');
-			$result = $brandModel->get($id);
-			if (isset($result['close']) && $result['close'] == 1) {
-				$brandModel->setClose($id, 0);
-			} else {
-				$brandModel->setClose($id, 1);
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'brand',roleModel::POWER_ALL))
+		{
+			$id = $this->post->id;
+			if (validate::int($id)) {
+				$brandModel = $this->model('brand');
+				$result = $brandModel->get($id);
+				if (isset($result['close']) && $result['close'] == 1) {
+					$brandModel->setClose($id, 0);
+				} else {
+					$brandModel->setClose($id, 1);
+				}
+				return json_encode(array(
+					'code' => 1,
+					'result' => 'ok'
+				));
 			}
 			return json_encode(array(
-				'code' => 1,
-				'result' => 'ok'
+				'code' => 0,
+				'result' => 'fail'
 			));
 		}
-		return json_encode(array(
-			'code' => 0,
-			'result' => 'fail'
-		));
+		else
+		{
+			return json_encode(array('code'=>2,'result'=>'没有权限'));
+		}
 	}
 
 	/**
@@ -93,23 +106,31 @@ class brandControl extends control
 	 */
 	function del()
 	{
-		$id = $this->post->id;
-		if (validate::int($id)) {
-			$brandModel = $this->model('brand');
-			if ($brandModel->del($id)) {
-				$productModel = $this->model('product');
-				$productModel->deleteByBrand($id);
-				return json_encode(array(
-					'code' => 1,
-					'result' => 'ok'
-				));
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'brand',roleModel::POWER_DELETE))
+		{
+			$id = $this->post->id;
+			if (validate::int($id)) {
+				$brandModel = $this->model('brand');
+				if ($brandModel->del($id)) {
+					$productModel = $this->model('product');
+					$productModel->deleteByBrand($id);
+					return json_encode(array(
+						'code' => 1,
+						'result' => 'ok'
+					));
+				}
+				return json_encode(array('code'=>0,'result'=>'删除失败'));
 			}
-			return json_encode(array('code'=>0,'result'=>'删除失败'));
+			return json_encode(array(
+				'code' => 2,
+				'result' => '参数错误'
+			));
 		}
-		return json_encode(array(
-			'code' => 2,
-			'result' => '参数错误'
-		));
+		else
+		{
+			return json_encode(array('code'=>3,'result'=>'没有权限'));
+		}
 	}
 
 	/**

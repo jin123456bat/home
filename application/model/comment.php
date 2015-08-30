@@ -99,9 +99,16 @@ class commentModel extends model
 	 * @param unknown $pid
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function getByPid($pid,$start,$length)
+	function getByPid($pid,$start = 0,$length = 0)
 	{
-		$this->limit($start,$length);
+		if(!empty($start) && !empty($length))
+		{
+			$this->limit($start,$length);
+		}
+		else if(!empty($start))
+		{
+			$this->limit($start);
+		}
 		$this->orderby('time','desc');
 		return $this->where('pid=?',array($pid))->select();
 	}

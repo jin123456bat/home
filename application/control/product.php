@@ -285,6 +285,10 @@ class productControl extends control
 				case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
 				default:break;
 			}
+			if(login::user() && $this->model('favourite')->checkProduct($this->session->id,$product['id']))
+			{
+				$product['favourite'] = true;
+			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
 		}
 		return json_encode(array('code'=>0,'result'=>'商品不存在'));
@@ -434,6 +438,11 @@ class productControl extends control
 			$this->view->assign('category',$category);
 			$this->response->setBody($this->view->display());
 		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
 	}
 	
 	/**
@@ -460,7 +469,7 @@ class productControl extends control
 							{
 								case 1:
 								case 2:$productModel->where('id=?',array($id))->update('status',$this->post->customActionName);break;
-								case 3:$productModel->where('id=?',array($id))->delete();break;
+								case 3:$productModel->remove($id);break;
 								default:break;
 							}
 						}
@@ -470,10 +479,10 @@ class productControl extends control
 		}
 		catch (\Exception $e)
 		{
+			var_dump($e);
 			return json_encode(array('code'=>0,'result'=>'参数异常'));
 		}
-		finally
-		{
+		
 			$resultObj->draw = $this->post->draw;
 			$result = $productModel->searchable($this->post);
 			$resultObj->recordsTotal = $productModel->count();
@@ -507,7 +516,7 @@ class productControl extends control
 				}
 			}
 			$resultObj->data = $result;
-		}
+		
 		return json_encode($resultObj);
 	}
 }

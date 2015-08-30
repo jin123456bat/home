@@ -22,6 +22,19 @@ class themeControl extends control
 		$result['middlepic'] = empty($result['middlepic'])?'':file::realpathToUrl($result['middlepic']);
 		$result['smallpic'] = empty($result['smallpic'])?'':file::realpathToUrl($result['smallpic']);
 		$result['product'] = $themeModel->product($id);
+		foreach($result['product'] as $product)
+		{
+			switch ($product['activity'])
+			{
+				case 'sale':$product['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
+				case 'seckill':$product['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
+				case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->get->getByPid($product['id']);break;
+				default:break;
+			}
+			$product['img'] = $this->model('productimg')->getByPid($product['id']);
+			$product['prototype'] = $this->model('prototype')->getByPid($product['id']);
+			$product['collection'] = $this->model('collection')->getByPid($product['id']);
+		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
 	

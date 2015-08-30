@@ -35,7 +35,6 @@ class control extends base
 	{
 		parent::__construct();
 		$this->thread = new thread();
-		$viewConfig = config('view');
 	}
 
 	/**
@@ -59,10 +58,17 @@ class control extends base
 	 */
 	function call($c,$a)
 	{
-		$path = ROOT.'/application/control/'.$c.'.php';
-		include $path;
-		$control = 'application\\control\\'.$c.'Control';
-		return (new $control)->$a();
-		//return file_get_contents($this->http->url($c,$a));
+		if(is_object($c))
+		{
+			return $c->$a();
+		}
+		else
+		{
+			$path = ROOT.'/application/control/'.$c.'.php';
+			include $path;
+			$control = 'application\\control\\'.$c.'Control';
+			$content = (new $control)->$a();
+			return $content;
+		}
 	}
 }

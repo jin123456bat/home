@@ -3,10 +3,15 @@ namespace application\model;
 
 use system\core\model;
 use system\core\file;
+use system\core\filesystem;
 
 class productimgModel extends model
 {
-
+	function __construct($table)
+	{
+		parent::__construct($table);
+	}
+	
 	/**
 	 * 搜索所有无效的图像数据
 	 */
@@ -16,16 +21,29 @@ class productimgModel extends model
 		return $this->where('`productimg`.pid not in (select id from product)')->delete();
 	}
 	
-	function __construct($table)
-	{
-		parent::__construct($table);
-	}
-	
+	/**
+	 * 清除产品下的所有图像包括文件
+	 * @param unknown $pid
+	 * @return \system\core\Ambigous
+	 */
 	function removeByPid($pid)
 	{
+		$imgs = $this->where('pid=?',array($pid))->select();
+		foreach ($imgs as $img)
+		{
+			filesystem::unlink($img['small_path']);
+			filesystem::unlink($img['base_path']);
+			filesystem::unlink($img['thumbnail_path']);
+		}
 		return $this->where('pid=?',array($pid))->delete();
 	}
 
+	/**
+	 * 获得产品的图像信息
+	 * @param unknown $pid
+	 * @param string $name
+	 * @return Ambigous <boolean, multitype:>
+	 */
 	function getByPid($pid,$name = '*')
 	{
 		$this->orderby('orderby','desc');
@@ -110,5 +128,24 @@ class productimgModel extends model
 			$id
 		))->select();
 		return isset($result[0]) ? $result[0] : NULL;
+	}
+	
+	/**
+	 * 删除图像信息
+	 * @param unknown $id
+	 * @return \system\core\Ambigous
+	 */
+	function remove($id)
+	{
+		$result = $this->where('id=?',array($id))->select();
+		if(!empty($result))
+		{
+			$result = $result[0];
+			filesystem::unlink($result['small_path']);
+			filesystem::unlink($result['base_path']);
+			filesystem::unlink($result['thumbnail_path']);
+			return $this->where('id=?',array($id))->delete();
+		}
+		return false;
 	}
 }

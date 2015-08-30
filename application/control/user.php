@@ -133,6 +133,8 @@ class userControl extends control
 	function logout()
 	{
 		unset($this->session->id);
+		unset($this->session->telephone);
+		unset($this->session->username);
 	}
 	
 	/**
@@ -144,19 +146,27 @@ class userControl extends control
 		{
 			$username = $this->post->username;
 			$gravatar = $this->file->file;
-			if(!is_file($gravatar) || empty($username))
-			{
-				return json_encode(array('code'=>3,'result'=>'参数错误'));
-			}
-			$image = new image();
-			$file = $image->resizeImage($gravatar, 200, 200);
-			filesystem::unlink($gravatar);
 			$userModel = $this->model('user');
-			if($userModel->setNameGravatar($this->session->id,$username,$file))
+			if(empty($username) && !is_file($gravatar))
+				return json_encode(array('code'=>0,'result'=>'参数错误'));
+			if($username !== NULL)
 			{
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				if(!$userModel->setName($this->session->id,$username))
+				{
+					return json_encode(array('code'=>0,'result'=>'用户名修改失败'));
+				}
 			}
-			return json_encode(array('code'=>0,'result'=>'添加失败'));
+			if(is_file($gravatar))
+			{
+				$image = new image();
+				$file = $image->resizeImage($gravatar, 200, 200);
+				filesystem::unlink($gravatar);
+				if(!$userModel->setGravatar($this->session->id,$file))
+				{
+					return json_encode(array('code'=>0,'result'=>'头像上传失败'));
+				}
+			}
+			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
 		return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 	}
@@ -300,7 +310,7 @@ class userControl extends control
 							return json_encode(array('code'=>6,'result'=>'推广员手机号错误'));
 						}
 					}
-					if ($userModel->register($telephone, $password,$o2o))
+					if ($userModel->register($telephone, $password,$o2o,$client))
 					{
 						if(!empty($o2o))
 						{
@@ -347,6 +357,8 @@ class userControl extends control
 					$this->session->id = $uinfo['id'];
 					$this->session->telephone = $uinfo['telephone'];
 					$this->session->username = $uinfo['username'];
+					//更新用户登陆时间
+					$userModel->updateLoginTime($uinfo['id']);
 					return json_encode(array('code'=>1,'result'=>'ok'));
 				}
 				return json_encode(array('code'=>2,'result'=>'被管理员封印ing'));
@@ -449,6 +461,10 @@ class userControl extends control
 			$userModel = $this->model('user');
 			$num = $userModel->select('count(*)');
 			$result = $userModel->searchable($_POST);
+			foreach($result as &$user)
+			{
+				$user['gravatar'] = file::realpathToUrl($user['gravatar']);
+			}
 			$resultObj->recordsTotal = (int) $num[0]['count(*)'];
 			$resultObj->recordsFiltered = count($result);
 			$resultObj->data = array_slice($result, $this->post->start, $this->post->length);

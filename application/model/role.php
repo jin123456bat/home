@@ -60,7 +60,7 @@ class roleModel extends model
 			NULL,
 			$name,
 		);
-		$array = array_pad($array, 17, self::POWER_ALL);
+		$array = array_pad($array, 24, self::POWER_ALL);
 		if($this->insert($array))
 		{
 			return $this->lastInsertId();

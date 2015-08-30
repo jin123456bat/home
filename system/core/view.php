@@ -69,7 +69,12 @@ class view extends base
 	function url($parameter)
 	{
 		$http = new http();
-		return call_user_func_array(array($http,'url'), $parameter);
+		$c = $parameter['c'];
+		$a = $parameter['a'];
+		unset($parameter['c']);
+		unset($parameter['a']);
+		$array = array('c'=>$c,'a'=>$a,'array'=>$parameter);
+		return call_user_func_array(array($http,'url'), $array);
 	}
 	
 	/**

@@ -17,6 +17,7 @@ class webApplication extends base
 	{
 		$this->_config = $config;
 		parent::__construct();
+		
 		date_default_timezone_set($this->_config['timezone']);
 	}
 
@@ -25,6 +26,7 @@ class webApplication extends base
 	 */
 	function run()
 	{
+		
 		$response = new response();
 		$cacheConfig = config('cache');
 		

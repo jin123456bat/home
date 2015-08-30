@@ -62,7 +62,8 @@ class cartControl extends control
 					$content = array();
 					if($cartModel->create($uid,$pid,$content,$num))
 					{
-						return json_encode(array('code'=>1,'result'=>'ok'));
+						$cal = json_decode($this->calculation($uid));
+						return json_encode(array('code'=>1,'result'=>'ok','body'=>$cal->body));
 					}
 					else
 					{
@@ -82,7 +83,8 @@ class cartControl extends control
 				{
 					if($cartModel->create($uid,$pid,$content,$num))
 					{
-						return json_encode(array('code'=>1,'result'=>'ok'));
+						$cal = json_decode($this->calculation($uid));
+						return json_encode(array('code'=>1,'result'=>'ok','body'=>$cal->body));
 					}
 					else
 					{
@@ -128,7 +130,8 @@ class cartControl extends control
 				//存在可选属性
 				$collection->increaseStock($pid,$content,$num);
 			}
-			return json_encode(array('code'=>1,'result'=>'ok'));
+			$cal = json_decode($this->calculation($uid));
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$cal->body));
 		}
 		return json_encode(array('code'=>0,'result'=>'购物车中不存在该物品'));
 	}
@@ -150,6 +153,10 @@ class cartControl extends control
 		{
 			unset($product['bid']);
 			$product['content'] = unserialize($product['content']);
+			if(!empty($product['content']))
+			{
+				$product['collection'] = $this->model('collection')->find($product['pid'],$product['content']);
+			}
 			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			$product['img'] = $productimgModel->getByPid($product['id']);
 			switch ($product['activity']) {
@@ -167,7 +174,8 @@ class cartControl extends control
 					break;
 			}
 		}
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+		$cal = json_decode($this->calculation($this->session->id));
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result,'calculation'=>$cal->body));
 	}
 	
 	/**
@@ -188,20 +196,18 @@ class cartControl extends control
 		$fullcutdetailModel = $this->model('fullcutdetail');
 		$product = $cartModel->getByUid($uid);
 		$totalPrice = 0;
+		
 		foreach($product as $value)
 		{
+			$data = unserialize($value['content']);
 			if(!empty($value['content']))
 			{
-				$data = unserialize($value['content']);
-				$co = array();
-				foreach ($data as $k=>$d)
-				{
-					$co[] = $k.':'.$d;
-				}
-				$collection = $collectionModel->find($value['pid'],implode(',', $co));
+				$collection = $collectionModel->find($value['pid'],$data);
 				if(!empty($collection))
 					$value['price'] = $collection['price'];
 			}
+			
+			
 			switch ($value['activity'])
 			{
 				case 'seckill':
@@ -209,10 +215,11 @@ class cartControl extends control
 					if($price != NULL)
 						$totalPrice += $price*$value['num'];
 					break;
-				case 'sale':break;
+				case 'sale':
 					$price = $saleModel->getPrice($value['pid']);
 					if($price != NULL)
 						$totalPrice += $price*$value['num'];
+					break;
 				case 'fullcut':
 					$fullcut = $fullcutdetailModel->getPrice($value['pid'],$value['price']*$value['num']);
 					if($fullcut != NULL)
@@ -222,7 +229,6 @@ class cartControl extends control
 					break;
 				default:
 					$totalPrice += $value['price']*$value['num'];
-					break;
 			}
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$totalPrice));

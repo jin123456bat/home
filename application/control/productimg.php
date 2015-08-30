@@ -71,5 +71,23 @@ class productimgControl extends control
 		return json_encode(array('code'=>0,'result'=>'no pic'));
 	}
 	
+	
+	/**
+	 * 删除产品图像信息
+	 */
+	function remove()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$id = filter::int($this->post->id);
+		if(!empty($id))
+		{
+			$productimgModel = $this->model('productimg');
+			if($productimgModel->remove($id))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+		}
+		return json_encode(array('code'=>0,'result'=>'failed'));
+	}
 
 }

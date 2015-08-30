@@ -11,10 +11,65 @@ use system\core\model;
  */
 class orderlistModel extends model
 {
+	/**
+	 * 等待支付
+	 * @var unknown
+	 */
+	const STATUS_PAYING = 0;
 
+	/**
+	 * 支付完成状态码，等待发货
+	 * @var unknown
+	 */
+	const STATUS_FINISH = 1;
+	
+	/**
+	 * 订单关闭状态码
+	 * @var unknown
+	 */
+	const STATUS_CLOSE = 2;
+	
+	/**
+	 * 用户取消支付状态吗
+	 * @var unknown
+	 */
+	const STATUS_QUITE = 3;
+	
+	/**
+	 * 发货完毕，等待评论
+	 * @var unknown
+	 */
+	const STATUS_WAIT_SHIP = 4;
+	
+	/**
+	 * 订单完成评论
+	 * @var unknown
+	 */
+	const STATUS_COMPLETE = 5;
+	
+	/**
+	 * 订单进入退款流程
+	 * @var unknown
+	 */
+	const STATUS_EXIT = 6;
+	
+	/**
+	 * 构造函数
+	 * @param unknown $table
+	 */
 	function __construct($table)
 	{
 		parent::__construct($table);
+	}
+	
+	/**
+	 * 给订单添加备注
+	 * @param unknown $id
+	 * @param unknown $note
+	 */
+	function note($id,$note)
+	{
+		return $this->where('id=?',array($id))->update('note',$note);
 	}
 
 	/**
@@ -23,8 +78,13 @@ class orderlistModel extends model
 	 * @param unknown $uid        	
 	 * @return Ambigous <unknown, boolean, multitype:>
 	 */
-	function fetchAll($uid)
+	function fetchAll($uid,$start = 0,$length = 0)
 	{
+		if(!empty($start) && !empty($length))
+		{
+			$this->limit($start,$length);
+		}
+		$this->orderby('id','desc');
 		$result = $this->where('uid=?', array(
 			$uid
 		))->select();
@@ -114,6 +174,20 @@ class orderlistModel extends model
 			$id
 		))->delete();
 	}
+	
+	/**
+	 * 订单评分
+	 * @param unknown $id 订单id
+	 * @param unknown $uid 用户id
+	 * @param unknown $ship_score 配送评分
+	 * @param unknown $service_score 服务评分
+	 * @param unknown $goods_score 商品评分
+	 * @param string $content 评价内容
+	 */
+	function score($id,$uid,$ship_score,$service_score,$goods_score,$content)
+	{
+		return ($this->where('id=? and uid=?',array($id,$uid))->update(array('ship_score'=>$ship_score,'service_score'=>$service_score,'goods_score'=>$goods_score,'content'=>$content,'status'=>self::STATUS_COMPLETE)));
+	}
 
 	/**
 	 * 创建一个订单
@@ -123,6 +197,10 @@ class orderlistModel extends model
 	 */
 	function create($data, $orderdetail)
 	{
+		$data['ship_score'] = 0;
+		$data['service_score'] = 0;
+		$data['goods_score'] = 0;
+		$data['contetn'] = '';
 		if ($this->insert($data)) {
 			$oid = $this->lastInsertId();
 			$orderdetailModel = $this->model('orderdetail');

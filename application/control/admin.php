@@ -15,7 +15,6 @@ class adminControl extends control
 	function index()
 	{
 		$this->view = new view(config('view'), 'admin/login.html');
-		
 		return $this->view->display();
 	}
 	
@@ -67,9 +66,16 @@ class adminControl extends control
 	 */
 	function dashboard()
 	{
-		$this->view = new view(config('view'), 'admin/dashboard.html');
-		$this->model('log')->write($this->session->username,"登陆了系统");
-		return $this->view->display();
+		if(login::admin())
+		{
+			$this->view = new view(config('view'), 'admin/dashboard.html');
+			$this->model('log')->write($this->session->username,"登陆了系统");
+			return $this->view->display();
+		}
+		else
+		{
+			return $this->call($this, 'index');
+		}
 	}
 	
 	/**

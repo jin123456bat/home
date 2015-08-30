@@ -9,6 +9,12 @@ use system\core\http;
 class alipay_gateway
 {
 	/**
+	 * 系统的一些配置
+	 * @var unknown
+	 */
+	private $_system;
+	
+	/**
 	 * 存储订单信息
 	 * @var unknown
 	 */
@@ -28,12 +34,21 @@ class alipay_gateway
 	private $_config;
 	
 	/**
-	 * 构造函数  参数是一个订单信息
-	 * @param unknown $order
+	 * 接口对接方式   web  wap
+	 * @var unknown
 	 */
-	function __construct($config)
+	private $_trade_type;
+	
+	/**
+	 * 构造函数
+	 * @param unknown $config  支付宝的配置文件
+	 * @param unknown $system  系统的配置
+	 */
+	function __construct($config,$system,$trade_type)
 	{
 		$this->_config = $config;
+		$this->_system = $system;
+		$this->_trade_type = $trade_type;
 	}
 	
 	/**
@@ -48,71 +63,81 @@ class alipay_gateway
 		define('ALIPAY_ROOT', ROOT.'/extends/alipay');
 		
 		$http = new http();
-		//Return URL
-		$return_url = 'http://'.$http->host().$http->path().'/gateway/alipay/returnpage.php';
-		//After the payment transaction is done
-		//Notification URL
-		$notify_url = 'http://'.$http->host().$http->path().'/gateway/alipay/notifypage.php';
-		//The URL for receiving notifications after the payment process.
+		/**
+		 * 同步通知地址
+		 */
+		$return_url = 'http://'.$http->host().$http->path().'/gateway/alipay/retu.php';
+		/**
+		 * 异步通知地址
+		 */
+		$notify_url = 'http://'.$http->host().$http->path().'/gateway/alipay/notify.php';
 		
-		$goods_description = '';
-		foreach ($this->_orderdetail as $goods)
+		
+		/**
+		 * 商品描述
+		 */
+		$body = '';
+		foreach ($orderdetail as $product)
 		{
-			$goods_description .= ($goods['productname'].'x'.$goods['num']);
+			$body .= $product['productname'].'x'.$product['num'];
 		}
 		
-		//Goods name
-		$subject = $goods_description;
-		//required，The name of the goods.
+		/**
+		 * 商品名称
+		 */
+		$subject = $body;
 		
+		//分账金额50%  添加分账账户
+		$separatorAmount = $order['ordertotalamount'] * $this->_system->get('splitrate','alipay');
+		$this->_config->createSeparator($this->_system->get('splitpartner','alipay'),$separatorAmount,$this->_system->get('splitcurrency','alipay'));
 		
-		
-		//Goods description
-		$body = $goods_description;
-		//A detailed description of the goods.
-		
-		//Outside trade ID
-		$out_trade_no = $this->_order['orderno'];
-		//required，A numbered transaction ID （Unique inside the partner system）
-		
-		//Currency
-		$currency = 'GBP';
-		//required，The settlement currency merchant named in contract.
-		
-		//Payment sum
-		$rmb_fee = $this->_order['ordertotalamount'];
-		//required，A floating number ranging 0.01～1000000.00
-		
-		$parameter = array(
-			"service" => "create_forex_trade",
-			"partner" => trim($this->_config['partner']),
-			"return_url"	=> $return_url,
-			"notify_url"	=> $notify_url,
-			"subject"	=> $subject,
-			"body"	=> $body,
-			"out_trade_no"	=> $out_trade_no,
-			"currency"	=> $currency,
-			"rmb_fee"	=> $rmb_fee,
-			"_input_charset"	=> trim(strtolower($this->_config['input_charset']))
+		$data = array(
+			'body' => $body,
+			'subject' => $subject,
+			'sign_type' => $this->_config->sign_type,
+			'out_trade_no'=>$order['orderno'],
+			'currency' => $this->_system->get('currency','alipay'),//海外币种
+			'split_fund_info' => json_encode($this->_config->separator),
+			'rmb_fee' => $order['ordertotalamount'],
+			'partner' => $this->_system->get('partner','alipay'),
+			'supplier' => $this->_system->get('companyname','system'),
+			'notify_url' => $notify_url,
+			'return_url' => $return_url,
+			'_input_charset'=>$this->_config['input_charset'],
+			'timeout_rule'=>(new time())->format($this->_system->get('timeout','payment'), true),
 		);
+	
+		switch ($this->_trade_type)
+		{
+			case 'web':
+				$data['product_code'] = 'NEW_OVERSEAS_SELLER';
+				$data['service'] = 'create_forex_trade';
+				break;
+			case 'wap':
+				$data['product_code'] = 'NEW_WAP_OVERSEAS_SELLER';
+				$data['service'] = 'create_forex_trade_wap';
+				break;
+			default:return array('code'=>'error','content'=>'不支持的支付方式');
+		}
 		
-		$path = ALIPAY_ROOT.'/lib/alipay_submit.class.php';
-		include $path;
-		//建立请求
-		$alipaySubmit = new \AlipaySubmit($this->_config);
-		$html_text = $alipaySubmit->buildRequestForm($parameter,"get", "确认");
-		return ($html_text);
+		$content = $this->trade($data);
+		$data = array(
+			'url' => $this->_config['gateway_url'],
+			'method' => 'get',
+			'parameter' => $content
+		);
+		return array('code'=>'success','content'=>$data);
 	}
 	
 	/**
 	 * 验证通知的合法性
 	 */
-	function verify_notify($partner,$notify_id)
+	function verify_notify($notify_id)
 	{
 		$url = $this->_config->verify_nofity_url;
-		$url = $url.'?partner='.$partner.'&notify_id='.$notify_id;
+		$url = $url.'?partner='.$this->_system->get('partner','alipay').'&notify_id='.$notify_id;
 		$result = file_get_contents($url);
-		return ($result==='true');
+		return preg_match('/true$/i', $result);
 	}
 	
 	/**
@@ -124,5 +149,94 @@ class alipay_gateway
 	function refund($refund,$order,$orderdetail)
 	{
 		
+	}
+	
+	/**
+	 * 计算支付参数
+	 */
+	function trade($parameter)
+	{
+		$parameter = $this->filterParameter($parameter);
+		ksort($parameter);
+		reset($parameter);
+		$parameter['sign'] = $this->sign($parameter);
+		return $parameter;
+	}
+	
+	/**
+	 * 参数加密
+	 * @param unknown $parameter
+	 * @return string
+	 */
+	function sign($parameter,$sign_type = '')
+	{
+		$parameter = $this->toString($parameter).$this->_system->get('key','alipay');
+		$sign_type = trim(strtoupper(empty($sign_type)?$this->_config['sign_type']:$sign_type));
+		switch ($sign_type)
+		{
+			case 'MD5':$parameter = md5($parameter);
+				break;
+			case 'RSA':
+				$private_key = '';
+				return $this->encryptRSA($parameter, $private_key);
+				break;
+			case 'DSA':break;
+			default:break;
+		}
+		return $parameter;
+	}
+	
+	/**
+	 * RSA私玥加密
+	 * @param unknown $string
+	 * @param unknown $private_key
+	 * @return unknown
+	 */
+	function encryptRSA($string,$private_key)
+	{
+		$pk = openssl_pkey_get_private($private_key);
+		openssl_private_encrypt($string, $crypted, $pk);
+		return $crypted;
+	}
+	
+	/**
+	 * RSA公玥解密
+	 * @param unknown $string
+	 * @param unknown $public_key
+	 */
+	function decryptRSA($string,$public_key)
+	{
+		$pk = openssl_pkey_get_public($public_key);
+		openssl_public_decrypt($string, $decrypted, $pk);
+		return $decrypted;
+	}
+	
+	/**
+	 * 将数组参数转化为字符串
+	 */
+	function toString($parameter)
+	{
+		$return = '';
+		foreach($parameter as $key => $value)
+		{
+			$return .= ($key.'='.$value.'&');
+		}
+		return rtrim($return,'&');
+	}
+	
+	/**
+	 * 过滤掉不需要加密的参数
+	 * @param unknown $parameter
+	 */
+	function filterParameter($parameter)
+	{
+		$return = array();
+		foreach($parameter as $key => $value)
+		{
+			if($key == 'sign' || $value == '' || $key == 'sign_type')
+				continue;
+			$return[$key] = $value;
+		}
+		return $return;
 	}
 }

@@ -138,6 +138,10 @@ class filesystem
 	 */
 	public static function unlink($path)
 	{
-		return unlink(self::path($path));
+		$path = self::path($path);
+		if($path)
+		{
+			return unlink($path);
+		}
 	}
 }

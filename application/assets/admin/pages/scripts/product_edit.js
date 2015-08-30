@@ -32,6 +32,7 @@ var ProductEditPage = function(){
 					sku = $('input[name=sku]').val(),
 					oldprice = $('input[name=oldprice]').val(),
 					shipchar = $('input[name=shipchar]').val();
+				
 				if(name.length == 0)
 				{
 					Metronic.alert({
@@ -85,7 +86,7 @@ var ProductEditPage = function(){
 				if(data.code == 1)
 				{
 					$.each(data.body,function(index,value){
-						var tpl = '<tr data-id="'+value.id+'"><td><a href="'+value.base_path+'" class="fancybox-button" data-rel="fancybox-button"><img class="img-responsive" src="'+value.base_path+'" alt=""></a></td><td><input type="text" class="form-control" name="product[images][3][label]" value="'+value.title+'"></td><td><input type="text" class="form-control" name="product[images][3][sort_order]" value="'+value.orderby+'"></td><td><a href="javascript:;" class="btn default btn-sm"><i class="fa fa-times"></i> 删除 </a></td></tr>';
+						var tpl = '<tr data-id="'+value.id+'"><td><a href="'+value.base_path+'" class="fancybox-button" data-rel="fancybox-button"><img class="img-responsive" src="'+value.base_path+'" alt=""></a></td><td><input type="text" class="form-control" name="product[images][3][label]" value="'+value.title+'"></td><td><input type="text" class="form-control" name="product[images][3][sort_order]" value="'+value.orderby+'"></td><td><a href="javascript:;" class="btn default btn-sm removeImg"><i class="fa fa-times"></i> 删除 </a></td></tr>';
 						$('#preview').append(tpl);
 					});
 				}

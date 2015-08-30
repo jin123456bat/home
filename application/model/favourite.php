@@ -16,8 +16,12 @@ class favouriteModel extends model
 	/**
 	 * 收藏的商品列表
 	 */
-	function fetchAll($uid)
+	function fetchAll($uid,$start,$length,$status = 1)
 	{
+		$start = empty($start)?0:$start;
+		$length = empty($length)?5:$length;
+		$this->limit($start,$length);
+		$this->where('product.status = ?',array($status));
 		$this->table('product','left join','product.id=favourite.pid');
 		$this->orderby('favourite.time','desc');
 		$product = $this->where('uid=?',array($uid))->select();
@@ -25,11 +29,22 @@ class favouriteModel extends model
 	}
 	
 	/**
+	 * 检查用户是否已经收藏商品
+	 */
+	function checkProduct($uid,$pid)
+	{
+		$result = $this->where('uid=? and pid=?',array($uid,$pid))->select('count(*)');
+		return isset($result[0]['count(*)']) && $result[0]['count(*)']>0;
+	}
+	
+	/**
 	 * 添加收藏
 	 */
 	function create($uid,$pid)
 	{
-		$this->insert(array(NULL,$uid,$pid,$_SERVER['REQUEST_TIME']));
+		if($this->checkProduct($uid, $pid))
+			return false;
+		return $this->insert(array(NULL,$uid,$pid,$_SERVER['REQUEST_TIME']));
 	}
 	
 	/**

@@ -10,19 +10,18 @@ use system\core\filter;
  */
 class favouriteControl extends control
 {
-	function __construct()
-	{
-		if(!login::user())
-			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
-	}
-	
 	/**
 	 * 获得收藏列表
 	 */
 	function getlist()
 	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$start = filter::int($this->get->start);
+		$length = filter::int($this->get->length);
+		$status = filter::int($this->get->status);
 		$favouriteModel = $this->model('favourite');
-		$result = $favouriteModel->fetchAll($this->session->id);
+		$result = $favouriteModel->fetchAll($this->session->id,$start,$length,$status);
 		foreach($result as &$good)
 		{
 			$good['prototype'] = $this->model('prototype')->getByPid($good['pid']);
@@ -43,14 +42,16 @@ class favouriteControl extends control
 	 */
 	function create()
 	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$pid = filter::int($this->post->pid);
-		if(empty($pid))
+		if(!empty($pid))
 		{
 			if($this->model('favourite')->create($this->session->id,$pid))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
-			return json_encode(array('code'=>0,'result'=>'failed'));
+			return json_encode(array('code'=>0,'result'=>'已经收藏过了'));
 		}
 		return json_encode(array('code'=>3,'result'=>'参数不能为空'));
 	}
@@ -61,6 +62,8 @@ class favouriteControl extends control
 	 */
 	function remove()
 	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$id = filter::int($this->post->id);
 		$pid = filter::int($this->post->pid);
 		if(empty($pid) && empty($id))

@@ -53,6 +53,7 @@ class base
 
 	function __construct()
 	{
+		
 		$this->session = new session();
 		$this->post = new post();
 		$this->get = new get();

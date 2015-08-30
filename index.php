@@ -8,5 +8,4 @@ defined('ROOT') or define('ROOT', str_replace('\\', '/', __DIR__));
 require_once ROOT . '/global.php';
 
 $config = config('system');
-
 (new webApplication($config))->run();

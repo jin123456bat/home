@@ -22,14 +22,23 @@ class o2ouserModel extends model
 		return isset($result[0][$name])?$result[0][$name]:NULL;
 	}
 	
-	function create($uid,$rate)
+	/**
+	 * 把会员设置为推广员用户
+	 * @param unknown $uid
+	 * @param unknown $name
+	 * @param unknown $qq
+	 * @param unknown $address
+	 * @param unknown $rate
+	 * @return boolean|\system\core\Ambigous
+	 */
+	function create($uid,$name,$qq,$address,$rate)
 	{
 		$result = $this->where('uid=?',array($uid))->select('count(*)');
 		if(isset($result[0]['count(*)']) && $result[0]['count(*)']>0)
 			return false;
 		$num = 0;
 		$money = 0;
-		$data = array(NULL,$uid,$_SERVER['REQUEST_TIME'],$rate,$num,$money);
+		$data = array(NULL,$uid,$_SERVER['REQUEST_TIME'],$name,$qq,$address,$rate,$num,$money);
 		return $this->insert($data);
 	}
 	

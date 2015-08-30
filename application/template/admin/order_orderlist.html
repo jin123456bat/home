@@ -58,6 +58,32 @@
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
+        	<div class="modal fade container in" id="note" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form class="form-horizontal" role="form" id="note_form">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+								<h4 class="modal-title">添加备注</h4>
+							</div>
+							<div class="modal-body">
+								<div class="form-group">
+									<label class="col-md-2 control-label">备注</label>
+									<div class="col-md-9">
+										<input type="text" class="form-control" name="note">
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn blue btn-circle">添加</button>
+								<button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
+							</div>
+						</form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
 			{%include file='admin/public/style.html'%}
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
@@ -158,6 +184,10 @@
 									<th width="10%">
 										 状态
 									</th>
+                                    
+                                    <th width="10%">
+                                    	备注
+                                    </th>
 									<th width="10%">
 										 操作
 									</th>
@@ -183,7 +213,7 @@
 										</div>
 									</td>
 									<td>
-										<input type="text" value="{%$telephone|default:''%}" class="form-control form-filter input-sm" name="telephone">
+										<input type="text" class="form-control form-filter input-sm" name="telephone">
 									</td>
 									<td>
 										<input type="text" class="form-control form-filter input-sm" name="postmode">
@@ -215,6 +245,10 @@
 											<option value="3">用户取消</option>
 										</select>
 									</td>
+                                    
+                                    <td>
+                                    	备注
+                                    </td>
 									<td>
 										<div class="margin-bottom-5">
 											<button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> 搜索</button>
@@ -303,6 +337,28 @@ EcommerceOrders.init();
 		}
 	});
 	
+	$('#note').bind('show.bs.modal',function(event){
+		var btn = $(event.relatedTarget);
+		var id = btn.data('id');
+		$('#note_form').append('<input type="hidden" name="id" value="'+id+'">');
+		$('#note_form').find('input[name=note]').val(btn.parent().prev().html());
+	}).bind('hide.bs.modal',function(){
+		$('#note_form').find('input[name=id]').remove();
+		$('#note_form').find('input').val('');
+	});
+	
+	$('#note_form').on('submit',function(event){
+		var id = $(this).find('input[name=id]').val();
+		var note = $(this).find('input[name=note]').val();
+		$.post('{%url c=order a=note%}',{id:id,note:note},function(data){
+			if(data.code == 1)
+			{
+				$('#note').modal('hide');
+				$('a.noteBtn[data-id='+id+']').parent().prev().html(note);
+			}
+		});
+		return false;
+	});
 });
 </script>
 <!-- END JAVASCRIPTS -->

@@ -14,8 +14,8 @@ class indexControl extends control
 	
 	function index()
 	{
-		$weixin = new weixin_gateway(config('weixin'));
-		return $weixin->output('wx201508241358272acbe3a4ea0291668002');
+		//$weixin = new weixin_gateway(config('weixin'));
+		//return $weixin->output('wx201508241358272acbe3a4ea0291668002');
 		/*if(isset($_POST['post']))
 		{
 			var_dump($_FILES);

@@ -104,12 +104,12 @@ var EcommerceOrders = function () {
 						}
 					}
 				},{
-					targets:10,
+					targets:11,
 					render:function(data,type,full){
-						return '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a>';
+						return '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a><a href="#note" data-toggle="modal" data-id="'+full.id+'" class="btn default btn-xs yellow-stripe noteBtn">备注</a>';
 					}
 				},{
-					"targets":[11,12,13],
+					"targets":[12,13,14],
 					visible:false
 				}],
 				"columns":[{
@@ -143,6 +143,8 @@ var EcommerceOrders = function () {
 				},{
 					"data":'status',
 					'orderable':true
+				},{
+					"data":'note'
 				},{
 					"data":'id'
 				},{

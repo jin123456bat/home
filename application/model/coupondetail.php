@@ -20,15 +20,15 @@ class coupondetailModel extends model
 		}
 	}
 	
-	function getByCouponid($couponid)
+	function getByCouponid($couponid,$name = 'name')
 	{
 		$array = array();
 		$this->where('couponid=?',array($couponid));
 		$this->table('category','left join','category.id=coupondetail.categoryid');
-		$result = $this->select('name');
+		$result = $this->select($name);
 		foreach($result as $value)
 		{
-			$array[] = $value['name'];
+			$array[] = $value[$name];
 		}
 		return $array;
 	}

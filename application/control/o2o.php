@@ -72,15 +72,19 @@ class o2oControl extends control
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'o2ouser',roleModel::POWER_INSERT))
 		{
-			$uid = $this->post->uid;
-			$uid = json_decode(htmlspecialchars_decode($uid));
-			$rate = $this->post->rate;
+			$uid = filter::int($this->post->uid);
+			$rate = filter::number($this->post->rate);
+			$name = $this->post->name;
+			$address = $this->post->address;
+			$qq = $this->post->qq;
+			if(empty($name) || empty($address) || empty($qq) || empty($rate))
+				return json_encode(array('code'=>2,'result'=>'数据不全'));
 			$o2oModel = $this->model('o2ouser');
-			foreach ($uid as $id)
+			if($o2oModel->create($uid,$name,$qq,$address,$rate))
 			{
-				$o2oModel->create($id,$rate);
+				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
-			return json_encode(array('code'=>'1','result'=>'ok'));
+			return json_encode(array('code'=>'3','result'=>'添加失败'));
 		}
 		else
 		{

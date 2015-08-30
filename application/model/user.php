@@ -13,6 +13,16 @@ class userModel extends model
 	}
 	
 	/**
+	 * 更新用户登录时间
+	 * @param unknown $uid
+	 * @return \system\core\Ambigous
+	 */
+	function updateLoginTime($uid)
+	{
+		return $this->where('id=?',array($uid))->update('logtime',$_SERVER['REQUEST_TIME']);
+	}
+	
+	/**
 	 * 获取某一个用户的信息
 	 * @param unknown $id
 	 * @return NULL
@@ -29,13 +39,18 @@ class userModel extends model
 	 * 更改用户昵称和头像
 	 * @param unknown $id
 	 * @param unknown $name
-	 * @param unknown $gravatar
 	 * @return \system\core\Ambigous
 	 */
-	function setNameGravatar($id,$name,$gravatar)
+	function setName($id,$name)
 	{
 		$this->where('id=?',array($id));
-		return $this->update(array('username'=>$name,'gravatar'=>$gravatar));
+		return $this->update('username',$name);
+	}
+	
+	function setGravatar($id,$gravatar)
+	{
+		$this->where('id=?',array($id));
+		return $this->update('gravatar',$gravatar);
 	}
 	
 	/**

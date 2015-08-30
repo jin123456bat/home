@@ -154,8 +154,26 @@
 								<h4 class="modal-title">设定为o2o推广员</h4>
 							</div>
 							<div class="modal-body">
-								<div class="form-group" style="padding:0px;">
-										<label class="col-md-2 control-label">佣金比例</label>
+								<div class="form-group">
+									<label class="col-md-2 control-label">姓名</label>
+									<div class="col-md-9">
+										<input type="text" class="form-control" name="name">
+									</div>
+								</div>
+                                <div class="form-group">
+									<label class="col-md-2 control-label">QQ</label>
+									<div class="col-md-9">
+										<input type="text" class="form-control" name="qq">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">地址</label>
+									<div class="col-md-9">
+										<input type="text" class="form-control" name="address">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">佣金比例</label>
 									<div class="col-md-9">
 										<input type="text" class="form-control" name="rate">
 									</div>
@@ -164,6 +182,38 @@
 							<div class="modal-footer">
 								<button type="submit" class="btn blue btn-circle">发送</button>
 								<button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
+							</div>
+						</form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+            <div class="modal fade container in" id="orderlist" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width:100%;">
+					<div class="modal-content">
+						<form class="form-horizontal" role="form" id="sendemail">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+								<h4 class="modal-title"><i class="fa fa-bell-o"></i>相关订单</h4>
+							</div>
+							<div class="modal-body">
+                            	<div class="table-responsive">
+                                    <div class="loading" align="center">
+                                        <img alt="loading" src="{%$VIEW_ROOT%}/assets/admin/layout/img/ajax-loading.gif" class="pull-middle">
+                                    </div>
+                                    <table id="orderlist_table" class="table table-hover table-condensed display-none">
+                                    <thead>
+                                    <tr><td>订单号</td><td>创建时间</td><td>完成时间</td><td>金额</td><td>货物</td><td>客户端</td><td>支付方式</td><td>物流方式</td><td></td></tr>
+                                    </thead>
+                                    <tbody>
+                                    
+                                    </tbody>
+                                    </table>
+                            	</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn default btn-circle" data-dismiss="modal">关闭</button>
 							</div>
 						</form>
 					</div>
@@ -331,7 +381,6 @@
 <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/select2/select2.min.js"></script>
 <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
-
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="{%$VIEW_ROOT%}/assets/global/scripts/metronic.js" type="text/javascript"></script>
@@ -360,8 +409,7 @@ TableManaged.init();
 		{
 			return false;
 		}
-		$.post('{%url c=user a=register%}',{telephone:telephone,password:password},function(data){
-			data = JSON.parse(data);
+		$.post('{%url c=user a=register%}',{telephone:telephone,password:password,client:'web'},function(data){
 			if(data.code == 1)
 			{
 				$('#portlet-config').modal('hide');
@@ -487,9 +535,9 @@ TableManaged.init();
 	
 	$('#smssender').bind('show.bs.modal',function(event){
 		var checkbox = $('.checkboxes:checked');
-		if(checkbox.length==0)
+		if(checkbox.length!=0)
 		{
-			alert('请先选择要发送的用户');
+			alert('一次只能设置一个用户为推广员用户');
 			return false;
 		}
 	});
@@ -522,16 +570,38 @@ TableManaged.init();
 			alert('请先选择用户');
 			return false;
 		}
+		$(this).find('.form-group').removeClass('has-error').find('input').val('');
 	});
 	
 	$('#o2o_form').on('submit',function(){
 		var checkbox = $('#sample_1 .checkboxes:checked');
-		var data = [];
-		$.each(checkbox,function(index,value){
-			data.push($(value).val());
-		});
+		var data = checkbox.val();
+		
 		var rate = $(this).find('input[name=rate]').val();
-		$.post('{%url c=o2o a=create%}',{uid:JSON.stringify(data),rate:rate},function(data){
+		if($.trim(rate).length == 0 || parseFloat(rate) == 0)
+		{
+			$(this).find('input[name=rate]').parents('.form-group').addClass('has-error').focus();
+			return false;
+		}
+		var name = $(this).find('input[name=name]').val();
+		if($.trim(name).length == 0)
+		{
+			$(this).find('input[name=name]').parents('.form-group').addClass('has-error').focus();
+			return false;
+		}
+		var qq = $(this).find('input[name=qq]').val();
+		if($.trim(qq).length == 0)
+		{
+			$(this).find('input[name=qq]').parents('.form-group').addClass('has-error').focus();
+			return false;
+		}
+		var address = $(this).find('input[name=address]').val();
+		if($.trim(address).length == 0)
+		{
+			$(this).find('input[name=address]').parents('.form-group').addClass('has-error').focus();
+			return false;
+		}
+		$.post('{%url c=o2o a=create%}',{uid:data,rate:rate,name:name,qq:qq,address:address},function(data){
 			if(data.code == 1)
 			{
 				$('#o2o').modal('hide');
@@ -542,6 +612,36 @@ TableManaged.init();
 			}
 		});
 		return false;
+	});
+	
+	$('#orderlist').bind('shown.bs.modal',function(event){
+		var button = $(event.relatedTarget);
+  		var uid = button.data('id');
+		var table = $('#orderlist_table');
+		var loading = table.prev();
+		$.get('{%url c=order a=user%}',{uid:uid},function(response){
+			var tpl = '';
+			for(var i=0;i<response.body.length;i++)
+			{
+				
+				var goods = '';
+				for(var j=0;j<response.body[i].orderdetail.length;j++)
+				{
+					goods += response.body[i].orderdetail[j].productname +'x'+ response.body[i].orderdetail[j].num+'<br>';
+				}
+				
+				tpl = '<tr><td>'+response.body[i].orderno+'</td><td>'+response.body[i].createtime+'</td><td>'+response.body[i].tradetime+'</td><td>'+response.body[i].ordertotalamount+'</td><td>'+goods+'</td><td>'+response.body[i].client+'</td><td>'+response.body[i].paytype+'</td><td>'+response.body[i].postmode+'</td><td><a class="btn default green-stripe btn-xs" href="{%url c=order a=information%}&id='+response.body[i].id+'">查看详情</a></td></tr>';
+				
+				table.find('tbody').append(tpl);
+			}
+			table.removeClass('display-none');
+			loading.addClass('display-none');
+		});
+	}).bind('hide.bs.modal',function(event){
+		var table = $('#orderlist_table');
+		var loading = table.prev();
+		table.addClass('display-none');
+		loading.removeClass('display-none');
 	});
 });
 </script>

@@ -165,16 +165,14 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-md-2 control-label">编码: <span class="required">
-													* </span>
+													<label class="col-md-2 control-label">编码: 
 													</label>
 													<div class="col-md-10">
 														<input type="text" class="form-control" name="sku" placeholder="" value="{%$product.sku|default:""%}">
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-md-2 control-label">分类: <span class="required">
-													* </span>
+													<label class="col-md-2 control-label">分类: 
 													</label>
 													<div class="col-md-10">
 														<select name="category" class="form-control form-filter input-sm">
@@ -186,8 +184,7 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-md-2 control-label">品牌: <span class="required">
-													* </span>
+													<label class="col-md-2 control-label">品牌: 
 													</label>
 													<div class="col-md-10">
 														<select name="bid" class="form-control form-filter input-sm">
@@ -199,8 +196,7 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-md-2 control-label">销售时间: <span class="required">
-													* </span>
+													<label class="col-md-2 control-label">销售时间:
 													</label>
 													<div class="col-md-10">
 														<div class="input-group input-large date-picker input-daterange" data-date-format="yyyy-mm-dd">
@@ -210,25 +206,30 @@
 															<input type="text" class="form-control" name="endtime" value="{%$product.endtime|date_format:"Y-m-d"|default:""%}">
 														</div>
 														<span class="help-block">
-														有效日期范围. </span>
+														有效日期范围.设置为0为不限制时间，超出时间或未到时间商品会自动上下架，自动上下架有一定的时间延迟不会太长的可以放心使用 </span>
 													</div>
 												</div>
 												
 												<div class="form-group">
-													<label class="col-md-2 control-label">标价: <span class="required">
+													<label class="col-md-2 control-label">标价:  <span class="required">
 													* </span>
 													</label>
 													<div class="col-md-10">
 														<input type="text" class="form-control" name="price" value="{%$product.price|default:""%}" placeholder="">
+                                                        <span class="help-block">
+														商品价格 </span>
 													</div>
+                                                    
 												</div>
 												<div class="form-group">
-													<label class="col-md-2 control-label">市场价: <span class="required">
-													* </span>
+													<label class="col-md-2 control-label">市场价:
 													</label>
 													<div class="col-md-10">
 														<input type="text" class="form-control" name="oldprice" value="{%$product.oldprice|default:""%}" placeholder="">
+                                                        <span class="help-block">
+														商品市场价 </span>
 													</div>
+                                                    
 												</div>
 												<div class="form-group">
 													<label class="col-md-2 control-label">库存: <span class="required">
@@ -236,6 +237,8 @@
 													</label>
 													<div class="col-md-10">
 														<input type="text" class="form-control" name="stock" value="{%$product.stock|default:""%}" placeholder="">
+                                                        <span class="help-block">
+														为了确保您的商品能够显示出来，请设置一个大于0的数字 </span>
 													</div>
 												</div>
                                                 <div class="form-group">
@@ -246,8 +249,7 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-md-2 control-label">短描述: <span class="required">
-													* </span>
+													<label class="col-md-2 control-label">短描述:
 													</label>
 													<div class="col-md-10">
 														<textarea class="form-control" name="short_description">{%$product.short_description|default:""%}</textarea>
@@ -256,8 +258,7 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-md-2 control-label">描述: <span class="required">
-													* </span>
+													<label class="col-md-2 control-label">描述: 
 													</label>
 													<div class="col-md-10">
 														<!--<textarea class="form-control" name="product[description]">{%$product.description|default:""%}</textarea>-->
@@ -297,7 +298,7 @@
 													</label>
 													<div class="col-md-10">
 														<select class="table-group-action-input form-control input-medium" name="status">
-															<option value="1">上架</option>
+															<option value="1" selected="selected">上架</option>
 															<option value="2">未上架</option>
 														</select>
 													</div>
@@ -612,6 +613,29 @@ jQuery(document).ready(function() {
 	ProductEditPage.init();
 	collection.init();
 	window.um = UM.getEditor('description');
+	
+	$('a.removeImg').live('click',function(event){
+		var tr = $(this).parents('tr');
+		var id = tr.data('id');
+		$.post('{%url c=productimg a=remove%}',{id:id},function(data){
+			if(data.code == 1)
+			{
+				tr.remove();
+				var input = $('input[name=picid]');
+				$.each(input,function(index,value){
+					if($(value).val() == id)
+					{
+						$(value).remove();
+					}
+				});
+			}
+		});
+		return false;
+	});
+	
+	$('.serverside').parent().click(function(){
+		alert('123');
+	});
 });
 </script>
 <!-- END JAVASCRIPTS -->

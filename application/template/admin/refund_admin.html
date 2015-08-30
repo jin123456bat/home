@@ -22,14 +22,13 @@
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
 <!-- END GLOBAL MANDATORY STYLES -->
-
+<link href="{%$VIEW_ROOT%}/assets/admin/pages/css/profile.css" rel="stylesheet" type="text/css"/>
 <!-- BEGIN THEME STYLES -->
 <link href="{%$VIEW_ROOT%}/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
 <link id="style_color" href="{%$VIEW_ROOT%}/assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
-<link href="{%$VIEW_ROOT%}/assets/umeditor/themes/default/css/umeditor.min.css" type="text/css" rel="stylesheet">
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
 </head>
@@ -45,6 +44,7 @@
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content">
+<!-- BEGIN HEADER -->
 {%include file='admin/public/header.html'%}
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
@@ -60,7 +60,7 @@
 			<!-- END STYLE CUSTOMIZER -->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			静态页 <small>添加页面</small>
+			订单管理 <small>退款申请</small>
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -70,11 +70,11 @@
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="#">静态页</a>
+						<a href="#">订单管理</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="{%url c=help a=create%}">添加页面</a>
+						<a href="{%url c=refund a=admin%}">退款申请</a>
 					</li>
 				</ul>
 			</div>
@@ -82,21 +82,59 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-					<form action="" method="post" role="form">
-						{%if isset($help.id)%}
-						<input type="hidden" name="id" value="{%$help.id%}">
-						{%/if%}
-						<div class="form-group">
-							<button type="submit" name="submit" class="btn green">保存 <i class="fa fa-share"></i></button>
-							{%if isset($help.id)%}
-							<a href="{%url c=help a=admin%}" class="btn btn-danger pull-right">取消 <i class="fa fa-share"></i></a>
-							{%/if%}
-						</div>
-						<div class="form-group">
-						<input type="text" placeholder="标题" name="title" class="form-control" value="{%$help.title|default:""%}">
-						</div>
-						<script id="umeditor" name="content" type="text/plain" style="width:100%;">{%$help.content|htmlspecialchars_decode|default:""%}</script>
-					</form>
+                	{%section name=refund loop=$refund%}
+					 <div class="row portfolio-block">
+                        <div class="col-md-4">
+                            <div class="portfolio-text">
+                                <img src="{%$refund[refund].user_gravatar%}" width="80" height="80" alt="">
+                                <div class="portfolio-text-info">
+                                    <h4>{%$refund[refund].user_username%} - {%$refund[refund].order_orderno%} - {%$refund[refund].user_telephone%}</h4>
+                                    <p>
+                                    	{%$refund[refund].reason%}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 portfolio-stat">
+                            <div class="portfolio-info">
+                                订单运费 <span>
+                                {%$refund[refund].order_feeamount%} </span>
+                            </div>
+                            <div class="portfolio-info">
+                                 订单税款 <span>
+                                {%$refund[refund].order_ordertaxamount%} </span>
+                            </div>
+                            <div class="portfolio-info">
+                                 订单货款 <span>
+                                {%$refund[refund].order_ordergoodsamount%} </span>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="portfolio-btn">
+                                <a href="{%url c=order a=information%}&id={%$refund[refund].order_id%}" class="btn bigicn-only">
+                                <span>
+                                详情 </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="portfolio-btn">
+                                <a href="#" class="btn bigicn-only actionBtn" data-action="allow" data-id="{%$refund[refund].id%}">
+                                <span>
+                                允许 </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="portfolio-btn">
+                                <a href="#" class="btn bigicn-only actionBtn" data-action="reject" data-id="{%$refund[refund].id%}">
+                                <span>
+                                拒绝 </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {%/section%}
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
@@ -129,21 +167,22 @@
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/umeditor/umeditor.min.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/umeditor/umeditor.config.js" type="text/javascript"></script>
-<script type="text/javascript" src="{%$VIEW_ROOT%}/assets/umeditor/lang/zh-cn/zh-cn.js"></script>
 <script>
 jQuery(document).ready(function() {	
 	Metronic.init(); // init metronic core components
 	Layout.init(); // init current layout
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
-	window.um = UM.getEditor('umeditor');
-	$(".edui-container").css('z-index','').css('width','100%');
 	
-	
+	$('.allowBtn').on('click',function(event){
+		var id = $(this).data('id');
+		var action = $(this).data('action');
+		$.post('{%url c=order a=refund%}',{id:id,action:action},function(data){
+		});
+		return false;
+	});
 });
-   </script>
+</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->

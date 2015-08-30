@@ -10,7 +10,7 @@ class login
 	static function admin()
 	{
 		$session = new session();
-		return !($session->id == NULL || $session->role == NULL || $session->username == NULL);
+		return !($session->id === NULL || $session->role === NULL || $session->username === NULL);
 	}
 	
 	/**
@@ -19,7 +19,7 @@ class login
 	static function user()
 	{
 		$session = new session();
-		return $session->id != NULL && $session->telephone != NULL && $session->username != NULL;
+		return $session->id !== NULL && $session->telephone !== NULL && $session->username !== NULL;
 	}
 
 }

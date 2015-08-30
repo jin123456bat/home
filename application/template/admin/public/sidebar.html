@@ -72,17 +72,26 @@
 				</li>
 			</ul>
 		</li>
-		<li class="{%if $smarty.get.c==order && $smarty.get.a==orderlist%}active open{%/if%}">
+		<li class="{%if ($smarty.get.c==order && $smarty.get.a==orderlist)
+        				|| ($smarty.get.c==refund && $smarty.get.a==admin)
+        			%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-tag"></i>
 			<span class="title">订单管理</span>
-			<span class="arrow "></span>
+			<span class="arrow {%if ($smarty.get.c==order && $smarty.get.a==orderlist)
+        				|| ($smarty.get.c==refund && $smarty.get.a==admin)
+        			%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
 				<li class="{%if $smarty.get.c==order && $smarty.get.a==orderlist%}active{%/if%}">
 					<a href="{%url c=order a=orderlist%}">
 					<i class="icon-tag"></i>
 					订单列表</a>
+				</li>
+                <li class="{%if $smarty.get.c==refund && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=refund a=admin%}">
+					<i class="icon-tag"></i>
+					退款申请</a>
 				</li>
 			</ul>
 		</li>
@@ -173,6 +182,7 @@
 						||($smarty.get.c==fullcut && $smarty.get.a==admin)
 						||($smarty.get.c==coupon && $smarty.get.a==admin)
 						||($smarty.get.c==theme && $smarty.get.a==admin)
+                        || ($smarty.get.c==register && $smarty.get.a==admin)
 		%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
@@ -182,6 +192,7 @@
 								||($smarty.get.c==seckill && $smarty.get.a==admin)
 								||($smarty.get.c==fullcut && $smarty.get.a==admin)
 								||($smarty.get.c==coupon && $smarty.get.a==admin)
+                                || ($smarty.get.c==register && $smarty.get.a==admin)
 								%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
@@ -209,6 +220,11 @@
 					<a href="{%url c=theme a=admin%}">
 					主题管理</a>
 				</li>
+                <li class="{%if $smarty.get.c==register && $smarty.get.a==admin%}active{%/if%}">
+                	<a href="{%url c=register a=admin%}">
+                    新用户活动
+                    </a>
+                </li>
 			</ul>
 		</li>
 		
@@ -243,25 +259,33 @@
 		<li class="heading">
 			<h3 class="uppercase">设定</h3>
 		</li>
-		<li {%if $smarty.get.c==ship && $smarty.get.a==admin%}class="active open"{%/if%}>
+		<li {%if $smarty.get.c==ship && $smarty.get.a==admin
+        		|| $smarty.get.c==system &&(
+                $smarty.get.a==base || $smarty.get.a==payment
+                )
+                %}class="active open"{%/if%}>
 			<a href="javascript:;">
 			<i class="icon-settings"></i>
 			<span class="title">参数设定</span>
-			<span class="arrow {%if $smarty.get.c==ship && $smarty.get.a==admin%}open{%/if%}"></span>
+			<span class="arrow {%if $smarty.get.c==ship && $smarty.get.a==admin
+            						|| ($smarty.get.c==system && ($smarty.get.a==base
+                                    || $smarty.get.a==payment
+                                    ))%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
+            	<li{%if $smarty.get.c==system && $smarty.get.a==base%} class="active"{%/if%}>
+					<a href="{%url c=system a=base%}">
+					基础配置</a>
+				</li>
 				<li{%if $smarty.get.c==ship && $smarty.get.a==admin%} class="active"{%/if%}>
 					<a href="{%url c=ship a=admin%}">
 					配送方案</a>
 				</li>
-				<li>
-					<a href="form_layouts.html">
-					Form Layouts</a>
+				<li{%if $smarty.get.c==system && $smarty.get.a==payment%} class="active"{%/if%}>
+					<a href="{%url c=system a=payment%}">
+					结算</a>
 				</li>
-				<li>
-					<a href="form_editable.html">
-					<span class="badge badge-roundless badge-warning">new</span>Form X-editable</a>
-				</li>
+				
 				<li>
 					<a href="form_wizard.html">
 					Form Wizard</a>

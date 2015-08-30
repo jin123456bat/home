@@ -38,8 +38,10 @@ class model
 		static $model = array();
 		if(!isset($model[$table]))
 		{
+			$temp = $this->_table;
 			$this->_table = $table;
 			$model[$table] = clone $this;
+			$this->_table = $temp;
 		}
 		return $model[$table];
 	}

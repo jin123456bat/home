@@ -20,11 +20,10 @@ class couponControl extends control
 	 */
 	function getavaliable()
 	{
-		$this->session->id = 3;
 		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
-		$couponModel = $this->model('coupon');
+		/*$couponModel = $this->model('coupon');
 		$cartModel = $this->model('cart');
 		//获取用户所有商品
 		$cart = $cartModel->getByUid($this->session->id);
@@ -45,7 +44,11 @@ class couponControl extends control
 			$coupon_id_array[] = $coupon['couponid'];
 		}
 		$couponModel->where('id in (?)',$coupon_id_array);
-		$body = $couponModel->where('display=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
+		*/
+		
+		//$body = $couponModel->where('display=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
+		$couponModel = $this->model('coupon');
+		$body =  $couponModel->select();
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
 	}
 	

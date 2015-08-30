@@ -40,9 +40,16 @@ class weixin_gateway
 	 */
 	private $_orderdetail;
 	
-	function __construct($config)
+	/**
+	 * 系统配置
+	 * @var unknown
+	 */
+	private $_system;
+	
+	function __construct($config,$system)
 	{
 		$this->_config = $config;
+		$this->_system = $system;
 	}
 	
 	function setGetParameter($parameter)
@@ -115,15 +122,15 @@ class weixin_gateway
 			{
 				$body .= $good['productname'].'x'.$good['num'].'|';
 			}
+			$timeout = (new time())->format($this->_system->get('timeout','payment'), false);
 			//生成预支付订单
 			$data = array(
 				'device_info' => 'WEB',
-				'attach' => '',
 				'time_start' => date("YmdHis",$order['createtime']),
-				'time_expire' => date("YmdHis",$order['createtime']+1800),//订单需要在30分钟之内完成支付
-				'appid' => $this->_config->APPID,
+				'time_expire' => date("YmdHis",$order['createtime']+$timeout),
+				'appid' => $this->_system->get('appid','weixin'),
 				'fee_type' => 'CNY',
-				'mch_id' => $this->_config->MCHID,
+				'mch_id' => $this->_system->get('mchid','weixin'),
 				'openid' => $this->_get->openid,
 				'trade_type' => strtoupper($this->_get->trade_type),
 				'attach' => '',//回传的时候回来的数据
@@ -179,8 +186,8 @@ class weixin_gateway
 		$order = empty($order)?$this->_order:$order;
 		$url = 'https://api.mch.weixin.qq.com/pay/closeorder';
 		$data = array(
-			'appid' => $this->_config->APPID,
-			'mch_id' => $this->_config->MCHID,
+			'appid' => $this->_system->get('appid','weixin'),
+			'mch_id' => $this->_system->get('mchid','weixin'),
 			'transaction_id' => $order['paynumber'],
 			'out_trade_no' => $order['orderno'],
 			'nonce_str' => random::word(32)
@@ -202,7 +209,7 @@ class weixin_gateway
 		$response = file_get_contents($url,NULL,$context);
 		$response = simplexml_load_string($response);
 		$response = $this->xmlToArray($response);
-		if($response['return_code'] == 'SUCCESS' && isset($response['err_code']) && $response['err_code'] == 'SUCCESS')
+		if($response['return_code'] == 'SUCCESS')
 			return $response;
 		return false;
 	}
@@ -217,8 +224,8 @@ class weixin_gateway
 		$order = empty($order)?$this->_order:$order;
 		$url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 		$data = array(
-			'appid' => $this->_config->APPID,
-			'mch_id' => $this->_config->MCHID,
+			'appid' => $this->_system->get('appid','weixin'),
+			'mch_id' => $this->_system->get('mchid','weixin'),
 			'nonce_str'=> random::word(32),
 			'transaction_id' => $order['paynumber'], //支付单号
 			'out_trade_no' => $order['orderno'],  //订单号
@@ -226,7 +233,7 @@ class weixin_gateway
 			'total_fee' => $order['ordertotalamount'] * 100,  //订单总金额
 			'refund_fee' => $order['refund_fee']*100,//退款金额
 			'refund_fee_type' => 'CNY',
-			'op_user_id' => $this->_config->MCHID,  //同意退款人
+			'op_user_id' => $this->_system->get('mchid','weixin'),  //同意退款人
 		);
 		$data['sign'] = $this->sign($data);
 		$content = '<xml>';
@@ -235,11 +242,12 @@ class weixin_gateway
 			$content .= ('<'.$key.'>'.$value.'</'.$key.'>');
 		}
 		$content .= '</xml>';
-		$pem = '';//证书地址
-		$response = $this->postSsl($url, $content, $pem);
+		$pem = ROOT.'/extends/weixin/cert/apiclient_cert.pem';//证书地址
+		$key = ROOT.'/extends/weixin/cert/apiclient_key.pem';//第二个证书
+		$response = $this->postSsl($url, $content, $pem,$key);
 		$response = simplexml_load_string($response);
 		$response = $this->xmlToArray($response);
-		if($response['result_code'] == 'SUCCESS' && isset($response['err_code']) && $response['return_code'] == 'SUCCESS')
+		if($response['result_code'] == 'SUCCESS')
 		{
 			return $response;
 		}
@@ -254,8 +262,8 @@ class weixin_gateway
 		$order = empty($order)?$this->_order:$order;
 		$url = 'https://api.mch.weixin.qq.com/pay/closeorder';
 		$data = array(
-			'appid' => $this->_config->APPID,
-			'mch_id' => $this->_config->MCHID,
+			'appid' => $this->_system->get('appid','weixin'),
+			'mch_id' => $this->_system->get('mchid','weixin'),
 			'out_trade_no' => $order['orderno'],
 			'nonce_str' => random::word(32)
 		);
@@ -276,7 +284,7 @@ class weixin_gateway
 		$response = file_get_contents($url,NULL,$context);
 		$response = simplexml_load_string($response);
 		$response = $this->xmlToArray($response);
-		if($response['return_code'] == 'SUCCESS' && isset($response['err_code']) && $response['err_code'] == 'SUCCESS')
+		if($response['return_code'] == 'SUCCESS')
 			return $response;
 		return false;
 	}
@@ -287,19 +295,13 @@ class weixin_gateway
 	function output($prepay_id)
 	{
 		$data = array(
-			'appId' => $this->_config['APPID'],
+			'appId' => $this->_system->get('appid','weixin'),
 			'timeStamp' => $_SERVER['REQUEST_TIME'],
 			'nonceStr' => random::word(32),
 			'package'=> 'prepay_id='.$prepay_id,
 			'signType' => 'MD5'
 		);
 		$data['paySign'] = $this->sign($data);
-		/*$success_url = NULL;
-		$cancel_url = NULL;
-		$quit_url = NULL;
-		$tpl = 'document.addEventListener("WeixinJSBridgeReady", function onBridgeReady() {WeixinJSBridge.invoke("getBrandWCPayRequest",{"appId" : '.$data['appid'].',"timeStamp"" : '.$data['timeStamp'].', "nonceStr" : '.$data['nonceStr'].', "package" : '.$data['package'].',"signType" : '.$data['signType'].', "paySign" : '.$data['paySign'].'},function(res){WeixinJSBridge.log(res.err_msg);if(res.err_msg == "get_brand_wcpay_request:ok"){alert("微信支付成功!"); window.location.href='.$success_url.'}else if(res.err_msg == "get_brand_wcpay_request:cancel"){  alert("用户取消支付!");window.location.href='.$cancel_url.'}else{alert("支付失败!"+res.err_msg);window.location.href='.$quit_url.'}});}, false);';
-		return '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>微信安全支付</title></head><body><script type="text/javascript">'.$tpl.'</script></body></html>';
-		*/
 		return $data;
 	}
 	
@@ -314,14 +316,16 @@ class weixin_gateway
 	/**
 	 * 带ssl的post提交
 	 */
-	function postSsl($url,$data,$pem)
+	function postSsl($url,$data,$pem,$key)
 	{
 		$ch = curl_init($url);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch,CURLOPT_SSLCERTTYPE,'PEM');
+		curl_setopt($ch,CURLOPT_SSLCERT, $pem);
 		curl_setopt($ch,CURLOPT_SSLKEYTYPE,'PEM');
-		curl_setopt($ch,CURLOPT_SSLKEY,$pem);
+		curl_setopt($ch,CURLOPT_SSLKEY, $key);
 		curl_setopt($ch,CURLOPT_HEADER,0);
 		curl_setopt($ch,CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
@@ -364,7 +368,7 @@ class weixin_gateway
 		$data = $this->filterParameter($data);
 		ksort($data);
 		reset($data);
-		$str = $this->toString($data).'&key='.$this->_config->KEY;
+		$str = $this->toString($data).'&key='.$this->_system->get('key','weixin');
 		$str = strtoupper(md5($str));
 		return $str;
 	}

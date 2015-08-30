@@ -1,6 +1,11 @@
 <?php
 namespace application\model;
 use system\core\model;
+/**
+ * 系统配置数据模型
+ * @author jin12
+ *
+ */
 class systemModel extends model
 {
 	function __construct($table)
@@ -8,9 +13,44 @@ class systemModel extends model
 		parent::__construct($table);
 	}
 	
+	/**
+	 * 获取系统配置
+	 * @param unknown $name
+	 * @param unknown $type
+	 * @return NULL
+	 */
 	function get($name,$type)
 	{
 		$result = $this->where('name=? and type=?',array($name,$type))->select('value');
 		return isset($result[0]['value'])?$result[0]['value']:NULL;
+	}
+	
+	function fetch($type)
+	{
+		if(is_array($type))
+		{
+			$result = $this->where('type in (?)',$type)->select();
+		}
+		else
+		{
+			$result = $this->where('type=?',array($type))->select();
+		}
+		return $result;
+	}
+	
+	/**
+	 * 修改添加并保存系统配置
+	 */
+	function set($name,$type,$value)
+	{
+		$result = $this->where('name=? and type=?',array($name,$type))->select();
+		if(isset($result[0]))
+		{
+			return $this->where('name=? and type=?',array($name,$type))->update('value',$value);
+		}
+		else
+		{
+			return $this->insert(array(NULL,$name,$type,$value));
+		}
 	}
 }

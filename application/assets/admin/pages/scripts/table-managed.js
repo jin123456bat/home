@@ -98,8 +98,15 @@ var TableManaged = function () {
 				"targets":10,
 				"data":'ordernum',
 				render:function(data,type,full){
-					content = '<span class="badge badge-default">'+data+'</span>';
-					return '<a href="index.php?c=order&a=orderlist&telephone='+full.telephone+'">'+content+'</a>';
+					if(data =='0')
+					{
+						return data;
+					}
+					else
+					{
+						content = '<span class="badge badge-default">'+data+'</span>';
+						return '<a href="#orderlist" data-toggle="modal" data-id="'+full.id+'">'+content+'</a>';
+					}
 				}
 			}, {
 				"targets":[11],

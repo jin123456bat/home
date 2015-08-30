@@ -227,16 +227,22 @@ jQuery(document).ready(function() {
 	
 	$('form#createBrand_form').on('submit',function(){
 		var name = $.trim($('input[name=name]',$(this)).val());
-		
 		if(name.length == 0)
 		{
-			$('input[name=name]',$(this)).parents('.form-group').addClass('has-error');
+			$('input[name=name]',$(this)).trigger('focus').parents('.form-group').addClass('has-error');
+			return false;
+		}
+		var file = $('input[name=logo]',$(this)).val();
+		if(file.length == 0)
+		{
+			$('input[name=logo]',$(this)).trigger('focus').parents('.form-group').addClass('has-error');
 			return false;
 		}
 	});
 	
 	$('#createBrand').bind('hide.bs.modal',function(){
 		$('input[name=name]',$('form#createBrand_form')).val('').parents('.form-group').removeClass('has-error');
+		$('input[name=logo]',$('form#createBrand_form')).val('').parents('.form-group').removeClass('has-error');
 	});
 });
 	</script>
