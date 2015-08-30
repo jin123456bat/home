@@ -12,7 +12,7 @@ use application\classes\login;
 class fullcutdetailControl extends control
 {
 	/**
-	 * 添加满减优惠
+	 * 添加商品到满减优惠
 	 */
 	function create()
 	{
@@ -27,7 +27,15 @@ class fullcutdetailControl extends control
 				$productModel = $this->model('product');
 				$resut = $productModel->get($pid);
 				if(empty($resut) || !empty($resut['activity']))
-					return json_encode(array('code'=>2,'result'=>'该商品已经有优惠政策了或者商品不存在'));
+				{
+					switch ($resut['activity'])
+					{
+						case 'sale':$result = '限时优惠';break;
+						case 'seckill':$result = '秒杀';break;
+						case 'fullcut':$result = '满减';break;
+					}
+					return json_encode(array('code'=>2,'result'=>'该商品已经参加了'.$result.',请先移除原活动在推送'));
+				}
 				$fullcutdetailModel = $this->model('fullcutdetail');
 				if(!$fullcutdetailModel->exist($pid))
 				{
@@ -46,5 +54,26 @@ class fullcutdetailControl extends control
 			return json_encode(array('code'=>5,'result'=>'参数错误'));
 		}
 		return json_encode(array('code'=>6,'result'=>'没有权限'));
+	}
+	
+	/**
+	 * 从满减优惠中移除商品
+	 */
+	function remove()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'fullcut',roleModel::POWER_UPDATE))
+		{
+			$pid = filter::int($this->post->pid);
+			$fid = filter::int($this->post->fid);
+			$fullcutdetailModel = $this->model('fullcutdetail');
+			if($fullcutdetailModel->remove($fid,$pid))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'移除失败'));
+		}
+		return json_encode(array('code'=>2,'result'=>'没有权限'));
 	}
 }

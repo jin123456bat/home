@@ -131,7 +131,15 @@ class seckillControl extends control
 				$productModel = $this->model('product');
 				$product = $productModel->get($pid);
 				if(empty($product) || !empty($product['activity']))
-					return json_encode(array('code'=>4,'result'=>'商品不存在或者该商品已经有优惠政策了'));
+				{
+					switch ($product['activity'])
+					{
+						case 'sale':$result = '限时优惠';break;
+						case 'seckill':$result = '秒杀';break;
+						case 'fullcut':$result = '满减';break;
+					}
+					return json_encode(array('code'=>4,'result'=>'商品已经参加了'.$result.',请先移除原活动在来添加'));
+				}
 				$seckillModel = $this->model('seckill');
 				if($seckillModel->create($sname,$pid,$starttime,$endtime,$price,$orderby))
 				{

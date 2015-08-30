@@ -61,12 +61,10 @@ class saleControl extends control
 			$price = filter::number($this->post->price);
 			$orderby = filter::int($this->post->orderby);
 			$seckillModel = $this->model('sale');
-			if($seckillModel->save($id,$sname,$starttime,$endtime,$orderby,$price))
-			{
-				return json_encode(array('code'=>1,'result'=>'ok'));
-			}
-			return json_encode(array('code'=>0,'result'=>'修改失败'));
+			$seckillModel->save($id,$sname,$starttime,$endtime,$orderby,$price);
+			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
+		return json_encode(array('code'=>2,'result'=>'权限不足'));
 	}
 	
 	/**
@@ -117,7 +115,13 @@ class saleControl extends control
 				}
 				return json_encode(array('code'=>2,'result'=>'添加失败，该商品已经在限时队列'));
 			}
-			return json_encode(array('code'=>3,'result'=>'该商品已经有活动了'));
+			switch ($result['activity'])
+			{
+				case 'seckill':$result = '秒杀';break;
+				case 'sale':$result = '满减';break;
+				case 'fullcut':$result = '满减';break;
+			}
+			return json_encode(array('code'=>3,'result'=>'该商品已经参加了'.$result.'活动，请先移除原来的活动在推送'));
 		}
 		return json_encode(array('code'=>4,'result'=>'没有权限'));
 	}

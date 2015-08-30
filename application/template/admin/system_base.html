@@ -26,7 +26,7 @@
 <link href="{%$VIEW_ROOT%}/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
-<link id="style_color" href="{%$VIEW_ROOT%}/assets/admin/layout/css/themes/default.css" rel="stylesheet" type="text/css"/>
+<link id="style_color" href="{%$VIEW_ROOT%}/assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
@@ -53,52 +53,118 @@
 			{%include file='admin/public/style.html'%}
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			Blank Page <small>blank page</small>
+			基础配置 <small>系统配置</small>
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
 					<li>
 						<i class="fa fa-home"></i>
-						<a href="index.html">Home</a>
+						<a href="{%url c=index a=index%}">首页</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="#">Page Layouts</a>
+						<a href="#">系统配置</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="#">Blank Page</a>
+						<a href="{%url c=system a=base%}">基础配置</a>
 					</li>
 				</ul>
-				<div class="page-toolbar">
-					<div class="btn-group pull-right">
-						<button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
-						Actions <i class="fa fa-angle-down"></i>
-						</button>
-						<ul class="dropdown-menu pull-right" role="menu">
-							<li>
-								<a href="#">Action</a>
-							</li>
-							<li>
-								<a href="#">Another action</a>
-							</li>
-							<li>
-								<a href="#">Something else here</a>
-							</li>
-							<li class="divider">
-							</li>
-							<li>
-								<a href="#">Separated link</a>
-							</li>
-						</ul>
-					</div>
-				</div>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-					 Page content goes here
+                	<div class="col-md-3">
+                        <ul class="ver-inline-menu tabbable margin-bottom-10">
+                        	<li class="active">
+                            	<a data-toggle="tab" href="#base">
+                                	<i class="fa fa-briefcase"></i> 基础设定
+                                </a>
+                                <span class="after">
+                                </span>
+                            </li>
+                            <li>
+                            	<a data-toggle="tab" href="#image">
+                                	<i class="fa fa-image"></i> 图像设定
+                                </a>
+                            </li>
+                        </ul>
+                   	</div>
+					<div class="col-md-9">
+						<div class="tab-content">
+                        	<div id="base" class="tab-pane active">
+                            <form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">公司名称</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_system_companyname" class="form-control" placeholder="我们家" value="{%$system.system_system_companyname|default:''%}">
+                                        <span class="help-block">
+                                        公司名称 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input type="submit" value="保存" class="form-control btn green">
+                                    </div>
+                                </div>
+                            </form>
+                            </div>
+                            <div id="image" class="tab-pane">
+                            <form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">商品大图尺寸</label>
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="system_image_productbasewidth" value="{%$system.system_image_productbasewidth|default:''%}" placeholder="宽度">
+                                            <span class="input-group-addon">
+                                            X </span>
+                                            <input type="text" class="form-control" name="system_image_productbaseheight" value="{%$system.system_image_productbaseheight|default:''%}" placeholder="高度">
+                                        </div>
+                                        <!-- /input-group -->
+                                        <span class="help-block">
+                                        用于商品详情页显示 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">商品中图尺寸</label>
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="system_image_productsmallwidth" value="{%$system.system_image_productsmallwidth|default:''%}" placeholder="宽度">
+                                            <span class="input-group-addon">
+                                            X </span>
+                                            <input type="text" class="form-control" name="system_image_productsmallheight" value="{%$system.system_image_productsmallheight|default:''%}" placeholder="高度">
+                                        </div>
+                                        <!-- /input-group -->
+                                        <span class="help-block">
+                                        用于搜索结果 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">商品小图尺寸</label>
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="system_image_productthumbnailwidth" value="{%$system.system_image_productthumbnailwidth|default:''%}" placeholder="宽度">
+                                            <span class="input-group-addon">
+                                            X </span>
+                                            <input type="text" class="form-control" name="system_image_productthumbnailheight" value="{%$system.system_image_productthumbnailheight|default:''%}" placeholder="高度">
+                                        </div>
+                                        <!-- /input-group -->
+                                        <span class="help-block">
+                                        用于商品缩略图 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input type="submit" value="保存" class="form-control btn green">
+                                    </div>
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->

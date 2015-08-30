@@ -116,10 +116,7 @@ var EcommerceProducts = function () {
 					"render":function(data,type,full){
 						//console.log(full);
 						var content = '<a href="?c=product&a=edit&action=edit&id='+data+'" class="btn default btn-xs green-stripe">编辑</a>';
-						if(full.activity.length == 0)
-						{
-							content += '<a href="#sale-config" class="btn default btn-xs red-stripe" data-price="'+full.price+'" data-pid="'+data+'" data-pname="'+full.productname+'" data-toggle="modal">推送</a></li>';
-						}
+						content += '<a href="#sale-config" class="btn default btn-xs red-stripe" data-price="'+full.price+'" data-pid="'+data+'" data-pname="'+full.productname+'" data-toggle="modal">推送</a></li>';
 						return content;
 					}
 				},{

@@ -400,7 +400,7 @@
 											<table class="table table-bordered table-hover" >
 											<thead>
 											<tr role="row" class="heading">
-												<th width="8%">
+												<th width="3%">
 													 图像
 												</th>
 												<th width="25%">
@@ -633,8 +633,8 @@ jQuery(document).ready(function() {
 		return false;
 	});
 	
-	$('.serverside').parent().click(function(){
-		alert('123');
+	$('.fancybox-button').live('mouseover',function(){
+		$(this).fancybox();
 	});
 });
 </script>

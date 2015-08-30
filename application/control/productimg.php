@@ -10,6 +10,11 @@ use system\core\file;
 class productimgControl extends control
 {
 
+	function crontab()
+	{
+		
+	}
+	
 	/**
 	 * 产品图像上传
 	 * 小图200x200
@@ -21,10 +26,12 @@ class productimgControl extends control
 		$filepath = $this->file->receive($_FILES['file'], config('file'));
 		if (is_file($filepath)) {
 			$image = new image();
-			$small = $image->resizeImage($filepath, 200, 200);
-			$thumbnail = $image->resizeImage($filepath, 100, 100);
+			$system = $this->model('system');
+			$base = $image->resizeImage($filepath,$system->get('productbasewidth','image') , $system->get('productbaseheight','image'));
+			$small = $image->resizeImage($filepath, $system->get('productsmallwidth','image'), $system->get('productsmallheight','image'));
+			$thumbnail = $image->resizeImage($filepath, $system->get('productthumbnailwidth','image'), $system->get('productthumbnailheight','image'));
 			$productimgModel = $this->model('productimg');
-			$info = $productimgModel->add($filepath, $small, $thumbnail, $_FILES['file']['name']);
+			$info = $productimgModel->add($filepath,$base, $small, $thumbnail, $_FILES['file']['name']);
 			return json_encode(array(
 				'code' => 1,
 				'result' => 'ok',
@@ -48,7 +55,7 @@ class productimgControl extends control
 		$productimgModel = $this->model('productimg');
 		$result = $productimgModel->get($id);
 		if (! empty($result)) {
-			$this->response->addHeader('Content-Type', (new filesystem())->mimetype($result['base_path']));
+			$this->response->addHeader('Content-Type', (new filesystem())->mimetype($result['oldimage']));
 			$image = new image();
 			$file = $image->resizeImage($result['base_path'], $width, $height);
 			$this->response->setBody(file_get_contents($file));

@@ -14,6 +14,16 @@ class fullcutdetailModel extends model
 	}
 	
 	/**
+	 * 从满减中移除商品
+	 * @param unknown $fid
+	 * @param unknown $pid
+	 */
+	function remove($fid,$pid)
+	{
+		return $this->where('fid=? and pid=?',array($fid,$pid))->delete();
+	}
+	
+	/**
 	 * 添加优惠商品
 	 * @param unknown $fid
 	 * @param unknown $pid

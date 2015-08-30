@@ -28,7 +28,7 @@ class themeControl extends control
 			{
 				case 'sale':$product['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
 				case 'seckill':$product['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
-				case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->get->getByPid($product['id']);break;
+				case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
 				default:break;
 			}
 			$product['img'] = $this->model('productimg')->getByPid($product['id']);

@@ -52,6 +52,7 @@ class productimgModel extends model
 		))->select($name);
 		foreach ($result as &$img)
 		{
+			$img['oldimage'] = empty($img['oldimage'])?'':file::realpathToUrl($img['base_path']);
 			$img['base_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
 			$img['small_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
 			$img['thumbnail_path'] = empty($img['thumbnail_path'])?'':file::realpathToUrl($img['thumbnail_path']);
@@ -94,13 +95,14 @@ class productimgModel extends model
 	 * @param string $pid        	
 	 * @return array|false 插入成功返回插入的所有信息 失败false
 	 */
-	function add($base, $small, $thumbnail, $title, $orderby = 1, $pid = '')
+	function add($oldimage,$base, $small, $thumbnail, $title, $orderby = 1, $pid = 0)
 	{
 		$data = array(
 			NULL,
 			$pid,
 			$title,
 			$orderby,
+			$oldimage,
 			$base,
 			$small,
 			$thumbnail
@@ -108,9 +110,9 @@ class productimgModel extends model
 		$result = $this->insert($data);
 		if ($result) {
 			$data[0] = $this->lastInsertId();
-			$data[4] = file::realpathToUrl($data[4]);
 			$data[5] = file::realpathToUrl($data[5]);
 			$data[6] = file::realpathToUrl($data[6]);
+			$data[7] = file::realpathToUrl($data[7]);
 			return $data;
 		}
 		return false;

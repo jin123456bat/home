@@ -226,6 +226,8 @@
 																<td>
 																	<a href="{%url c=product a=edit%}&action=edit&id={%$fullcutdetail[fullcutdetail].pid%}" class="btn default btn-xs purple">
 																	<i class="fa fa-edit"></i> 查看 </a>
+                                                                    <a href="" class="btn default btn-xs red removeBtn" data-pid="{%$fullcutdetail[fullcutdetail].pid%}" data-fid="{%$fullcutdetail[fullcutdetail].fid%}">
+																	<i class="fa fa-ban"></i> 移除 </a>
 																</td>
 															</tr>
 															{%/if%}
@@ -416,6 +418,24 @@ jQuery(document).ready(function() {
 		{
 			$('#fullcut-form').find('input[name=fid]').val(0);
 		}
+	});
+	
+	
+	$('.removeBtn').on('click',function(){
+		var pid = $(this).data('pid');
+		var fid = $(this).data('fid');
+		var tr = $(this).parents('tr');
+		$.post('{%url c=fullcutdetail a=remove%}',{fid:fid,pid:pid},function(data){
+			if(data.code == 1)
+			{
+				tr.remove();
+			}
+			else
+			{
+				alert(data.result);
+			}
+		});
+		return false;
 	});
 });
    </script>

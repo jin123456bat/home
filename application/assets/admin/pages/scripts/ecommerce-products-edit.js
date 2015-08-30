@@ -77,7 +77,7 @@ var EcommerceProductsEdit = function () {
                         var id = response.body[0]; // uploaded file's unique name. Here you can collect uploaded file names and submit an jax request to your server side script to process the uploaded files and update the images tabke
 
                         $('#uploaded_file_' + file.id + ' > .status').removeClass("label-info").addClass("label-success").html('<i class="fa fa-check"></i> 上传完毕'); // set successfull upload
-						var tpl = '<tr data-id="'+response.body[0]+'"><td><a href="'+response.body[4]+'" class="fancybox-button" data-rel="fancybox-button"><img class="img-responsive" src="'+response.body[4]+'" alt=""></a></td><td><input type="text" class="form-control" name="product[images][3][label]" value="'+response.body[2]+'"></td><td><input type="text" class="form-control" name="product[images][3][sort_order]" value="'+response.body[3]+'"></td><td><a href="javascript:;" class="btn default btn-sm removeImg"><i class="fa fa-times"></i> 删除 </a></td></tr>';
+						var tpl = '<tr data-id="'+response.body[0]+'"><td><a href="'+response.body[4]+'" rel="photo1" class="fancybox-button" data-rel="fancybox-button"><img class="img-responsive" src="'+response.body[7]+'" alt=""></a></td><td><input type="text" class="form-control" name="product[images][3][label]" value="'+response.body[2]+'"></td><td><input type="text" class="form-control" name="product[images][3][sort_order]" value="'+response.body[3]+'"></td><td><a href="javascript:;" class="btn default btn-sm removeImg"><i class="fa fa-times"></i> 删除 </a></td></tr>';
 						$('#preview').append(tpl);
 						
 						$('#form').append('<input type="hidden" name="picid" value="'+response.body[0]+'"/>');

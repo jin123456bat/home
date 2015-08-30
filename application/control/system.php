@@ -70,6 +70,16 @@ class systemControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/system_base.html');
+			
+			$systemModel = $this->model('system');
+			$config = $systemModel->fetch(array('system','image'));
+			$system = array();
+			foreach ($config as $value)
+			{
+				$system['system_'.$value['type'].'_'.$value['name']] = $value['value'];
+			}
+			$this->view->assign('system',$system);
+			
 			return $this->view->display();
 		}
 		else
