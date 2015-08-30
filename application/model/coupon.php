@@ -14,6 +14,20 @@ class couponModel extends model
 	}
 	
 	/**
+	 * 获取用户的优惠券
+	 * @param unknown $uid
+	 * @param bool $past 结果集中是否包含无法使用的优惠券 默认包含
+	 */
+	function mycoupon($uid,$past = true)
+	{
+		if(!$past)
+		{
+			$this->where('starttime < ?  and (endtime > ? or endtime=0) and times>?',array($_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0));
+		}
+		return $this->where('uid=?',array($uid))->select();
+	}
+	
+	/**
 	 * 验证商品是否可以使用折扣 并返回折扣信息
 	 * @param unknown $couponno
 	 * @param unknown $product
@@ -51,9 +65,9 @@ class couponModel extends model
 		}
 		if(!empty($post->action) && $post->action=='filter')
 		{
-			if(!empty($post->coupon_id))
+			if(!empty($post->couponno))
 			{
-				$this->where('couponno=?',array($post->coupon_id));
+				$this->where('couponno like ?',array('%'.$post->couponno.'%'));
 			}
 			if(!empty($post->starttime_from))
 			{
@@ -135,7 +149,7 @@ class couponModel extends model
 	/**
 	 * 创建优惠
 	 */
-	function create($couponno,$total,$starttime,$endtime,$max,$display,$type,$value)
+	function create($couponno,$uid,$total,$starttime,$endtime,$max,$display,$type,$value)
 	{
 		$couponno = strtoupper($couponno);
 		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
@@ -145,7 +159,7 @@ class couponModel extends model
 		$times = $total;
 		$max = empty($max)?0:$max;
 		$display = empty($display)?0:1;
-		$data = array(NULL,$couponno,$total,$starttime,$endtime,$times,$max,$display,$type,$value);
+		$data = array(NULL,$couponno,$uid,$total,$starttime,$endtime,$times,$max,$display,$type,$value);
 		if($this->insert($data))
 		{
 			return $this->lastInsertId();

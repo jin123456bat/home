@@ -172,4 +172,11 @@ class userModel extends model
 	{
 		$this->where('oid=?',array($oid))->update('oid',0);
 	}
+	
+	function search($search,$length = 10)
+	{
+		$length = empty($length)?10:$length;
+		$this->limit(0,$length);
+		return $this->where('telephone like ? or username like ?',array('%'.$search.'%','%'.$search.'%'))->select();
+	}
 }

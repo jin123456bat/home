@@ -24,6 +24,7 @@
 <!-- END GLOBAL MANDATORY STYLES -->
 <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
 <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-datepicker/css/datepicker.css"/>
+<link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/global/plugins/select2/select2.css"/>
 <!-- BEGIN THEME STYLES -->
 <link href="{%$VIEW_ROOT%}/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
 <link href="{%$VIEW_ROOT%}/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
@@ -130,6 +131,12 @@
 									<button class="btn col-md-12 public contorl-control green">公开使用</button>
 								</div>
 							</div>
+                            <div class="form-group display-none" id="uid">
+                            	<label class="col-md-2 control-label">限定使用者</label>
+                                <div class="col-md-9">
+                                	<input type="hidden" name="uid" class="form-control uid_selector">
+                                </div>
+                            </div>
 							<div class="form-group category">
 								<label class="col-md-2 control-label">优惠分类</label>
 								<div class="col-md-9">
@@ -249,6 +256,9 @@
 									<th width="10%">
 										 优惠代码
 									</th>
+                                    <th>
+                                    	拥有者
+                                    </th>
 									<th width="10%">
 										 开始时间
 									</th>
@@ -278,8 +288,11 @@
 									<td>
 									</td>
 									<td>
-										<input type="text" class="form-control form-filter input-sm" name="coupon_id">
+										<input type="text" class="form-control form-filter input-sm" name="couponno">
 									</td>
+                                    <td>
+                                    	<input type="hidden" name="uid" class="form-control input-sm form-filter uid_selector">
+                                    </td>
 									<td>
 										<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
 											<input type="text" class="form-control form-filter input-sm" readonly name="starttime_from" placeholder="从">
@@ -374,6 +387,7 @@
 <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="{%$VIEW_ROOT%}/assets/global/plugins/select2/select2.min.js"></script>
 <!-- END CORE PLUGINS -->
 <script src="{%$VIEW_ROOT%}/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
@@ -426,7 +440,8 @@ jQuery(document).ready(function() {
 			});
 			return false;
 		}
-		var display = $('button.public').hasClass('green')?1:0;
+		var display = $('button.public').hasClass('green')?1:0;//是否公开
+		var uid = $('input[name=uid]').val();
 		var starttime = $('input[name=starttime]',ths).val();
 		var endtime = $('input[name=endtime]',ths).val();
 		var total = $('input[name=total]',ths).val();
@@ -439,7 +454,7 @@ jQuery(document).ready(function() {
 			category.push($(value).val());
 		});
 		category = JSON.stringify(category);
-		$.post('{%url c=coupon a=create%}',{couponno:couponno,starttime:starttime,endtime:endtime,total:total,category:category,type:type,value:value,max:max,display:display},function(data){
+		$.post('{%url c=coupon a=create%}',{couponno:couponno,starttime:starttime,endtime:endtime,total:total,uid:uid,category:category,type:type,value:value,max:max,display:display},function(data){
 			if(data.code == 1)
 			{
 				$('#coupon').modal('hide');
@@ -474,12 +489,65 @@ jQuery(document).ready(function() {
 		if($(this).hasClass('green'))
 		{
 			$(this).removeClass('green').addClass('red').html('非公开使用');
+			$('#uid').removeClass('display-none');
 		}
 		else
 		{
 			$(this).removeClass('red').addClass('green').html('公开使用');
+			$('#uid').addClass('display-none');
 		}
 		return false;
+	});
+	
+	
+	 function movieFormatResult(user) {
+		var markup = "<table class='movie-result'><tr>";
+		if (user.gravatar != '') {
+			markup += "<td valign='center'><img src='" + user.gravatar + "' width='50' heigth='50' /></td>";
+		}
+		else
+		{
+			markup += '<td valign="center"><img src="./application/assets/gravatar.jpg" width="50" heigth="50" /></td>';
+		}
+		markup += "<td align='center' valign='center'><h5> " + user.username + "</h5>";
+		markup += "<div class='movie-synopsis'> " + user.telephone + "</div>";
+		markup += "</td></tr></table>"
+		return markup;
+	}
+
+	function movieFormatSelection(user) {
+		return user.username || user.telephone;
+	}
+	
+	$(".uid_selector").select2({
+		placeholder: "输入用户名或手机号",
+		minimumInputLength: 3,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "{%url c=user a=search%}",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					telephone_or_username: term, // search term
+					length: 10,
+					apikey: Math.random() // please do not use so this example keeps working
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				//console.log(data);
+				return {
+					results: data
+				};
+			},
+			cache: true
+		},
+		formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+		formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+		dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
+		escapeMarkup: function (m) {
+			return m;
+		} // we do not want to escape markup since we are displaying html in results
+		
 	});
 });
    </script>

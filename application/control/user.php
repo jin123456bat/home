@@ -471,4 +471,20 @@ class userControl extends control
 		}
 		return json_encode($resultObj);
 	}
+	
+	/**
+	 * 根据用户名或手机号前3位搜索匹配的用户
+	 */
+	function search()
+	{
+		$search = $this->get->telephone_or_username;
+		$length = filter::int($this->get->length);
+		$userModel = $this->model('user');
+		$user = $userModel->search($search,$length);
+		foreach ($user as &$userinfo)
+		{
+			$userinfo['gravatar'] = file::realpathToUrl($userinfo['gravatar']);
+		}
+		return json_encode($user);
+	}
 }

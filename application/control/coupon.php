@@ -14,6 +14,18 @@ use system\core\filter;
  */
 class couponControl extends control
 {
+	/**
+	 * 获得我的优惠券
+	 */
+	function mycoupon()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$couponModel = $this->model('coupon');
+		$coupon = $couponModel->mycoupon($this->session->id,true);
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$coupon));
+	}
 	
 	/**
 	 * 获取可以使用的优惠券
@@ -23,9 +35,9 @@ class couponControl extends control
 		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
-		/*$couponModel = $this->model('coupon');
+		$couponModel = $this->model('coupon');
 		$cartModel = $this->model('cart');
-		//获取用户所有商品
+		//获取用户购物车中所有商品
 		$cart = $cartModel->getByUid($this->session->id);
 		$coupondetailModel = $this->model('coupondetail');
 		$product_category_array = array();
@@ -44,11 +56,11 @@ class couponControl extends control
 			$coupon_id_array[] = $coupon['couponid'];
 		}
 		$couponModel->where('id in (?)',$coupon_id_array);
-		*/
-		
-		//$body = $couponModel->where('display=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
-		$couponModel = $this->model('coupon');
-		$body =  $couponModel->select();
+		//公开可以使用的优惠券
+		$body1 = $couponModel->where('display=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
+		//我的优惠券
+		$body2 = $couponModel->mycoupon($this->session->id,false);
+		$body = array_unique(array_merge($body1,$body2),SORT_REGULAR);
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
 	}
 	
@@ -106,10 +118,11 @@ class couponControl extends control
 			$category = json_decode(htmlspecialchars_decode($this->post->category));
 			$type = $this->post->type;
 			$display = filter::int($this->post->display);
+			$uid = filter::int($this->post->uid);
 			$max = filter::number($this->post->max);
 			$value = filter::number($this->post->value);
 			$couponModel = $this->model('coupon');
-			$result = $couponModel->create($couponno,$total,$starttime,$endtime,$max,$display,$type,$value);
+			$result = $couponModel->create($couponno,$uid,$total,$starttime,$endtime,$max,$display,$type,$value);
 			if($result)
 			{
 				$this->model('coupondetail')->create($result,$category);

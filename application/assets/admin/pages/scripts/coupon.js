@@ -59,6 +59,9 @@ var Coupon = function () {
 					"data":"couponno",
 					"orderable": true
 				}, {
+					data:"uid",
+					"orderable":true
+				}, {
 					"data":"starttime",
 					"orderable": true
 				}, {
@@ -95,10 +98,27 @@ var Coupon = function () {
 						return '<input type="checkbox" name="id[]" value='+data+'>';
 					}
 				},{
-					"targets":[2],
-					"data":"starttime",
-					"render":function(data,type,full){
-						return unixtotime(data,true,8);
+					targets:2,
+					data:uid,
+					render:function(data,type,full){
+						if(data == '0')
+						{
+							return '所有用户可用';
+						}
+						else
+						{
+							var telephone = '无法获取用户';
+							$.ajax({
+								async:false,
+								url:'?c=user&a=telephone',
+								data:{id:data},
+								method:'get',
+								success: function(data){
+									telephone = $.parseJSON(data).body;
+								}
+							});
+							return telephone;
+						}
 					}
 				},{
 					"targets":[3],
@@ -107,7 +127,13 @@ var Coupon = function () {
 						return unixtotime(data,true,8);
 					}
 				},{
-					"targets":[7],
+					"targets":[4],
+					"data":"starttime",
+					"render":function(data,type,full){
+						return unixtotime(data,true,8);
+					}
+				},{
+					"targets":[8],
 					"data":"display",
 					"render":function(data,type,full){
 						return (data=="1")?"公开":"非公开";
@@ -122,7 +148,7 @@ var Coupon = function () {
 						return data*10+'折';
 					}
 				},{
-					"targets":[9],
+					"targets":[10],
 					"data":"id",
 					"render":function(data,type,full){
 						return '<a data-id='+data+' class="btn btn-xs default red-stripen removeBtn">删除</a>';
@@ -135,7 +161,7 @@ var Coupon = function () {
 					'url':'?c=coupon&a=ajaxdatatable',
                 },
                 "order": [
-                    [1, "asc"]
+                    [0, "desc"]
                 ], // set first column as a default sort by asc
 				'language':{
 					'emptyTable': '没有数据',  
