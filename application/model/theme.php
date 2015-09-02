@@ -28,6 +28,16 @@ class themeModel extends model
 	}
 	
 	/**
+	 * 移除主题
+	 * @param unknown $id
+	 * @return \system\core\Ambigous
+	 */
+	function remove($id)
+	{
+		return $this->where('id=?',array($id))->delete();
+	}
+	
+	/**
 	 * 获取一个主题信息
 	 * @param unknown $name
 	 * @param string $parameter
@@ -80,6 +90,12 @@ class themeModel extends model
 			return $theme_productModel->insert(array(NULL,$tid,$pid));
 		}
 		return false;
+	}
+	
+	function removeProduct($tid,$pid)
+	{
+		$theme_productModel = $this->model('theme_product');
+		return $theme_productModel->where('tid=? and pid=?',array($tid,$pid))->delete();
 	}
 	
 	/**

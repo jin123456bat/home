@@ -171,7 +171,15 @@
                                     <div class="col-md-10">
                                         <input type="text" name="system_alipay_key" value="{%$system.system_alipay_key|default:""%}" class="form-control" placeholder="4508mayei5zbmsmopp6tlobdf83d2kz6">
                                         <span class="help-block">
-                                        加密密钥. </span>
+                                        MD5加密密钥. </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">RSA加密私钥</label>
+                                    <div class="col-md-10">
+                                        <textarea type="text" name="system_alipay_rsaprivatekey" class="form-control">{%$system.system_alipay_rsaprivatekey|default:""%}</textarea>
+                                        <span class="help-block">
+                                        rsa加密的私钥. 公钥放在支付宝</span>
                                     </div>
                                 </div>
                                 <div class="form-group">

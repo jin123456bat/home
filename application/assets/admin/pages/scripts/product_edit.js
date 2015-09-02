@@ -135,7 +135,7 @@ var ProductEditPage = function(){
 						$('#form').append('<input type="hidden" name="prototype_id" value="'+data.body+'"/>');
 						$('input[name=prototype_name]').val('');
 						$('#prototype_text').find('input').val('');
-						$('#prototype_radio').find('input').val('');
+						$('#prototype_radio').find('input').importTags('');;
 					}
 				});
 				return false;
@@ -177,7 +177,6 @@ var ProductEditPage = function(){
 								//alert($('input[data-id="'+content+'"]'));
 								if(data.body != null)
 								{
-									
 									$('input[name=price][data-id="'+content+'"]').val(data.body.price);
 									$('input[name=stock][data-id="'+content+'"]').val(data.body.stock);
 									$('input[name=sku][data-id="'+content+'"]').val(data.body.sku);
@@ -197,6 +196,7 @@ var ProductEditPage = function(){
 					if(data.code == 1)
 					{
 						$(ths).parents('tr').remove();
+						window.location.reload();
 					}
 				});
 			});

@@ -130,7 +130,7 @@ class alipay_gateway
 	}
 	
 	/**
-	 * 验证通知的合法性
+	 * 验证通知是否来源于支付宝
 	 */
 	function verify_notify($notify_id)
 	{
@@ -177,7 +177,7 @@ class alipay_gateway
 			case 'MD5':$parameter = md5($parameter);
 				break;
 			case 'RSA':
-				$private_key = '';
+				$private_key = str_replace(' ', '', $this->_system->get('rsaprivatekey'));
 				return $this->encryptRSA($parameter, $private_key);
 				break;
 			case 'DSA':break;
@@ -187,7 +187,7 @@ class alipay_gateway
 	}
 	
 	/**
-	 * RSA私玥加密
+	 * RSA私钥加密
 	 * @param unknown $string
 	 * @param unknown $private_key
 	 * @return unknown
@@ -200,14 +200,14 @@ class alipay_gateway
 	}
 	
 	/**
-	 * RSA公玥解密
+	 * RSA私钥解密
 	 * @param unknown $string
 	 * @param unknown $public_key
 	 */
-	function decryptRSA($string,$public_key)
+	function decryptRSA($string,$private_key)
 	{
-		$pk = openssl_pkey_get_public($public_key);
-		openssl_public_decrypt($string, $decrypted, $pk);
+		$pk = openssl_pkey_get_private($private_key);
+		openssl_private_decrypt($string, $decrypted, $pk);
 		return $decrypted;
 	}
 	

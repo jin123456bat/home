@@ -53,6 +53,28 @@
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
+        	<div class="modal fade container in" id="product" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                	<div class="modal-content">
+                    	<div class="modal-header">
+                        	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							<h4 class="modal-title">商品列表</h4>
+                        </div>
+                        <div class="modal-body">
+                        	<div class="row">
+                        	<div class="portlet">
+                                <div class="portlet-body">
+                                
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+							<button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 			<div class="modal fade container in" id="theme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -166,7 +188,7 @@
 						<th width="30%">
 							描述
 						</th>
-						<th width="5%">
+						<th width="10%">
 							 操作
 						</th>
 					</tr>
@@ -194,6 +216,9 @@
 								移除 </a>
 								<a data-id="{%$theme[theme].id%}" class="btn btn-sm blue editBtn">
 								编辑 </a>
+                                <a data-id="{%$theme[theme].id%}" data-toggle="modal" href="#product" class="btn btn-sm yellow viewBtn">
+                                查看商品
+                                </a>
 							</div>
 						</td>
 					</tr>
@@ -250,12 +275,12 @@ jQuery(document).ready(function() {
 		}
 	});
 	
-	$('img').error(function(e) {
+	$('img').live('error',function(e) {
 		e.currentTarget.src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzE0MHgxNDAKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNGYyNjk0N2JiMSB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE0ZjI2OTQ3YmIxIj48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9Ijc0LjUiPjE0MHgxNDA8L3RleHQ+PC9nPjwvZz48L3N2Zz4=";
 	});
 	
 	$('.removeBtn').on('click',function(event){
-		var id = $(this).data(id);
+		var id = $(this).data('id');
 		var ths = $(this);
 		$.post('{%url c=theme a=remove%}',{id:id},function(data){
 			if(data.code == 1)
@@ -263,6 +288,7 @@ jQuery(document).ready(function() {
 				ths.parents('tr').remove();
 			}
 		});
+		return false;
 	});
 	
 	$('.editBtn').on('click',function(event){
@@ -353,6 +379,60 @@ jQuery(document).ready(function() {
 		}
 		
 	});
+	
+	function showProductInContainer(product,tid)
+	{
+		path = '';
+		for(var i=0;i<product.img.length;i++)
+		{
+			if(product.img[i].small_path != '' && product.img[i].small_path!='undefined')
+			{
+				path = product.img[i].small_path;
+				break;
+			}
+			else
+			{
+				path = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzE0MHgxNDAKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNGYyNjk0N2JiMSB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE0ZjI2OTQ3YmIxIj48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9Ijc0LjUiPjE0MHgxNDA8L3RleHQ+PC9nPjwvZz48L3N2Zz4=';
+			}
+		}
+		var tpl = '<div class="col-sm-6 col-md-4 product_container"><div class="thumbnail"><img src="'+path+'" style="height: 200px; width: 200px; display: block;"><div class="caption"><h4>'+product.name+'</h4><b>'+product.short_description+'</b><b><a data-tid="'+tid+'" data-pid="'+product.id+'" class="btn red btn-xs removeBtn">从主题中移除</a></b></div></div></div>';
+		$('#product').find('.portlet-body').append(tpl);
+	}
+	
+	$('#product').on('shown.bs.modal',function(event){
+		var Btn = $(event.relatedTarget);//获取输出modal的按钮
+		var id = Btn.data('id');
+		$('#product .portlet-body').empty();
+		var blockui = Metronic.blockUI({
+			target: '#product .portlet-body',
+			overlayColor: 'none',
+			boxed: true
+		});
+		var ajax = $.get('{%url c=theme a=information%}',{id:id});
+		var showProduct = $.when(ajax).done(function(response){
+			var products = response.body.product;
+			for(var i=0;i<products.length;i++)
+			{
+				showProductInContainer(products[i],id);
+			}
+			Metronic.unblockUI('#product .portlet-body');
+		}).fail(function(){
+			alert('失败');
+		});
+	});
+	
+	$('.removeBtn').live('click',function(){
+		var tid = $(this).data('tid');
+		var pid = $(this).data('pid');
+		var ths = $(this);
+		$.post('{%url c=theme a=reproduct%}',{tid:tid,pid:pid},function(response){
+			if(response.code == 1)
+			{
+				ths.parents('.product_container').remove();
+			}
+		});
+	});
+
 });
 </script>
 <!-- END JAVASCRIPTS -->

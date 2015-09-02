@@ -127,8 +127,8 @@ class productModel extends model
 			'sku' => $post->sku,
 			'category' => $post->category,
 			'bid'=> $post->bid,
-			'starttime' => strtotime($post->starttime),
-			'endtime' => strtotime($post->endtime),
+			'starttime' => empty($post->starttime)?'0':strtotime($post->starttime),
+			'endtime' => empty($post->endtime)?'0':strtotime($post->endtime),
 			'description' => $post->description,
 			'short_description' => $post->short_description,
 			'price' => $post->price,
@@ -190,6 +190,7 @@ class productModel extends model
 					}
 				}
 			}
+			
 			switch ($value['data'])
 			{
 				case 'id':
@@ -205,6 +206,7 @@ class productModel extends model
 				default:
 					$parameter .= $value['data'].',';
 			}
+
 			if(isset($json['action']) && $json['action'] == 'filter')
 			{
 				//过滤器

@@ -13,15 +13,6 @@ class productimgModel extends model
 	}
 	
 	/**
-	 * 搜索所有无效的图像数据
-	 */
-	function GetAndRemoveInvalidImg()
-	{
-		//select * from productimg where `productimg`.pid not in (select id from product)
-		return $this->where('`productimg`.pid not in (select id from product)')->delete();
-	}
-	
-	/**
 	 * 清除产品下的所有图像包括文件
 	 * @param unknown $pid
 	 * @return \system\core\Ambigous
@@ -34,6 +25,7 @@ class productimgModel extends model
 			filesystem::unlink($img['small_path']);
 			filesystem::unlink($img['base_path']);
 			filesystem::unlink($img['thumbnail_path']);
+			filesystem::unlink($img['oldimage']);
 		}
 		return $this->where('pid=?',array($pid))->delete();
 	}
@@ -52,9 +44,9 @@ class productimgModel extends model
 		))->select($name);
 		foreach ($result as &$img)
 		{
-			$img['oldimage'] = empty($img['oldimage'])?'':file::realpathToUrl($img['base_path']);
+			$img['oldimage'] = empty($img['oldimage'])?'':file::realpathToUrl($img['oldimage']);
 			$img['base_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
-			$img['small_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
+			$img['small_path'] = empty($img['small_path'])?'':file::realpathToUrl($img['small_path']);
 			$img['thumbnail_path'] = empty($img['thumbnail_path'])?'':file::realpathToUrl($img['thumbnail_path']);
 		}
 		return $result;

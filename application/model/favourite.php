@@ -21,7 +21,10 @@ class favouriteModel extends model
 		$start = empty($start)?0:$start;
 		$length = empty($length)?5:$length;
 		$this->limit($start,$length);
-		$this->where('product.status = ?',array($status));
+		if(!empty($status))
+		{
+			$this->where('product.status = ?',array($status));
+		}
 		$this->table('product','left join','product.id=favourite.pid');
 		$this->orderby('favourite.time','desc');
 		$product = $this->where('uid=?',array($uid))->select();

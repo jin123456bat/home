@@ -9,6 +9,7 @@ use application\classes\collection;
 use system\core\random;
 use application\classes\prototype;
 use application\classes\product;
+use application\classes\order;
 class cartControl extends control
 {
 	/**
@@ -350,7 +351,7 @@ class cartControl extends control
 		}
 		$feeamount = $shipModel->getPrice($shipid,$totalMoney);
 		//订单编号
-		$orderno = date('YmdHis').$this->session->id.random::number(4);
+		$orderno = (new order())->swift($this->session->id);
 		//订单税款 免税
 		$ordertaxamount = 0;
 		

@@ -60,8 +60,14 @@ class prototypeControl extends control
 		$id = filter::int($this->post->id);
 		if (!empty($id)) {
 			$prototypeModel = $this->model('prototype');
+			$prototype = $prototypeModel->get($id);
 			if($prototypeModel->remove($id))
 			{
+				if($prototype['type'] == 'radio')
+				{
+					$collectionModel = $this->model('collection');
+					$collectionModel->remove($prototype['pid']);
+				}
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
 			return json_encode(array('code'=>0,'result'=>'删除失败'));

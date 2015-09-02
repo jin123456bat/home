@@ -36,22 +36,28 @@ class orderlistModel extends model
 	const STATUS_QUITE = 3;
 	
 	/**
-	 * 发货完毕，等待评论
+	 * 发货完毕，等待收货
 	 * @var unknown
 	 */
 	const STATUS_WAIT_SHIP = 4;
 	
 	/**
+	 * 收货完毕等待评论
+	 * @var unknown
+	 */
+	const STATUS_SHIPPED = 5;
+	
+	/**
 	 * 订单完成评论
 	 * @var unknown
 	 */
-	const STATUS_COMPLETE = 5;
+	const STATUS_COMPLETE = 6;
 	
 	/**
 	 * 订单进入退款流程
 	 * @var unknown
 	 */
-	const STATUS_EXIT = 6;
+	const STATUS_EXIT = 7;
 	
 	/**
 	 * 构造函数
@@ -197,17 +203,17 @@ class orderlistModel extends model
 	 */
 	function create($data, $orderdetail)
 	{
-		$data['ship_score'] = 0;
-		$data['service_score'] = 0;
-		$data['goods_score'] = 0;
-		$data['contetn'] = '';
+		$data[] = 0;
+		$data[] = 0;
+		$data[] = 0;
+		$data[] = '';
 		if ($this->insert($data)) {
 			$oid = $this->lastInsertId();
 			$orderdetailModel = $this->model('orderdetail');
 			foreach ($orderdetail as $detail) {
 				$detail = array_merge(array(
-					NULL,
-					$oid
+					'id'=>NULL,
+					'oid'=>$oid
 				), $detail);
 				foreach ($detail as &$array) {
 					if (is_array($array)) {

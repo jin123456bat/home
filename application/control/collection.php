@@ -42,30 +42,24 @@ class collectionControl extends control
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'product',roleModel::POWER_UPDATE))
 		{
-			try{
-				$data = json_decode(htmlspecialchars_decode($this->post->data));
-				$pid = $this->post->pid;
-				$collectionModel = $this->model('collection');
-				foreach ($data as $value)
-				{
-					$array = array();
-					$type = $value->type;
-					$did = $value->did;
-					$val = $value->value;
-					$didd = explode(',', $did);
-					foreach ($didd as $a)
-					{
-						list($x,$y) = explode(':',$a);
-						$array[$x] = $y;
-					}
-					$collectionModel->create($array,$pid,$type,$val);
-				}
-				return json_encode(array('code'=>1,'result'=>'ok'));
-			}
-			catch (\Exception $e)
+			$data = json_decode(htmlspecialchars_decode($this->post->data));
+			$pid = $this->post->pid;
+			$collectionModel = $this->model('collection');
+			foreach ($data as $value)
 			{
-				return json_encode(array('code'=>0,'result'=>'failed'));
+				$array = array();
+				$type = $value->type;
+				$did = $value->did;
+				$val = $value->value;
+				$didd = explode(',', $did);
+				foreach ($didd as $a)
+				{
+					list($x,$y) = explode(':',$a);
+					$array[$x] = $y;
+				}
+				$collectionModel->create($array,$pid,$type,$val);
 			}
+			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
 		return json_encode(array('code'=>2,'result'=>'没有权限'));
 	}

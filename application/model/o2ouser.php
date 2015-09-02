@@ -8,11 +8,21 @@ use system\core\model;
  */
 class o2ouserModel extends model
 {
+	/**
+	 * 构造函数
+	 * @param unknown $table
+	 */
 	function __construct($table)
 	{
 		parent::__construct($table);
 	}
 	
+	/**
+	 * 获取推广员信息
+	 * @param unknown $id
+	 * @param string $name
+	 * @return NULL
+	 */
 	function get($id,$name = '*')
 	{
 		$this->table('user','left join','o2ouser.uid=user.id');
@@ -42,6 +52,11 @@ class o2ouserModel extends model
 		return $this->insert($data);
 	}
 	
+	/**
+	 * 移除推广员
+	 * @param unknown $uid
+	 * @return \system\core\Ambigous
+	 */
 	function remove($uid)
 	{
 		return $this->where('uid=?',array($uid))->delete();
@@ -60,6 +75,10 @@ class o2ouserModel extends model
 		return isset($result[0]['id'])?$result[0]['id']:NULL;
 	}
 	
+	/**
+	 * 编译推广员所有信息
+	 * @return Ambigous <boolean, multitype:>
+	 */
 	function fetchAll()
 	{
 		$this->table('user','left join','o2ouser.uid=user.id');

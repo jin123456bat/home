@@ -47,7 +47,10 @@ class commentControl extends control
 			$result = $commentModel->getByPid($pid,$start,$length);
 			foreach($result as &$comment)
 			{
-				$comment['telephone'] = $this->model('user')->get($comment['uid'],'telephone');
+				$uinfo = $this->model('user')->get($comment['uid']);
+				$comment['telephone'] = $uinfo['telephone'];
+				$comment['gravatar'] = $uinfo['gravatar'];
+				$comment['username'] = $uinfo['username'];
 				unset($comment['uid']);
 				$comment['img'] = $this->model('comment_pic')->getByCid($comment['id'],'url');
 			}

@@ -220,11 +220,13 @@
 					<a href="{%url c=theme a=admin%}">
 					主题管理</a>
 				</li>
+                <!--
                 <li class="{%if $smarty.get.c==register && $smarty.get.a==admin%}active{%/if%}">
                 	<a href="{%url c=register a=admin%}">
                     新用户活动
                     </a>
                 </li>
+                -->
 			</ul>
 		</li>
 		
@@ -261,7 +263,7 @@
 		</li>
 		<li {%if $smarty.get.c==ship && $smarty.get.a==admin
         		|| $smarty.get.c==system &&(
-                $smarty.get.a==base || $smarty.get.a==payment
+                $smarty.get.a==base || $smarty.get.a==payment || $smarty.get.a==cache
                 )
                 %}class="active open"{%/if%}>
 			<a href="javascript:;">
@@ -270,6 +272,7 @@
 			<span class="arrow {%if $smarty.get.c==ship && $smarty.get.a==admin
             						|| ($smarty.get.c==system && ($smarty.get.a==base
                                     || $smarty.get.a==payment
+                                    || $smarty.get.a==cache
                                     ))%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
@@ -285,52 +288,11 @@
 					<a href="{%url c=system a=payment%}">
 					结算</a>
 				</li>
-				
-				<li>
-					<a href="form_wizard.html">
-					Form Wizard</a>
-				</li>
-				<li>
-					<a href="form_validation.html">
-					Form Validation</a>
-				</li>
-				<li>
-					<a href="form_image_crop.html">
-					<span class="badge badge-roundless badge-danger">new</span>Image Cropping</a>
-				</li>
-				<li>
-					<a href="form_fileupload.html">
-					Multiple File Upload</a>
-				</li>
-				<li>
-					<a href="form_dropzone.html">
-					Dropzone File Upload</a>
-				</li>
-			</ul>
-		</li>
-		<li>
-			<a href="javascript:;">
-			<i class="icon-folder"></i>
-			<span class="title">缓存管理</span>
-			<span class="arrow "></span>
-			</a>
-			<ul class="sub-menu">
-				<li>
-					<a href="{%url c=cache a=product%}">
-					商品缓存</a>
-				</li>
-				<li>
-					<a href="quick_sidebar_over_content.html">
-					Over Content</a>
-				</li>
-				<li>
-					<a href="quick_sidebar_over_content_transparent.html">
-					Over Content & Transparent</a>
-				</li>
-				<li>
-					<a href="quick_sidebar_on_boxed_layout.html">
-					Boxed Layout</a>
-				</li>
+                <li{%if $smarty.get.c==system && $smarty.get.a==cache%} class="active"{%/if%}>
+                	<a href="{%url c=system a=cache%}">
+                    缓存
+                    </a>
+                </li>
 			</ul>
 		</li>
 		<li {%if $smarty.get.c==log && $smarty.get.a==index%}class="active"{%/if%}>

@@ -15,5 +15,6 @@ class cacheControl extends control
 	function productimg()
 	{
 		$this->thread->call('productimg');
+		echo "OK";
 	}
 }

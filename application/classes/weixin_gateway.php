@@ -125,7 +125,7 @@ class weixin_gateway
 			$timeout = (new time())->format($this->_system->get('timeout','payment'), false);
 			//生成预支付订单
 			$data = array(
-				'device_info' => 'WEB',
+				//'device_info' => 'WEB',
 				'time_start' => date("YmdHis",$order['createtime']),
 				'time_expire' => date("YmdHis",$order['createtime']+$timeout),
 				'appid' => $this->_system->get('appid','weixin'),

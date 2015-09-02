@@ -107,12 +107,14 @@ class orderControl extends control
 			}
 			else
 			{
-				return $this->call('index', '__404');
+				$this->response->setCode(302);
+				$this->response->addHeader('Location',$this->http->url('admin','__404'));
 			}
 		}
 		else
 		{
-			return $this->call('index', '__404');
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('index','__404'));
 		}
 	}
 	
@@ -167,6 +169,31 @@ class orderControl extends control
 	}
 	
 	/**
+	 * 取消订单
+	 */
+	function cancle()
+	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$id = filter::int($this->post->id);
+		$orderModel = $this->model('orderlist');
+		$order = $orderModel->get($id);
+		if(!empty($order))
+		{
+			if($order['status'] == orderlistModel::STATUS_PAYING && $order['uid'] == $this->session->id)
+			{
+				if($orderModel->setStatus($id,orderlistModel::STATUS_QUITE,$_SERVER['REQUEST_TIME'],0,''))
+				{
+					return json_encode(array('code'=>1,'result'=>'ok'));
+				}
+				return json_encode(array('code'=>3,'result'=>'取消订单失败'));
+			}
+			return json_encode(array('code'=>0,'result'=>'订单无法取消'));
+		}
+		return json_encode(array('code'=>4,'result'=>'订单不存在'));
+	}
+	
+	/**
 	 * 订单结算
 	 */
 	function payment()
@@ -181,10 +208,11 @@ class orderControl extends control
 			{
 				if($order['status'] != 0)
 					return json_encode(array('code'=>6,'result'=>'该订单已经结算过了'));
+				$trade_type = $this->get->trade_type;
 				switch($order['paytype'])
 				{
 					case 'weixin':
-						if(empty($this->get->trade_type))
+						if(empty($trade_type))
 							return json_encode(array('code'=>5,'result'=>'需要指定支付方式'));
 						//假如是微信，则将所有参数转发给weixin_gateway由weixin_gateway来处理各种参数
 						$weixin = new weixin_gateway(config('weixin'),$this->model('system'));
@@ -193,10 +221,16 @@ class orderControl extends control
 						if(!empty($result) && $_SERVER['REQUEST_TIME']-$result['createtime']<1800)
 						{
 							//假如缓存中的预支付订单存在则处理缓存中的预支付订单
-							$view = new view(config('view'), 'wechatpay.html');
 							$data = $weixin->output($result['prepay_id']);
-							$view->assign('data', $data);
-							return $view->display();
+							switch ($trade_type)
+							{
+								case 'app':
+									return json_encode($data);
+								default:
+									$view = new view(config('view'), 'wechatpay.html');
+									$view->assign('data', $data);
+									return $view->display();
+							}
 						}
 						
 						$weixin->setGetParameter($this->get);
@@ -213,10 +247,17 @@ class orderControl extends control
 						{
 							//success
 							$weixinprepayModel->create($order['orderno'],$response['content']);
-							$view = new view(config('view'), 'wechatpay.html');
 							$data = $weixin->output($response['content']['prepay_id']);
-							$view->assign('data', $data);
-							return $view->display();
+							switch ($trade_type)
+							{
+								case 'app':
+									return json_encode($data);
+								default:
+									$view = new view(config('view'), 'wechatpay.html');
+									$view->assign('data', $data);
+									return $view->display();
+									//break;
+							}
 						}
 						else if($response['action'] =='error')
 						{
@@ -225,7 +266,6 @@ class orderControl extends control
 						}
 						break;
 					case 'alipay':
-						$trade_type = $this->get->trade_type;
 						$alipay = new alipay_gateway(config('alipay'),$this->model('system'),$trade_type);
 						$result = $alipay->submit($order,$orderdetail);
 						switch ($result['code'])
@@ -327,7 +367,18 @@ class orderControl extends control
 	 */
 	function notify()
 	{
-		$result = false;
+		/**
+		 * 保存订单的一些基本信息
+		 */
+		$orderno = ''; //订单编号
+		$time = 0; //支付交易时间
+		$paynumber = '';//支付单号
+		$tradetotal = 0;//交易金额
+		
+		
+		$result = false;//订单是否交易成功状态
+		$orderModel = $this->model('orderlist');
+		//从微信或者支付宝的响应信息中获得需要的参数
 		switch ($this->get->type)
 		{
 			case 'weixin':
@@ -339,22 +390,16 @@ class orderControl extends control
 				$content = $weixin->xmlToArray($content);
 				if($weixin->verifyResult($content))
 				{
-					$orderModel = $this->model('orderlist');
-					$order = $orderModel->where('orderno=?',array($content['out_trade_no']))->select();
-					if(empty($order))
-						return '<xml><return_code><![CDATA[FAILED]]></return_code><return_msg><![CDATA[你确定这个订单存在???]]></return_msg></xml>';
-					$order = $order[0];
-					if($order['status'] == 0)
+					$orderno = $content['out_trade_no'];
+					$time = $content['time_end'];
+					$paynumber = $content['transaction_id'];
+					$tradetotal = $content['cash_fee']/100;
+					
+					//订单尚未处理
+					if($content['result_code'] == 'SUCCESS')
 					{
-						//订单尚未处理
-						if($content['result_code'] == 'SUCCESS')
-						{
-							$result = true;
-						}
-					}
-					else
-					{
-						return '<xml><return_code><![CDATA[FAILED]]></return_code><return_msg><![CDATA[我知道了！！！]]></return_msg></xml>';
+						//代表支付成功
+						$result = true;
 					}
 				}
 				else
@@ -369,19 +414,23 @@ class orderControl extends control
 					$notify_id = $this->post->notify_id;//通知id
 					$sign_type = $this->post->sign_type;//签名方式
 					$sign = $this->post->sign;//签名
-					$orderno = $this->post->out_trade_no;
-					$paynumber = $this->post->trade_no;
-					$status = $this->post->trade_status;
+					$orderno = $this->post->out_trade_no;//订单号
+					$paynumber = $this->post->trade_no;//支付单号
+					$tradetotal = $this->post->total_fee;//外币总额
+					
+					$status = $this->post->trade_status;//状态
+					
 					$alipay = new alipay_gateway(config('alipay'), $this->model('system'), '');
 					if($alipay->verify_notify($notify_id))
 					{
 						$parameter = $alipay->filterParameter($_POST);
 						ksort($parameter);
 						reset($parameter);
-						if($alipay->sign($parameter) != $this->post->sign)
+						if($alipay->sign($parameter,$sign_type) != $this->post->sign)
 							return 'sign error';
 						if ($status == 'TRADE_FINISHED')
 						{
+							//代表支付成功
 							$result = true;
 						}
 						if($status == 'TRADE_CLOSED')
@@ -402,14 +451,32 @@ class orderControl extends control
 			default:break;
 		}
 		
+		//获取订单信息
+		$order = $orderModel->where('orderno=?',array($orderno))->select();
+		if(empty($order))
+			return false;
+		$order = $order[0];
 		
 		if($result)
 		{
 			//交易成功
-			if($orderModel->setStatus($content['out_trade_no'],orderlistModel::STATUS_FINISH,$content['time_end'],$content['cash_fee']/100,$content['transaction_id']))
+			if($orderModel->setStatus($orderno,orderlistModel::STATUS_FINISH,$time,$tradetotal,$paynumber))
 			{
+				$userModel = $this->model('user');
 				//增加一下用户的消费金额
-				$this->model('user')->where('id=?',array($order['uid']))->increase('cost',$content['cash_fee']/100);
+				$userModel->where('id=?',array($order['uid']))->increase('cost',$tradetotal);
+				$oid = $userModel->get($order['uid'],'oid');
+				//给推广员增加推广费
+				if(!empty($oid))
+				{
+					$o2oModel = $this->model('o2ouser');
+					$o2o = $o2oModel->get($oid);
+					if(!empty($o2o))
+					{
+						$money = $o2o['rate'] * $tradetotal;
+						$o2oModel->where('id=?',array($o2o['id']))->increase('money',$money);
+					}
+				}
 				//给用户一定的积分
 				$orderdetail = $orderModel->getOrderDetail($order['id']);
 				foreach ($orderdetail as $ordergoods)
@@ -428,6 +495,10 @@ class orderControl extends control
 				else if($this->get->type == 'alipay')
 				{
 					return 'success';
+				}
+				else
+				{
+					return "请明确一下type";
 				}
 			}
 			else
@@ -560,7 +631,7 @@ class orderControl extends control
 		$content = $this->post->content;
 		$orderModel = $this->model('orderlist');
 		$order = $orderModel->get($id);
-		if($order['status'] == orderlistModel::STATUS_WAIT_SHIP)
+		if($order['status'] == orderlistModel::STATUS_SHIPPED)
 		{
 			if($orderModel->score($id,$this->session->id,$ship_score,$service_score,$goods_score,$content))
 			{

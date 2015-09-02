@@ -47,13 +47,13 @@
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 	{%include file='admin/public/sidebar.html'%}
-	<!-- BEGIN CONTENT -->
+    <!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			{%include file='admin/public/style.html'%}
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			推广 <small>o2o会员管理</small>
+			缓存 <small>清空缓存</small>
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -63,11 +63,11 @@
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="#">推广</a>
+						<a href="#">系统配置</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="{%url c=o2o a=admin%}">o2o会员管理</a>
+						<a href="{%url c=system a=cache%}">缓存</a>
 					</li>
 				</ul>
 			</div>
@@ -75,91 +75,7 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-				
-					 <div class="portlet box red">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-user"></i>o2o会员
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="table-scrollable">
-								<table class="table table-hover">
-								<thead>
-								<tr>
-									<th>
-										 用户名
-									</th>
-									<th>
-										 手机号
-									</th>
-									<th>
-										创建时间
-									</th>
-                                    <th>
-                                    	推广员
-                                    </th>
-                                    <th>
-                                    	QQ
-                                    </th>
-                                    <th>
-                                    	地址
-                                    </th>
-									<th>
-										 分佣比例
-									</th>
-									<th>
-										 客户数量
-									</th>
-									<th>
-										 分佣金额
-									</th>
-									<th>
-										操作
-									</th>
-								</tr>
-								</thead>
-								<tbody>
-								{%section name=o2o loop=$o2o%}
-								<tr>
-									<td>
-										 {%$o2o[o2o].username%}
-									</td>
-									<td>
-										 {%$o2o[o2o].telephone%}
-									</td>
-									<td>
-										{%$o2o[o2o].ctime|date_format:"Y-m-d H:i:s"%}
-									</td>
-                                    <td>
-                                    	{%$o2o[o2o].name|default:""%}
-                                    </td>
-                                    <td>
-                                    	{%$o2o[o2o].qq|default:""%}
-                                    </td>
-                                    <td>
-                                    	{%$o2o[o2o].address|default:""%}
-                                    </td>
-									<td>
-										 {%$o2o[o2o].rate%}
-									</td>
-									<td>
-										<a href="{%url c=o2o a=o2oclient%}&id={%$o2o[o2o].uid%}"><span class="label label-success">
-										{%$o2o[o2o].num%} </span></a>
-									</td>
-									<td>
-										 {%$o2o[o2o].o_money%}
-									</td>
-									<td>
-										<a href="{%url c=o2o a=remove%}&id={%$o2o[o2o].uid%}" class="btn btn-sm red-stripe default">删除</a>
-									</td>
-								</tr>
-								{%/section%}
-								</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
+					 <button class="btn green" id="productimg">清空无效商品图像缓存</button>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
@@ -193,13 +109,19 @@
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
 <script>
-	  jQuery(document).ready(function() {	
-		 Metronic.init(); // init metronic core components
-Layout.init(); // init current layout
-QuickSidebar.init(); // init quick sidebar
-Demo.init(); // init demo features
-	  });
-   </script>
+jQuery(document).ready(function() {	
+	Metronic.init(); // init metronic core components
+	Layout.init(); // init current layout
+	QuickSidebar.init(); // init quick sidebar
+	Demo.init(); // init demo features
+	
+	$('#productimg').on('click',function(){
+		$.get('{%url c=cache a=productimg%}',{},function(data){
+			alert(data);
+		});
+	});
+});
+</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->

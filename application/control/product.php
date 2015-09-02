@@ -13,6 +13,7 @@ use application\classes\collection;
 use system\core\random;
 use application\classes\prototype;
 use application\classes\product;
+use application\classes\order;
 /**
  * 商品控制器
  * @author jin12
@@ -153,7 +154,7 @@ class productControl extends control
 		//支付单号
 		$paynumber = '';
 		//订单编号
-		$orderno = date('YmdHis').$this->session->id.random::number(4);
+		$orderno = (new order())->swift($this->session->id);
 		//成交时间
 		$tradetime = 0;
 		//创建时间
@@ -192,7 +193,7 @@ class productControl extends control
 		
 		$order = array(
 			NULL,$uid,$paytype,$paynumber,$ordertotalamount,$orderno,$ordertaxamount,$ordergoodsamount
-			,$feeamount,$tradetime,$totalamount,$consignee,$consigneetel,$consigneeaddress,$consigneeprovince
+			,$feeamount,$tradetime,$createtime,$totalamount,$consignee,$consigneetel,$consigneeaddress,$consigneeprovince
 			,$consigneecity,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client,
 			$action_type
 		);
@@ -222,12 +223,12 @@ class productControl extends control
 		$product = $this->model('product')->select();
 		foreach($product as &$good)
 		{
-			$good['img'] = $this->model('productimg')->getByPid($product['id']);
+			$good['img'] = $this->model('productimg')->getByPid($good['id']);
 			switch ($good['activity'])
 			{
-				case 'sale':$good['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
-				case 'seckill':$good['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
-				case 'fullcut':$good['activity_description'] = $this->model('fullcutdetail')->get->getByPid($product['id']);break;
+				case 'sale':$good['activity_description'] = $this->model('sale')->getByPid($good['id']);break;
+				case 'seckill':$good['activity_description'] = $this->model('seckill')->getByPid($good['id']);break;
+				case 'fullcut':$good['activity_description'] = $this->model('fullcutdetail')->getByPid($good['id']);break;
 				default:break;
 			}
 			$goods['prototype'] = $this->model('prototype')->getByPid($good['id']);
@@ -358,8 +359,7 @@ class productControl extends control
 		{
 			$productModel = $this->model('product');
 			$id = $productModel->save($this->post);
-			if($id)
-			{
+			
 				$pid = empty($this->post->id)?$id:$this->post->id;
 				if(!empty($this->post->picid))
 				{
@@ -375,8 +375,6 @@ class productControl extends control
 				}
 				$this->model('log')->write($this->session->username,'修改了商品属性'.$id);
 				return json_encode(array('code'=>1,'result'=>'ok','id'=>$id));
-			}
-			return json_encode(array('code'=>2,'result'=>'failed'));
 		}
 		return json_encode(array('code'=>0,'result'=>'权限不足'));
 	}
@@ -510,15 +508,19 @@ class productControl extends control
 					}
 					$product['prototype'] = $prototypeModel->getByPid($product['id']);
 					$product['img'] = $productimgModel->getByPid($product['id']);
-					foreach ($product['img'] as &$img)
-					{
-						$img['thumbnail_path'] = file::realpathToUrl($img['thumbnail_path']);
-						$img['small_path'] = file::realpathToUrl($img['small_path']);
-						$img['base_path'] = file::realpathToUrl($img['base_path']);
-					}
 					if(isset($product['category']))
 					{
 						$product['category'] = $categoryModel->get($product['category'],'name');
+					}
+					if(isset($product['activity']))
+					{
+						switch ($product['activity'])
+						{
+							case 'sale':$product['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
+							case 'seckill':$product['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
+							case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
+							default:break;
+						}
 					}
 				}
 			}

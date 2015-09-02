@@ -22,7 +22,7 @@ class themeControl extends control
 		$result['middlepic'] = empty($result['middlepic'])?'':file::realpathToUrl($result['middlepic']);
 		$result['smallpic'] = empty($result['smallpic'])?'':file::realpathToUrl($result['smallpic']);
 		$result['product'] = $themeModel->product($id);
-		foreach($result['product'] as $product)
+		foreach($result['product'] as &$product)
 		{
 			switch ($product['activity'])
 			{
@@ -199,7 +199,8 @@ class themeControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'theme',roleModel::POWER_DELETE))
 		{
 			$id = $this->post->id;
-			if($this->where('id=?',array($id))->delete())
+			$themeModel = $this->model('theme');
+			if($themeModel->remove($id))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
@@ -228,4 +229,29 @@ class themeControl extends control
 		}
 		return json_encode(array('code'=>2,'result'=>'权限不足'));
 	}
+	
+	/**
+	 * 移除主题下面的商品
+	 */
+	function reproduct()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'theme',roleModel::POWER_UPDATE))
+		{
+			$tid = filter::int($this->post->tid);
+			$pid = filter::int($this->post->pid);
+			$themeModel = $this->model('theme');
+			if($themeModel->removeProduct($tid,$pid))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'failed'));
+		}
+		else
+		{
+			return json_encode(array('code'=>2,'result'=>'权限不足'));
+		}
+	}
+	
 }
