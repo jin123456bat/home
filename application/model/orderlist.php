@@ -2,6 +2,7 @@
 namespace application\model;
 
 use system\core\model;
+use system\core\file;
 
 /**
  * 订单数据模型
@@ -84,8 +85,12 @@ class orderlistModel extends model
 	 * @param unknown $uid        	
 	 * @return Ambigous <unknown, boolean, multitype:>
 	 */
-	function fetchAll($uid,$start = 0,$length = 0)
+	function fetchAll($uid,$status = NULL,$start = 0,$length = 0)
 	{
+		if($status !== NULL)
+		{
+			$this->where('status = ?',array($status));
+		}
 		if(!empty($start) && !empty($length))
 		{
 			$this->limit($start,$length);
@@ -94,9 +99,6 @@ class orderlistModel extends model
 		$result = $this->where('uid=?', array(
 			$uid
 		))->select();
-		foreach ($result as &$order) {
-			$order['orderdetail'] = $this->getOrderDetail($order['id']);
-		}
 		return $result;
 	}
 
@@ -138,9 +140,19 @@ class orderlistModel extends model
 	function getOrderDetail($id)
 	{
 		$orderdetailModel = $this->model('orderdetail');
-		return $orderdetailModel->where('oid=?', array(
+		$result = $orderdetailModel->where('oid=?', array(
 			$id
 		))->select();
+		$productimgModel = $this->model('productimg');
+		foreach($result as &$goods)
+		{
+			$img = $productimgModel->limit(1)->orderby('orderby','desc')->where('pid=?',array($goods['pid']))->select();
+			if(isset($img[0]['thumbnail_path']))
+			{
+				$goods['img'] = file::realpathToUrl($img[0]['thumbnail_path']);
+			}
+		}
+		return $result;
 	}
 
 	/**

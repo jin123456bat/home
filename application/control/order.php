@@ -609,10 +609,15 @@ class orderControl extends control
 		}
 		else
 		{
+			$status = filter::int($this->get->status);
 			$start = filter::int($this->get->start);
 			$length = filter::int($this->get->length);
 			$orderModel = $this->model('orderlist');
-			$result = $orderModel->fetchAll($this->session->id,$start,$length);
+			$result = $orderModel->fetchAll($this->session->id,$status,$start,$length);
+			foreach($result as &$order)
+			{
+				$order['goods'] = $orderModel->getOrderDetail($order['id']);
+			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 		}
 	}

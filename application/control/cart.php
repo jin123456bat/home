@@ -245,9 +245,10 @@ class cartControl extends control
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$response = json_decode($this->calculation($this->session->id));
 		//总金额 优惠前的价格
-		$totalMoney = $response->body;
+		//$totalMoney = $response->body;
 		//订单货款
-		$ordergoodsamount = $totalMoney;
+		//$ordergoodsamount = $totalMoney;
+		$ordergoodsamount = 0;
 		//购物车中的商品
 		$cartModel = $this->model('cart');
 		//计算折扣
@@ -257,81 +258,72 @@ class cartControl extends control
 		$orderdetail = array();
 		$collectionModel = $this->model('collection');
 		$prototypeModel = $this->model('prototype');
+		//优惠券信息
+		$discount = empty($this->post->coupon)?'':$this->post->coupon;
+		$couponModel = $this->model('coupon');
+		//要使用的优惠卷信息
+		$coupon = '';
+		//要被打折商品的总价
+		$tobeCouponamount = 0;
 		foreach ($cart as $product)
 		{
 			$pricestocksku = $collectionModel->find($product['pid'],unserialize($product['content']));
 			$prototype = $prototypeModel->getByPid($product['pid']);
 			$prototype = (new prototype())->format($prototype,$product['content']);
+			//商品实际价格  实际上的单价
+			$goodstruthprice = $product['price'];
 			if(!empty($pricestocksku))
 			{
-				$ordergoodsamount += $pricestocksku['price'];
-				$orderdetail[] = array('sku'=>$pricestocksku['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'unitprice'=>$pricestocksku['price'],'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
+				$goodstruthprice = $pricestocksku['price'];
 			}
-			else
+			
+			switch ($product['activity'])
 			{
-				$ordergoodsamount += $product['price'];
-				$orderdetail[] = array('sku'=>$product['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'unitprice'=>$product['price'],'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
-			}
-		}
-		
-		if(empty($this->post->coupon))
-		{
-			//没有使用任何优惠
-			$discount = '';
-		}
-		else
-		{
-			$discount = $this->post->coupon;
-			$couponModel = $this->model('coupon');
-			foreach($cart as $product)
-			{
-				//计算商品使用优惠卷后的价格  注意订单的最终价格已经经过了活动计算  这里不用在计算了！！
-				switch ($product['activity'])
-				{
-					case 'fullcut':
-						/*$fullcut = $this->model('fullcut')->getPrice($product['pid'],$product['price']*$product['num']);
-						if($fullcut !== NULL)
-						{
-							$ordergoodsamount -= $fullcut['minus'];
-						}*/
-						break;
-					case 'sale':
-						/*$price = $this->model('sale')->getPrice($product['pid']);
-						if($price !== NULL)
-						{
-							$ordergoodsamount -= ($product['num']*$product['price']);
-							$ordergoodsamount += ($product['num']*$price);
-						}*/
-						break;
-					case 'seckill':
-						/*$price = $this->model('seckill')->getPrice($product['pid']);
-						if($price !== NULL)
-						{
-							$ordergoodsamount -= ($product['num']*$product['price']);
-							$ordergoodsamount += ($product['num']*$price);
-						}*/
-						break;
-					default:
-						$used = $couponModel->check($discount,$product);
-						if(!empty($used))
-						{
-							if($product['num'] * $product['price'] >= $used['max'])
-							{
-								if($couponModel->increaseTimes($used['couponno'],-1))
-								{
-									//对于没有参加活动的商品计算活动价格
-									$ordergoodsamount = $ordergoodsamount - ($product['num']*$product['price']);
-									$mon = $product['num'] * $product['price'];
-									$mon = ($used['type'] == 'fixed')?$mon-$used['value']:$mon*$used['value'];
-									$ordergoodsamount += $mon;
-									break;
-								}
-							}
-						}
-						break;
+				case 'seckill':
+					$seckillModel = $this->model('seckill');
+					$price = $seckillModel->getPrice($product['pid']);
+					if($price != NULL)
+					{
+						$goodstruthprice = $price;
+					}
+					break;
+				case 'sale':
+					$saleModel = $this->model('sale');
+					$price = $saleModel->getPrice($product['pid']);
+					if($price != NULL)
+					{
+						$goodstruthprice = $price;
+					}
+					break;
+				case 'fullcut':
+					$fullcutdetailModel = $this->model('fullcutdetail');
+					$fullcut = $fullcutdetailModel->getPrice($product['pid'],$goodstruthprice*$product['num']);
+					if($fullcut != NULL)
+					{
+						$goodstruthprice = ($goodstruthprice*$product['num'] - $fullcut['minus'])/$product['num'];
+					}
+					break;
+				default:
+					$used = $couponModel->check($discount,$product);
+					if(!empty($used))
+					{
+						$tobeCouponamount += ($goodstruthprice*$product['num']);
+						$coupon = $used;
 					}
 			}
+			
+			$t_orderdetail = array('sku'=>$product['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'unitprice'=>$goodstruthprice,'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
+			if(!empty($pricestocksku))
+			{
+				$t_orderdetail['sku'] = $pricestocksku['sku'];
+			}
+			//商品详情加入到数组
+			$orderdetail[] = $t_orderdetail;
+			$ordergoodsamount += ($goodstruthprice*$product['num']);
 		}
+		
+		
+		
 		//支付方式
 		$paytype = $this->post->paytype;
 		if(empty($paytype))
@@ -349,7 +341,7 @@ class cartControl extends control
 		{
 			return json_encode(array('code'=>5,'result'=>'错误的配送方案'));
 		}
-		$feeamount = $shipModel->getPrice($shipid,$totalMoney);
+		$feeamount = $shipModel->getPrice($shipid,$ordergoodsamount);
 		//订单编号
 		$orderno = (new order())->swift($this->session->id);
 		//订单税款 免税
@@ -361,6 +353,16 @@ class cartControl extends control
 		$tradetime = 0;
 		//订单总金额
 		$ordertotalamount = $feeamount+$ordertaxamount+$ordergoodsamount;
+		
+		if(!empty($coupon))
+		{
+			if($tobeCouponamount >= $coupon['max'])
+			{
+				$minus = ($coupon['type'] == 'fixed')?$coupon['value']:$tobeCouponamount*(1-$coupon['value']);
+				$ordertotalamount -= $minus;
+			}
+		}
+		
 		//成交总价  已经支付的价格
 		$totalamount = 0;
 		//收件人

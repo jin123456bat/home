@@ -34,6 +34,8 @@ class couponModel extends model
 	 */
 	function check($couponno,$product)
 	{
+		if(empty($couponno))
+			return false;
 		$this->where('starttime<? and (endtime>? or endtime=0)',array($_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
 		$this->where('times>?',array(0));
 		$this->where('coupondetail.categoryid=? or coupondetail.categoryid=?',array($product['category'],0));
