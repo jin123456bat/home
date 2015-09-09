@@ -25,7 +25,7 @@ class favouriteControl extends control
 		foreach($result as &$good)
 		{
 			$good['prototype'] = $this->model('prototype')->getByPid($good['pid']);
-			$good['productimg'] = $this->model('productimg')->getByPid($good['pid']);
+			$good['img'] = $this->model('productimg')->getByPid($good['pid']);
 			switch ($good['activity'])
 			{
 				case 'fullcut':$good['activity_description'] = $this->model('fullcutdetail')->getByPid($good['pid']);break;
@@ -33,6 +33,7 @@ class favouriteControl extends control
 				case 'seckill':$good['activity_description'] = $this->model('seckill')->getByPid($good['pid']);break;
 				default:break;
 			}
+			$good['origin'] = $this->model('flag')->getOrigin($good['origin']);
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}

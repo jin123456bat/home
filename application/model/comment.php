@@ -74,7 +74,7 @@ class commentModel extends model
 		$array = array(NULL,$uid,$pid,$time,$content,$score);
 		$this->insert($array);
 		$cid = $this->lastInsertId();
-		if(!empty($files))
+		if(!empty($files) && is_array($files))
 		{
 			foreach($files as $file)
 			{

@@ -163,11 +163,15 @@
 				</li>
 			</ul>
 		</li>
-		<li class="{%if $smarty.get.c==o2o && $smarty.get.a==admin%}active open{%/if%}">
+		<li class="{%if ($smarty.get.c==o2o && $smarty.get.a==admin)
+        				|| ($smarty.get.c==message && $smarty.get.a==admin)
+        			%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-docs"></i>
 			<span class="title">推广</span>
-			<span class="arrow {%if $smarty.get.c==o2o && $smarty.get.a==admin%}open{%/if%}"></span>
+			<span class="arrow {%if ($smarty.get.c==o2o && $smarty.get.a==admin)
+                            || ($smarty.get.c==message && $smarty.get.a==admin)
+                            %}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
 				<li class="{%if $smarty.get.c==o2o && $smarty.get.a==admin%}active{%/if%}">
@@ -175,6 +179,12 @@
 					<i class="icon-user"></i>
 					o2o会员</a>
 				</li>
+                <li class="{%if $smarty.get.c==message && $smarty.get.a==admin%}active{%/if%}">
+                	<a href="{%url c=message a=admin%}">
+                    <i class="fa fa-envelope-o"></i>
+                    反馈
+                    </a>
+                </li>
 			</ul>
 		</li>
 		<li class="{%if ($smarty.get.c==sale && $smarty.get.a==admin)
@@ -233,6 +243,7 @@
 		<li{%if ($smarty.get.c==user && $smarty.get.a==userlist)
 				||($smarty.get.c==admin && $smarty.get.a==adminlist)
 				||($smarty.get.c==role && $smarty.get.a==admin)
+                ||($smarty.get.c==address && $smarty.get.a==admin)
 			%} class="active open"{%/if%}>
 			<a href="javascript:;">
 			<i class="icon-user"></i>
@@ -240,9 +251,14 @@
 			<span class="arrow {%if $smarty.get.c==user && $smarty.get.a==userlist
 								||($smarty.get.c==admin && $smarty.get.a==adminlist)
 								||($smarty.get.c==role && $smarty.get.a==admin)
+                                ||($smarty.get.c==address && $smarty.get.a==admin)
 								%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
+            	<li{%if $smarty.get.c==address && $smarty.get.a==admin%} class="active"{%/if%}>
+					<a href="{%url c=address a=admin%}">
+					收货地址</a>
+				</li>
 				<li{%if $smarty.get.c==user && $smarty.get.a==userlist%} class="active"{%/if%}>
 					<a href="{%url c=user a=userlist%}">
 					会员列表</a>

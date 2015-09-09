@@ -1,14 +1,26 @@
 // JavaScript Document
 var collection = function(){
 	var table;
-	
+	var cache = [];
 	return {
 		init:function(){
 			var container = $('#collection_container');
 			table = $('<table class="table table-hover"><thead><th>属性</th><th>价格</th><th>库存</th><th>编码</th></thead><tbody></tbody></table>');
 			container.append(table);
 		},
+		
+		getcache:function(){
+			return cache;
+		},
+		setcache:function(){
+			cache = [];
+			table.find('tbody').empty();
+		},
+		
 		createPrototype:function(prototype,id){
+			
+			cache.push({prototype:prototype,id:id});
+			
 			if(table.find('tbody').html() == '')
 			{
 				for(var i=0;i<prototype.length;i++)

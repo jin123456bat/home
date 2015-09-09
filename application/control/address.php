@@ -3,6 +3,8 @@ namespace application\control;
 use system\core\control;
 use system\core\filter;
 use application\classes\login;
+use application\model\roleModel;
+use system\core\view;
 /**
  * 收货地址控制器
  * @author jin12
@@ -32,7 +34,7 @@ class addressControl extends control
 		if(login::user())
 		{
 			$addressModel = $this->model('address');
-			$result = $addressModel->fetchAll($this->session->id);
+			$result = $addressModel->myAddress($this->session->id);
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 		}
 		return json_encode(array('code'=>2,'result'=>'尚未登陆'));
@@ -119,5 +121,25 @@ class addressControl extends control
 			return json_encode(array('code'=>2,'result'=>'删除失败'));
 		}
 		return json_encode(array('code'=>0,'result'=>'参数错误'));
+	}
+	
+	function admin()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_ALL))
+		{
+			$this->view = new view(config('view'), 'admin/address.html');
+			
+			$addressModel = $this->model('address');
+			$address = $addressModel->fetchAll();
+			$this->view->assign('address',$address);
+		
+			return $this->view->display();
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','__404'));
+		}
 	}
 }

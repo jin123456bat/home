@@ -81,19 +81,21 @@ class filesystem
 	public static function scan($dir, $sdir = false)
 	{
 		static $array = array();
-		$dir = self::path($dir);
-		$array = array_merge(array_map(function ($filename) {
-			if (filename === '.' || $filename == '..') {
-				continue;
-			}
-			$filepath = self::path($dir . '/' . $filename);
-			if (is_dir($filepath) && $sdir) {
-				$array = array_merge($array, self::scan($filepath, $sdir));
-			} else 
-				if (is_file($filepath)) {
-					return $filepath;
+		$file = scandir($dir);
+		foreach ($file as $sfile)
+		{
+			if($sfile !== '.' && $sfile !== '..')
+			{
+				if(is_dir($sfile) && $sdir)
+				{
+					$array = array_merge($array,self::scan($sfile,true));
 				}
-		}, scandir($dir)));
+				else
+				{
+					$array[] = $sfile;
+				}
+			}
+		}		
 		return $array;
 	}
 

@@ -418,7 +418,8 @@ class cartControl extends control
 			{
 				$this->model('product')->where('id=?',array($ordergoods['pid']))->increase('ordernum',1);
 			}
-			return json_encode(array('code'=>1,'result'=>'ok','body'=>$oid));
+			$order = $orderModel->get($oid);
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$order));
 		}
 		return json_encode(array('code'=>2,'result'=>'创建订单失败'));
 	}

@@ -55,10 +55,12 @@ class file
 			if ($file['size'] > $config['size']) {
 				return UPLOAD_ERR_INI_SIZE;
 			}
+			
 			$mimetype = filesystem::mimetype($file['tmp_name']);
 			if (!in_array($mimetype, $config['type'])) {
 				return 8;
 			}
+			
 			if (! is_writable(filesystem::path($config['path'])) || !is_dir(filesystem::path($config['path']))) {
 				return UPLOAD_ERR_CANT_WRITE;
 			}
@@ -84,7 +86,7 @@ class file
 		}
 		$index = 0;
 		$path = array();
-		while(isset($file['error'][$index]))
+		while(isset($files['error'][$index]))
 		{
 			if($files['error'][$index] == UPLOAD_ERR_OK)
 			{
@@ -95,7 +97,7 @@ class file
 					{
 						$type = empty(filesystem::type($files['name'][$index])) ? 'tmpuploadfile' : filesystem::type($files['name'][$index]);
 						$filename = rtrim($config['path'], '/') . '/' . md5_file($files['tmp_name'][$index]) . sha1_file($files['tmp_name'][$index]) . '.' . $type;
-						if (move_uploaded_file($files['tmp_name'], $filename)) {
+						if (move_uploaded_file($files['tmp_name'][$index], $filename)) {
 							$path[] = $filename;
 						}
 					}
@@ -200,6 +202,6 @@ class file
 			$http = new http();
 			return str_replace('\\', '/',rtrim('http://'.$http->host().$http->path(),'/\\'). $path);
 		}
-		return NULL;
+		return '';
 	}
 }

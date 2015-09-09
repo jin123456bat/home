@@ -95,7 +95,7 @@ class userModel extends model
 		$close = 0;
 		$ordernum = 0;
 		$cost = 0;
-		$gravatar = '';
+		$gravatar = 'D:\wamp\www\application\assets\gravatar.jpg';
 		$username = '';
 		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o,$client);
 		return $this->insert($array);

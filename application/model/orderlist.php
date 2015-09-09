@@ -22,25 +22,25 @@ class orderlistModel extends model
 	 * 支付完成状态码，等待发货
 	 * @var unknown
 	 */
-	const STATUS_FINISH = 1;
+	const STATUS_PAYED = 1;
 	
 	/**
-	 * 订单关闭状态码
+	 * 订单关闭状态
 	 * @var unknown
 	 */
 	const STATUS_CLOSE = 2;
 	
 	/**
-	 * 用户取消支付状态吗
+	 * 用户取消支付
 	 * @var unknown
 	 */
 	const STATUS_QUITE = 3;
 	
 	/**
-	 * 发货完毕，等待收货
+	 * 已经发货 等待收货
 	 * @var unknown
 	 */
-	const STATUS_WAIT_SHIP = 4;
+	const STATUS_SHIPPING = 4;
 	
 	/**
 	 * 收货完毕等待评论
@@ -58,7 +58,7 @@ class orderlistModel extends model
 	 * 订单进入退款流程
 	 * @var unknown
 	 */
-	const STATUS_EXIT = 7;
+	const STATUS_REFUND = 7;
 	
 	/**
 	 * 构造函数
@@ -119,13 +119,13 @@ class orderlistModel extends model
 	/**
 	 * 更改订单状态
 	 */
-	function setStatus($id, $status, $endtime, $money, $transaction_id)
+	function setStatus($orderno, $status, $endtime, $money, $transaction_id)
 	{
 		if (! empty($endtime)) {
 			$endtime = strtotime($endtime);
 		}
-		return $this->where('id=?', array(
-			$id
+		return $this->where('orderno=?', array(
+			$orderno
 		))->update(array(
 			'status' => $status,
 			'tradetime' => $endtime,
@@ -237,6 +237,22 @@ class orderlistModel extends model
 			return $oid;
 		}
 		return false;
+	}
+	
+	/**
+	 * 设置订单为已经收货
+	 */
+	function setShipped($id)
+	{
+		return $this->where('id=?',array($id))->update('status',self::STATUS_SHIPPED);
+	}
+	
+	/**
+	 * 设置订单为已经发货
+	 */
+	function setShipping($orderno)
+	{
+		return $this->where('orderno=?',array($orderno))->update('status',self::STATUS_SHIPPING);
 	}
 
 	/**

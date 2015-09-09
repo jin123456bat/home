@@ -17,7 +17,7 @@ class brandControl extends control
 	function add()
 	{
 		$roleModel = $this->model('role');
-		if(login::admin() && $roleModel->checkPoer($this->session->role,'brand',roleModel::POWER_ALL))
+		if(login::admin() && $roleModel->checkPower($this->session->role,'brand',roleModel::POWER_ALL))
 		{
 			$name = $this->post->name;
 			if(empty($name))

@@ -94,10 +94,16 @@
                                 	<i class="fa fa-automobile"></i> APP设定
                                 </a>
                             </li>
+                            <li>
+                            	<a data-toggle="tab" href="#country">
+                                	<i class="fa fa-flag"></i> 国家设定
+                                </a>
+                            </li>
                         </ul>
                    	</div>
 					<div class="col-md-9">
 						<div class="tab-content">
+                        	
                         	<div id="base" class="tab-pane active">
                             <form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
                                 <div class="form-group">
@@ -106,6 +112,37 @@
                                         <input type="text" name="system_system_companyname" class="form-control" placeholder="我们家" value="{%$system.system_system_companyname|default:''%}">
                                         <span class="help-block">
                                         公司名称 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">商户海关备案号</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_system_customsno" class="form-control" placeholder="1234567" value="{%$system.system_system_customsno|default:''%}">
+                                        <span class="help-block">
+                                        报关使用 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">商户海关备案名称</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_system_customsname" class="form-control" placeholder="我们家" value="{%$system.system_system_customsname|default:''%}">
+                                        <span class="help-block">
+                                        报关使用 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">申报海关</label>
+                                    <div class="col-md-10">
+                                        <select name="system_system_customs" class="form-control">
+                                        	<option value="HANGZHOU" {%if $system.system_system_customs == HANGZHOU%}selected="true"{%/if%}>杭州海关</option>
+                                            <option value="ZHENGZHOU" {%if $system.system_system_customs == ZHENGZHOU%}selected="true"{%/if%}>郑州海关</option>
+                                            <option value="GUANGZHOU" {%if $system.system_system_customs == GUANGZHOU%}selected="true"{%/if%}>广州海关</option>
+                                            <option value="CHONGQING" {%if $system.system_system_customs == CHONGQING%}selected="true"{%/if%}>重庆海关</option>
+                                            <option value="NINGBO" {%if $system.system_system_customs == NINGBO%}selected="true"{%/if%}>宁波海关</option>
+                                            <option value="SHENZHEN" {%if $system.system_system_customs == SHENZHEN%}selected="true"{%/if%}>深圳海关</option>
+                                        </select>
+                                        <span class="help-block">
+                                        报关使用 </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -170,20 +207,73 @@
                             </div>
                             <div id="app" class="tab-pane">
                             	<form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
+                                <div class="note note-info">
+                                    <p>
+                                         点击图片更换启动图，启动图从左至右依次显示
+                                    </p>
+                                </div>
                                 <div class="form-group">
 									<label class="col-md-2 control-label">APP启动页面</label>
-                                    <div class="col-md-2">
-                                    	<img id="logo" src="{%$system.system_app_startpage1|default:""%}" style="height: 400px; width: 120px; display: block; cursor:pointer;" data-src="holder.js/100%x180">
-                                        <input type="file" class="hide" name="system_app_logo">
+                                    <div class="col-md-10 col-sm-6">
+                                        <div class="thumbnail col-md-3 startpage">
+                                            <img onerror="this.src='https://placeholdit.imgix.net/~text?text=207×368&w=207&h=368';" src="{%$system.system_app_startpage1|default:""%}" style="height: 368px; width: 207px; display: block; cursor:pointer;" data-src="holder.js/100%x180">
+                                            <input type="file" class="hide" name="system_app_startpage1">
+                                            <div class="caption">
+                                            	<button data-key="system_app_startpage1" class="btn btn-sm red col-md-12 removeBtn">删除</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="thumbnail col-md-3 startpage">
+                                            <img onerror="this.src='https://placeholdit.imgix.net/~text?text=207×368&w=207&h=368';" src="{%$system.system_app_startpage2|default:""%}" style="height: 368px; width: 207px; display: block; cursor:pointer;" data-src="holder.js/100%x180">
+                                            <input type="file" class="hide" name="system_app_startpage2">
+                                            <div class="caption">
+                                            	<button data-key="system_app_startpage2" class="btn btn-sm red col-md-12 removeBtn">删除</button>
+                                            </div>
+                                        </div>
+                                        <div class="thumbnail col-md-3 startpage">
+                                            <img onerror="this.src='https://placeholdit.imgix.net/~text?text=207×368&w=207&h=368';" src="{%$system.system_app_startpage3|default:""%}" style="height: 368px; width: 207px; display: block; cursor:pointer;" data-src="holder.js/100%x180">
+                                            <input type="file" class="hide" name="system_app_startpage3">
+                                            <div class="caption">
+                                            	<button data-key="system_app_startpage3" class="btn btn-sm red col-md-12 removeBtn">删除</button>
+                                            </div>
+                                        </div>
+                                        <div class="thumbnail col-md-3 startpage">
+                                            <img onerror="this.src='https://placeholdit.imgix.net/~text?text=207×368&w=207&h=368';" src="{%$system.system_app_startpage4|default:""%}" style="height: 368px; width: 207px; display: block; cursor:pointer;" data-src="holder.js/100%x180">
+                                            <input type="file" class="hide" name="system_app_startpage4">
+                                            <div class="caption">
+                                            	<button data-key="system_app_startpage4" class="btn btn-sm red col-md-12 removeBtn">删除</button>
+                                            </div>
+                                        </div>
                                     </div>
 								</div>
+                                </form>
+                            </div>
+                            <div id="country" class="tab-pane">
+                            	<form action="{%url c=system a=flag%}" id="upload_flag" class="form-horizontal" method="post" role="form">
+                            	<div class="form-group">
+                                    <label class="col-md-2 control-label">国家名称</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="name" placeholder="中国" class="form-control">
+                                    </div>
+                                </div>
                                 <div class="form-group">
+                                    <label class="col-md-2 control-label">国家图标</label>
+                                    <div class="col-md-10">
+                                        <input type="file" name="flag" class="form-control">
+                                    </div>
+                                </div>
+                            	<div class="form-group">
                                     <label class="col-md-2 control-label"></label>
                                     <div class="col-md-10">
-                                        <input type="submit" value="保存" class="form-control btn green">
+                                        <input type="submit" value="添加" class="form-control btn green">
                                     </div>
                                 </div>
                                 </form>
+                                <table class="table" id="flag_container">
+                                	{%section name=flag loop=$flag%}
+                                	<tr><td align="center" width="40%">{%$flag[flag].name%}</td><td align="center" width="40%"><img src="{%$flag[flag].file%}" /></td><td width="20%"><button data-id="{%$flag[flag].id%}" class="btn btn-xs red-stripe removeFlagBtn">删除</button></td></tr>
+                                    {%/section%}
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -225,11 +315,23 @@ jQuery(document).ready(function() {
 	Layout.init(); // init current layout
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
-	$('#logo').on('click',function(){
+	$('.startpage').find('img').on('click',function(){
 		$(this).next().trigger('click');
 	});
 	
-	$('#logo').next().on('change',function(){
+	$('.removeBtn').on('click',function(){
+		var key = $(this).data('key');
+		var ths = $(this);
+		$.post('{%url c=system a=removeapp%}',{key:key},function(data){
+			if(data.code == 1)
+			{
+				ths.parents('.thumbnail').find('img').attr('src','https://placeholdit.imgix.net/~text?text=207×368&w=207&h=368');
+			}
+		});
+		return false;
+	});
+	
+	$('.startpage').children('input[type=file]').on('change',function(){
 		var ths = $(this);
 		if(ths.val() == '')
 			return false;
@@ -251,12 +353,12 @@ jQuery(document).ready(function() {
 			formData.append($(this).attr('name'),this.files[0]);
 			var xhr = new XMLHttpRequest();
 			xhr.open('POST','{%url c=system a=saveapp%}',true);
-			xhr.onload = function(){  
+			xhr.onload = function(){
 				if(xhr.status == 200 && xhr.readyState == 4)  
 				{
 					var response = xhr.response;
 					response = $.parseJSON(response);
-					$('#logo').attr('src',response.body);
+					ths.prev('img').attr('src',response.body);
 					ths.val('');
 				}
 				else
@@ -270,6 +372,73 @@ jQuery(document).ready(function() {
 		{
 			alert('文件类型错误');
 		}
+	});
+	
+	$('#upload_flag').on('submit',function(){
+		var ths = $(this);
+		var name = $('input[name=name]',ths).val();
+		var flag = $('input[name=flag]',ths);
+		if($.trim(name).length == 0)
+		{
+			$('input[name=name]').parents('.form-group').addClass('has-error');
+			return false;
+		}
+		if($.trim(flag.val()).length == 0)
+		{
+			$('input[name=flag]').parents('.form-control').addClass('has-error');
+			return false;
+		}
+		var formData = new FormData();//文件上传通道  
+		var fileReader = new FileReader();
+		var filesize = flag[0].files[0].size;
+		var getFileType = function(filename){
+			var extStart  = filename.lastIndexOf(".")+1;  
+			return filename.substring(extStart,filename.length).toUpperCase();  
+		};
+		if(filesize>10*1024*1024)
+		{
+			alert('文件大小不得超出10MB');
+			return false;
+		}
+		var type = getFileType(flag[0].files[0].name)
+		if(type == 'JPEG' || type=='JPG' || type=='GIF' || type=='PNG' || type=='BMP')
+		{
+			formData.append(flag.attr('name'),flag[0].files[0]);
+			formData.append('name',name);
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST','{%url c=system a=flag%}',true);
+			xhr.onload = function(){  
+				if(xhr.status == 200 && xhr.readyState == 4)  
+				{
+					var response = xhr.response;
+					response = $.parseJSON(response);
+					$('#flag_container').append('<tr><td align="center" width="50%">'+name+'</td><td align="center" width="50%"><img src="'+response.body+'" /></td></tr>');
+					$('input[name=name]').val('');
+					$('input[name=flag]').val('');
+				}
+				else
+				{
+					alert('通信失败:'+xhr.status);
+				}
+			};  
+			xhr.send(formData); 
+		}
+		else
+		{
+			alert('文件类型错误');
+		}
+		return false;
+	});
+	
+	$('.removeFlagBtn').on('click',function(){
+		var id = $(this).data('id');
+		var ths = $(this);
+		$.post('{%url c=system a=removeflag%}',{id:id},function(response){
+			if(response.code == 1)
+			{
+				ths.parents('tr').remove();
+			}
+		});
 	});
 });
 </script>

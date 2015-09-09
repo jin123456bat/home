@@ -26,7 +26,7 @@ class fullcutModel extends model
 		$this->where('product.status=?',array(1));
 		$this->where('product.stock>?',array(0));
 		$this->limit($length);
-		return $this->select('*,fullcut.starttime as f_startime,fullcut.endtime as f_endtime,fullcut.name as f_name');
+		return $this->select('*,fullcut.starttime as f_startime,fullcut.endtime as f_endtime,fullcut.sname as f_name');
 	}
 	
 	/**
@@ -36,7 +36,7 @@ class fullcutModel extends model
 	{
 		$starttime = strtotime($starttime);
 		$endtime = strtotime($endtime);
-		return $this->where('id=?',array($id))->update(array('name'=>$name,'max'=>$max,'minus'=>$minus,'starttime'=>$starttime,'endtime'=>$endtime));
+		return $this->where('id=?',array($id))->update(array('sname'=>$name,'max'=>$max,'minus'=>$minus,'starttime'=>$starttime,'endtime'=>$endtime));
 	}
 	
 	/**

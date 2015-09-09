@@ -299,8 +299,8 @@ jQuery(document).ready(function() {
 	
 	$('.editBtn').on('click',function(){
 		var id = $(this).data('id');
-		var td = $('td[name=name]');
-		var tdtextarea = $('td[name=description]');
+		var td = $(this).parents('tr').find('td[name=name]');
+		var tdtextarea = $(this).parents('tr').find('td[name=description]');
 		if($.trim($(this).html()) == '编辑')
 		{
 			$('.serverside').removeClass('display-none');

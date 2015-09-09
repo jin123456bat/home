@@ -42,6 +42,7 @@ class saleControl extends control
 			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			$product['img'] = $productimgModel->getByPid($product['id']);
 			$product['category'] = $categoryModel->get($product['category'],'name');
+			$product['origin'] = $this->model('flag')->getOrigin($product['origin']);
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}

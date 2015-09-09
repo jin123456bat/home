@@ -6,6 +6,7 @@ use application\model\productimgModel;
 use application\model\commentModel;
 use application\model\orderlistModel;
 use application\model\prototypeModel;
+use system\core\filesystem;
 class product
 {
 	/**

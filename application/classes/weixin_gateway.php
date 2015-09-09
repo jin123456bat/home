@@ -71,7 +71,7 @@ class weixin_gateway
 	function createGetRequest($url,$parameter,$extends = '')
 	{
 		//sb微信 不能用?传递get参数 跨目录
-		$url .= ('/'.http_build_query($parameter,NULL,'/',PHP_QUERY_RFC3986)).(empty($extends)?'':('#'.$extends));
+		$url .= ('?'.http_build_query($parameter,NULL,'&',PHP_QUERY_RFC3986)).(empty($extends)?'':('#'.$extends));
 		return $url;
 	}
 	
@@ -86,7 +86,7 @@ class weixin_gateway
 		$xml = (array)$xml;
 		foreach($xml as $key => $value)
 		{
-			$array[$key] = $value->__toString();
+			$array[$key] = $value.'';
 		}
 		return $array;
 	}
@@ -123,9 +123,10 @@ class weixin_gateway
 				$body .= $good['productname'].'x'.$good['num'].'|';
 			}
 			$timeout = (new time())->format($this->_system->get('timeout','payment'), false);
+			$notify_url = 'http://'.$_SERVER['HTTP_HOST'].'/gateway/weixin/notify.php';
 			//生成预支付订单
 			$data = array(
-				//'device_info' => 'WEB',
+				'device_info' => 'WEB',
 				'time_start' => date("YmdHis",$order['createtime']),
 				'time_expire' => date("YmdHis",$order['createtime']+$timeout),
 				'appid' => $this->_system->get('appid','weixin'),
@@ -136,7 +137,7 @@ class weixin_gateway
 				'attach' => '',//回传的时候回来的数据
 				'body' => $body,//商品描述
 				'nonce_str' => random::word(32),//随机字符串
-				'notify_url' => urlencode('http://'.$_SERVER['HTTP_HOST'].'/index.php?c=order&a=notify&type=weixin'),//异步通知地址
+				'notify_url' => $notify_url,//异步通知地址
 				'out_trade_no' => $this->_order['orderno'],//订单号
 				'spbill_create_ip' => empty($_SERVER['REMOTE_ADDR'])?'unkonwn':$_SERVER['REMOTE_ADDR'],//ip地址
 				'total_fee' => $this->_order['ordertotalamount'] * 100,
@@ -290,6 +291,53 @@ class weixin_gateway
 	}
 	
 	/**
+	 * 报关
+	 */
+	function costums($order)
+	{
+		$this->_order = $order;
+		
+		$url = 'https://mch.tenpay.com/cgi-bin/mch_custom_declare.cgi';
+		
+		$customs = $this->_system->get('customs','system');
+		$customs_table = array(
+			'HANGZHOU' => 2,
+			'ZHENGZHOU' => 5,
+			'GUANGZHOU' => 1,
+			'CHONGQING' => 6,
+			'NINGBO' => 3,
+			'SHENZHEN' => 4
+		);
+		$select_customs = isset($customs_table[$customs])?$customs_table[$customs]:0;
+		
+		$data = array(
+			'sign_type' => 'MD5',
+			'service_version' => '1.0',
+			'input_charset' => 'UTF-8',
+			'sign_key_index' => 1,
+			
+			'partner' => $this->_system->get('mchid','weixin'),
+			'out_trade_no' => $this->_order['orderno'],
+			'fee_type' => 'CNY',
+			'order_fee' => $this->_order['ordertotalamount'] * 100,
+			'transport_fee' => $this->_order['feeamount'] * 100,
+			'product_fee' => $this->_order['ordergoodsamount'] * 100,
+			'duty' => $this->_order['ordertaxamount'] * 100,
+			'customs' => $select_customs,
+			'action_type' => 1,//新增
+		);
+		
+		if($data['customs'] != 0)
+		{
+			$data['mch_customs_no'] =  $this->_system->get('customsno','system');
+		}
+		
+		$data['sign'] = $this->sign($data);
+		
+		return $this->post($url, $data);
+	}
+	
+	/**
 	 * 输出微信浏览器中的支付验证器
 	 */
 	function output($prepay_id)
@@ -331,6 +379,39 @@ class weixin_gateway
 		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 		curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
 		return curl_exec($ch);
+	}
+	
+	/**
+	 * post数据
+	 * @param unknown $url
+	 * @param unknown $data
+	 * @return mixed
+	 */
+	function post($url,$data)
+	{
+		if(function_exists('curl_init'))
+		{
+			$ch = curl_init($url);
+			curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+			curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+			curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch,CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+			curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
+			$result = curl_exec($ch);
+			return $result;
+		}
+		else
+		{
+			$context = stream_context_create(array(
+				'http'=>array(
+					'method'=>"POST",
+					'header'=> "Content-type: application/x-www-form-urlencoded\r\n",
+					'content'=>$data
+				)
+			));
+			return file_get_contents($url,NULL,$context);
+		}
 	}
 	
 	/**

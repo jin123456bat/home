@@ -623,13 +623,11 @@ TableManaged.init();
 			var tpl = '';
 			for(var i=0;i<response.body.length;i++)
 			{
-				
 				var goods = '';
 				for(var j=0;j<response.body[i].orderdetail.length;j++)
 				{
 					goods += response.body[i].orderdetail[j].productname +'x'+ response.body[i].orderdetail[j].num+'<br>';
 				}
-				
 				tpl = '<tr><td>'+response.body[i].orderno+'</td><td>'+response.body[i].createtime+'</td><td>'+response.body[i].tradetime+'</td><td>'+response.body[i].ordertotalamount+'</td><td>'+goods+'</td><td>'+response.body[i].client+'</td><td>'+response.body[i].paytype+'</td><td>'+response.body[i].postmode+'</td><td><a class="btn default green-stripe btn-xs" href="{%url c=order a=information%}&id='+response.body[i].id+'">查看详情</a></td></tr>';
 				
 				table.find('tbody').append(tpl);
@@ -642,6 +640,7 @@ TableManaged.init();
 		var loading = table.prev();
 		table.addClass('display-none');
 		loading.removeClass('display-none');
+		table.find('tbody').empty();
 	});
 });
 </script>

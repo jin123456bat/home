@@ -52,6 +52,9 @@ var EcommerceProducts = function () {
 					"data":"id",
 					"orderable": false
 				}, {
+					"data":"id",
+					orderable:false,
+				}, {
 					"data":"sku",
 					"orderable": true
 				}, {
@@ -93,13 +96,34 @@ var EcommerceProducts = function () {
 						return '<input type="checkbox" name="id[]" value='+data+'>';
 					}
 				},{
-					"targets":[7],
+					targets:1,
+					data:'id',
+					render:function(data,type,full){
+						var src = 'https://placeholdit.imgix.net/~text?text=NO&w=50&h=50';
+						var ajax = $.ajax({
+							async:false,
+							url:'index.php?c=productimg&a=getproductimg',
+							data:{pid:data},
+							type:'json',
+							method:'get',
+							success: function(data){
+								data = $.parseJSON(data);
+								if(data.body.length>0)
+								{
+									src = data.body[0].thumbnail_path;
+								}
+							}
+						});
+						return '<img src="'+src+'" width="50" height="50">';
+					}
+				},{
+					"targets":[8],
 					"data":"time",
 					"render":function(data,type,full){
 						return unixtotime(data,true,8);
 					}
 				},{
-					"targets":[8],
+					"targets":[9],
 					"data":"status",
 					"render":function(data,type,full){
 						switch(data)
@@ -111,7 +135,7 @@ var EcommerceProducts = function () {
 						}
 					}
 				},{
-					"targets":[9],
+					"targets":[10],
 					"data":"id",
 					"render":function(data,type,full){
 						//console.log(full);
@@ -120,7 +144,7 @@ var EcommerceProducts = function () {
 						return content;
 					}
 				},{
-					targets:10,
+					targets:[11],
 					visible:false
 				}],
 				"processing": true,

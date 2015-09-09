@@ -26,10 +26,25 @@ class addressModel extends model
 	 * @param unknown $uid
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function fetchAll($uid)
+	function myAddress($uid)
 	{
+		$this->orderby('id','desc');
 		$this->where('uid=?',array($uid));
 		return $this->select();
+	}
+	
+	/**
+	 * 收货地址列表
+	 * @param unknown $start
+	 * @param unknown $length
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function fetchAll($start = 0,$length =10)
+	{
+		$this->limit($start,$length);
+		$this->orderby('address.id','desc');
+		$this->table('user','left join','address.uid=user.id');
+		return $this->select('address.id,user.gravatar,user.username,user.telephone as u_telephone,address.province,address.city,address.address,address.name,address.telephone,address.zcode,address.host');
 	}
 	
 	/**

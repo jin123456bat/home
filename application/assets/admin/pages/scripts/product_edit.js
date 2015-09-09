@@ -21,7 +21,7 @@ var ProductEditPage = function(){
 					score = $('input[name=score]').val(),
 					short_description = $('textarea[name=short_description]').val(),
 					description = $('textarea[name=description]').val(),
-					origin = $('input[name=origin]').val(),
+					origin = $('select[name=origin]').val(),
 					label = $('input[name=label]').val(),
 					status = $('select[name=status]').val(),
 					orderby = $('input[name=orderby]').val(),
@@ -32,6 +32,12 @@ var ProductEditPage = function(){
 					sku = $('input[name=sku]').val(),
 					oldprice = $('input[name=oldprice]').val(),
 					shipchar = $('input[name=shipchar]').val();
+				
+				if(origin == 'undefined')
+				{
+					$('select[name=origin]').parents('.form-group').addClass('has-error');
+					return false;
+				}
 				
 				if(name.length == 0)
 				{
@@ -191,12 +197,23 @@ var ProductEditPage = function(){
 			$('button.prototype_remove').live('click',function(){
 				var ths = this;
 				var id = $(this).attr('data-id');
+				
+				var cache = collection.getcache();
+				collection.setcache();
+				
+				for(var i=0;i<cache.length;i++)
+				{
+					if(cache[i].id != id)
+					{
+						collection.createPrototype(cache[i].prototype,cache[i].id);
+					}
+				}
+				
 				$.post('?c=prototype&a=remove',{id:id},function(data){
 					data = $.parseJSON(data);
 					if(data.code == 1)
 					{
 						$(ths).parents('tr').remove();
-						window.location.reload();
 					}
 				});
 			});

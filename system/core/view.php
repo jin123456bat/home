@@ -1,6 +1,7 @@
 <?php
 namespace system\core;
 
+use system\core\file;
 /**
  * 视图以及模板管理
  *
@@ -62,8 +63,18 @@ class view extends base
 		$baseUrl = rtrim("http://".$http->host().$http->path().'/application','/');
 		$this->_smarty->assign("VIEW_ROOT",$baseUrl);
 		$this->_smarty->registerPlugin('function',"url", array($this,'url'));
+		$this->_smarty->registerPlugin('function','resource',array($this,'resource'));
 		//include ROOT.'/extends/smarty/smartyex.class.php';
 		//$this->_smarty->registerObject("smartyex",new \smartyex());
+	}
+	
+	function resource($parameter)
+	{
+		$path = $parameter['path'];
+		$http = new http();
+		$url = 'http://'.$http->host().$http->path().str_replace(ROOT, '', $path);
+		$default = './application/assets/gravatar.jpg';
+		return is_file($path)?$url:$default;
 	}
 	
 	function url($parameter)

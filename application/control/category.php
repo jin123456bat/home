@@ -11,16 +11,6 @@ use system\core\filter;
 class categoryControl extends control
 {
 	
-	function test()
-	{
-		$this->view = new view(config('view'), 'mobile/test.html');
-		$this->view->assign('test','Hello world');
-		$product = $this->model('product');
-		$goods = $product->select();
-		$this->view->assign('goods',$goods);
-		$this->response->setBody($this->view->display());
-	}
-	
 	/**
 	 * 获得一个分类下的子分类
 	 */

@@ -148,6 +148,7 @@
 									<select class="table-group-action-input form-control input-inline input-small input-sm">
 										<option value="">请选择</option>
 										<option value="remove">删除</option>
+                                        <option value="costums">报关</option>
 									</select>
 									<button class="btn btn-sm yellow table-group-action-submit"><i class="fa fa-check"></i> 提交</button>
 								</div>
@@ -184,9 +185,11 @@
 									<th width="10%">
 										 状态
 									</th>
-                                    
                                     <th width="10%">
                                     	备注
+                                    </th>
+                                    <th>
+                                    	优惠
                                     </th>
 									<th width="10%">
 										 操作
@@ -241,13 +244,20 @@
 											<option value="">请选择</option>
 											<option value="0">等待支付</option>
                                             <option value="1">支付成功</option>
-											<option value="2">支付失败</option>
+											<option value="2">订单关闭</option>
 											<option value="3">用户取消</option>
+                                            <option value="4">等待收货</option>
+                                            <option value="5">等待评论</option>
+                                            <option value="6">订单完成</option>
+                                            <option value="7">退款</option>
 										</select>
 									</td>
                                     
                                     <td>
                                     	备注
+                                    </td>
+                                    <td>
+                                    	#
                                     </td>
 									<td>
 										<div class="margin-bottom-5">

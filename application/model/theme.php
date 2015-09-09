@@ -56,25 +56,9 @@ class themeModel extends model
 	 */
 	function product($tid)
 	{
-		$this->where('theme.id=?',array($tid));
-		$this->table('theme_product','left join','theme.id=theme_product.tid');
-		$this->table('product','left join','product.id=theme_product.pid');
-		$result = $this->select();
-		$productimgModel = $this->model('productimg');
-		foreach($result as &$product)
-		{
-			unset($product['smallpic']);
-			unset($product['bigpic']);
-			unset($product['middlepic']);
-			$img = $productimgModel->where('pid=?',array($product['id']))->select();
-			foreach ($img as &$image)
-			{
-				$image['base_path'] = empty($image['base_path'])?'':file::realpathToUrl($image['base_path']);
-				$image['small_path'] = empty($image['small_path'])?'':file::realpathToUrl($image['small_path']);
-				$image['thumbnail_path'] = empty($image['thumbnail_path'])?'':file::realpathToUrl($image['thumbnail_path']);
-			}
-			$product['img'] = $img;
-		}
+		$theme_productModel = $this->model('theme_product');
+		$theme_productModel->table('product','left join','product.id=theme_product.pid');
+		$result = $theme_productModel->where('tid=?',array($tid))->select();
 		return $result;
 	}
 	

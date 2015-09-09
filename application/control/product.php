@@ -14,6 +14,7 @@ use system\core\random;
 use application\classes\prototype;
 use application\classes\product;
 use application\classes\order;
+use system\core\filesystem;
 /**
  * 商品控制器
  * @author jin12
@@ -86,6 +87,9 @@ class productControl extends control
 			return json_encode(array('code'=>8,'result'=>'收货地址不能为空'));
 		//优惠代码
 		$discount = $this->post->coupon;
+		if(empty($discount))
+			$discount = '';
+		
 		//判断商品是否参加了活动
 		switch ($product['activity'])
 		{
@@ -111,11 +115,7 @@ class productControl extends control
 				}
 				break;
 			default:
-				if(empty($discount))
-				{
-					$discount = '';
-				}
-				else
+				if(!empty($discount))
 				{
 					$couponModel = $this->model('coupon');
 					$used = $couponModel->check($discount,$product);
@@ -209,7 +209,8 @@ class productControl extends control
 			//商品库存减少
 			$productHelper = new product();
 			$productHelper->increaseNum($this->model('product'), $this->model('collection'), $pid, $content,-$num);
-			return json_encode(array('code'=>1,'result'=>'ok','body'=>$oid));
+			$order = $orderModel->get($oid);
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$order));
 		}
 		return json_encode(array('code'=>2,'result'=>'订单创建失败'));
 	}
@@ -276,7 +277,8 @@ class productControl extends control
 			$collectionModel = $this->model('collection');
 			$collection = $collectionModel->getByPid($pid);
 			$product['collection'] = $collection;
-			$product['category'] = $this->model('category')->get($product['id'],'name');
+			$product['category'] = $this->model('category')->get($product['category'],'name');
+			$product['brand'] = $this->model('brand')->get($product['bid'],'name');
 			$product['img'] = $this->model('productimg')->getByPid($pid);
 			unset($product['bid']);
 			switch ($product['activity'])
@@ -344,6 +346,7 @@ class productControl extends control
 				case 'fullcut':$goods['activity_description'] = $this->model('fullcutdetail')->getByPid($goods['id']);break;
 				default:break;
 			}
+			$goods['origin'] = $this->model('flag')->getOrigin($goods['origin']);
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));
 	}
@@ -423,6 +426,7 @@ class productControl extends control
 			$this->view = new view(config('view'), 'admin/product_edit.html');
 			$productModel = $this->model('product');
 			$result = $productModel->get($this->get->id);
+			
 			if($this->get->action == 'edit' && !empty($result))
 			{
 				$this->view->assign('product',$result);
@@ -431,16 +435,25 @@ class productControl extends control
 			{
 				$this->view->assign('new',1);
 			}
+			
+			
 			$categoryModel = $this->model('category');
 			$category = $categoryModel->select();
 			$category = (new category())->format(0,$category);
+			$this->view->assign('category',$category);
+			
 			$brandModel = $this->model('brand');
 			$brand = $brandModel->fetchAll();
+			$this->view->assign('brand',$brand);
+				
 			$shipModel = $this->model('ship');
 			$ship = $shipModel->select();
 			$this->view->assign('ship',$ship);
-			$this->view->assign('brand',$brand);
-			$this->view->assign('category',$category);
+			
+			$flagModel = $this->model('flag');
+			$flag = $flagModel->fetchAll();
+			$this->view->assign('flag',$flag);
+			
 			$this->response->setBody($this->view->display());
 		}
 		else
@@ -484,47 +497,50 @@ class productControl extends control
 		}
 		catch (\Exception $e)
 		{
-			var_dump($e);
 			return json_encode(array('code'=>0,'result'=>'参数异常'));
 		}
 		
-			$resultObj->draw = $this->post->draw;
-			$result = $productModel->searchable($this->post);
-			$resultObj->recordsTotal = $productModel->count();
-			$resultObj->recordsFiltered = count($result);
-			$result = array_slice($result, $this->post->start,$this->post->length);
-			$brandModel = $this->model('brand');
-			$prototypeModel = $this->model('prototype');
-			$categoryModel = $this->model('category');
-			$productimgModel = $this->model('productimg');
-			foreach ($result as &$product)
+		$resultObj->draw = $this->post->draw;
+		$result = $productModel->searchable($this->post);
+		$resultObj->recordsTotal = $productModel->count();
+		$resultObj->recordsFiltered = count($result);
+		$result = array_slice($result, $this->post->start,$this->post->length);
+		$brandModel = $this->model('brand');
+		$prototypeModel = $this->model('prototype');
+		$categoryModel = $this->model('category');
+		$productimgModel = $this->model('productimg');
+		foreach ($result as &$product)
+		{
+			if(isset($product['id']))
 			{
-				if(isset($product['id']))
+				if(isset($product['bid']))
 				{
-					if(isset($product['bid']))
+					$product['brand'] = $brandModel->get($product['bid'],'name');
+					unset($product['bid']);
+				}
+				$product['prototype'] = $prototypeModel->getByPid($product['id']);
+				$product['img'] = $productimgModel->getByPid($product['id']);
+				if(isset($product['category']))
+				{
+					$product['category'] = $categoryModel->get($product['category'],'name');
+				}
+				if(isset($product['activity']))
+				{
+					switch ($product['activity'])
 					{
-						$product['brand'] = $brandModel->get($product['bid'],'name');
-						unset($product['bid']);
-					}
-					$product['prototype'] = $prototypeModel->getByPid($product['id']);
-					$product['img'] = $productimgModel->getByPid($product['id']);
-					if(isset($product['category']))
-					{
-						$product['category'] = $categoryModel->get($product['category'],'name');
-					}
-					if(isset($product['activity']))
-					{
-						switch ($product['activity'])
-						{
-							case 'sale':$product['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
-							case 'seckill':$product['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
-							case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
-							default:break;
-						}
+						case 'sale':$product['activity_description'] = $this->model('sale')->getByPid($product['id']);break;
+						case 'seckill':$product['activity_description'] = $this->model('seckill')->getByPid($product['id']);break;
+						case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
+						default:break;
 					}
 				}
 			}
-			$resultObj->data = $result;
+			if(isset($product['origin']))
+			{
+				$product['origin'] = $this->model('flag')->getOrigin($product['origin']);
+			}
+		}
+		$resultObj->data = $result;
 		
 		return json_encode($resultObj);
 	}

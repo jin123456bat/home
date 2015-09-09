@@ -6,6 +6,7 @@ use application\classes\login;
 use system\core\filter;
 use system\core\filesystem;
 use application\model\roleModel;
+use system\core\file;
 class commentControl extends control
 {
 
@@ -14,13 +15,24 @@ class commentControl extends control
 	 */
 	function send()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
 		$pid = filter::int($this->post->pid);
 		$content = $this->post->content;
-		$files = $this->file->receiveMultiFile($_FILES['file'],config('file'));
+		
+		if(isset($_FILES['file']))
+		{
+			$files = $this->file->receiveMultiFile($_FILES['file'],config('file'));
+		}
+		else
+		{
+			$files = array();
+		}
+		
 		$score = filter::int($this->post->score);
 		$score = ($score<=5 && $score>=0)?$score:0;
+		
 		if(!empty($pid))
 		{
 			$commentModel = $this->model('comment');
@@ -49,7 +61,7 @@ class commentControl extends control
 			{
 				$uinfo = $this->model('user')->get($comment['uid']);
 				$comment['telephone'] = $uinfo['telephone'];
-				$comment['gravatar'] = $uinfo['gravatar'];
+				$comment['gravatar'] = file::realpathToUrl($uinfo['gravatar']);
 				$comment['username'] = $uinfo['username'];
 				unset($comment['uid']);
 				$comment['img'] = $this->model('comment_pic')->getByCid($comment['id'],'url');

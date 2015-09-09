@@ -97,19 +97,29 @@ var EcommerceOrders = function () {
 						switch(data)
 						{
 							case '0':return '等待付款';break;
-							case '1':return '支付完毕';break;
+							case '1':return '支付完毕,等待发货';break;
 							case '2':return '支付失败';break;
 							case '3':return '客户取消';break;
+							case '4':return '已经发货,等待收货';break;
+							case '5':return '已经收货,待评论';break;
+							case '6':return '订单完成,评论完毕';break;
+							case '7':return '退款';break;
 							default:return '未知状态';break;
 						}
 					}
 				},{
 					targets:11,
+					data:'discount',
+					render:function(data,type,full){
+						return data;
+					}
+				},{
+					targets:12,
 					render:function(data,type,full){
 						return '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a><a href="#note" data-toggle="modal" data-id="'+full.id+'" class="btn default btn-xs yellow-stripe noteBtn">备注</a>';
 					}
 				},{
-					"targets":[12,13,14],
+					"targets":[13,14,15],
 					visible:false
 				}],
 				"columns":[{
@@ -145,6 +155,8 @@ var EcommerceOrders = function () {
 					'orderable':true
 				},{
 					"data":'note'
+				},{
+					data:'discount',
 				},{
 					"data":'id'
 				},{

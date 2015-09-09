@@ -34,3 +34,15 @@ function config($name, $parent = false)
 	}
 	return $_instance[$name];
 }
+
+/**
+ * xml对象转化为数组
+ */
+function xmlToArray($xmlString)
+{
+	if(is_string($xmlString))
+	{
+		$xmlObj = simplexml_load_string($xmlString);
+		return json_decode(json_encode($xmlObj,true),true);
+	}
+}

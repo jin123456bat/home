@@ -34,6 +34,7 @@ class themeControl extends control
 			$product['img'] = $this->model('productimg')->getByPid($product['id']);
 			$product['prototype'] = $this->model('prototype')->getByPid($product['id']);
 			$product['collection'] = $this->model('collection')->getByPid($product['id']);
+			$product['origin'] = $this->model('flag')->getOrigin($product['origin']);
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}

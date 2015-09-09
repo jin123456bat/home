@@ -130,6 +130,33 @@ class alipay_gateway
 	}
 	
 	/**
+	 * 报关接口
+	 */
+	function customs($order)
+	{
+		$this->_order = $order;
+		
+		$data = array(
+			'service'=>'alipay.acquire.customs',
+			'partner' => $this->_system->get('partner','alipay'),
+			'_input_charset' => $this->_config['input_charset'],
+			'sign_type'=>$this->_config['sign_type'],
+			'out_request_no' => $this->_order['orderno'],
+			'trade_no'=> $this->_order['paynumber'],
+			'merchant_customs_code'=> $this->_system->get('customsno','system'),
+			'merchant_customs_name'=> $this->_system->get('customsname','system'),
+			'amount' => $this->_order['ordertotalamount'],
+			'customs_place' => $this->_system->get('customs','system'),
+		);
+		
+		$url = $this->_config['gateway_url'];
+		
+		$data = $this->trade($data);
+		$result = file_get_contents($url.'?'.http_build_query($data));
+		return $result;
+	}
+	
+	/**
 	 * 验证通知是否来源于支付宝
 	 */
 	function verify_notify($notify_id)
@@ -196,7 +223,7 @@ class alipay_gateway
 	{
 		$pk = openssl_pkey_get_private($private_key);
 		openssl_private_encrypt($string, $crypted, $pk);
-		return $crypted;
+		return base64_encode($crypted);
 	}
 	
 	/**
@@ -206,6 +233,7 @@ class alipay_gateway
 	 */
 	function decryptRSA($string,$private_key)
 	{
+		$string = base64_decode($string);
 		$pk = openssl_pkey_get_private($private_key);
 		openssl_private_decrypt($string, $decrypted, $pk);
 		return $decrypted;
