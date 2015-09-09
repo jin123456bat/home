@@ -159,10 +159,12 @@ class alipay_gateway
 	/**
 	 * 验证通知是否来源于支付宝
 	 */
-	function verify_notify($notify_id)
+	function verify_notify($notify_id,$partner = NULL)
 	{
-		$url = $this->_config->verify_nofity_url;
-		$url = $url.'?partner='.$this->_system->get('partner','alipay').'&notify_id='.$notify_id;
+		if (empty($partner))
+			$partner = $this->_system->get('partner','alipay');
+		$url = $this->_config->gateway_url;
+		$url = $url.'?service=notify_verify&partner='.$partner.'&notify_id='.$notify_id;
 		$result = file_get_contents($url);
 		return preg_match('/true$/i', $result);
 	}
@@ -204,7 +206,7 @@ class alipay_gateway
 			case 'MD5':$parameter = md5($parameter);
 				break;
 			case 'RSA':
-				$private_key = str_replace(' ', '', $this->_system->get('rsaprivatekey'));
+				$private_key = $this->_system->get('rsaprivatekey','alipay');
 				return $this->encryptRSA($parameter, $private_key);
 				break;
 			case 'DSA':break;
@@ -221,9 +223,28 @@ class alipay_gateway
 	 */
 	function encryptRSA($string,$private_key)
 	{
-		$pk = openssl_pkey_get_private($private_key);
-		openssl_private_encrypt($string, $crypted, $pk);
-		return base64_encode($crypted);
+		$priKey = file_get_contents($private_key);
+		$res = openssl_get_privatekey($priKey);
+		openssl_sign($string, $sign, $res);
+		openssl_free_key($res);
+		//base64编码
+		return base64_encode($sign);
+	}
+	
+	/**
+	 * 
+	 * @param unknown $data
+	 * @param unknown $ali_public_key_path
+	 * @param unknown $sign
+	 * @return boolean
+	 */
+	function rsaVerify($data, $ali_public_key_path, $sign)
+	{
+		$pubKey = file_get_contents($ali_public_key_path);
+	    $res = openssl_get_publickey($pubKey);
+	    $result = (bool)openssl_verify($data, base64_decode($sign), $res);
+	    openssl_free_key($res);
+	    return $result;
 	}
 	
 	/**
@@ -233,10 +254,19 @@ class alipay_gateway
 	 */
 	function decryptRSA($string,$private_key)
 	{
-		$string = base64_decode($string);
-		$pk = openssl_pkey_get_private($private_key);
-		openssl_private_decrypt($string, $decrypted, $pk);
-		return $decrypted;
+		$priKey = file_get_contents($private_key);
+	    $res = openssl_get_privatekey($priKey);
+		//用base64将内容还原成二进制
+	    $content = base64_decode($string);
+		//把需要解密的内容，按128位拆开解密
+	    $result  = '';
+	    for($i = 0; $i < strlen($content)/128; $i++  ) {
+	        $data = substr($content, $i * 128, 128);
+	        openssl_private_decrypt($data, $decrypt, $res);
+	        $result .= $decrypt;
+	    }
+	    openssl_free_key($res);
+	    return $result;
 	}
 	
 	/**
@@ -247,7 +277,7 @@ class alipay_gateway
 		$return = '';
 		foreach($parameter as $key => $value)
 		{
-			$return .= ($key.'='.$value.'&');
+			$return .= ($key.'='.trim($value).'&');
 		}
 		return rtrim($return,'&');
 	}

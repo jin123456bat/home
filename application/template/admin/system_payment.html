@@ -157,7 +157,7 @@
                                 </form>
 							</div>
                             <div id="alipay" class="tab-pane">
-                            	<form action="{%url c=system a=save%}" method="post" class="form-horizontal" role="form">
+                            	<form action="{%url c=system a=save%}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 								<div class="form-group">
                                     <label class="col-md-2 control-label">Partner</label>
                                     <div class="col-md-10">
@@ -176,11 +176,25 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">RSA加密私钥</label>
-                                    <div class="col-md-10">
-                                        <textarea type="text" name="system_alipay_rsaprivatekey" class="form-control">{%$system.system_alipay_rsaprivatekey|default:""%}</textarea>
+                                    <div class="col-md-8">
+                                        <input type="file" name="system_alipay_rsaprivatekey" class="form-control">
                                         <span class="help-block">
                                         rsa加密的私钥. 公钥放在支付宝</span>
                                     </div>
+                                    {%if isset($system.system_alipay_rsaprivatekey) && !empty($system.system_alipay_rsaprivatekey)%}
+                                    <label class="col-md-2 control-label"><a href="{%resource path=$system.system_alipay_rsaprivatekey%}">RSA私钥查看</a></label>
+                                    {%/if%}
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">支付宝RSA公钥</label>
+                                    <div class="col-md-8">
+                                        <input type="file" name="system_alipay_rsapublickey" class="form-control">
+                                        <span class="help-block">
+                                        支付宝的RSA公钥</span>
+                                    </div>
+                                    {%if isset($system.system_alipay_rsapublickey) && !empty($system.system_alipay_rsapublickey)%}
+                                    <label class="col-md-2 control-label"><a href="{%resource path=$system.system_alipay_rsapublickey%}">RSA公钥查看</a></label>
+                                    {%/if%}
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">货币代码</label>

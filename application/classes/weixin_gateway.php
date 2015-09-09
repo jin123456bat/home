@@ -334,7 +334,36 @@ class weixin_gateway
 		
 		$data['sign'] = $this->sign($data);
 		
-		return $this->post($url, $data);
+		$caFilePath = '';
+		$certFilePath = '';
+		$certPassword = '123675';
+		
+		$ch = curl_init($url);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
+		
+		//ca证书
+		if(!empty($caFilePath))
+		{
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+			curl_setopt($ch, CURLOPT_CAINFO, $caFilePath);
+		}
+		else
+		{
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		}
+		
+		//pem证书
+		curl_setopt($ch, CURLOPT_SSLCERT, $certFilePath);
+		curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $certPassword);
+		curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
+		
+		curl_setopt($ch,CURLOPT_HEADER,0);
+		curl_setopt($ch,CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
+		return curl_exec($ch);
 	}
 	
 	/**

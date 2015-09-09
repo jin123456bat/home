@@ -18,11 +18,6 @@ class alipayConfig extends config
 		 */
 		$this->gateway_url = 'https://mapi.alipay.com/gateway.do';
 		
-		/**
-		 * 支付宝消息验证接口
-		 */
-		$this->verify_nofity_url = 'http://notify.alipay.com/trade/notify_query.do';
-		
 		//签名方式 不需修改
 		$this->sign_type = strtoupper('MD5');
 		

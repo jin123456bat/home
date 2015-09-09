@@ -52,12 +52,13 @@ class file
 			if ($file['error'] != UPLOAD_ERR_OK) {
 				return $file['error'];
 			}
-			if ($file['size'] > $config['size']) {
+			
+			if (isset($config['size']) && $file['size'] > $config['size']) {
 				return UPLOAD_ERR_INI_SIZE;
 			}
 			
 			$mimetype = filesystem::mimetype($file['tmp_name']);
-			if (!in_array($mimetype, $config['type'])) {
+			if (isset($config['type']) && !in_array($mimetype, $config['type'])) {
 				return 8;
 			}
 			

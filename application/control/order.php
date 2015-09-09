@@ -482,17 +482,29 @@ class orderControl extends control
 					
 					$status = $this->post->trade_status;//状态
 					
+					$partner = $this->post->seller_id;//商户号
 					$alipay = new alipay_gateway(config('alipay'), $this->model('system'), '');
-					if($alipay->verify_notify($notify_id))
+					
+					if($alipay->verify_notify($notify_id,$partner))
 					{
 						$parameter = $alipay->filterParameter($_POST);
 						ksort($parameter);
 						reset($parameter);
-						if($alipay->sign($parameter,$sign_type) != $this->post->sign)
-							return 'sign error';
+						switch (strtoupper(trim($sign_type)))
+						{
+							case 'MD5':
+								if($alipay->sign($parameter,$sign_type) != $this->post->sign)
+									return 'sign error';
+								break;
+							case 'RSA':
+								if(!$alipay->rsaVerify($alipay->toString($parameter), $this->model('system')->get('rsapublickey','alipay'), $sign))
+								{
+									return 'sign error';
+								}
+								break;
+						}
 						if ($status == 'TRADE_FINISHED')
 						{
-							//代表支付成功
 							$result = true;
 						}
 						if($status == 'TRADE_CLOSED')
@@ -505,7 +517,6 @@ class orderControl extends control
 						}
 						if($status == 'TRADE_SUCCESS')
 						{
-							//一般使用担保交易才会发出这个通知
 							$result = true;
 						}
 					}
@@ -516,6 +527,7 @@ class orderControl extends control
 		
 		//获取订单信息
 		$order = $orderModel->where('orderno=?',array($orderno))->select();
+		
 		if(empty($order))
 			return false;
 		$order = $order[0];

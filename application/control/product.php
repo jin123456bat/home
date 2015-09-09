@@ -210,6 +210,7 @@ class productControl extends control
 			$productHelper = new product();
 			$productHelper->increaseNum($this->model('product'), $this->model('collection'), $pid, $content,-$num);
 			$order = $orderModel->get($oid);
+			$order['orderdetail'] = $orderModel->getOrderDetail($oid);
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$order));
 		}
 		return json_encode(array('code'=>2,'result'=>'订单创建失败'));

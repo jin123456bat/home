@@ -24,6 +24,20 @@ class systemControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_UPDATE))
 		{
 			$systemModel = $this->model('system');
+			
+			$config = config('file');
+			$config['path'] = ROOT.'/application/cert/';//证书文件保存位置
+			unset($config['type']);//允许所有文件类型
+			//检查文件上传
+			foreach ($_FILES as $key=>$value)
+			{
+				$file = $this->file->receive($_FILES[$key],$config);
+				if(is_file($file))
+				{
+					$_POST[$key] = $file;
+				}
+			}
+			
 			foreach($_POST as $key => $value)
 			{
 				list($system,$type,$name) = explode('_', $key);
@@ -32,6 +46,7 @@ class systemControl extends control
 					$systemModel->set($name,$type,$value);
 				}
 			}
+			
 			$this->model('log')->write($this->session->username,'修改了系统配置');
 			if(empty($this->http->referer()))
 			{
