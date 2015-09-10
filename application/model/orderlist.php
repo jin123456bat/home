@@ -254,6 +254,14 @@ class orderlistModel extends model
 	{
 		return $this->where('orderno=?',array($orderno))->update('status',self::STATUS_SHIPPING);
 	}
+	
+	/**
+	 * 取消支付订单
+	 */
+	function quit($id)
+	{
+		return $this->where('id=?',array($id))->update('status',self::STATUS_QUITE);
+	}
 
 	/**
 	 * ajxa搜索

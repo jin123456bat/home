@@ -398,27 +398,25 @@ class orderControl extends control
 			case 'alipay':
 				$alipay = new alipay_gateway(config('alipay'), $this->model('system'), $this->get->trade_type);
 				$result = $alipay->customs($order);
-				
 				$result = xmlToArray($result);
 				if($result['is_success'] == 'F')
 					return json_encode(array('code'=>5,'result'=>"请求失败或者接入数据错误"));
 				if($result['response']['alipay']['result_code'] == 'FAIL')
 					return json_encode(array('code'=>6,'result'=>$result['response']['alipay']['detail_error_des']));
+				//获取到订单编号
+				$orderno = $result['request']['param'][7];
 				break;
 			case 'weixin':
 				$weixin = new weixin_gateway(config('weixin'), $this->model('system'));
 				$result = $weixin->costums($order);
-				
-				//$result = xmlToArray($result);
-				var_dump($result);
-				exit();
+				if($result['retcode'] != 0)
+					return json_encode(array('code'=>$result['retcode'],'result'=>$result['retmsg']));
+				//获取订单编号
+				$orderno = $result['out_trade_no'];
 				break;
 			default:
 				return json_encode(array('code'=>7,'result'=>'报关方式错误'));
 		}
-		
-		//获取到订单编号
-		$orderno = $result['request']['param'][7];
 		if($orderModel->setShipping($orderno))
 		{
 			return json_encode(array('code'=>1,'result'=>'ok'));
@@ -607,7 +605,7 @@ class orderControl extends control
 	}
 	
 	/**
-	 * 订单完成同步页面
+	 * 订单支付完毕
 	 */
 	function thankyou()
 	{
@@ -739,7 +737,7 @@ class orderControl extends control
 	function shipped()
 	{
 		$this->response->addHeader('Content-Type','application/json');
-		if(login::user())
+		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$id = filter::int($this->post->id);
 		$orderModel = $this->model('orderlist');
@@ -755,6 +753,51 @@ class orderControl extends control
 			return json_encode(array('code'=>0,'result'=>'订单状态已经更改过了'));
 		}
 		return json_encode(array('code'=>0,'result'=>'该订单状态不符合'));
+	}
+	
+	/**
+	 * 提醒发货
+	 */
+	function shipalert()
+	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$id = $this->post->id;
+		$orderModel = $this->model('orderlist');
+		$order = $orderModel->get($id);
+		if(empty($order))
+			return json_encode(array('code'=>3,'result'=>'订单不存在'));
+		if($order['status'] == orderlistModel::STATUS_PAYED)
+		{
+			if($this->model('shipalert')->create($this->session->id,$id))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+			return json_encode(array('code'=>0,'result'=>'已经提醒过了'));
+		}
+		return json_encode(array('code'=>4,'result'=>'订单状态不符合'));
+	}
+	
+	/**
+	 * 取消订单接口
+	 */
+	function quit()
+	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$id = filter::int($this->post->id);
+		$orderModel = $this->model('orderlist');
+		$order = $orderModel->get($id);
+		if(empty($order))
+			return json_encode(array('code'=>3,'result'=>'没有订单'));
+		if($order['status'] == orderlistModel::STATUS_PAYING)
+		{
+			if($orderModel->quit($id))
+			{
+				return json_encode(array('code'=>1,'result'=>'ok'));
+			}
+		}
+		return json_encode(array('code'=>0,'result'=>'订单状态无法更改'));
 	}
 	
 	/**

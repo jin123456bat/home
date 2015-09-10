@@ -37,7 +37,7 @@ class messageControl extends control
 	 */
 	function create()
 	{
-		if(login::user())
+		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$content = $this->post->content;
 		if(!empty($content))

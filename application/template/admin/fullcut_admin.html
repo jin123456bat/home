@@ -157,7 +157,7 @@
 										{%section name=fullcut loop=$fullcut%}
 										<li class="{%if $smarty.section.fullcut.first%}active{%/if%}">
 												<a data-toggle="tab" tabindex="-1" href="#fullcut_{%$fullcut[fullcut].id%}">
-												{%$fullcut[fullcut].name%} 
+												{%$fullcut[fullcut].sname%} 
 												<i class="fa fa-angle-down pull-right"></i>
 												</a>
 										</li>
@@ -175,7 +175,7 @@
 											<div class="portlet">
 												<div class="portlet-title">
 													<div class="caption">
-														<i class="fa fa-bell-o"></i>{%$fullcut[fullcut].name%}
+														<i class="fa fa-bell-o"></i>{%$fullcut[fullcut].sname%}
 													</div>
 													<div class="pull-right">
 														<a href="{%url c=fullcut a=remove%}&id={%$fullcut[fullcut].id%}" class="btn btn-sm default red-stripe">

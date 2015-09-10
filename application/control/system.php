@@ -68,6 +68,34 @@ class systemControl extends control
 	}
 	
 	/**
+	 * 报关设置
+	 */
+	function costums()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
+		{
+			$this->view = new view(config('view'), 'admin/system_costums.html');
+			
+			$systemModel = $this->model('system');
+			$costums = $systemModel->fetch(array('costums'));
+			$system = array();
+			foreach ($costums as $value)
+			{
+				$system['system_'.$value['type'].'_'.$value['name']] = $value['value'];
+			}
+			$this->view->assign('system',$system);
+			
+			return $this->view->display();
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
+	}
+	
+	/**
 	 * 用于保存app的一些配置信息
 	 */
 	function saveapp()

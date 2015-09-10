@@ -54,6 +54,33 @@ class carouselControl extends control
 		}
 	}
 	
+	/**
+	 * 更改滚动图的图像
+	 */
+	function changepic()
+	{
+		$this->response->addHeader('Content-Type','application/json');
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'carousel',roleModel::POWER_ALL))
+		{
+			$pic = $this->file->pic;
+			$id = filter::int($this->post->id);
+			if(is_file($pic))
+			{
+				$carouselModel = $this->model('carousel');
+				$image = new image();
+				$pic = $image->resizeImage($pic, 640, 320);
+				$carouselModel->where('id=?',array($id))->update('pic',$pic);
+				return json_encode(array('code'=>1,'result'=>'ok','body'=>file::realpathToUrl($pic)));
+			}
+			return json_encode(array('code'=>0,'result'=>'上传失败'));
+		}
+		return json_encode(array('code'=>2,'result'=>'没有权限'));
+	}
+	
+	/**
+	 * 保存滚动图的配置信息
+	 */
 	function save()
 	{
 		$roleModel = $this->model('role');

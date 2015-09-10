@@ -279,7 +279,7 @@
 		</li>
 		<li {%if $smarty.get.c==ship && $smarty.get.a==admin
         		|| $smarty.get.c==system &&(
-                $smarty.get.a==base || $smarty.get.a==payment || $smarty.get.a==cache
+                $smarty.get.a==base || $smarty.get.a==payment || $smarty.get.a==cache || $smarty.get.a==costums
                 )
                 %}class="active open"{%/if%}>
 			<a href="javascript:;">
@@ -289,6 +289,7 @@
             						|| ($smarty.get.c==system && ($smarty.get.a==base
                                     || $smarty.get.a==payment
                                     || $smarty.get.a==cache
+                                    || $smarty.get.a==costums
                                     ))%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
@@ -303,6 +304,10 @@
 				<li{%if $smarty.get.c==system && $smarty.get.a==payment%} class="active"{%/if%}>
 					<a href="{%url c=system a=payment%}">
 					结算</a>
+				</li>
+                <li{%if $smarty.get.c==system && $smarty.get.a==costums%} class="active"{%/if%}>
+					<a href="{%url c=system a=costums%}">
+					报关</a>
 				</li>
                 <li{%if $smarty.get.c==system && $smarty.get.a==cache%} class="active"{%/if%}>
                 	<a href="{%url c=system a=cache%}">

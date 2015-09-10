@@ -241,6 +241,47 @@ jQuery(document).ready(function() {
 		return false;
 	});
 	
+	$('input[name=pic]').live('change',function(event){
+		var ths = $(this);
+		var formData = new FormData();//文件上传通道  
+		var fileReader = new FileReader();
+		var filesize = this.files[0].size;
+		var getFileType = function(filename){  
+			var extStart  = filename.lastIndexOf(".")+1;  
+			return filename.substring(extStart,filename.length).toUpperCase();  
+		};
+		if(filesize>10*1024*1024)
+		{
+			alert('文件大小不得超出10MB');
+			return false;
+		}
+		var type = getFileType(this.files[0].name)
+		if(type == 'JPEG' || type=='JPG' || type=='GIF' || type=='PNG' || type=='BMP')
+		{
+			formData.append($(this).attr('name'),this.files[0]);
+			formData.append('id',$(this).data('id'));
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST','{%url c=carousel a=changepic%}',true);
+			xhr.onload = function(){  
+				if(xhr.status == 200 && xhr.readyState == 4)  
+				{
+					var response = xhr.response;
+					response = $.parseJSON(response);
+					$(ths).parents('.gallery-item').find('img').attr('src',response.body);
+				}
+				else
+				{
+					alert('通信失败:'+xhr.status);
+				}  
+			};  
+			xhr.send(formData); 
+		}
+		else
+		{
+			alert('文件类型错误');
+		}
+	});
+	
 	$('#createBtn').on('click',function(){
 		var tpl = $('#gallery-item').clone().removeClass('display-none');
 		$('.portlet').append(tpl);

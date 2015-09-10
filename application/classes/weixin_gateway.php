@@ -312,32 +312,28 @@ class weixin_gateway
 		
 		$data = array(
 			'sign_type' => 'MD5',
+			//'input_charset' => 'UTF-8',
 			'service_version' => '1.0',
-			'input_charset' => 'UTF-8',
 			'sign_key_index' => 1,
 			
 			'partner' => $this->_system->get('mchid','weixin'),
 			'out_trade_no' => $this->_order['orderno'],
-			'fee_type' => 'CNY',
-			'order_fee' => $this->_order['ordertotalamount'] * 100,
-			'transport_fee' => $this->_order['feeamount'] * 100,
-			'product_fee' => $this->_order['ordergoodsamount'] * 100,
-			'duty' => $this->_order['ordertaxamount'] * 100,
 			'customs' => $select_customs,
 			'action_type' => 1,//新增
+			//'name' => 'jinchencehng'
 		);
 		
 		if($data['customs'] != 0)
 		{
 			$data['mch_customs_no'] =  $this->_system->get('customsno','system');
 		}
-		
+		//参数签名
 		$data['sign'] = $this->sign($data);
-		
+		//获取报关证书
 		$caFilePath = '';
-		$certFilePath = '';
-		$certPassword = '123675';
-		
+		$certFilePath = $this->_system->get('weixincertfile','costums');
+		$certPassword = $this->_system->get('weixincertfilepassword','costums');
+		//带证书的curl
 		$ch = curl_init($url);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
@@ -363,7 +359,14 @@ class weixin_gateway
 		curl_setopt($ch,CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 		curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
-		return curl_exec($ch);
+		$result = curl_exec($ch);
+		
+		//返回字符集居然是GBK的 还不能设置为UTF-8
+		//$result = iconv("GBK", "UTF-8", $result);
+		
+		$result = simplexml_load_string($result);
+		$result = $this->xmlToArray($result);
+		return $result;
 	}
 	
 	/**
@@ -492,7 +495,7 @@ class weixin_gateway
 		$parameter = array();
 		foreach ($data as $key => $value)
 		{
-			if($value == '' || $key == 'sign')
+			if($value === '' || $key === 'sign')
 				continue;
 			$parameter[$key] = $value;
 		}

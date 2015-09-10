@@ -180,6 +180,22 @@ class cartControl extends control
 	}
 	
 	/**
+	 * 清空购物车
+	 */
+	function clear()
+	{
+		if(!login::user())
+			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		$uid = $this->session->id;
+		$cartModel = $this->model('cart');
+		if($cartModel->clear($uid))
+		{
+			return json_encode(array('code'=>1,'result'=>'ok'));
+		}
+		return json_encode(array('code'=>0,'result'=>'本来就是空的好不好'));
+	}
+	
+	/**
 	 * 计算购物车中商品价格
 	 * @param session id 用户id
 	 */
@@ -258,11 +274,11 @@ class cartControl extends control
 		$orderdetail = array();
 		$collectionModel = $this->model('collection');
 		$prototypeModel = $this->model('prototype');
-		//优惠券信息
-		$discount = empty($this->post->coupon)?'':$this->post->coupon;
+		//优惠金额
+		$discount = 0;
 		$couponModel = $this->model('coupon');
 		//要使用的优惠卷信息
-		$coupon = '';
+		$coupon = empty($this->post->coupon)?'':$this->post->coupon;
 		//要被打折商品的总价
 		$tobeCouponamount = 0;
 		foreach ($cart as $product)
@@ -304,7 +320,7 @@ class cartControl extends control
 					}
 					break;
 				default:
-					$used = $couponModel->check($discount,$product);
+					$used = $couponModel->check($coupon,$product);
 					if(!empty($used))
 					{
 						$tobeCouponamount += ($goodstruthprice*$product['num']);
@@ -353,13 +369,14 @@ class cartControl extends control
 		$tradetime = 0;
 		//订单总金额
 		$ordertotalamount = $feeamount+$ordertaxamount+$ordergoodsamount;
-		
+		//计算优惠价格
 		if(!empty($coupon))
 		{
 			if($tobeCouponamount >= $coupon['max'])
 			{
 				$minus = ($coupon['type'] == 'fixed')?$coupon['value']:$tobeCouponamount*(1-$coupon['value']);
 				$ordertotalamount -= $minus;
+				$discount = $minus;
 			}
 		}
 		

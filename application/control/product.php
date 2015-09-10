@@ -86,9 +86,9 @@ class productControl extends control
 		if(empty($addressid))
 			return json_encode(array('code'=>8,'result'=>'收货地址不能为空'));
 		//优惠代码
-		$discount = $this->post->coupon;
-		if(empty($discount))
-			$discount = '';
+		$coupon = $this->post->coupon;
+		//优惠金额
+		$discount = 0;
 		
 		//判断商品是否参加了活动
 		switch ($product['activity'])
@@ -98,6 +98,8 @@ class productControl extends control
 				if($fullcut !== NULL)
 				{
 					$ordergoodsamount -= $fullcut['minus'];
+					//计算满减的单价
+					$orderdetail[0]['unitprice'] = $ordergoodsamount/$num;
 				}
 				break;
 			case 'sale':
@@ -105,6 +107,7 @@ class productControl extends control
 				if($sale !== NULL)
 				{
 					$ordergoodsamount = $sale*$num;
+					$orderdetail[0]['unitprice'] = $sale;
 				}
 				break;
 			case 'seckill':
@@ -112,13 +115,14 @@ class productControl extends control
 				if($seckill !== NULL)
 				{
 					$ordergoodsamount = $seckill*$num;
+					$orderdetail[0]['unitprice'] = $seckill;
 				}
 				break;
 			default:
-				if(!empty($discount))
+				if(!empty($coupon))
 				{
 					$couponModel = $this->model('coupon');
-					$used = $couponModel->check($discount,$product);
+					$used = $couponModel->check($coupon,$product);
 					if(!empty($used))
 					{
 						if($ordergoodsamount >= $used['max'])
@@ -126,6 +130,7 @@ class productControl extends control
 							if($couponModel->increaseTimes($used['couponno'],-1))
 							{
 								$ordergoodsamount = ($used['type'] == 'fixed')?$ordergoodsamount-$used['value']:$ordergoodsamount*$used['value'];
+								$discount = ($used['type'] == 'fixed')?$used['value']:$ordergoodsamount*(1-$used['value']);
 								break;
 							}
 						}
