@@ -7,6 +7,7 @@ use application\classes\login;
 use system\core\view;
 use system\core\random;
 use system\core\filter;
+use application\classes\collection;
 /**
  * 优惠券打折码控制器
  * @author jin12
@@ -28,7 +29,7 @@ class couponControl extends control
 	}
 	
 	/**
-	 * 获取可以使用的优惠券
+	 * 获取可以使用的优惠券  添加参数pid 可以根据购物车还是根据单商品
 	 */
 	function getavaliable()
 	{
@@ -36,9 +37,32 @@ class couponControl extends control
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$couponModel = $this->model('coupon');
-		$cartModel = $this->model('cart');
-		//获取用户购物车中所有商品
-		$cart = $cartModel->getByUid($this->session->id);
+		
+		$pid = filter::int($this->post->pid);
+		if(empty($pid))
+		{
+			//根据购物车获取可以使用的优惠券
+			$cartModel = $this->model('cart');
+			//获取用户购物车中所有商品
+			$cart = $cartModel->getByUid($this->session->id);
+		}
+		else
+		{
+			$content = $this->post->content;
+			$content = empty($content)?'':$content;
+			//根据单商品获取可以使用的优惠券 
+			$cart = array();
+			$productModel = $this->model('product');
+			$product = $productModel->get($pid);
+			$product['content'] = (new collection())->stringToArray($content);
+			$product['content'] = serialize($product['content']);
+			$cart[] = $product;
+		}
+		//购买的商品价格
+		$price = 0;
+		
+		$collectionModel = $this->model('collection');
+		
 		$coupondetailModel = $this->model('coupondetail');
 		$product_category_array = array();
 		foreach($cart as $goods)
@@ -47,6 +71,17 @@ class couponControl extends control
 			if(isset($goods['activity']) && $goods['activity'] === '')
 			{
 				$product_category_array[] = $goods['category'];
+				//计算商品价格
+				$content = unserialize($goods['content']);
+				$collection = $collectionModel->find($goods['pid'],$content);
+				if(empty($collection))
+				{
+					$price += $goods['price'];
+				}
+				else
+				{
+					$price += $collection['price'];
+				}
 			}
 		}
 		$result = $coupondetailModel->where('categoryid in (?) or categoryid=0',$product_category_array)->select();
@@ -57,9 +92,12 @@ class couponControl extends control
 		}
 		$couponModel->where('id in (?)',$coupon_id_array);
 		//公开可以使用的优惠券
-		$body1 = $couponModel->where('display=? and (starttime<? or starttime=0) and (endtime>? or endtime=0) and times>?',array(1,$_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0))->select();
+		$body1 = $couponModel->publicCoupon($price);
 		//我的优惠券
-		$body2 = $couponModel->mycoupon($this->session->id,false);
+		$filter = array(
+			'max' => $price
+		);
+		$body2 = $couponModel->mycoupon($this->session->id,false,$filter);
 		$body = array_unique(array_merge($body1,$body2),SORT_REGULAR);
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
 	}

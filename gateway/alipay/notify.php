@@ -1,5 +1,5 @@
 <?php
-$url = 'http://'.$_SERVER['HTTP_HOST'].'/home/index.php?c=order&a=notify&type=alipay';
+$url = 'http://'.$_SERVER['HTTP_HOST'].'/index.php?c=order&a=notify&type=alipay';
 
 $ch = curl_init($url);
 curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);

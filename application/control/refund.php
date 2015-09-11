@@ -41,12 +41,12 @@ class refundControl extends control
 	 */
 	function create()
 	{
-		$oid = filter::int($this->post->oid);
+		$id = filter::int($this->post->id);
 		$reason = $this->post->reason;
 		if(login::user())
 		{
 			$refundModel = $this->model('refund');
-			if($refundModel->create($this->session->id,$oid,$reason))
+			if($refundModel->create($this->session->id,$id,$reason))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}

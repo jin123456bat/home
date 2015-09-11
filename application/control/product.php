@@ -42,6 +42,9 @@ class productControl extends control
 	{
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		//是否为预订单
+		$preorder = $this->post->preorder;
+		
 		//商品id
 		$pid = $this->post->pid;
 		$uid = $this->session->id;
@@ -127,12 +130,13 @@ class productControl extends control
 					{
 						if($ordergoodsamount >= $used['max'])
 						{
-							if($couponModel->increaseTimes($used['couponno'],-1))
+							if(!$preorder)
 							{
-								$ordergoodsamount = ($used['type'] == 'fixed')?$ordergoodsamount-$used['value']:$ordergoodsamount*$used['value'];
-								$discount = ($used['type'] == 'fixed')?$used['value']:$ordergoodsamount*(1-$used['value']);
-								break;
+								$couponModel->increaseTimes($coupon,-1);
 							}
+							$ordergoodsamount = ($used['type'] == 'fixed')?$ordergoodsamount-$used['value']:$ordergoodsamount*$used['value'];
+							$discount = ($used['type'] == 'fixed')?$used['value']:$ordergoodsamount*(1-$used['value']);
+							break;
 						}
 					}
 				}
@@ -195,30 +199,67 @@ class productControl extends control
 		 */
 		$action_type = '1';
 		
-		
 		$order = array(
-			NULL,$uid,$paytype,$paynumber,$ordertotalamount,$orderno,$ordertaxamount,$ordergoodsamount
-			,$feeamount,$tradetime,$createtime,$totalamount,$consignee,$consigneetel,$consigneeaddress,$consigneeprovince
-			,$consigneecity,$postmode,$waybills,$sendername,$companyname,$zipcode,$note,$status,$discount,$client,
+			NULL,
+			$uid,
+			$paytype,
+			$paynumber,
+			$ordertotalamount,
+			$orderno,
+			$ordertaxamount,
+			$ordergoodsamount,
+			$feeamount,
+			$tradetime,
+			$createtime,
+			$totalamount,
+			$consignee,
+			$consigneetel,
+			$consigneeaddress,
+			$consigneeprovince,
+			$consigneecity,
+			$postmode,
+			$waybills,
+			$sendername,
+			$companyname,
+			$zipcode,
+			$note,
+			$status,
+			$discount,
+			$client,
 			$action_type
 		);
 		
-		$orderModel = $this->model('orderlist');
-		$oid = $orderModel->create($order,$orderdetail);
-		if($oid)
+		
+		if($preorder)
 		{
-			//用户订单数量+1
-			$this->model('user')->where('id=?',array($uid))->increase('ordernum',1);
-			//商品订单数量+1
-			$this->model('product')->where('id=?',array($pid))->increase('ordernum',1);
-			//商品库存减少
-			$productHelper = new product();
-			$productHelper->increaseNum($this->model('product'), $this->model('collection'), $pid, $content,-$num);
-			$order = $orderModel->get($oid);
-			$order['orderdetail'] = $orderModel->getOrderDetail($oid);
+			$order = array(
+				'id'=>NULL,'uid'=>$uid,'paytype'=>$paytype,'paynumber'=>$paynumber,'ordertotalamount'=>$ordertotalamount,'orderno'=>$orderno,'ordertaxamount'=>$ordertaxamount,'ordergoodsamount'=>$ordergoodsamount
+				,'feeamount'=>$feeamount,'tradetime'=>$tradetime,'createtime'=>$createtime,'totalamount'=>$totalamount,'consignee'=>$consignee,'consigneetel'=>$consigneetel,'consigneeaddress'=>$consigneeaddress
+				,'consigneeprovince'=>$consigneeprovince,'consigneecity'=>$consigneecity,'postmode'=>$postmode,'waybills'=>$waybills,'sendername'=>$sendername,'companyname'=>$companyname,'zipcode'=>$zipcode
+				,'note'=>$note,'status'=>$status,'discount'=>$discount,'client'=>$client,'action_type'=>$action_type
+			);
+			$order['orderdetail'] = $orderdetail;
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$order));
 		}
-		return json_encode(array('code'=>2,'result'=>'订单创建失败'));
+		else
+		{
+			$orderModel = $this->model('orderlist');
+			$oid = $orderModel->create($order,$orderdetail);
+			if($oid)
+			{
+				//用户订单数量+1
+				$this->model('user')->where('id=?',array($uid))->increase('ordernum',1);
+				//商品订单数量+1
+				$this->model('product')->where('id=?',array($pid))->increase('ordernum',1);
+				//商品库存减少
+				$productHelper = new product();
+				$productHelper->increaseNum($this->model('product'), $this->model('collection'), $pid, $content,-$num);
+				$order = $orderModel->get($oid);
+				$order['orderdetail'] = $orderModel->getOrderDetail($oid);
+				return json_encode(array('code'=>1,'result'=>'ok','body'=>$order));
+			}
+			return json_encode(array('code'=>2,'result'=>'订单创建失败'));
+		}
 	}
 	
 	/**

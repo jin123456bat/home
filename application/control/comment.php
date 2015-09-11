@@ -7,6 +7,7 @@ use system\core\filter;
 use system\core\filesystem;
 use application\model\roleModel;
 use system\core\file;
+use system\core\image;
 class commentControl extends control
 {
 
@@ -23,7 +24,12 @@ class commentControl extends control
 		
 		if(isset($_FILES['file']))
 		{
+			$image = new image();
 			$files = $this->file->receiveMultiFile($_FILES['file'],config('file'));
+			foreach ($files as &$file)
+			{
+				$file = $image->resizeImage($file, 640, 320);
+			}
 		}
 		else
 		{

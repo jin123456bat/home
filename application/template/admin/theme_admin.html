@@ -291,11 +291,11 @@ jQuery(document).ready(function() {
 		return false;
 	});
 	
-	$('.editBtn').on('click',function(event){
+	/*$('.editBtn').on('click',function(event){
 		var ths = $(this);
 		var id = ths.data('id');
 		ths.parents('tr').find('upload').removeClass('display-none');
-	});
+	});*/
 	
 	$('.editBtn').on('click',function(){
 		var id = $(this).data('id');
@@ -303,7 +303,7 @@ jQuery(document).ready(function() {
 		var tdtextarea = $(this).parents('tr').find('td[name=description]');
 		if($.trim($(this).html()) == '编辑')
 		{
-			$('.serverside').removeClass('display-none');
+			$('.serverside',$(this).parents('tr')).removeClass('display-none');
 			$(this).html('完成');
 			var input = $('<input type="text">');
 			var textarea = $('<textarea></textarea>');
@@ -395,7 +395,9 @@ jQuery(document).ready(function() {
 				path = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzE0MHgxNDAKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNGYyNjk0N2JiMSB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE0ZjI2OTQ3YmIxIj48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9Ijc0LjUiPjE0MHgxNDA8L3RleHQ+PC9nPjwvZz48L3N2Zz4=';
 			}
 		}
-		var tpl = '<div class="col-sm-6 col-md-4 product_container"><div class="thumbnail"><img src="'+path+'" style="height: 200px; width: 200px; display: block;"><div class="caption"><h4>'+product.name+'</h4><b>'+product.short_description+'</b><b><a data-tid="'+tid+'" data-pid="'+product.id+'" class="btn red btn-xs removeBtn">从主题中移除</a></b></div></div></div>';
+		var productname = product.name.substring(0,9)+'...';
+		var short_description = product.short_description.substring(0,27)+'...';
+		var tpl = '<div class="col-sm-6 col-md-4 product_container"><div class="thumbnail"><img src="'+path+'" style="height: 200px; width: 200px; display: block;"><div class="caption"><h5>'+productname+'</h5><b>'+short_description+'</b><hr/><b><a data-tid="'+tid+'" data-pid="'+product.id+'" class="btn red btn-xs removeBtn">从主题中移除</a></b></div></div></div>';
 		$('#product').find('.portlet-body').append(tpl);
 	}
 	

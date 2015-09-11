@@ -392,7 +392,6 @@ class orderControl extends control
 			return json_encode(array('code'=>3,'result'=>'没有订单'));
 		if($order['status'] != orderlistModel::STATUS_PAYED)
 			return json_encode(array('code'=>4,'result'=>'无法报关'));
-		
 		switch ($order['paytype'])
 		{
 			case 'alipay':
@@ -700,7 +699,7 @@ class orderControl extends control
 			$result = $orderModel->fetchAll($this->session->id,$status,$start,$length);
 			foreach($result as &$order)
 			{
-				$order['goods'] = $orderModel->getOrderDetail($order['id']);
+				$order['orderdetail'] = $orderModel->getOrderDetail($order['id']);
 			}
 			return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 		}

@@ -329,8 +329,10 @@ class weixin_gateway
 		}
 		//参数签名
 		$data['sign'] = $this->sign($data);
+		
+		//echo $url.'?'.http_build_query($data);
+		
 		//获取报关证书
-		$caFilePath = '';
 		$certFilePath = $this->_system->get('weixincertfile','costums');
 		$certPassword = $this->_system->get('weixincertfilepassword','costums');
 		//带证书的curl
@@ -338,17 +340,6 @@ class weixin_gateway
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-		
-		//ca证书
-		if(!empty($caFilePath))
-		{
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-			curl_setopt($ch, CURLOPT_CAINFO, $caFilePath);
-		}
-		else
-		{
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		}
 		
 		//pem证书
 		curl_setopt($ch, CURLOPT_SSLCERT, $certFilePath);

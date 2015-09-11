@@ -57,7 +57,7 @@ class carouselControl extends control
 	/**
 	 * 更改滚动图的图像
 	 */
-	function changepic()
+	/*function changepic()
 	{
 		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
@@ -76,7 +76,7 @@ class carouselControl extends control
 			return json_encode(array('code'=>0,'result'=>'上传失败'));
 		}
 		return json_encode(array('code'=>2,'result'=>'没有权限'));
-	}
+	}*/
 	
 	/**
 	 * 保存滚动图的配置信息
@@ -109,13 +109,11 @@ class carouselControl extends control
 				default:$src = '';break;
 			}
 			$carouselModel->save($id,$title,$stop,$type,$src);
-			$this->response->setCode(302);
-			$this->response->addHeader('Location',$this->http->url('carousel','admin'));
+			return json_encode(array('code'=>1,'result'=>'ok'));
 		}
 		else
 		{
-			$this->response->setCode(302);
-			$this->response->addHeader('Location',$this->http->url('admin','index'));
+			return json_encode(array('code'=>2,'result'=>'权限不足'));
 		}
 	}
 	
@@ -124,6 +122,7 @@ class carouselControl extends control
 	 */
 	function create()
 	{
+		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'carousel',roleModel::POWER_INSERT))
 		{
@@ -135,6 +134,7 @@ class carouselControl extends control
 			}
 			else
 			{
+				//滚动图的默认图片
 				$pic = ROOT.'/application/assets/global/plugins/jcrop/demos/demo_files/image3.jpg';
 			}
 			$title = $this->post->title;
@@ -152,13 +152,11 @@ class carouselControl extends control
 			}
 			$carouselModel = $this->model('carousel');
 			$id = $carouselModel->create($title,$pic,$stop,$type,$src);
-			$this->response->setCode(302);
-			$this->response->addHeader('Location',$this->http->url('carousel','admin'));
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$id));
 		}
 		else
 		{
-			$this->response->setCode(302);
-			$this->response->addHeader('Location',$this->http->url('admin','index'));
+			return json_encode(array('code'=>2,'result'=>'没有权限'));
 		}
 	}
 	

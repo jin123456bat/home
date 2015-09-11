@@ -80,7 +80,9 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-                	<button class="btn green" id="createBtn">添加一张幻灯图 <i class="fa fa-plus"></i></button>
+                	<div id="alert">
+					</div>
+                	<button class="btn green" id="createBtn">添加一张幻灯图 <i class="fa fa-plus"></i></button>                    
                     <div class="content-page">
                       <div class="row margin-bottom-40 portlet">
                         {%section name=carousel loop=$carousel%}
@@ -98,7 +100,7 @@
                                 <p>
                                 	<div class="form-group">
                                         <div class="col-md-4" style="padding-right:0px;">
-	                                        <input type="text" name="stop" value="{%$carousel[carousel].stop%}" class="input-sm form-control" placeholder="停留时间/秒"> 
+	                                        <input type="text" name="stop" value="{%$carousel[carousel].stop|default:''%}" class="input-sm form-control" placeholder="停留时间/秒"> 
                                         </div>
                                     	<div class="col-md-4" style="padding:0px;">
                                             <select name="type" class="input-sm form-control">
@@ -126,12 +128,12 @@
                                 <p>
                                     <div class="btn-toolbar">
                                         <div class="btn-group-solid">
-                                            <input type="submit" class="btn blue display-inline col-md-4" value="保存">
+                                            <input data-id="{%$carousel[carousel].id%}" type="submit" class="btn blue display-inline col-md-4 saveBtn" value="保存">
                                             <button class="btn red display-inline col-md-4 removeBtn" data-id="{%$carousel[carousel].id%}">
                                             删除 </button>
                                             <button class="btn yellow display-inline col-md-4 selectpic">
                                             更改图片 </button>
-                                            <input data-id="{%$carousel[carousel].id%}" type="file" class="display-none hide" name="pic">
+                                            <input type="file" class="display-none hide" name="pic">
                                         </div>
                                     </div>
                                 </p>
@@ -180,7 +182,7 @@
                                 <p>
                                     <div class="btn-toolbar">
                                         <div class="btn-group-solid">
-                                            <input type="submit" class="btn blue display-inline col-md-4" value="保存">
+                                            <input type="submit" class="btn blue display-inline col-md-4 saveBtn" value="保存">
                                             
                                             <button class="btn red display-inline col-md-4 removeBtn">
                                             删除 </button>
@@ -236,55 +238,143 @@ jQuery(document).ready(function() {
 	Layout.init(); // init current layout
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
-	$('.selectpic').on('click',function(){
+	$('.selectpic').live('click',function(){
 		$(this).next().click();
+		return false;
+	});
+	
+	$('.saveBtn').live('click',function(){
+		var id = $(this).data('id');
+		
+		var gallery = $(this).parents('.gallery-item');
+		
+		var title = gallery.find('input[name=title]').val();
+		var stop = gallery.find('input[name=stop]').val();
+		var type = gallery.find('select[name=type]').val();
+		
+		var src_product = gallery.find('select[name=src_product]').val();
+		var src_theme = gallery.find('select[name=src_theme]').val();
+		var src_url =  gallery.find('intput[name=src_url]').val();
+		
+		var file = gallery.find('input[name=pic]')[0];
+		
+		var formData = new FormData();//文件上传通道  
+		var fileReader = new FileReader();
+		
+		formData.append('id',id);
+		formData.append('title',title);
+		formData.append('stop',stop);
+		formData.append('type',type);
+		formData.append('src_product',src_product);
+		formData.append('src_theme',src_theme);
+		formData.append('src_url',src_url);
+		
+		if(file.files.length>0)
+		{
+			var filesize = file.files[0].size;
+			var getFileType = function(filename){  
+				var extStart  = filename.lastIndexOf(".")+1;  
+				return filename.substring(extStart,filename.length).toUpperCase();  
+			};
+			if(filesize>10*1024*1024)
+			{
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					closeInSeconds: 5,
+					message: '图片大小控制在10MB以内',
+					container: $('#alert'),
+					place: 'prepend'
+				});
+				return false;
+			}
+			var type = getFileType(file.files[0].name);
+			if(type == 'JPEG' || type=='JPG' || type=='GIF' || type=='PNG' || type=='BMP')
+			{
+				formData.append(gallery.find('input[name=pic]').attr('name'),file.files[0]);
+			}
+			else
+			{
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					closeInSeconds: 5,
+					message: '文件类型错误',
+					container: $('#alert'),
+					place: 'prepend'
+				});
+			}
+		}
+		
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST','{%url c=carousel a=save%}',true);
+		xhr.onload = function(){  
+			if(xhr.status == 200 && xhr.readyState == 4)  
+			{
+				var response = xhr.response;
+				response = $.parseJSON(response);
+				Metronic.alert({
+					type: 'info',
+					icon: 'success',
+					closeInSeconds: 5,
+					message: '保存成功',
+					container: $('#alert'),
+					place: 'prepend'
+				});
+			}
+			else
+			{
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					closeInSeconds: 5,
+					message: '通信失败:'+xhr.status,
+					container: $('#alert'),
+					place: 'prepend'
+				});
+			}  
+		};  
+		xhr.send(formData); 
 		return false;
 	});
 	
 	$('input[name=pic]').live('change',function(event){
 		var ths = $(this);
-		var formData = new FormData();//文件上传通道  
-		var fileReader = new FileReader();
-		var filesize = this.files[0].size;
-		var getFileType = function(filename){  
-			var extStart  = filename.lastIndexOf(".")+1;  
-			return filename.substring(extStart,filename.length).toUpperCase();  
+		var reader = new FileReader();
+		reader.onload = function ( event )
+		{ 
+			var txt = event.target.result;
+			ths.parents('.gallery-item').find('img').attr('src',txt);
 		};
-		if(filesize>10*1024*1024)
-		{
-			alert('文件大小不得超出10MB');
-			return false;
-		}
-		var type = getFileType(this.files[0].name)
-		if(type == 'JPEG' || type=='JPG' || type=='GIF' || type=='PNG' || type=='BMP')
-		{
-			formData.append($(this).attr('name'),this.files[0]);
-			formData.append('id',$(this).data('id'));
-			var xhr = new XMLHttpRequest();
-			xhr.open('POST','{%url c=carousel a=changepic%}',true);
-			xhr.onload = function(){  
-				if(xhr.status == 200 && xhr.readyState == 4)  
-				{
-					var response = xhr.response;
-					response = $.parseJSON(response);
-					$(ths).parents('.gallery-item').find('img').attr('src',response.body);
-				}
-				else
-				{
-					alert('通信失败:'+xhr.status);
-				}  
-			};  
-			xhr.send(formData); 
-		}
-		else
-		{
-			alert('文件类型错误');
-		}
+		reader.readAsDataURL( this.files[0] );
 	});
 	
 	$('#createBtn').on('click',function(){
 		var tpl = $('#gallery-item').clone().removeClass('display-none');
-		$('.portlet').append(tpl);
+		
+		var title = tpl.find('input[name=title]').val();
+		var stop = tpl.find('input[name=stop]').val();
+		var type = tpl.find('select[name=type]').val();
+		$.post('{%url c=carousel a=create%}',{title:title,stop:stop,type:type},function(response){
+			if(response.code == 1)
+			{
+				tpl.find('input.saveBtn').attr('data-id',response.body);
+				tpl.find('button.removeBtn').attr('data-id',response.body);
+				tpl.removeAttr('id');
+				$('.portlet').append(tpl);
+			}
+			else
+			{
+				Metronic.alert({
+					type: 'danger',
+					icon: 'warning',
+					closeInSeconds: 5,
+					message: response.result,
+					container: $('#alert'),
+					place: 'prepend'
+				});
+			}
+		});
 	});
 	
 	$('select[name=type]').live('change',function(){
@@ -314,7 +404,7 @@ jQuery(document).ready(function() {
 		}
 	});
 	
-	$('.removeBtn').on('click',function(event){
+	$('.removeBtn').live('click',function(event){
 		$(this).parents('.gallery-item').remove();
 		var id = $(this).data('id');
 		if(id != 'undefined')

@@ -14,12 +14,34 @@ class couponModel extends model
 	}
 	
 	/**
+	 * 获取公开可以使用的优惠券
+	 */
+	function publicCoupon($price = NULL)
+	{
+		$this->where('display=? and (starttime<? or starttime=0)',array(1,$_SERVER['REQUEST_TIME']));
+		$this->where('endtime=0 or endtime>?',array($_SERVER['REQUEST_TIME']));
+		if($price !== NULL)
+		{
+			$this->where('max<=?',array($price));
+		}
+		$this->where('times>?',array(0));
+		return $this->select();
+	}
+	
+	/**
 	 * 获取用户的优惠券
 	 * @param unknown $uid
 	 * @param bool $past 结果集中是否包含无法使用的优惠券 默认包含
 	 */
-	function mycoupon($uid,$past = true)
+	function mycoupon($uid,$past = true,$filter = array())
 	{
+		if(!empty($filter))
+		{
+			if(isset($filter['max']))
+			{
+				$this->where('max <= ?',array($filter['max']));
+			}
+		}
 		if(!$past)
 		{
 			$this->where('starttime < ?  and (endtime > ? or endtime=0) and times>?',array($_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME'],0));
