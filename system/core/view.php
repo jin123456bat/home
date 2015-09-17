@@ -39,6 +39,7 @@ class view extends base
 	 */
 	function __construct($viewConfig, $viewname)
 	{
+		parent::__construct();
 		$this->_viewConfig = $viewConfig;
 		$this->_viewname = $viewname;
 		$this->_enginePath = ROOT.'/extends/smarty/Smarty.class.php';
@@ -59,8 +60,8 @@ class view extends base
 		$this->_smarty->left_delimiter = $this->_viewConfig->left_delimiter;							//设置左右标示符
 		$this->_smarty->right_delimiter = $this->_viewConfig->right_delimiter;
 		
-		$http = new http();
-		$baseUrl = rtrim("http://".$http->host().$http->path().'/application','/');
+		$http = $this->http->isHttps()?'https://':'http://';
+		$baseUrl = rtrim($http.$this->http->host().$this->http->path().'/application','/');
 		$this->_smarty->assign("VIEW_ROOT",$baseUrl);
 		$this->_smarty->registerPlugin('function',"url", array($this,'url'));
 		$this->_smarty->registerPlugin('function','resource',array($this,'resource'));
@@ -71,15 +72,15 @@ class view extends base
 	function resource($parameter)
 	{
 		$path = $parameter['path'];
-		$http = new http();
-		$url = 'http://'.$http->host().$http->path().str_replace(ROOT, '', $path);
+		$http = $this->http->isHttps()?'https://':'http://';
+		$url = $http.$this->http->host().$this->http->path().str_replace(ROOT, '', $path);
 		$default = './application/assets/gravatar.jpg';
 		return is_file($path)?$url:$default;
 	}
 	
 	function url($parameter)
 	{
-		$http = new http();
+		$http = http::getInstance();
 		$c = $parameter['c'];
 		$a = $parameter['a'];
 		unset($parameter['c']);

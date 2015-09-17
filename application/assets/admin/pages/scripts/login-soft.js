@@ -57,10 +57,9 @@ var Login = function () {
 	                	username = $('input[name=username]',form).val(),
 	                	password = $('input[name=password]',form).val();
 	                $.post(url,{username:username,password:password},function(data){
-	                	data = JSON.parse(data);
 	                	if(data.code == 1)
 	                	{
-	                		window.location = '?c=admin&a=dashboard';
+	                		window.location = 'index.php?c=admin&a=dashboard';
 	                	}
 	                	else
 	                	{

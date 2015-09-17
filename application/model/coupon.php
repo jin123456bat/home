@@ -14,6 +14,24 @@ class couponModel extends model
 	}
 	
 	/**
+	 * 复制一个优惠卷给用户
+	 * @param unknown $uid
+	 * @param array $coupon
+	 */
+	function copyForUser($uid,$couponno,array $coupon)
+	{
+		$total = $coupon['total'];
+		$starttime = $coupon['starttime'];
+		$endtime = $coupon['endtim'];
+		$max = $coupon['max'];
+		$display = 0;
+		$type = $coupon['type'];
+		$value = $coupon['value'];
+		
+		return $this->create($couponno, $uid, $total, $starttime, $endtime, $max, $display, $type, $value);
+	}
+	
+	/**
 	 * 获取公开可以使用的优惠券
 	 */
 	function publicCoupon($price = NULL)

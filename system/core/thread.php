@@ -13,7 +13,7 @@ class thread
 	function __construct()
 	{
 		$this->_config = config('system');
-		$this->_http = new http();
+		$this->_http = http::getInstance();
 		$this->_log = new log();
 	}
 

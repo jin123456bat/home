@@ -193,6 +193,7 @@
 						||($smarty.get.c==coupon && $smarty.get.a==admin)
 						||($smarty.get.c==theme && $smarty.get.a==admin)
                         || ($smarty.get.c==register && $smarty.get.a==admin)
+                        ||($smarty.get.c==hotorder && $smarty.get.a==admin)
 		%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-present"></i>
@@ -203,6 +204,7 @@
 								||($smarty.get.c==fullcut && $smarty.get.a==admin)
 								||($smarty.get.c==coupon && $smarty.get.a==admin)
                                 || ($smarty.get.c==register && $smarty.get.a==admin)
+                                ||($smarty.get.c==hotorder && $smarty.get.a==admin)
 								%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
@@ -230,13 +232,16 @@
 					<a href="{%url c=theme a=admin%}">
 					主题管理</a>
 				</li>
-                <!--
+                <li class="{%if $smarty.get.c==hotorder && $smarty.get.a==admin%}active{%/if%}">
+                	<a href="{%url c=hotorder a=admin%}">
+                    全球热销
+                    </a>
+                </li>
                 <li class="{%if $smarty.get.c==register && $smarty.get.a==admin%}active{%/if%}">
                 	<a href="{%url c=register a=admin%}">
                     新用户活动
                     </a>
                 </li>
-                -->
 			</ul>
 		</li>
 		
@@ -324,7 +329,7 @@
 		</li>
 		
 		<li class="last ">
-			<a href="charts.html">
+			<a href="{%url c=admin a=logout%}">
 			<i class="icon-logout"></i>
 			<span class="title">安全退出</span>
 			</a>

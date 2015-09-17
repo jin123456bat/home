@@ -9,6 +9,19 @@ use system\core\model;
 class refundModel extends model
 {
 	/**
+	 * 退款类型 包括退货
+	 * @var unknown
+	 */
+	const REFUND_TYPE_GOODS = 1;
+	
+	/**
+	 * 退款类型 不包括退货
+	 * @var unknown
+	 */
+	const REFUND_TYPE = 0;
+	
+	
+	/**
 	 * 退款申请尚未处理
 	 * @var unknown
 	 */
@@ -45,14 +58,51 @@ class refundModel extends model
 	/**
 	 * 创建退货申请
 	 */
-	function create($uid,$oid,$reason)
+	function create($uid,$oid,$type,$reason,$money,$description,$imgs)
 	{
-		$orderlistModel = $this->model('orderlist');
-		$result = $orderlistModel->where('id=? and uid=? and status=?',array($oid,$uid,1))->select('count(*)');
-		if(isset($result[0]['count(*)']) && $result[0]['count(*)']>0)
+		$orderModel = $this->model('orderlist');
+		$ordertotalamount = $orderModel->where('id=?',array($oid))->select('ordertotalamount,status');
+		
+		$money = (isset($ordertotalamount[0]['ordertotalamount']) && $ordertotalamount[0]['ordertotalamount']>=$money)?$money:$ordertotalamount[0]['ordertotalamount'];
+		
+		$data = array(
+			'id' => NULL,
+			'uid' => $uid,
+			'oid' => $oid,
+			'type'=> $type,
+			'time'=> $_SERVER['REQUEST_TIME'],
+			'reason'=>$reason,
+			'money' => $money,
+			'description' => $description,
+			'o_status'=>$ordertotalamount[0]['status'],
+			'handle' => self::REFUND_HANDLE_NO
+		);
+		$rid = $this->insert($data);
+		foreach($imgs as $img)
+		{
+			$refundimg = $this->model('refundimg');
+			$refundimg->create($rid,$img);
+		}
+		return $rid;
+	}
+	
+	/**
+	 * 取消退款申请
+	 * @param unknown $id
+	 */
+	function close($id)
+	{
+		$refund = $this->where('oid=? and handle=?',array($id,refundModel::REFUND_HANDLE_NO))->select();
+		if(empty($refund))
 			return false;
-		$handle = self::REFUND_HANDLE_NO;
-		return $this->insert(array(NULL,$oid,$_SERVER['REQUEST_TIME'],$reason,$handle));
+		if($refund[0]['handle'] == self::REFUND_HANDLE_NO)
+		{
+			$orderModel = $this->model('orderlist');
+			//恢复订单状态
+			$orderModel->where('id=?',array($refund[0]['oid']))->update('status',$refund[0]['o_status']);
+			return $this->where('oid=?',array($id))->update('handle',self::REFUND_HANDLE_CLOSE);
+		}
+		return FALSE;
 	}
 	
 	/**

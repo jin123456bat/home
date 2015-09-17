@@ -35,6 +35,8 @@ var EcommerceOrders = function () {
             src: $("#datatable_orders"),
             onSuccess: function (grid) {
                 // execute some code after table records loaded
+				//var tr = $('#datatable_orders').find('tbody').find('tr');
+				//console.log(tr);
             },
             onError: function (grid) {
 				Metronic.alert({
@@ -54,6 +56,24 @@ var EcommerceOrders = function () {
                     [10, 20, 50, 100, 150, -1],
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],
+				createdRow: function ( row, data, index ) {
+		            /*if ( data[5].replace(/[\$,]/g, '') * 1 > 4000 ) {
+		                $('td', row).eq(5).css('font-weight',"bold").css("color","red");
+		            }*/
+					switch(data.status)
+					{
+						case '0':
+							break;
+						case '1':$(row).addClass('active');break;
+						case '2':$(row).addClass('danger');break;
+						case '3':$(row).addClass('danger');break;
+						case '4':$(row).addClass('success');break;
+						case '5':$(row).addClass('warning');break;
+						case '6':$(row).addClass('info');break;
+						case '7':return '退款';break;
+						//default:return '未知状态';break;
+					}
+		        },
                 "pageLength": 10, // default record count per page
                 "ajax": {
                     //"url": "demo/ecommerce_orders.php", // ajax source
@@ -96,7 +116,9 @@ var EcommerceOrders = function () {
 					"render":function(data,type,full){
 						switch(data)
 						{
-							case '0':return '等待付款';break;
+							case '0':
+								return '等待付款';
+								break;
 							case '1':return '支付完毕,等待发货';break;
 							case '2':return '支付失败';break;
 							case '3':return '客户取消';break;

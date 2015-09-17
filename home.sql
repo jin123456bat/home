@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2015-08-31 04:21:23
+-- Generation Time: 2015-09-16 05:39:34
 -- 服务器版本： 5.6.17
 -- PHP Version: 5.5.12
 
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `brand` (
   `description` text NOT NULL,
   `close` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- 转存表中的数据 `brand`
@@ -100,7 +100,8 @@ INSERT INTO `brand` (`id`, `name`, `logo`, `description`, `close`) VALUES
 (1, '雕牌', '', '123', 0),
 (2, '飞利浦', '', 'abdsaer', 0),
 (3, '牛逼', '', '<html>', 0),
-(4, '测啊', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', '啊但是是打发打发', 0);
+(4, '测啊', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', '啊但是是打发打发', 0),
+(5, '哇哈啊哈', 'D:/wamp/www/home/application/upload/c1fed7b4f8e10e08afdb7d9ab5a2584be5e4327a605a1d008871407ab186d56c168b28ea.jpg', '', 0);
 
 -- --------------------------------------------------------
 
@@ -116,16 +117,17 @@ CREATE TABLE IF NOT EXISTS `carousel` (
   `type` enum('product','theme','url','none') NOT NULL COMMENT '连接方式',
   `src` varchar(512) NOT NULL COMMENT '连接的地址',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=41 ;
 
 --
 -- 转存表中的数据 `carousel`
 --
 
 INSERT INTO `carousel` (`id`, `title`, `pic`, `stop`, `type`, `src`) VALUES
-(1, '4', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x320.jpg', 5, 'product', '58'),
-(2, '标题', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 5, 'url', 'http://www.baidu.com'),
-(4, '测试内容', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 5, 'product', '58');
+(1, '4', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 5, 'product', '83'),
+(2, '标题', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 5, 'url', ''),
+(4, '测试内容', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x320.jpg', 5, 'product', '82'),
+(40, '', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 0, 'none', '');
 
 -- --------------------------------------------------------
 
@@ -170,7 +172,7 @@ INSERT INTO `category` (`id`, `name`, `icon`, `cid`) VALUES
 (24, '木材', '', 22),
 (25, '男装', '', 22),
 (26, '女装', '', 32),
-(27, '上衣', '', 25),
+(27, '上衣', '', 24),
 (28, '裤子', '', 26),
 (29, '鞋子', '', 25),
 (30, '上衣', '', 26),
@@ -197,7 +199,16 @@ CREATE TABLE IF NOT EXISTS `collection` (
   `sku` varchar(256) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=96 ;
+
+--
+-- 转存表中的数据 `collection`
+--
+
+INSERT INTO `collection` (`id`, `pid`, `content`, `stock`, `price`, `sku`) VALUES
+(93, 78, 'a:1:{i:70;s:1:"0";}', 0, 0.00, ''),
+(94, 78, 'a:1:{i:70;s:1:"1";}', 0, 0.00, ''),
+(95, 78, 'a:1:{i:70;s:1:"2";}', 0, 0.00, '');
 
 -- --------------------------------------------------------
 
@@ -232,7 +243,19 @@ CREATE TABLE IF NOT EXISTS `comment` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+
+--
+-- 转存表中的数据 `comment`
+--
+
+INSERT INTO `comment` (`id`, `uid`, `pid`, `time`, `content`, `score`) VALUES
+(17, 3, 78, 1442313292, 'id为78的商品的评价', 4),
+(18, 3, 79, 1442313292, 'id为79的商品的评价', 3),
+(19, 3, 78, 1442313321, 'id为78的商品的评价', 4),
+(20, 3, 79, 1442313321, 'id为79的商品的评价', 3),
+(21, 3, 78, 1442313333, 'id为78的商品的评价', 4),
+(22, 3, 79, 1442313333, 'id为79的商品的评价', 3);
 
 -- --------------------------------------------------------
 
@@ -270,20 +293,19 @@ CREATE TABLE IF NOT EXISTS `coupon` (
   UNIQUE KEY `couponno` (`couponno`),
   KEY `uid` (`uid`),
   KEY `display` (`display`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='优惠券打折码' AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='优惠券打折码' AUTO_INCREMENT=22 ;
 
 --
 -- 转存表中的数据 `coupon`
 --
 
 INSERT INTO `coupon` (`id`, `couponno`, `uid`, `total`, `starttime`, `endtime`, `times`, `max`, `display`, `type`, `value`) VALUES
-(9, '150809034054LK2F', 0, 123, 1438790400, 1440691200, 123, 0.00, 0, 'fixed', 200.00),
 (11, '150809034519TWJF', 0, 100, 1439063121, 1439149521, 100, 0.00, 0, 'discount', 0.70),
 (16, '150819155201IAXQ', 0, 121354, 1437840000, 1446048000, 121354, 100.00, 1, 'fixed', 50.00),
 (17, '150819155228XFV5', 0, 321, 1437840000, 1446048000, 321, 200.00, 1, 'discount', 0.50),
 (18, '150819155456YATT', 0, 12, 1437840000, 1441382400, 12, 200.00, 1, 'discount', 0.90),
 (19, '150819155519XPVE', 0, 11, 1437926400, 1441382400, 11, 123.00, 0, 'fixed', 66.00),
-(20, '150830151130C8NO', 3, 121131, 1438617600, 1441382400, 121131, 500.00, 0, 'discount', 0.70);
+(21, '1509151613276D8U', 17, 1, 1442304822, 1442391222, 1, 0.00, 0, 'discount', 0.80);
 
 -- --------------------------------------------------------
 
@@ -298,21 +320,19 @@ CREATE TABLE IF NOT EXISTS `coupondetail` (
   PRIMARY KEY (`id`),
   KEY `couponid` (`couponid`),
   KEY `categoryid` (`categoryid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
 --
 -- 转存表中的数据 `coupondetail`
 --
 
 INSERT INTO `coupondetail` (`id`, `couponid`, `categoryid`) VALUES
-(3, 9, 24),
-(4, 9, 25),
 (7, 11, 0),
 (13, 16, 0),
 (14, 17, 0),
 (15, 18, 0),
 (16, 19, 24),
-(17, 20, 0);
+(18, 21, 0);
 
 -- --------------------------------------------------------
 
@@ -333,12 +353,36 @@ CREATE TABLE IF NOT EXISTS `favourite` (
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `flag`
+--
+
+CREATE TABLE IF NOT EXISTS `flag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
+  `file` varchar(256) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- 转存表中的数据 `flag`
+--
+
+INSERT INTO `flag` (`id`, `name`, `file`) VALUES
+(1, '中国', 'D:/wamp/www/home/application/assets/flag/39c0e05dfda7d6de3c27ebfc31f97141883c7ec656be57964afc6581063b36ace048ebf9.jpg'),
+(2, '阿尔巴尼亚', 'D:/wamp/www/home/application/assets/flag/c1fed7b4f8e10e08afdb7d9ab5a2584be5e4327a605a1d008871407ab186d56c168b28ea.jpg'),
+(3, '阿塞拜疆', 'D:/wamp/www/home/application/assets/flag/674c43602a331c30696c238ee145b148deb4417dbe1f6f6eb20d54e3ee7a810e3595eee3.jpg'),
+(4, '爱尔兰', 'D:/wamp/www/home/application/assets/flag/b88ec5eb8086bfd5650851b7737c3bdcfb2320359463164ce7c0e7d035c295b9e997fe62.jpg');
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `fullcut`
 --
 
 CREATE TABLE IF NOT EXISTS `fullcut` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(256) NOT NULL,
+  `sname` varchar(256) NOT NULL,
   `max` int(11) NOT NULL,
   `minus` int(11) NOT NULL,
   `starttime` int(11) NOT NULL,
@@ -350,8 +394,8 @@ CREATE TABLE IF NOT EXISTS `fullcut` (
 -- 转存表中的数据 `fullcut`
 --
 
-INSERT INTO `fullcut` (`id`, `name`, `max`, `minus`, `starttime`, `endtime`) VALUES
-(8, '满100减20', 100, 20, 1437840000, 1444406700);
+INSERT INTO `fullcut` (`id`, `sname`, `max`, `minus`, `starttime`, `endtime`) VALUES
+(8, '哈哈哈', 100, 20, 1437840000, 1444406700);
 
 -- --------------------------------------------------------
 
@@ -398,6 +442,29 @@ INSERT INTO `help` (`id`, `title`, `content`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `hotorder`
+--
+
+CREATE TABLE IF NOT EXISTS `hotorder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) NOT NULL,
+  `orderby` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+--
+-- 转存表中的数据 `hotorder`
+--
+
+INSERT INTO `hotorder` (`id`, `pid`, `orderby`) VALUES
+(4, 78, 1),
+(5, 79, 1),
+(6, 80, 1);
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `log`
 --
 
@@ -407,334 +474,37 @@ CREATE TABLE IF NOT EXISTS `log` (
   `time` int(11) NOT NULL,
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=322 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `log`
 --
 
 INSERT INTO `log` (`id`, `username`, `time`, `content`) VALUES
-(1, 'jin123456bat', 123456890, '正在building'),
-(2, 'jin123456bat', 1439183070, '删除了一个用户'),
-(3, 'jin123456bat', 1439183105, '删除了一个用户'),
-(4, 'jin123456bat', 1439183107, '删除了一个用户'),
-(5, 'jin123456bat', 1439183109, '删除了一个用户'),
-(6, 'jin123456bat', 1439183117, '删除了一个用户'),
-(7, 'jin123456bat', 1439183117, '删除了一个用户'),
-(8, 'jin123456bat', 1439183117, '删除了一个用户'),
-(9, 'jin123456bat', 1439183261, '删除了一个用户'),
-(10, 'jin123456bat', 1439212531, '登陆了系统'),
-(11, 'jin123456bat', 1439213158, '修改了商品属性55'),
-(12, 'jin123456bat', 1439213207, '修改了商品属性1'),
-(13, 'jin123456bat', 1439213217, '修改了商品属性1'),
-(14, 'jin123456bat', 1439213269, '修改了商品属性1'),
-(15, 'jin123456bat', 1439213330, '修改了商品属性1'),
-(16, 'jin123456bat', 1439214876, '修改了商品属性1'),
-(17, 'jin123456bat', 1439214893, '修改了商品属性1'),
-(18, 'jin123456bat', 1439214947, '修改了商品属性1'),
-(19, 'jin123456bat', 1439214968, '修改了商品属性1'),
-(20, 'jin123456bat', 1439226088, '给0个用户发送了短信:'),
-(21, 'jin123456bat', 1439226207, '给0个用户发送了短信:你好世界'),
-(22, 'jin123456bat', 1439226248, '给0个用户发送了短信:你好世界'),
-(23, 'jin123456bat', 1439226252, '给0个用户发送了短信:你好世界'),
-(24, 'jin123456bat', 1439226273, '给0个用户发送了短信:你好世界'),
-(25, 'jin123456bat', 1439226301, '给1个用户发送了短信:你好世界'),
-(26, 'jin123456bat', 1439226345, '给1个用户发送了短信:你好世界'),
-(27, 'jin123456bat', 1439226364, '给1个用户发送了短信:你好世界'),
-(28, 'jin123456bat', 1439226405, '给1个用户发送了短信:你好世界'),
-(29, 'jin123456bat', 1439226570, '给1个用户发送了短信:你好世界'),
-(30, 'jin123456bat', 1439226594, '给1个用户发送了短信:你好世界'),
-(31, 'jin123456bat', 1439226814, '给1个用户发送了短信:你好世界，这是一条验证短信，顺带着一个验证码:01013011'),
-(32, 'jin123456bat', 1439258997, '登陆了系统'),
-(33, 'jin123456bat', 1439259255, '修改了商品属性1'),
-(34, 'jin123456bat', 1439259336, '修改了商品属性1'),
-(35, 'jin123456bat', 1439264405, '登陆了系统'),
-(36, 'jin123456bat', 1439275173, '登陆了系统'),
-(37, 'jin123456bat', 1439275263, '登陆了系统'),
-(38, 'jin123456bat', 1439277609, '修改了商品属性1'),
-(39, 'jin123456bat', 1439284375, '登陆了系统'),
-(40, 'jin123456bat', 1439287125, '修改了商品属性56'),
-(41, 'jin123456bat', 1439287257, '修改了商品属性1'),
-(42, 'jin123456bat', 1439287266, '修改了商品属性1'),
-(43, 'jin123456bat', 1439287383, '修改了商品属性1'),
-(44, 'jin123456bat', 1439287443, '修改了商品属性1'),
-(45, 'jin123456bat', 1439287479, '修改了商品属性1'),
-(46, 'jin123456bat', 1439303027, '登陆了系统'),
-(47, 'jin123456bat', 1439303155, '修改了商品(36)的操作方式:2'),
-(48, 'jin123456bat', 1439303155, '修改了商品(37)的操作方式:2'),
-(49, 'jin123456bat', 1439303155, '修改了商品(49)的操作方式:2'),
-(50, 'jin123456bat', 1439303155, '修改了商品(50)的操作方式:2'),
-(51, 'jin123456bat', 1439303155, '修改了商品(52)的操作方式:2'),
-(52, 'jin123456bat', 1439303155, '修改了商品(53)的操作方式:2'),
-(53, 'jin123456bat', 1439303155, '修改了商品(54)的操作方式:2'),
-(54, 'jin123456bat', 1439303155, '修改了商品(56)的操作方式:2'),
-(55, 'jin123456bat', 1439303155, '修改了商品(55)的操作方式:2'),
-(56, 'jin123456bat', 1439303165, '修改了商品(36)的操作方式:1'),
-(57, 'jin123456bat', 1439303165, '修改了商品(37)的操作方式:1'),
-(58, 'jin123456bat', 1439303165, '修改了商品(49)的操作方式:1'),
-(59, 'jin123456bat', 1439303165, '修改了商品(50)的操作方式:1'),
-(60, 'jin123456bat', 1439303165, '修改了商品(52)的操作方式:1'),
-(61, 'jin123456bat', 1439303165, '修改了商品(53)的操作方式:1'),
-(62, 'jin123456bat', 1439303165, '修改了商品(54)的操作方式:1'),
-(63, 'jin123456bat', 1439303165, '修改了商品(56)的操作方式:1'),
-(64, 'jin123456bat', 1439303165, '修改了商品(55)的操作方式:1'),
-(65, 'jin123456bat', 1439310006, '修改了商品属性1'),
-(66, 'jin123456bat', 1439310025, '修改了商品属性1'),
-(67, 'jin123456bat', 1439370905, '登陆了系统'),
-(68, 'jin123456bat', 1439372468, '登陆了系统'),
-(69, 'jin123456bat', 1439443651, '登陆了系统'),
-(70, 'jin123456bat', 1439451512, '修改了商品属性57'),
-(71, 'jin123456bat', 1439451674, '修改了商品属性58'),
-(72, 'jin123456bat', 1439451936, '修改了商品属性59'),
-(73, 'jin123456bat', 1439452167, '修改了商品属性60'),
-(74, 'jin123456bat', 1439452211, '修改了商品属性61'),
-(75, 'jin123456bat', 1439452428, '修改了商品属性62'),
-(76, 'jin123456bat', 1439452476, '修改了商品属性63'),
-(77, 'jin123456bat', 1439452826, '修改了商品属性64'),
-(78, 'jin123456bat', 1439452866, '修改了商品属性65'),
-(79, 'jin123456bat', 1439453008, '修改了商品属性66'),
-(80, 'jin123456bat', 1439453048, '修改了商品属性67'),
-(81, 'jin123456bat', 1439453104, '修改了商品属性68'),
-(82, 'jin123456bat', 1439453158, '修改了商品属性69'),
-(83, 'jin123456bat', 1439453241, '修改了商品属性70'),
-(84, 'jin123456bat', 1439453267, '修改了商品属性71'),
-(85, 'jin123456bat', 1439453483, '修改了商品属性1'),
-(86, 'jin123456bat', 1439453584, '修改了商品属性1'),
-(87, 'jin123456bat', 1439453673, '修改了商品属性1'),
-(88, 'jin123456bat', 1439453685, '修改了商品属性1'),
-(89, 'jin123456bat', 1439453808, '修改了商品(36)的操作方式:1'),
-(90, 'jin123456bat', 1439453808, '修改了商品(37)的操作方式:1'),
-(91, 'jin123456bat', 1439453808, '修改了商品(49)的操作方式:1'),
-(92, 'jin123456bat', 1439453808, '修改了商品(50)的操作方式:1'),
-(93, 'jin123456bat', 1439453808, '修改了商品(52)的操作方式:1'),
-(94, 'jin123456bat', 1439453808, '修改了商品(53)的操作方式:1'),
-(95, 'jin123456bat', 1439453808, '修改了商品(54)的操作方式:1'),
-(96, 'jin123456bat', 1439453808, '修改了商品(57)的操作方式:1'),
-(97, 'jin123456bat', 1439453808, '修改了商品(58)的操作方式:1'),
-(98, 'jin123456bat', 1439453808, '修改了商品(59)的操作方式:1'),
-(99, 'jin123456bat', 1439453815, '修改了商品(36)的操作方式:1'),
-(100, 'jin123456bat', 1439453815, '修改了商品(37)的操作方式:1'),
-(101, 'jin123456bat', 1439453815, '修改了商品(49)的操作方式:1'),
-(102, 'jin123456bat', 1439453815, '修改了商品(50)的操作方式:1'),
-(103, 'jin123456bat', 1439453815, '修改了商品(52)的操作方式:1'),
-(104, 'jin123456bat', 1439453815, '修改了商品(53)的操作方式:1'),
-(105, 'jin123456bat', 1439453815, '修改了商品(54)的操作方式:1'),
-(106, 'jin123456bat', 1439453815, '修改了商品(57)的操作方式:1'),
-(107, 'jin123456bat', 1439453815, '修改了商品(58)的操作方式:1'),
-(108, 'jin123456bat', 1439453815, '修改了商品(59)的操作方式:1'),
-(109, 'jin123456bat', 1439453815, '修改了商品(60)的操作方式:1'),
-(110, 'jin123456bat', 1439453815, '修改了商品(56)的操作方式:1'),
-(111, 'jin123456bat', 1439453815, '修改了商品(55)的操作方式:1'),
-(112, 'jin123456bat', 1439453815, '修改了商品(61)的操作方式:1'),
-(113, 'jin123456bat', 1439453815, '修改了商品(62)的操作方式:1'),
-(114, 'jin123456bat', 1439453815, '修改了商品(63)的操作方式:1'),
-(115, 'jin123456bat', 1439453815, '修改了商品(64)的操作方式:1'),
-(116, 'jin123456bat', 1439453815, '修改了商品(65)的操作方式:1'),
-(117, 'jin123456bat', 1439453815, '修改了商品(66)的操作方式:1'),
-(118, 'jin123456bat', 1439453815, '修改了商品(67)的操作方式:1'),
-(119, 'jin123456bat', 1439453815, '修改了商品(68)的操作方式:1'),
-(120, 'jin123456bat', 1439453815, '修改了商品(69)的操作方式:1'),
-(121, 'jin123456bat', 1439453815, '修改了商品(70)的操作方式:1'),
-(122, 'jin123456bat', 1439453815, '修改了商品(71)的操作方式:1'),
-(123, 'jin123456bat', 1439453876, '修改了商品属性1'),
-(124, 'jin123456bat', 1439454336, '修改了商品属性1'),
-(125, 'jin123456bat', 1439454346, '修改了商品属性1'),
-(126, 'jin123456bat', 1439454365, '修改了商品属性1'),
-(127, 'jin123456bat', 1439454426, '修改了商品属性1'),
-(128, 'jin123456bat', 1439454611, '修改了商品属性1'),
-(129, 'jin123456bat', 1439454871, '修改了商品属性1'),
-(130, 'jin123456bat', 1439458885, '登陆了系统'),
-(131, 'jin123456bat', 1439478220, '登陆了系统'),
-(132, 'jin123456bat', 1439481418, '登陆了系统'),
-(133, 'jin123456bat', 1439481481, '登陆了系统'),
-(134, 'jin123456bat', 1439517910, '登陆了系统'),
-(135, 'jin123456bat', 1439528676, '登陆了系统'),
-(136, 'jin123456bat', 1439557639, '登陆了系统'),
-(137, 'jin123456bat', 1439557657, '登陆了系统'),
-(138, 'jin123456bat', 1439617558, '登陆了系统'),
-(139, 'jin123456bat', 1439626858, '登陆了系统'),
-(140, 'jin123456bat', 1439626900, '登陆了系统'),
-(141, 'jin123456bat', 1439628081, '登陆了系统'),
-(142, 'jin123456bat', 1439628661, '登陆了系统'),
-(143, 'jin123456bat', 1439718166, '登陆了系统'),
-(144, 'jin123456bat', 1439719740, '登陆了系统'),
-(145, 'jin123456bat', 1439719759, '登陆了系统'),
-(146, 'jin123456bat', 1439719778, '登陆了系统'),
-(147, 'jin123456bat', 1439720194, '登陆了系统'),
-(148, 'jin123456bat', 1439730662, '登陆了系统'),
-(149, 'jin123456bat', 1439730822, '修改了商品属性1'),
-(150, 'jin123456bat', 1439731034, '修改了商品属性1'),
-(151, 'jin123456bat', 1439731152, '修改了商品属性1'),
-(152, 'jin123456bat', 1439731162, '修改了商品属性1'),
-(153, 'jin123456bat', 1439731197, '修改了商品属性1'),
-(154, 'jin123456bat', 1439780934, '登陆了系统'),
-(155, 'jin123456bat', 1439782204, '登陆了系统'),
-(156, 'jin123456bat', 1439782206, '登陆了系统'),
-(157, 'jin123456bat', 1439782230, '登陆了系统'),
-(158, 'jin123456bat', 1439785386, '修改了商品属性1'),
-(159, 'jin123456bat', 1439800234, '登陆了系统'),
-(160, 'jin123456bat', 1439800619, '添加了一个分类'),
-(161, 'jin123456bat', 1439862752, '登陆了系统'),
-(162, 'jin123456bat', 1439878533, '登陆了系统'),
-(163, 'jin123456bat', 1439949936, '登陆了系统'),
-(164, 'jin123456bat', 1439949982, '登陆了系统'),
-(165, 'jin123456bat', 1439949999, '登陆了系统'),
-(166, 'jin123456bat', 1439951068, '修改了商品属性1'),
-(167, 'jin123456bat', 1439951074, '修改了商品属性1'),
-(168, 'jin123456bat', 1439951083, '修改了商品属性1'),
-(169, 'jin123456bat', 1439951273, '修改了商品属性1'),
-(170, 'jin123456bat', 1439951364, '修改了商品属性1'),
-(171, 'jin123456bat', 1439951364, '修改了商品属性72'),
-(172, 'jin123456bat', 1439951384, '修改了商品属性73'),
-(173, 'jin123456bat', 1439951463, '修改了商品属性1'),
-(174, 'jin123456bat', 1439951646, '修改了商品属性1'),
-(175, 'jin123456bat', 1439951735, '修改了商品属性1'),
-(176, 'jin123456bat', 1439951742, '修改了商品属性1'),
-(177, 'jin123456bat', 1439951752, '修改了商品属性1'),
-(178, 'jin123456bat', 1439951768, '修改了商品属性1'),
-(179, 'jin123456bat', 1439951830, '修改了商品属性1'),
-(180, 'jin123456bat', 1439951870, '修改了商品属性1'),
-(181, 'jin123456bat', 1439951872, '修改了商品属性1'),
-(182, 'jin123456bat', 1439951905, '修改了商品属性1'),
-(183, 'jin123456bat', 1439951923, '修改了商品属性1'),
-(184, 'jin123456bat', 1439951962, '修改了商品属性1'),
-(185, 'jin123456bat', 1439952027, '修改了商品属性1'),
-(186, 'jin123456bat', 1439952033, '修改了商品属性1'),
-(187, 'jin123456bat', 1439952041, '修改了商品属性1'),
-(188, 'jin123456bat', 1439955528, '登陆了系统'),
-(189, 'jin123456bat', 1439994186, '登陆了系统'),
-(190, 'jin123456bat', 1439994267, '登陆了系统'),
-(191, 'jin123456bat', 1440080357, '登陆了系统'),
-(192, 'jin123456bat', 1440136622, '登陆了系统'),
-(193, 'jin123456bat', 1440136624, '登陆了系统'),
-(194, 'jin123456bat', 1440138665, '添加了一个品牌测啊'),
-(195, 'jin123456bat', 1440138708, '添加了一个品牌测啊'),
-(196, 'jin123456bat', 1440138718, '添加了一个品牌测啊'),
-(197, 'jin123456bat', 1440138719, '登陆了系统'),
-(198, 'jin123456bat', 1440470657, '登陆了系统'),
-(199, 'jin123456bat', 1440470658, '登陆了系统'),
-(200, 'jin123456bat', 1440557594, '登陆了系统'),
-(201, 'jin123456bat', 1440557596, '登陆了系统'),
-(202, 'jin123456bat', 1440561059, '修改了商品属性1'),
-(203, 'jin123456bat', 1440561080, '修改了商品属性1'),
-(204, 'jin123456bat', 1440561151, '修改了商品属性1'),
-(205, 'jin123456bat', 1440600761, '登陆了系统'),
-(206, 'jin123456bat', 1440600763, '登陆了系统'),
-(207, 'jin123456bat', 1440640879, '登陆了系统'),
-(208, 'jin123456bat', 1440640881, '登陆了系统'),
-(209, 'jin123456bat', 1440647973, '登陆了系统'),
-(210, 'jin123456bat', 1440647973, '登陆了系统'),
-(211, 'jin123456bat', 1440647976, '登陆了系统'),
-(212, 'jin123456bat', 1440647977, '登陆了系统'),
-(213, 'jin123456bat', 1440647992, '登陆了系统'),
-(214, 'jin123456bat', 1440647993, '登陆了系统'),
-(215, 'jin123456bat', 1440648030, '登陆了系统'),
-(216, 'jin123456bat', 1440648031, '登陆了系统'),
-(217, 'jin123456bat', 1440648058, '登陆了系统'),
-(218, 'jin123456bat', 1440648059, '登陆了系统'),
-(219, 'jin123456bat', 1440648065, '登陆了系统'),
-(220, 'jin123456bat', 1440648066, '登陆了系统'),
-(221, 'jin123456bat', 1440648493, '登陆了系统'),
-(222, 'jin123456bat', 1440648494, '登陆了系统'),
-(223, 'jin123456bat', 1440654559, '登陆了系统'),
-(224, 'jin123456bat', 1440654560, '登陆了系统'),
-(225, 'jin123456bat', 1440669582, '登陆了系统'),
-(226, 'jin123456bat', 1440669583, '登陆了系统'),
-(227, 'jin123456bat', 1440678897, '登陆了系统'),
-(228, 'jin123456bat', 1440678899, '登陆了系统'),
-(229, 'jin123456bat', 1440733331, '登陆了系统'),
-(230, 'jin123456bat', 1440733333, '登陆了系统'),
-(231, 'jin123456bat', 1440734679, '修改了商品(36)的操作方式:3'),
-(232, 'jin123456bat', 1440734683, '修改了商品(36)的操作方式:3'),
-(233, 'jin123456bat', 1440734711, '修改了商品(36)的操作方式:3'),
-(234, 'jin123456bat', 1440735029, '修改了商品(36)的操作方式:3'),
-(235, 'jin123456bat', 1440744197, '修改了商品(36)的操作方式:3'),
-(236, 'jin123456bat', 1440744275, '修改了商品(36)的操作方式:2'),
-(237, 'jin123456bat', 1440744275, '修改了商品(37)的操作方式:2'),
-(238, 'jin123456bat', 1440744280, '修改了商品(36)的操作方式:3'),
-(239, 'jin123456bat', 1440744467, '修改了商品(36)的操作方式:3'),
-(240, 'jin123456bat', 1440744621, '修改了商品(36)的操作方式:3'),
-(241, 'jin123456bat', 1440745087, '修改了商品(36)的操作方式:3'),
-(242, 'jin123456bat', 1440745355, '修改了商品(36)的操作方式:3'),
-(243, 'jin123456bat', 1440746031, '修改了商品(36)的操作方式:3'),
-(244, 'jin123456bat', 1440746074, '修改了商品(36)的操作方式:3'),
-(245, 'jin123456bat', 1440746456, '修改了商品(36)的操作方式:3'),
-(246, 'jin123456bat', 1440746478, '修改了商品(36)的操作方式:3'),
-(247, 'jin123456bat', 1440746736, '修改了商品(36)的操作方式:3'),
-(248, 'jin123456bat', 1440746790, '修改了商品(36)的操作方式:3'),
-(249, 'jin123456bat', 1440747761, '修改了商品(36)的操作方式:3'),
-(250, 'jin123456bat', 1440747769, '修改了商品(37)的操作方式:3'),
-(251, 'jin123456bat', 1440747773, '修改了商品(37)的操作方式:3'),
-(252, 'jin123456bat', 1440747781, '修改了商品(37)的操作方式:3'),
-(253, 'jin123456bat', 1440748105, '修改了商品(37)的操作方式:3'),
-(254, 'jin123456bat', 1440769354, '登陆了系统'),
-(255, 'jin123456bat', 1440769355, '登陆了系统'),
-(256, 'jin123456bat', 1440786180, '修改了商品属性74'),
-(257, 'jin123456bat', 1440786322, '修改了商品属性75'),
-(258, 'jin123456bat', 1440786355, '修改了商品属性76'),
-(259, 'jin123456bat', 1440787297, '修改了商品属性77'),
-(260, 'jin123456bat', 1440787366, '修改了商品(49)的操作方式:3'),
-(261, 'jin123456bat', 1440787366, '修改了商品(50)的操作方式:3'),
-(262, 'jin123456bat', 1440787366, '修改了商品(52)的操作方式:3'),
-(263, 'jin123456bat', 1440787366, '修改了商品(53)的操作方式:3'),
-(264, 'jin123456bat', 1440787366, '修改了商品(54)的操作方式:3'),
-(265, 'jin123456bat', 1440787366, '修改了商品(55)的操作方式:3'),
-(266, 'jin123456bat', 1440787453, '修改了商品(49)的操作方式:3'),
-(267, 'jin123456bat', 1440787453, '修改了商品(50)的操作方式:3'),
-(268, 'jin123456bat', 1440787453, '修改了商品(52)的操作方式:3'),
-(269, 'jin123456bat', 1440787453, '修改了商品(53)的操作方式:3'),
-(270, 'jin123456bat', 1440787453, '修改了商品(54)的操作方式:3'),
-(271, 'jin123456bat', 1440787453, '修改了商品(55)的操作方式:3'),
-(272, 'jin123456bat', 1440787493, '修改了商品(49)的操作方式:3'),
-(273, 'jin123456bat', 1440787493, '修改了商品(50)的操作方式:3'),
-(274, 'jin123456bat', 1440787493, '修改了商品(52)的操作方式:3'),
-(275, 'jin123456bat', 1440787493, '修改了商品(53)的操作方式:3'),
-(276, 'jin123456bat', 1440787493, '修改了商品(54)的操作方式:3'),
-(277, 'jin123456bat', 1440787493, '修改了商品(55)的操作方式:3'),
-(278, 'jin123456bat', 1440787493, '修改了商品(56)的操作方式:3'),
-(279, 'jin123456bat', 1440787493, '修改了商品(57)的操作方式:3'),
-(280, 'jin123456bat', 1440787493, '修改了商品(58)的操作方式:3'),
-(281, 'jin123456bat', 1440787493, '修改了商品(59)的操作方式:3'),
-(282, 'jin123456bat', 1440787493, '修改了商品(60)的操作方式:3'),
-(283, 'jin123456bat', 1440787493, '修改了商品(61)的操作方式:3'),
-(284, 'jin123456bat', 1440787493, '修改了商品(62)的操作方式:3'),
-(285, 'jin123456bat', 1440787493, '修改了商品(63)的操作方式:3'),
-(286, 'jin123456bat', 1440787493, '修改了商品(64)的操作方式:3'),
-(287, 'jin123456bat', 1440787493, '修改了商品(65)的操作方式:3'),
-(288, 'jin123456bat', 1440787493, '修改了商品(66)的操作方式:3'),
-(289, 'jin123456bat', 1440787493, '修改了商品(67)的操作方式:3'),
-(290, 'jin123456bat', 1440787493, '修改了商品(68)的操作方式:3'),
-(291, 'jin123456bat', 1440787493, '修改了商品(69)的操作方式:3'),
-(292, 'jin123456bat', 1440787493, '修改了商品(70)的操作方式:3'),
-(293, 'jin123456bat', 1440787493, '修改了商品(71)的操作方式:3'),
-(294, 'jin123456bat', 1440787493, '修改了商品(72)的操作方式:3'),
-(295, 'jin123456bat', 1440787493, '修改了商品(73)的操作方式:3'),
-(296, 'jin123456bat', 1440787493, '修改了商品(74)的操作方式:3'),
-(297, 'jin123456bat', 1440787493, '修改了商品(75)的操作方式:3'),
-(298, 'jin123456bat', 1440787493, '修改了商品(76)的操作方式:3'),
-(299, 'jin123456bat', 1440787493, '修改了商品(77)的操作方式:3'),
-(300, 'jin123456bat', 1440787510, '修改了商品属性78'),
-(301, 'jin123456bat', 1440787663, '修改了商品属性79'),
-(302, 'jin123456bat', 1440787708, '修改了商品属性80'),
-(303, 'jin123456bat', 1440787987, '修改了商品属性81'),
-(304, 'jin123456bat', 1440788066, '修改了商品属性82'),
-(305, 'jin123456bat', 1440788234, '修改了商品属性83'),
-(306, 'jin123456bat', 1440851839, '登陆了系统'),
-(307, 'jin123456bat', 1440851841, '登陆了系统'),
-(308, 'jin123456bat', 1440912909, '登陆了系统'),
-(309, 'jin123456bat', 1440912910, '登陆了系统'),
-(310, 'jin123456bat', 1440912920, '登陆了系统'),
-(311, 'jin123456bat', 1440912920, '登陆了系统'),
-(312, 'jin123456bat', 1440927191, '修改了商品属性1'),
-(313, 'jin123456bat', 1440927992, '修改了商品属性1'),
-(314, 'jin123456bat', 1440928185, '修改了商品属性1'),
-(315, 'jin123456bat', 1440935551, '修改了商品属性1'),
-(316, 'jin123456bat', 1440941574, '修改了商品属性84'),
-(317, 'jin123456bat', 1440942376, '修改了商品属性1'),
-(318, 'jin123456bat', 1440943791, '登陆了系统'),
-(319, 'jin123456bat', 1440943792, '登陆了系统'),
-(320, 'jin123456bat', 1440986941, '登陆了系统'),
-(321, 'jin123456bat', 1440986943, '登陆了系统');
+(1, 'jin123456bat', 1442370329, '登陆了系统'),
+(2, 'jin123456bat', 1442370333, '登陆了系统');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `message`
+--
+
+CREATE TABLE IF NOT EXISTS `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `time` int(11) NOT NULL,
+  `content` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- 转存表中的数据 `message`
+--
+
+INSERT INTO `message` (`id`, `uid`, `time`, `content`) VALUES
+(1, 3, 123456789, 'asdfasdfadsf');
 
 -- --------------------------------------------------------
 
@@ -761,7 +531,7 @@ CREATE TABLE IF NOT EXISTS `o2ouser` (
 --
 
 INSERT INTO `o2ouser` (`id`, `uid`, `ctime`, `name`, `qq`, `address`, `rate`, `num`, `money`) VALUES
-(8, 3, 1439448013, '', '', '', 0.3000, 0, 0.00),
+(8, 3, 1439448013, '', '', '', 0.3000, 0, 270.00),
 (9, 15, 1439534856, '', '', '', 0.0020, 0, 0.00),
 (10, 17, 1440571174, '金程晨', '326550324', '杭州西湖区', 0.5000, 0, 0.00);
 
@@ -794,8 +564,8 @@ CREATE TABLE IF NOT EXISTS `orderdetail` (
 
 INSERT INTO `orderdetail` (`id`, `oid`, `sku`, `pid`, `productname`, `unitprice`, `content`, `prototype`, `origin`, `score`, `num`) VALUES
 (8, 14, '', 55, '飞利浦', 499.00, '', '', '中国', 0, 1),
-(9, 15, '', 55, '飞利浦', 499.00, '', '长度:123米,宽度:25', '中国', 0, 1),
-(10, 16, '', 55, '飞利浦', 499.00, '', '长度:123米,宽度:25,大小:23材料:石头', '中国', 0, 1);
+(9, 15, '', 78, '飞利浦', 499.00, '', '长度:123米,宽度:25', '中国', 0, 1),
+(10, 16, '', 79, '飞利浦', 499.00, '', '长度:123米,宽度:25,大小:23材料:石头', '中国', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -828,7 +598,7 @@ CREATE TABLE IF NOT EXISTS `orderlist` (
   `zipcode` char(6) NOT NULL COMMENT '邮编',
   `note` varchar(256) NOT NULL COMMENT '额外描述',
   `status` int(11) NOT NULL COMMENT '订单状态',
-  `discount` varchar(256) NOT NULL COMMENT '使用了什么折扣',
+  `discount` double(10,2) NOT NULL COMMENT '使用了什么折扣',
   `client` enum('web','wap','weixin','ios','android') NOT NULL,
   `action_type` int(11) NOT NULL DEFAULT '1' COMMENT '是否已经报过财付通接口，1没有，2已经报过',
   `ship_score` tinyint(1) NOT NULL DEFAULT '0' COMMENT '物流评分',
@@ -844,9 +614,9 @@ CREATE TABLE IF NOT EXISTS `orderlist` (
 --
 
 INSERT INTO `orderlist` (`id`, `uid`, `paytype`, `paynumber`, `ordertotalamount`, `orderno`, `ordertaxamount`, `ordergoodsamount`, `feeamount`, `tradetime`, `createtime`, `totalamount`, `consignee`, `consigneetel`, `consigneeaddress`, `consigneeprovince`, `consigneecity`, `postmode`, `waybills`, `sendername`, `companyname`, `zipcode`, `note`, `status`, `discount`, `client`, `action_type`, `ship_score`, `service_score`, `goods_score`, `content`) VALUES
-(14, 3, 'alipay', '', 900.00, '2015081715463235888', 0.00, 12.00, 0.00, 0, 1439797592, 0.00, '金', '18548143019', '浙大科技园B606', '浙江', '杭州', 'SF', '', '我们家', '我们家', '301100', '你好吗？', 0, '', 'web', 1, 0, 0, 0, ''),
-(15, 3, 'alipay', '', 12.00, '2015081715530337185', 0.00, 12.00, 0.00, 0, 1439797983, 0.00, '金', '18548143019', '浙江杭州浙大科技园', '', '', 'SF', '', '我们家', '我们家', '301100', '凑合吧', 0, '', 'web', 1, 0, 0, 0, ''),
-(16, 3, 'alipay', '', 12.00, '2015081715553336343', 0.00, 12.00, 0.00, 0, 1439798133, 0.00, '金', '18548143019', '浙江杭州浙大科技园', '', '', 'SF', '', '我们家', '我们家', '301100', '', 0, '', 'web', 1, 0, 0, 0, '');
+(14, 3, 'alipay', '2015090900001000060062404132', 900.00, '20150909214006205544', 0.00, 12.00, 0.00, 0, 1439797592, 0.01, '金', '18548143019', '浙大科技园B606', '浙江', '杭州', 'SF', '', '我们家', '我们家', '301100', '你好吗？', 1, 0.00, 'web', 1, 0, 0, 0, ''),
+(15, 3, 'weixin', '', 12.00, '20150911103424207325', 0.00, 12.00, 0.00, 0, 1439797983, 0.00, '金', '18548143019', '浙江杭州浙大科技园', '', '', 'SF', '', '我们家', '我们家', '301100', '凑合吧', 6, 0.00, 'web', 1, 5, 5, 5, '评价内容'),
+(16, 3, 'alipay', '', 12.00, '2015081715553336343', 0.00, 12.00, 0.00, 0, 1442208991, 0.00, '金', '18548143019', '浙江杭州浙大科技园', '', '', 'SF', '', '我们家', '我们家', '301100', '', 0, 0.00, 'web', 1, 0, 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -862,11 +632,11 @@ CREATE TABLE IF NOT EXISTS `product` (
   `bid` int(11) NOT NULL COMMENT '品牌',
   `starttime` int(11) NOT NULL,
   `endtime` int(11) NOT NULL,
-  `description` text NOT NULL,
+  `description` longtext NOT NULL,
   `short_description` text NOT NULL,
   `price` double(10,2) NOT NULL,
   `stock` int(11) NOT NULL,
-  `origin` varchar(256) NOT NULL,
+  `origin` int(11) NOT NULL,
   `label` varchar(256) NOT NULL,
   `status` tinyint(4) NOT NULL,
   `orderby` int(11) NOT NULL,
@@ -880,21 +650,23 @@ CREATE TABLE IF NOT EXISTS `product` (
   `ordernum` int(11) NOT NULL,
   `complete_ordernum` int(11) NOT NULL,
   `time` int(11) NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=85 ;
+  PRIMARY KEY (`id`),
+  KEY `origin` (`origin`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=86 ;
 
 --
 -- 转存表中的数据 `product`
 --
 
 INSERT INTO `product` (`id`, `name`, `sku`, `category`, `bid`, `starttime`, `endtime`, `description`, `short_description`, `price`, `stock`, `origin`, `label`, `status`, `orderby`, `meta_title`, `meta_keywords`, `meta_description`, `oldprice`, `shipchar`, `score`, `activity`, `ordernum`, `complete_ordernum`, `time`) VALUES
-(78, '好名字', '测试商品', 0, 0, 1440864000, 1440864000, '', '', 99999999.99, 0, '', '', 1, 0, '', '', '', 0.00, '', 0, 'seckill', 0, 0, 1440927191),
-(79, '测试商品', '策划', 0, 0, 1440864000, 1440864000, '', '', 99999999.99, 0, '', '', 1, 0, '', '', '', 0.00, '', 0, 'sale', 0, 0, 0),
-(80, '名称', '添加名称', 0, 0, 1440864000, 1440864000, '', '', 99999999.99, 0, '', '', 1, 0, '', '', '', 0.00, '', 0, 'fullcut', 0, 0, 0),
-(81, '测试名称啊啊啊啊啊啊啊啊啊啊啊', '变啊妈啊的fads发', 0, 0, 0, 0, '', '', 0.00, 0, '', '1', 0, 0, '', '', '', 0.00, '0', 0, '', 0, 0, 1440787987),
-(82, '123', '321', 0, 0, 1440864000, 1440864000, '', '', 1.00, 1, '', '1', 1, 0, '', '', '烦烦烦', 1.00, '0', 0, '', 0, 0, 1440927992),
-(83, '名称', '编码', 22, 1, 1439222400, 1441036800, '长描述&lt;p&gt;\n															\n														&lt;/p&gt;', '短描述', 123.00, 10, '中国', '1', 0, 999, '元标题', '元关键字', '元描述', 145.00, 'shipchar', 9, '', 0, 0, 1440788234),
-(84, '图像测试', '', 0, 0, 1440864000, 1440864000, '', '', 0.00, 0, '', '1', 1, 0, '', '', '', 0.00, '', 0, '', 0, 0, 1440941574);
+(78, '好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字', '测试商品', 22, 0, 1440864000, 1440864000, '&lt;p&gt;															&lt;/p&gt;&lt;p&gt;															&lt;/p&gt;&lt;p&gt;															&lt;/p&gt;&lt;p&gt;															&lt;/p&gt;&lt;div class=&quot;sub-wrap&quot; id=&quot;J_SubWrap&quot; style=&quot;margin: 0px; padding: 0px; position: relative; z-index: 99999998; width: 750px; color: rgb(0, 0, 0); font-family: tahoma, arial, &amp;#39;Hiragino Sans GB&amp;#39;, 宋体, sans-serif; font-size: 12px; line-height: 18px; white-space: normal;&quot;&gt;&lt;div id=&quot;description&quot; class=&quot;tshop-psm ke-post J_DetailSection&quot; style=&quot;margin: 0px 0px 20px; padding: 0px; clear: both; font-stretch: normal; font-size: 14px; line-height: 1.5; font-family: tahoma, arial, 宋体, sans-serif; background-image: initial !important; background-attachment: initial !important; background-size: initial !important; background-origin: initial !important; background-clip: initial !important; background-position: initial !important; background-repeat: initial !important;&quot;&gt;&lt;div class=&quot;content&quot; id=&quot;J_DivItemDesc&quot; style=&quot;margin: 0px; padding: 10px 0px 0px; width: 750px; word-wrap: break-word; overflow: hidden; position: relative !important;&quot;&gt;&lt;div class=&quot;dm_module&quot; data-id=&quot;5332495&quot; data-title=&quot;2.场景图&quot; id=&quot;ids-module-5332495&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;div style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img alt=&quot;横标&quot; src=&quot;https://img.alicdn.com/imgextra/i2/1753596474/TB260aEcFXXXXcOXXXXXXXXXXXX_!!1753596474.jpg&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;dm_module&quot; data-id=&quot;5332498&quot; data-title=&quot;3.产品细节&quot; id=&quot;ids-module-5332498&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img alt=&quot;横标&quot; src=&quot;https://img.alicdn.com/imgextra/i3/1753596474/TB2VXyBcFXXXXaSXpXXXXXXXXXX_!!1753596474.jpg&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2sew_dFXXXXcsXXXXXXXXXXXX_!!1753596474.jpg&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2F2AUdFXXXXbKXpXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;605&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i2/1753596474/TB2Lkc2dFXXXXXZXpXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;606&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2QcoSdFXXXXcDXpXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;605&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB28oJcdVXXXXaRXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;607&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i3/1753596474/TB2g2NadVXXXXbFXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;212&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2OpU_dFXXXXcqXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;285&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i4/1753596474/TB2cL0idVXXXXXDXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;284&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i4/1753596474/TB28twVdFXXXXbxXpXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;385&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i3/1753596474/TB2T4cTdFXXXXb4XpXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;237&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2bsMWdFXXXXaVXpXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;237&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;dm_module&quot; data-id=&quot;5332500&quot; data-title=&quot;4.产品参数&quot; id=&quot;ids-module-5332500&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img alt=&quot;横标&quot; src=&quot;https://img.alicdn.com/imgextra/i4/1753596474/TB24ceJcFXXXXX6XXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;104&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img align=&quot;absmiddle&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2GuEMcVXXXXbCXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;573&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;dm_module&quot; data-id=&quot;5332503&quot; data-title=&quot;5.关于材质&quot; id=&quot;ids-module-5332503&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;div style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img alt=&quot;横标&quot; src=&quot;https://img.alicdn.com/imgextra/i2/1753596474/TB2Eh1FcFXXXXb3XXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;104&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img alt=&quot;关于材质1&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2xZyOcFXXXXbMXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;1085&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;dm_module&quot; data-id=&quot;5332506&quot; data-title=&quot;6.关于包装&quot; id=&quot;ids-module-5332506&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;div style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img alt=&quot;横标&quot; src=&quot;https://img.alicdn.com/imgextra/i1/1753596474/TB2pAyIcFXXXXalXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;104&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&lt;img alt=&quot;关于包装1&quot; src=&quot;https://img.alicdn.com/imgextra/i4/1753596474/TB2zHyLcFXXXXXxXXXXXXXXXXXX_!!1753596474.jpg&quot; class=&quot;&quot; width=&quot;750&quot; height=&quot;446&quot; style=&quot;vertical-align: top; margin: 0px; padding: 0px;&quot;/&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;p style=&quot;margin-top: 1.12em; margin-bottom: 1.12em; padding: 0px;&quot;&gt;&amp;nbsp;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;J_AsyncDC tb-custom-area tb-shop&quot; data-type=&quot;main&quot; id=&quot;J_AsyncDCMain&quot; style=&quot;margin: 0px; padding: 0px; overflow: hidden; position: relative; color: rgb(0, 0, 0); font-family: tahoma, arial, &amp;#39;Hiragino Sans GB&amp;#39;, 宋体, sans-serif; font-size: 12px; line-height: 18px; white-space: normal;&quot;&gt;&lt;div class=&quot;J_TModule&quot; data-widgetid=&quot;5499259944&quot; id=&quot;shop5499259944&quot; data-componentid=&quot;5003&quot; data-spm=&quot;110.0.5003-5499259944&quot; microscope-data=&quot;5003-5499259944&quot; data-title=&quot;自定义内容区&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;div class=&quot;skin-box tb-module tshop-pbsm tshop-pbsm-shop-self-defined&quot; style=&quot;margin: 0px 0px 10px; padding: 0px;&quot;&gt;&lt;span class=&quot;skin-box-tp&quot; style=&quot;text-decoration:line-through;&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/span&gt;&lt;div class=&quot;skin-box-bd clear-fix&quot; style=&quot;margin: 0px; padding: 0px; border: none; line-height: 1.2; overflow: hidden; width: 750px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;&quot;&gt;&lt;p style=&quot;margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4;&quot;&gt;&lt;a href=&quot;https://ziin.taobao.com/p/show.htm?spm=a1z10.1.w5003-3906820604.2.UdyyhK&amp;scene=taobao_shop&quot; target=&quot;_blank&quot; style=&quot;color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img src=&quot;https://gdp.alicdn.com/imgextra/i2/1753596474/TB2HIfMbFXXXXagXpXXXXXXXXXX_!!1753596474.jpg&quot; alt=&quot; 展会与获奖&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4;&quot;&gt;&lt;a href=&quot;https://item.taobao.com/item.htm?id=36609723293&amp;scene=taobao_shop&quot; target=&quot;_blank&quot; style=&quot;color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img src=&quot;https://gdp.alicdn.com/imgextra/i3/1753596474/TB2xnvEbFXXXXcNXXXXXXXXXXXX_!!1753596474.jpg&quot; alt=&quot; 底部-获奖-01-20150122&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4;&quot;&gt;&lt;a href=&quot;https://item.taobao.com/item.htm?id=40867255257&amp;scene=taobao_shop&quot; target=&quot;_blank&quot; style=&quot;color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img src=&quot;https://gdp.alicdn.com/imgextra/i1/1753596474/TB2BBzIbFXXXXbnXXXXXXXXXXXX_!!1753596474.jpg&quot; alt=&quot; 底部-获奖-02-20150122&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4;&quot;&gt;&lt;a href=&quot;https://item.taobao.com/item.htm?id=35431098304&amp;scene=taobao_shop&quot; target=&quot;_blank&quot; style=&quot;color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img src=&quot;https://gdp.alicdn.com/imgextra/i4/1753596474/TB2fHjAbFXXXXaRXpXXXXXXXXXX_!!1753596474.jpg&quot; alt=&quot; 底部-获奖-03-01-20150122&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;a href=&quot;https://item.taobao.com/item.htm?id=35431437171&amp;scene=taobao_shop&quot; target=&quot;_blank&quot; style=&quot;color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img src=&quot;https://gdp.alicdn.com/imgextra/i4/1753596474/TB2mYYFbFXXXXcYXXXXXXXXXXXX_!!1753596474.jpg&quot; alt=&quot; 底部-获奖-03-02-20150122&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;p style=&quot;margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4;&quot;&gt;&lt;a href=&quot;https://ziin.taobao.com/p/show.htm?scene=taobao_shop&quot; target=&quot;_blank&quot; style=&quot;color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img alt=&quot;关于我们&quot; src=&quot;https://gdp.alicdn.com/imgextra/i2/1753596474/TB2M3bxbFXXXXclXpXXXXXXXXXX_!!1753596474.jpg&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;span class=&quot;skin-box-bt&quot; style=&quot;text-decoration:line-through;&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;J_TModule&quot; data-widgetid=&quot;3061597196&quot; id=&quot;shop3061597196&quot; data-componentid=&quot;5003&quot; data-spm=&quot;110.0.5003-3061597196&quot; microscope-data=&quot;5003-3061597196&quot; data-title=&quot;自定义内容区&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;div class=&quot;skin-box tb-module tshop-pbsm tshop-pbsm-shop-self-defined&quot; style=&quot;margin: 0px 0px 10px; padding: 0px;&quot;&gt;&lt;span class=&quot;skin-box-tp&quot; style=&quot;text-decoration:line-through;&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/span&gt;&lt;div class=&quot;skin-box-bd clear-fix&quot; style=&quot;margin: 0px; padding: 0px; border: none; line-height: 1.2; overflow: hidden; width: 750px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;&quot;&gt;&lt;p style=&quot;margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4;&quot;&gt;&lt;a href=&quot;https://ziin.taobao.com/p/reports.htm?scene=taobao_shop&quot; target=&quot;_blank&quot; style=&quot;color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img src=&quot;https://gdp.alicdn.com/imgextra/i3/1753596474/TB2.4C4bXXXXXchXXXXXXXXXXXX_!!1753596474.jpg&quot; alt=&quot; 材料与工艺&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;span class=&quot;skin-box-bt&quot; style=&quot;text-decoration:line-through;&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;J_TModule&quot; data-widgetid=&quot;10973236815&quot; id=&quot;shop10973236815&quot; data-componentid=&quot;5003&quot; data-spm=&quot;110.0.5003-10973236815&quot; microscope-data=&quot;5003-10973236815&quot; data-title=&quot;自定义内容区&quot; data-spm-max-idx=&quot;1&quot; style=&quot;margin: 0px; padding: 0px;&quot;&gt;&lt;div class=&quot;skin-box tb-module tshop-pbsm tshop-pbsm-shop-self-defined&quot; style=&quot;margin: 0px 0px 10px; padding: 0px;&quot;&gt;&lt;span class=&quot;skin-box-tp&quot; style=&quot;text-decoration:line-through;&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/span&gt;&lt;div class=&quot;skin-box-bd clear-fix&quot; style=&quot;margin: 0px; padding: 0px; border: none; line-height: 1.2; overflow: hidden; width: 750px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;&quot;&gt;&lt;p style=&quot;margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4;&quot;&gt;&lt;a href=&quot;https://favorite.taobao.com/popup/add_collection.htm?spm=2013.1.w5003-10973236815.1.U03jQZ&amp;id=105552592&amp;itemid=105552592&amp;itemtype=0&amp;sellerid=1753596474&amp;scjjc=2&amp;_tb_token_=e333baee107ee&amp;t=1375380689905&amp;scene=taobao_shop&quot; target=&quot;_blank&quot; data-spm-wangpu-module-id=&quot;5003-10973236815&quot; data-spm-anchor-id=&quot;2013.1.w5003-10973236815.1&quot; style=&quot;text-decoration: underline; color: rgb(41, 83, 166); outline: 0px; margin: 0px; padding: 0px;&quot;&gt;&lt;img src=&quot;https://gdp.alicdn.com/imgextra/i4/1753596474/TB224mtbXXXXXcmXXXXXXXXXXXX_!!1753596474.jpg&quot; alt=&quot; 关于服务new&quot; style=&quot;margin: 0px; padding: 0px;&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;\n														&lt;/p&gt;&lt;p&gt;\n														&lt;/p&gt;&lt;p&gt;\n														&lt;/p&gt;&lt;p&gt;\n														&lt;/p&gt;', '好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字好名字', 99999999.99, 0, 1, '', 1, 0, '', '', '', 0.00, '', 0, 'seckill', 0, 0, 1440927191),
+(79, '测试商品', '策划', 0, 0, 1440864000, 1440864000, '', '', 99999999.99, 0, 1, '', 1, 0, '', '', '', 0.00, '', 0, 'sale', 0, 0, 0),
+(80, '名称', '添加名称', 0, 0, 1440864000, 1440864000, '', '', 99999999.99, 0, 1, '', 1, 0, '', '', '', 0.00, '', 0, 'fullcut', 0, 0, 0),
+(81, '测试名称啊啊啊啊啊啊啊啊啊啊啊', '变啊妈啊的fads发', 0, 0, 0, 0, '', '', 0.00, 0, 1, '1', 2, 0, '', '', '', 0.00, '0', 0, '', 0, 0, 1440787987),
+(82, '123', '321', 0, 0, 1440864000, 1440864000, '', '', 1.00, 1, 1, '1', 1, 0, '', '', '烦烦烦', 1.00, '0', 0, '', 0, 0, 1440927992),
+(83, '名称', '编码', 22, 1, 1439222400, 1441036800, '长描述&lt;p&gt;\n															\n														&lt;/p&gt;', '短描述', 123.00, 10, 1, '1', 0, 999, '元标题', '元关键字', '元描述', 145.00, 'shipchar', 9, '', 0, 0, 1440788234),
+(84, '图像测试', '', 0, 0, 1440864000, 1440864000, '', '', 0.00, 0, 1, '1', 1, 0, '', '', '', 0.00, '', 0, '', 0, 0, 1440941574),
+(85, '你好吗', '', 0, 0, 0, 0, '&lt;html&gt;&lt;head&gt;\n&lt;meta charset=&quot;utf-8&quot;&gt;\n&lt;title&gt;Metronic | eCommerce - Product Edit&lt;/title&gt;\n&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;\n&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;&gt;\n&lt;meta http-equiv=&quot;Content-type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;\n&lt;meta content=&quot;&quot; name=&quot;description&quot;&gt;\n&lt;meta content=&quot;&quot; name=&quot;author&quot;&gt;\n&lt;!-- BEGIN GLOBAL MANDATORY STYLES --&gt;\n&lt;script src=&quot;http://localhost/home/application/assets/global/plugins/pace/pace.min.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/plugins/pace/themes/pace-theme-barber-shop.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/plugins/font-awesome/css/font-awesome.min.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/plugins/simple-line-icons/simple-line-icons.min.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/plugins/bootstrap/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/plugins/uniform/css/uniform.default.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;!-- END GLOBAL MANDATORY STYLES --&gt;\n&lt;!-- BEGIN PAGE LEVEL STYLES --&gt;\n&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://localhost/home/application/assets/global/plugins/select2/select2.css&quot;&gt;\n&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://localhost/home/application/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css&quot;&gt;\n&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://localhost/home/application/assets/global/plugins/jquery-tags-input/jquery.tagsinput.css&quot;&gt;\n&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://localhost/home/application/assets/global/plugins/bootstrap-datepicker/css/datepicker.css&quot;&gt;\n&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://localhost/home/application/assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/plugins/fancybox/source/jquery.fancybox.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;!-- END PAGE LEVEL STYLES --&gt;\n&lt;!-- BEGIN THEME STYLES --&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/css/components.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/global/css/plugins.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/admin/layout/css/layout.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link id=&quot;style_color&quot; href=&quot;http://localhost/home/application/assets/admin/layout/css/themes/darkblue.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/umeditor/themes/default/css/umeditor.min.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;link href=&quot;http://localhost/home/application/assets/admin/layout/css/custom.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;\n&lt;!-- END THEME STYLES --&gt;\n&lt;link rel=&quot;shortcut icon&quot; href=&quot;favicon.ico&quot;&gt;\n&lt;script src=&quot;http://localhost/home/application/assets/umeditor/dialogs/link/link.js&quot; type=&quot;text/javascript&quot; defer=&quot;defer&quot;&gt;&lt;/script&gt;&lt;script src=&quot;http://localhost/home/application/assets/umeditor/dialogs/image/image.js&quot; type=&quot;text/javascript&quot; defer=&quot;defer&quot;&gt;&lt;/script&gt;&lt;script src=&quot;http://localhost/home/application/assets/umeditor/dialogs/video/video.js&quot; type=&quot;text/javascript&quot; defer=&quot;defer&quot;&gt;&lt;/script&gt;&lt;script src=&quot;http://localhost/home/application/assets/umeditor/dialogs/map/map.js&quot; type=&quot;text/javascript&quot; defer=&quot;defer&quot;&gt;&lt;/script&gt;&lt;script src=&quot;http://localhost/home/application/assets/umeditor/dialogs/formula/formula.js&quot; type=&quot;text/javascript&quot; defer=&quot;defer&quot;&gt;&lt;/script&gt;&lt;script src=&quot;http://localhost/home/application/assets/umeditor/dialogs/emotion/emotion.js&quot; type=&quot;text/javascript&quot; defer=&quot;defer&quot;&gt;&lt;/script&gt;&lt;/head&gt;&lt;body &gt;&lt;p&gt;&lt;img src=&quot;http://localhost/home/application/assets/umeditor/php/upload/20150901/14410796346785.jpg&quot; _src=&quot;http://localhost/home/application/assets/umeditor/php/upload/20150901/14410796346785.jpg&quot;/&gt;\n															\n														&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;', '', 0.00, 0, 1, '1', 0, 0, '', '', '', 0.00, '', 0, '', 0, 0, 1441079641);
 
 -- --------------------------------------------------------
 
@@ -913,24 +685,24 @@ CREATE TABLE IF NOT EXISTS `productimg` (
   `thumbnail_path` varchar(256) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='异步响应式上传图片，不能加外键约束' AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='异步响应式上传图片，不能加外键约束' AUTO_INCREMENT=18 ;
 
 --
 -- 转存表中的数据 `productimg`
 --
 
 INSERT INTO `productimg` (`id`, `pid`, `title`, `orderby`, `oldimage`, `base_path`, `small_path`, `thumbnail_path`) VALUES
-(1, 0, 'TB1..15IVXXXXb6aXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x320.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_300x300.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_100x100.jpg'),
-(2, 0, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
-(3, 0, 'TB1QDMWIVXXXXXLXXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_300x300.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_100x100.jpg'),
-(4, 0, 'TB1..15IVXXXXb6aXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x320.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_300x300.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_100x100.jpg'),
-(5, 0, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
-(6, 0, 'TB1QDMWIVXXXXXLXXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_300x300.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_100x100.jpg'),
 (7, 84, 'TB1..15IVXXXXb6aXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x320.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_300x300.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_100x100.jpg'),
 (8, 84, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
-(10, 0, 'TB1..15IVXXXXb6aXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x320.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_300x300.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_100x100.jpg'),
-(11, 0, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
-(12, 0, 'TB1QDMWIVXXXXXLXXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_300x300.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_100x100.jpg');
+(9, 78, 'TB1..15IVXXXXb6aXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x320.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_300x300.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_100x100.jpg'),
+(10, 78, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
+(11, 78, 'TB1QDMWIVXXXXXLXXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_300x300.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_100x100.jpg'),
+(12, 0, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
+(13, 0, 'TB1QDMWIVXXXXXLXXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_300x300.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_100x100.jpg'),
+(14, 0, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
+(15, 0, 'TB1QDMWIVXXXXXLXXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_300x300.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_100x100.jpg'),
+(16, 79, 'TB1p_ZzIVXXXXXraXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_640x320.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_300x300.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_100x100.jpg'),
+(17, 79, 'TB1QDMWIVXXXXXLXXXXXXXXXXXX_!!0-item_pic.jpg', 1, 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_640x320.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_300x300.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_100x100.jpg');
 
 -- --------------------------------------------------------
 
@@ -946,14 +718,17 @@ CREATE TABLE IF NOT EXISTS `prototype` (
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='属性表，异步式属性对接，不要约束' AUTO_INCREMENT=62 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='属性表，异步式属性对接，不要约束' AUTO_INCREMENT=83 ;
 
 --
 -- 转存表中的数据 `prototype`
 --
 
 INSERT INTO `prototype` (`id`, `pid`, `name`, `type`, `value`) VALUES
-(61, 83, '长度', 'text', '12米');
+(61, 83, '长度', 'text', '12米'),
+(70, 78, '长度', 'radio', 'a:3:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";}'),
+(76, 84, '长度', 'radio', 'a:3:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";}'),
+(82, 78, '大小', 'text', '12吗');
 
 -- --------------------------------------------------------
 
@@ -963,20 +738,40 @@ INSERT INTO `prototype` (`id`, `pid`, `name`, `type`, `value`) VALUES
 
 CREATE TABLE IF NOT EXISTS `refund` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
   `oid` int(11) NOT NULL,
+  `type` tinyint(1) NOT NULL COMMENT '退款类型，是否包括退货',
   `time` int(11) NOT NULL,
-  `reason` text NOT NULL,
+  `reason` varchar(64) NOT NULL,
+  `money` double(10,2) NOT NULL,
+  `description` text NOT NULL,
+  `o_status` tinyint(1) NOT NULL COMMENT '取消之前订单状态',
   `handle` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `oid` (`oid`)
+  KEY `oid` (`oid`),
+  KEY `uid` (`uid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- 转存表中的数据 `refund`
 --
 
-INSERT INTO `refund` (`id`, `oid`, `time`, `reason`, `handle`) VALUES
-(1, 14, 1234567, '测试腿裤哦', 0);
+INSERT INTO `refund` (`id`, `uid`, `oid`, `type`, `time`, `reason`, `money`, `description`, `o_status`, `handle`) VALUES
+(1, 3, 14, 0, 1234567, '测试腿裤哦', 0.00, '', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `refundpic`
+--
+
+CREATE TABLE IF NOT EXISTS `refundpic` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `rid` int(11) NOT NULL,
+  `path` varchar(256) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `rid` (`rid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -990,21 +785,36 @@ CREATE TABLE IF NOT EXISTS `register` (
   `starttime` int(11) NOT NULL COMMENT '开始时间',
   `endtime` int(11) NOT NULL COMMENT '结束时间',
   `content` text NOT NULL COMMENT '活动显示内容',
-  `num` int(11) NOT NULL COMMENT '赠送优惠券数量',
-  `coupon_starttime` int(11) NOT NULL,
-  `coupon_endtime` int(11) NOT NULL,
-  `redict_type` enum('index','theme','product','url','none') NOT NULL,
+  `template_coupon` int(11) NOT NULL,
+  `redict_type` enum('index','theme','product','url','none') NOT NULL COMMENT '跳转方式',
   `redict` varchar(256) NOT NULL COMMENT '活动领取后跳转地址',
   `stoptime` tinyint(2) NOT NULL COMMENT '悬浮窗停留时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `template_coupon` (`template_coupon`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='新用户注册登录后的悬浮窗' AUTO_INCREMENT=2 ;
 
 --
 -- 转存表中的数据 `register`
 --
 
-INSERT INTO `register` (`id`, `name`, `starttime`, `endtime`, `content`, `num`, `coupon_starttime`, `coupon_endtime`, `redict_type`, `redict`, `stoptime`) VALUES
-(1, '新用户注册送好礼', 0, 0, '<a href="123">哇哈哈哈哈哈</a>', 0, 0, 0, 'index', '', 0);
+INSERT INTO `register` (`id`, `name`, `starttime`, `endtime`, `content`, `template_coupon`, `redict_type`, `redict`, `stoptime`) VALUES
+(1, '新用户注册送好礼1123', 1442937600, 1443196800, '&lt;p&gt;123&lt;img src=&quot;http://localhost/home/application/assets/umeditor/php/upload/20150915/14422983408790.jpg&quot; _src=&quot;http://localhost/home/application/assets/umeditor/php/upload/20150915/14422983408790.jpg&quot; style=&quot;width: 179px; height: 321px;&quot;/&gt;&lt;/p&gt;', 18, 'url', 'http://www.nadu', 4);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `register_log`
+--
+
+CREATE TABLE IF NOT EXISTS `register_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `time` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `cid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`uid`),
+  UNIQUE KEY `cid` (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='新用户注册活动领奖记录' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1124,6 +934,23 @@ INSERT INTO `ship` (`id`, `name`, `code`, `max`, `price`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `shipalert`
+--
+
+CREATE TABLE IF NOT EXISTS `shipalert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `oid` int(11) NOT NULL,
+  `time` int(11) NOT NULL,
+  `ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '管理员是否已经知道该信息',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `oid` (`oid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `smslog`
 --
 
@@ -1152,10 +979,10 @@ CREATE TABLE IF NOT EXISTS `system` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   `type` varchar(128) NOT NULL,
-  `value` varchar(128) NOT NULL,
+  `value` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='系统配置表' AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='系统配置表' AUTO_INCREMENT=41 ;
 
 --
 -- 转存表中的数据 `system`
@@ -1165,14 +992,14 @@ INSERT INTO `system` (`id`, `name`, `type`, `value`) VALUES
 (1, 'companyname', 'system', '我们家'),
 (2, 'sendername', 'system', '我们家'),
 (3, 'smstemplate', 'system', '感谢您对我们家的支持和信赖，以下是您的验证码%s'),
-(4, 'mchid', 'weixin', '1226923702'),
-(5, 'appid', 'weixin', 'wxacf21161e3c578f1'),
-(6, 'key', 'weixin', 'Zhy781525073AsDfGh12ZgdZxCvBnMlK'),
-(7, 'appsecret', 'weixin', 'a9edccfb3018342657334dabd8873357'),
-(8, 'partner', 'alipay', '2088021017666931'),
-(9, 'key', 'alipay', '4508mayei5zbmsmopp6tlobdf83d2kz6'),
-(10, 'currency', 'alipay', 'USD'),
-(11, 'splitpartner', 'alipay', '2088801766902304'),
+(4, 'mchid', 'weixin', '1251529901'),
+(5, 'appid', 'weixin', 'wx714c70a7a6b93632'),
+(6, 'key', 'weixin', 'b02a45a596bfb86fe2578bde75ff5444'),
+(7, 'appsecret', 'weixin', '4dd9d79acafd65972898623410b02a5b'),
+(8, 'partner', 'alipay', '2088021725054202'),
+(9, 'key', 'alipay', '6fn5bgoyoj68dduhfg5grdxgmbt40b5v'),
+(10, 'currency', 'alipay', 'EUR'),
+(11, 'splitpartner', 'alipay', '2088021554551903'),
 (12, 'splitrate', 'alipay', '0.5'),
 (13, 'splitcurrency', 'alipay', 'CNY'),
 (15, 'timeout', 'payment', '30'),
@@ -1181,7 +1008,18 @@ INSERT INTO `system` (`id`, `name`, `type`, `value`) VALUES
 (22, 'productsmallwidth', 'image', '300'),
 (23, 'productsmallheight', 'image', '300'),
 (24, 'productthumbnailwidth', 'image', '100'),
-(25, 'productthumbnailheight', 'image', '100');
+(25, 'productthumbnailheight', 'image', '100'),
+(26, 'rsaprivatekey', 'alipay', 'D:/wamp/www/home/application/cert/08ec38cab55ccbd9da059eb69ec1228c7e5d16a96b9fa56a98eb34eb3dc43829301ad3d7.pem'),
+(27, 'startpage1', 'app', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_414x736.jpg'),
+(28, 'startpage4', 'app', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c.jpg'),
+(29, 'startpage2', 'app', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_414x736.jpg'),
+(30, 'startpage3', 'app', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_414x736.jpg'),
+(35, 'customsno', 'system', 'PT15012002'),
+(36, 'customsname', 'system', '杭州亚平宁网络科技有限公司'),
+(37, 'customs', 'system', 'HANGZHOU'),
+(38, 'rsapublickey', 'alipay', 'D:/wamp/www/home/application/cert/9b4ee2f5a430c8544a29f2bd89feeae13593bec37372e3633b9dfff324fefc41bbefb605.pem'),
+(39, 'weixincertfilepassword', 'costums', '123675'),
+(40, 'weixincertfile', 'costums', 'D:/wamp/www/home/application/cert/f80118c8fc527ce2be993bed5170b29219ee4515f0d7be4f166f9880e51848957db6374c.pem');
 
 -- --------------------------------------------------------
 
@@ -1196,15 +1034,17 @@ CREATE TABLE IF NOT EXISTS `theme` (
   `bigpic` varchar(256) NOT NULL,
   `middlepic` varchar(256) NOT NULL,
   `smallpic` varchar(256) NOT NULL,
+  `orderby` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='主题详情' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='主题详情' AUTO_INCREMENT=10 ;
 
 --
 -- 转存表中的数据 `theme`
 --
 
-INSERT INTO `theme` (`id`, `name`, `description`, `bigpic`, `middlepic`, `smallpic`) VALUES
-(6, '测试主题标题', '测试主题描述', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x280.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_320x260.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_320x130.jpg');
+INSERT INTO `theme` (`id`, `name`, `description`, `bigpic`, `middlepic`, `smallpic`, `orderby`) VALUES
+(8, '主题名称', '主题描述', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x280.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_320x260.jpg', 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_320x130.jpg', 2),
+(9, '第二个', '第二个描述', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_640x280.jpg', 'D:/wamp/www/home/application/upload/2f395384ae3e1aac6fc29513d626f35c825953ec1913ae6550dc85d27cbc75e211464a9c_320x260.jpg', 'D:/wamp/www/home/application/upload/8db3ae15d442d4519226f65b41945f4180ccbd7b8a5a51b7df731f623f2adedc7817bd4a_320x130.jpg', 123);
 
 -- --------------------------------------------------------
 
@@ -1219,14 +1059,14 @@ CREATE TABLE IF NOT EXISTS `theme_product` (
   PRIMARY KEY (`id`),
   KEY `tid` (`tid`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='主题和产品关系表' AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='主题和产品关系表' AUTO_INCREMENT=2 ;
 
 --
 -- 转存表中的数据 `theme_product`
 --
 
 INSERT INTO `theme_product` (`id`, `tid`, `pid`) VALUES
-(3, 6, 82);
+(1, 8, 78);
 
 -- --------------------------------------------------------
 
@@ -1261,7 +1101,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `gravatar`, `username`, `telephone`, `email`, `password`, `regtime`, `logtime`, `money`, `score`, `ordernum`, `cost`, `salt`, `close`, `oid`, `client`) VALUES
-(3, 'D:/wamp/www/home/application/upload/eb59ac76d245b880de6de5df44d451533e88c90fb029abe0392f7ec0ea5a3c6b78639560_200x200.gif', 'vvvv', '12345678901', '326550324@qq.com', 'c3af0f820a49508b0002b862bcc79e09', 1437936536, 1437936536, 0.00, 0, 1, 0.00, 'QlRRU9', 0, 0, 'web'),
+(3, 'D:/wamp/www/home/application/upload/e3f6441b6ecb983e2da7f30ff694f7f450b285358900323c3053ce1adab7d22b71a7f2d7_200x200.jpg', '123', '12345678901', '326550324@qq.com', 'c3af0f820a49508b0002b862bcc79e09', 1437936536, 1437936536, 0.00, 0, 1, 6300.01, 'QlRRU9', 0, 3, 'web'),
 (4, '', '0', '12345678902', '', '0b6ea8fdab7e481a29c1c10b95d82b9a', 1437936558, 1437936558, 0.00, 0, 0, 0.00, 'pS3huq', 1, 3, 'web'),
 (5, '', '0', '12345678903', '', '4b35eaed14f338d9b018fe09a2fb8719', 1437968089, 1437968089, 0.00, 0, 0, 0.00, 'Cl8BHd', 1, 0, 'web'),
 (7, '', '0', '12345678904', '', 'c3af0f820a49508b0002b862bcc79e09', 1437936536, 1437936536, 0.00, 0, 0, 0.00, 'QlRRU9', 0, 0, 'web'),
@@ -1351,6 +1191,18 @@ ALTER TABLE `fullcutdetail`
   ADD CONSTRAINT `fullcutdetail_ibfk_2` FOREIGN KEY (`pid`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- 限制表 `hotorder`
+--
+ALTER TABLE `hotorder`
+  ADD CONSTRAINT `hotorder_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- 限制表 `message`
+--
+ALTER TABLE `message`
+  ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- 限制表 `o2ouser`
 --
 ALTER TABLE `o2ouser`
@@ -1372,7 +1224,21 @@ ALTER TABLE `orderlist`
 -- 限制表 `refund`
 --
 ALTER TABLE `refund`
-  ADD CONSTRAINT `refund_ibfk_1` FOREIGN KEY (`oid`) REFERENCES `orderlist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `refund_ibfk_1` FOREIGN KEY (`oid`) REFERENCES `orderlist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `refund_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- 限制表 `refundpic`
+--
+ALTER TABLE `refundpic`
+  ADD CONSTRAINT `refundpic_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `refund` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- 限制表 `register_log`
+--
+ALTER TABLE `register_log`
+  ADD CONSTRAINT `register_log_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `register_log_ibfk_2` FOREIGN KEY (`cid`) REFERENCES `coupon` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `sale`
@@ -1385,6 +1251,13 @@ ALTER TABLE `sale`
 --
 ALTER TABLE `seckill`
   ADD CONSTRAINT `seckill_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- 限制表 `shipalert`
+--
+ALTER TABLE `shipalert`
+  ADD CONSTRAINT `shipalert_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `shipalert_ibfk_2` FOREIGN KEY (`oid`) REFERENCES `orderlist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `theme_product`

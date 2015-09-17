@@ -62,15 +62,16 @@ class alipay_gateway
 		//支付宝lib目录
 		define('ALIPAY_ROOT', ROOT.'/extends/alipay');
 		
-		$http = new http();
+		$http = http::getInstance();
+		$protocal = $http->isHttps()?'https://':'http://';
 		/**
 		 * 同步通知地址
 		 */
-		$return_url = 'http://'.$http->host().$http->path().'/gateway/alipay/retu.php';
+		$return_url = $protocal.$http->host().$http->path().'/gateway/alipay/retu.php';
 		/**
 		 * 异步通知地址
 		 */
-		$notify_url = 'http://'.$http->host().$http->path().'/gateway/alipay/notify.php';
+		$notify_url = $protocal.$http->host().$http->path().'/gateway/alipay/notify.php';
 		
 		
 		/**

@@ -152,6 +152,11 @@
 											<a href="#tab_history" data-toggle="tab">
 											历史 </a>
 										</li>
+                                        <li>
+                                        	<a href="#tab_eqcode" data-toggle="tab">
+                                            二维码
+                                            </a>
+                                        </li>
 									</ul>
 									<div class="tab-content no-space">
 										<div class="tab-pane active" id="tab_general">
@@ -556,6 +561,11 @@
 												</table>
 											</div>
 										</div>
+                                        <div class="tab-pane" id="tab_eqcode">
+                                        	<div class="table-container">
+                                            	<img src="{%url c=index a=eqcode content='http://'+$smarty.server.SERVER_NAME%}">
+                                            </div>
+                                        </div>
 									</div>
 								</div>
 							</div>

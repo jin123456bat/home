@@ -41,7 +41,7 @@ class mysql
 		$this->pdo = new PDO($this->config['db_type'] . ':host=' . $this->config['db_server'] . ';dbname=' . $this->config['db_dbname'], $this->config['db_user'], $this->config['db_password'], array(
 			PDO::ATTR_PERSISTENT => $this->config['db_forever']/*持久化连接*/));
 		// 设置异常模式为抛出异常
-		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		//$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->setCharset($this->config['db_charset']);
 	}
 

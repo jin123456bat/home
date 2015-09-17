@@ -15,4 +15,9 @@ class registerModel extends model
 			return isset($result[0])?$result[0]:array();
 		return isset($result[0][$name])?$result[0][$name]:NULL;
 	}
+	
+	function save($id,$name,$value)
+	{
+		return $this->where('id=?',array($id))->update($name,$value);
+	}
 }

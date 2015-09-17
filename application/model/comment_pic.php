@@ -49,17 +49,12 @@ class comment_picModel extends model
 	function getByCid($cid,$mode = 'path')
 	{
 		$result = $this->where('cid=?',array($cid))->select();
-		if($result)
+		if(!empty($result))
 		{
 			$array = array();
 			foreach($result as $pic)
 			{
-				switch ($mode)
-				{
-					case 'path':$array[] = $pic['pic_path'];break;
-					case 'url':$array[] = file::realpathToUrl($pic['pic_path']);break;
-					default:break;
-				}
+				$array[] = $pic['pic_path'];
 			}
 			return $array;
 		}

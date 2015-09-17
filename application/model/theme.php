@@ -24,7 +24,7 @@ class themeModel extends model
 	 */
 	function create($name,$description,$big,$middle,$small)
 	{
-		return $this->insert(array(NULL,$name,$description,$big,$middle,$small));
+		return $this->insert(array(NULL,$name,$description,$big,$middle,$small,0));
 	}
 	
 	/**
@@ -85,10 +85,16 @@ class themeModel extends model
 	/**
 	 * 后台获取所有主题
 	 */
-	function fetchAll($length = 0)
+	function fetchAll(array $filter = array())
 	{
-		if(!empty($length))
-			$this->limit($length);
+		if(isset($filter['length']))
+		{
+			$this->limit($filter['length']);
+		}
+		if(isset($filter['orderby']))
+		{
+			$this->orderby($filter['orderby'],'asc');
+		}
 		return $this->select();
 	}
 }

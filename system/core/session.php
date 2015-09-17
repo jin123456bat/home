@@ -3,13 +3,21 @@ namespace system\core;
 
 class session
 {
+	private static $_instance = NULL;
 
-	function __construct()
+	private function __construct()
 	{
 		if(!session_id())
 		{
 			session_start();
 		}
+	}
+	
+	public static function getInstance()
+	{
+		if(self::$_instance === NULL)
+			self::$_instance = new self();
+		return self::$_instance;
 	}
 
 	function __get($name)

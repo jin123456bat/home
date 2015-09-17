@@ -85,16 +85,15 @@ class orderlistModel extends model
 	 * @param unknown $uid        	
 	 * @return Ambigous <unknown, boolean, multitype:>
 	 */
-	function fetchAll($uid,$status = NULL,$start = 0,$length = 0)
+	function fetchAll($uid,$status = NULL,$start = 0,$length = 10)
 	{
 		if($status !== NULL)
 		{
 			$this->where('status = ?',array($status));
 		}
-		if(!empty($start) && !empty($length))
-		{
-			$this->limit($start,$length);
-		}
+		$start = empty($start)?0:$start;
+		$length = empty($length)?10:$length;
+		$this->limit($start,$length);
 		$this->orderby('id','desc');
 		$result = $this->where('uid=?', array(
 			$uid
@@ -261,6 +260,16 @@ class orderlistModel extends model
 	function quit($id)
 	{
 		return $this->where('id=?',array($id))->update('status',self::STATUS_QUITE);
+	}
+	
+	/**
+	 * 设置订单状态为退款状态
+	 * @param unknown $id
+	 * @return \system\core\Ambigous
+	 */
+	function refund($id)
+	{
+		return $this->where('id=?',array($id))->update('status',self::STATUS_REFUND);
 	}
 
 	/**

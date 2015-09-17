@@ -8,6 +8,8 @@ use system\core\validate;
 use system\core\random;
 use system\core\image;
 use application\classes\weixin_gateway;
+use application\message\json;
+use system\core\file;
 
 class indexControl extends control
 {
@@ -27,6 +29,10 @@ class indexControl extends control
 		}
 	}
 	
+	/**
+	 * 获取服务器当前时间
+	 * @return number
+	 */
 	function time()
 	{
 		return time();
@@ -75,6 +81,21 @@ class indexControl extends control
 		$file = $image->QRCode($content);
 		$this->response->addHeader('Content-Type','image/png');
 		echo file_get_contents($file);
+	}
+	
+	/**
+	 * 临时文件上传通道
+	 */
+	function image()
+	{
+		$file = $this->file->file;
+		if(is_file($file))
+		{
+			$image = new image();
+			$file = $image->resizeImage($file, 640, 640*2);
+			return new json(json::OK,NULL,file::realpathToUrl($file));
+		}
+		return new json(json::PARAMETER_ERROR,'图片上传失败');
 	}
 
 	/**

@@ -162,6 +162,9 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
+                	<div class="alert alert-info">
+                        主题从小到大排序.
+                    </div>
 					<div class="text-align-reverse margin-bottom-10">
 						<a class="btn green" href="#theme" data-toggle="modal">
 						<i class="fa fa-share"></i> 创建主题 </a>
@@ -188,6 +191,9 @@
 						<th width="30%">
 							描述
 						</th>
+                        <th width="10%">
+                        	排序
+                        </th>
 						<th width="10%">
 							 操作
 						</th>
@@ -210,6 +216,7 @@
 							<input type="file" name="smallpic" data-id="{%$theme[theme].id%}" class="hide upload"></td>
 						<td name=name>{%$theme[theme].name%}</td>
 						<td name=description>{%$theme[theme].description%}</td>
+                        <td name=orderby>{%$theme[theme].orderby%}</td>
 						<td>
 							<div class="btn-group btn-group-circle btn-group-justified">
 								<a data-id="{%$theme[theme].id%}" class="btn btn-sm red removeBtn">
@@ -301,14 +308,17 @@ jQuery(document).ready(function() {
 		var id = $(this).data('id');
 		var td = $(this).parents('tr').find('td[name=name]');
 		var tdtextarea = $(this).parents('tr').find('td[name=description]');
+		var orderby = $(this).parents('tr').find('td[name=orderby]');
 		if($.trim($(this).html()) == '编辑')
 		{
 			$('.serverside',$(this).parents('tr')).removeClass('display-none');
 			$(this).html('完成');
 			var input = $('<input type="text">');
 			var textarea = $('<textarea></textarea>');
+			var orderbyinput = $('<input type="text">');
 			var old = $.trim(td.html());
 			var oldtextarea = $.trim(tdtextarea.html());
+			var oldorderby = $.trim(orderby.html());
 			//alert(oldtextarea);
 			input.val(old);
 			textarea.html(oldtextarea);
@@ -316,7 +326,10 @@ jQuery(document).ready(function() {
 			tdtextarea.html('');
 			td.append(input);
 			tdtextarea.append(textarea);
-			input.show();
+			orderbyinput.val(oldorderby);
+			orderby.html('');
+			orderby.append(orderbyinput);
+			//input.show();
 		}
 		else
 		{
@@ -329,6 +342,10 @@ jQuery(document).ready(function() {
 			textarea = tdtextarea.find('textarea');
 			tdtextarea.html(textarea.val());
 			$.post('{%url c=theme a=save%}',{id:id,description:textarea.val()},function(){
+			});
+			orderbyinput = orderby.find('input');
+			orderby.html(orderbyinput.val());
+			$.post('{%url c=theme a=save%}',{id:id,orderby:orderbyinput.val()},function(){
 			});
 		}
 	});

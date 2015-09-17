@@ -10,7 +10,20 @@ use \ArrayAccess;
  */
 class post implements ArrayAccess
 {
-
+	static private $_instance = NULL;
+	
+	private function __construct()
+	{
+		
+	}
+	
+	public static function getInstance()
+	{
+		if(self::$_instance === NULL)
+			self::$_instance = new self();
+		return self::$_instance;
+	}
+	
 	function __get($name)
 	{
 		return isset($_POST[$name]) ? is_string($_POST[$name])?trim(htmlspecialchars($_POST[$name])):$_POST[$name] : NULL;

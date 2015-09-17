@@ -1,4 +1,4 @@
-<?php
+h<?php
 namespace application\control;
 
 use system\core\control;
@@ -8,6 +8,7 @@ use application\model\roleModel;
 use system\core\validate;
 use system\core\view;
 use application\classes\blog;
+use application\message\json;
 class helpControl extends control
 {
 	/**
@@ -37,9 +38,9 @@ class helpControl extends control
 		{
 			if(isset($result['content']))
 			{
-				return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+				return new json(json::OK,NULL,$result);
 			}
-			return json_encode(array('code'=>0,'result'=>'no contents'));
+			return new json(json::PARAMETER_ERROR);
 		}
 	}
 	
@@ -115,11 +116,11 @@ class helpControl extends control
 			$helpModel = $this->model('help');
 			if($helpModel->remove($id))
 			{
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>0,'result'=>'failed'));
+			return new json(json::PARAMETER_ERROR);
 		}
-		return json_encode(array('code'=>2,'result'=>'没有权限'));
+		return new json(json::NO_POWER);
 	}
 	
 	function create()

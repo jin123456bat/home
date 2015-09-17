@@ -6,6 +6,7 @@ use system\core\view;
 use application\classes\login;
 use application\model\roleModel;
 use system\core\filter;
+use application\message\json;
 
 class adminControl extends control
 {
@@ -23,7 +24,6 @@ class adminControl extends control
 	 */
 	function resetpwd()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->id,'admin',roleModel::POWER_UPDATE))
 		{
@@ -33,11 +33,11 @@ class adminControl extends control
 			if($adminModel->changepwd($id,$password))
 			{
 				$this->model('log')->write($this->session->username,"更改了管理员的密码");
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>2,'result'=>'修改失败，可能和原密码相同'));
+			return new json(4,'修改后的密码和原密码相同');
 		}
-		return json_encode(array('code'=>0,'result'=>'没有权限'));
+		return new json(json::NO_POWER);
 	}
 	
 	/**
@@ -45,7 +45,6 @@ class adminControl extends control
 	 */
 	function remove()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'admin',roleModel::POWER_DELETE))
 		{
@@ -54,11 +53,11 @@ class adminControl extends control
 			if($adminModel->remove($id))
 			{
 				$this->model('log')->write($this->session->username,"删除了管理员账户");
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>2,'result'=>'删除失败'));
+			return new json(4,'删除失败');
 		}
-		return json_encode(array('code'=>0,'result'=>'没有权限'));
+		return new json(json::NO_POWER);
 	}
 	
 	/**
@@ -74,7 +73,8 @@ class adminControl extends control
 		}
 		else
 		{
-			return $this->call($this, 'index');
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
 	
@@ -135,11 +135,11 @@ class adminControl extends control
 				$this->session->id = $ainfo['id'];
 				$this->session->username = $ainfo['username'];
 				$this->session->role = $ainfo['role'];
-				return json_encode(array('code'=>1,'result'=>'登陆成功'));
+				return new json(json::OK,'登陆成功');
 			}
-			return json_encode(array('code'=>2,'result'=>'用户名或密码错误'));
+			return new json(json::NOT_LOGIN,'用户名或密码错误');
 		}
-		return json_encode(array('code'=>0,'result'=>'用户名或密码格式错误'));
+		return new json(json::PARAMETER_ERROR,"用户名或密码格式错误");
 	}
 	
 	/**
@@ -158,7 +158,7 @@ class adminControl extends control
 	function register()
 	{
 		if(!login::admin())
-			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+			return new json(json::NOT_LOGIN);
 		$roleModel = $this->model('role');
 		if($roleModel->checkPower($this->session->role,'admin',roleModel::POWER_INSERT))
 		{
@@ -168,11 +168,11 @@ class adminControl extends control
 			if($adminModel->register($username,$password))
 			{
 				$this->model('log')->write($this->session->username,'添加了一个管理员账号'.$username);
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>0,'result'=>'用户名已存在'));
+			return new json(4,'用户名已经存在');
 		}
-		return json_encode(array('code'=>3,'result'=>'权限不足'));
+		return new json(json::NO_POWER);
 	}
 	
 	/**
@@ -180,7 +180,6 @@ class adminControl extends control
 	 */
 	function setrole()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'admin',roleModel::POWER_UPDATE))
 		{
@@ -190,14 +189,11 @@ class adminControl extends control
 			if($adminModel->where('id=?',array($aid))->update('role',$roleid))
 			{
 				$this->model('log')->write($this->session->username,'更改了管理员的管理组id=>'.$aid.'role=>'.$roleid);
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>0,'result'=>'failed'));
+			return new json(json::PARAMETER_ERROR,'管理组不存在或者无任何更改');
 		}
-		else
-		{
-			return json_encode(array('code'=>2,'result'=>'没有权限'));
-		}
+		return new json(json::NO_POWER);
 	}
 	
 	/**

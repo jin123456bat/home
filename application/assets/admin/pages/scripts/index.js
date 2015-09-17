@@ -90,92 +90,6 @@ var Index = function () {
             $('#region_statistics_content').show();
         },
 
-        initCalendar: function () {
-            if (!jQuery().fullCalendar) {
-                return;
-            }
-
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
-
-            var h = {};
-
-            if ($('#calendar').width() <= 400) {
-                $('#calendar').addClass("mobile");
-                h = {
-                    left: 'title, prev, next',
-                    center: '',
-                    right: 'today,month,agendaWeek,agendaDay'
-                };
-            } else {
-                $('#calendar').removeClass("mobile");
-                if (Metronic.isRTL()) {
-                    h = {
-                        right: 'title',
-                        center: '',
-                        left: 'prev,next,today,month,agendaWeek,agendaDay'
-                    };
-                } else {
-                    h = {
-                        left: 'title',
-                        center: '',
-                        right: 'prev,next,today,month,agendaWeek,agendaDay'
-                    };
-                }
-            }
-
-            $('#calendar').fullCalendar('destroy'); // destroy the calendar
-            $('#calendar').fullCalendar({ //re-initialize the calendar
-                disableDragging: false,
-                header: h,
-                editable: true,
-                events: [{
-                    title: 'All Day Event',
-                    start: new Date(y, m, 1),
-                    backgroundColor: Metronic.getBrandColor('yellow')
-                }, {
-                    title: 'Long Event',
-                    start: new Date(y, m, d - 5),
-                    end: new Date(y, m, d - 2),
-                    backgroundColor: Metronic.getBrandColor('blue')
-                }, {
-                    title: 'Repeating Event',
-                    start: new Date(y, m, d - 3, 16, 0),
-                    allDay: false,
-                    backgroundColor: Metronic.getBrandColor('red')
-                }, {
-                    title: 'Repeating Event',
-                    start: new Date(y, m, d + 4, 16, 0),
-                    allDay: false,
-                    backgroundColor: Metronic.getBrandColor('green')
-                }, {
-                    title: 'Meeting',
-                    start: new Date(y, m, d, 10, 30),
-                    allDay: false
-                }, {
-                    title: 'Lunch',
-                    start: new Date(y, m, d, 12, 0),
-                    end: new Date(y, m, d, 14, 0),
-                    backgroundColor: Metronic.getBrandColor('grey'),
-                    allDay: false
-                }, {
-                    title: 'Birthday Party',
-                    start: new Date(y, m, d + 1, 19, 0),
-                    end: new Date(y, m, d + 1, 22, 30),
-                    backgroundColor: Metronic.getBrandColor('purple'),
-                    allDay: false
-                }, {
-                    title: 'Click for Google',
-                    start: new Date(y, m, 28),
-                    end: new Date(y, m, 29),
-                    backgroundColor: Metronic.getBrandColor('yellow'),
-                    url: 'http://google.com/'
-                }]
-            });
-        },
-
         initCharts: function () {
             if (!jQuery.plot) {
                 return;
@@ -231,11 +145,24 @@ var Index = function () {
             ];
 
 
+
             if ($('#site_statistics').size() != 0) {
 
                 $('#site_statistics_loading').hide();
-                $('#site_statistics_content').show();
-
+				
+				$.ajax({
+					url:'index.php?c=statistics&a=visitor',
+					async:false,
+					cache:false,
+					contentType:"json",
+					type:'get',
+					success: function(response){
+						visitors = response;
+					}
+				});
+                
+				$('#site_statistics_content').show();
+				
                 var plot_statistics = $.plot($("#site_statistics"),
                     [{
                         data: visitors,
@@ -256,20 +183,19 @@ var Index = function () {
                         color: '#fff',
                         shadowSize: 0
                     }],
-
                     {
-                        xaxis: {
-                            tickLength: 0,
-                            tickDecimals: 0,
-                            mode: "categories",
-                            min: 0,
-                            font: {
-                                lineHeight: 14,
-                                style: "normal",
-                                variant: "small-caps",
-                                color: "#6F7B8A"
-                            }
-                        },
+						xaxis: {
+							tickLength: 0,
+							tickDecimals: 0,
+							mode: "categories",
+							min: 0,
+							font: {
+								lineHeight: 14,
+								style: "normal",
+								variant: "small-caps",
+								color: "#6F7B8A"
+							}
+						},
                         yaxis: {
                             ticks: 5,
                             tickDecimals: 0,
@@ -315,106 +241,142 @@ var Index = function () {
             if ($('#site_activities').size() != 0) {
                 //site activities
                 var previousPoint2 = null;
-                $('#site_activities_loading').hide();
+                
+				var date = new Date();
+				
+				$('#site_activities_loading').hide();
+				
+				var changePlot = function(event){
+					$('#revenue_year_selector').find('li').removeClass('active');
+					$(event.target).parents('li').addClass('active');
+					var year = $(event.target).html()||event;
+					$.ajax({
+						url:'index.php?c=statistics&a=revenue&year='+year,
+						async:false,
+						cache:true,
+						contentType:"json",
+						type:"get",
+						success: function(response){
+							$.plot(
+								$("#site_activities"),
+								[{
+									data: response.table,
+									lines: {
+										fill: 0.2,
+										lineWidth: 0,
+									},
+									color: ['#BAD9F5']
+								}, {
+									data: response.table,
+									points: {
+										show: true,
+										fill: true,
+										radius: 4,
+										fillColor: "#9ACAE6",
+										lineWidth: 2
+									},
+									color: '#9ACAE6',
+									shadowSize: 1
+								}, {
+									data: response.table,
+									lines: {
+										show: true,
+										fill: false,
+										lineWidth: 3
+									},
+									color: '#9ACAE6',
+									shadowSize: 0
+								}],
+								{
+									xaxis: {
+										tickLength: 0,
+										tickDecimals: 0,
+										mode: "categories",
+										min: 0,
+										font: {
+											lineHeight: 18,
+											style: "normal",
+											variant: "small-caps",
+											color: "#6F7B8A"
+										}
+									},
+									yaxis: {
+										ticks: 5,
+										tickDecimals: 0,
+										tickColor: "#eee",
+										font: {
+											lineHeight: 14,
+											style: "normal",
+											variant: "small-caps",
+											color: "#6F7B8A"
+										}
+									},
+									grid: {
+										hoverable: true,
+										clickable: true,
+										tickColor: "#eee",
+										borderColor: "#eee",
+										borderWidth: 1
+									}
+								}
+							);
+							$('#revenue').html('$'+response.revenue);
+							$('#tax').html('$'+response.tax);
+							$('#shipment').html('$'+response.shipment);
+							$('#order').html(response.order);
+							//console.log(response);
+						}
+					});
+				}
+				
                 $('#site_activities_content').show();
+				changePlot(date.getFullYear());
+				
+				$.ajax({
+					url:'index.php?c=statistics&a=revenue',
+					async:false,
+					cache:true,
+					contentType:"json",
+					type:'get',
+					success: function(response){
+						
+						for(var i=0;i<response.length;i++)
+						{
+							var tpl = '<li><a href="javascript:;">'+response[i]+'</a></li>';
+							if(date.getFullYear() == parseInt(response[i]))
+							{
+								tpl = $(tpl).addClass('active').on('click',changePlot);
+							}
+							else
+							{
+								tpl = $(tpl).on('click',changePlot);
+							}
+							$('#revenue_year_selector').append(tpl);
+						}
+					}
+				});
+				
+				
+			}
+				
+			$("#site_activities").bind("plothover", function (event, pos, item) {
+				$("#x").text(pos.x.toFixed(2));
+				$("#y").text(pos.y.toFixed(2));
+				if (item) {
+					if (previousPoint2 != item.dataIndex) {
+						previousPoint2 = item.dataIndex;
+						$("#tooltip").remove();
+						var x = item.datapoint[0].toFixed(2),
+							y = item.datapoint[1].toFixed(2);
+						showChartTooltip(item.pageX, item.pageY, item.datapoint[0], item.datapoint[1] + '￥');
+					}
+				}
+			});
 
-                var data1 = [
-                    ['DEC', 300],
-                    ['JAN', 600],
-                    ['FEB', 1100],
-                    ['MAR', 1200],
-                    ['APR', 860],
-                    ['MAY', 1200],
-                    ['JUN', 1450],
-                    ['JUL', 1800],
-                    ['AUG', 1200],
-                    ['SEP', 600]
-                ];
-
-
-                var plot_statistics = $.plot($("#site_activities"),
-
-                    [{
-                        data: data1,
-                        lines: {
-                            fill: 0.2,
-                            lineWidth: 0,
-                        },
-                        color: ['#BAD9F5']
-                    }, {
-                        data: data1,
-                        points: {
-                            show: true,
-                            fill: true,
-                            radius: 4,
-                            fillColor: "#9ACAE6",
-                            lineWidth: 2
-                        },
-                        color: '#9ACAE6',
-                        shadowSize: 1
-                    }, {
-                        data: data1,
-                        lines: {
-                            show: true,
-                            fill: false,
-                            lineWidth: 3
-                        },
-                        color: '#9ACAE6',
-                        shadowSize: 0
-                    }],
-
-                    {
-
-                        xaxis: {
-                            tickLength: 0,
-                            tickDecimals: 0,
-                            mode: "categories",
-                            min: 0,
-                            font: {
-                                lineHeight: 18,
-                                style: "normal",
-                                variant: "small-caps",
-                                color: "#6F7B8A"
-                            }
-                        },
-                        yaxis: {
-                            ticks: 5,
-                            tickDecimals: 0,
-                            tickColor: "#eee",
-                            font: {
-                                lineHeight: 14,
-                                style: "normal",
-                                variant: "small-caps",
-                                color: "#6F7B8A"
-                            }
-                        },
-                        grid: {
-                            hoverable: true,
-                            clickable: true,
-                            tickColor: "#eee",
-                            borderColor: "#eee",
-                            borderWidth: 1
-                        }
-                    });
-
-                $("#site_activities").bind("plothover", function (event, pos, item) {
-                    $("#x").text(pos.x.toFixed(2));
-                    $("#y").text(pos.y.toFixed(2));
-                    if (item) {
-                        if (previousPoint2 != item.dataIndex) {
-                            previousPoint2 = item.dataIndex;
-                            $("#tooltip").remove();
-                            var x = item.datapoint[0].toFixed(2),
-                                y = item.datapoint[1].toFixed(2);
-                            showChartTooltip(item.pageX, item.pageY, item.datapoint[0], item.datapoint[1] + 'M$');
-                        }
-                    }
-                });
-
-                $('#site_activities').bind("mouseleave", function () {
-                    $("#tooltip").remove();
-                });
-            }
+			$('#site_activities').bind("mouseleave", function () {
+				$("#tooltip").remove();
+			});
+            
         },
 
         initMiniCharts: function () {
@@ -441,35 +403,64 @@ var Index = function () {
                     return fBound;
                 };
             }
+			
+			
+			 
+			function loadMiniChart(url)
+			{
+				$.ajax({
+					url:url,
+					async:false,
+					cache:true,
+					type:"get",
+					success: function(response){
+						var ios = parseInt(response.ios);
+						var android = parseInt(response.android);
+						var wap = parseInt(response.wap);
+						var web = parseInt(response.web);
+						var weixin = parseInt(response.weixin);
+						
+						var total = ios+android+wap+web+weixin;
+						
+						$('.easy-pie-chart .android').attr('data-percent',android*100/total).find('span').html(android);
+						$('.easy-pie-chart .ios').attr('data-percent',ios*100/total).find('span').html(ios);
+						$('.easy-pie-chart .wap').attr('data-percent',(wap+weixin)*100/total).find('span').html(wap+weixin);
+						
+						//$('.easy-pie-chart .ios').attr('data-percent',(ios*100/total));
+						
+						$('.easy-pie-chart .number.ios').easyPieChart({
+							animate: 1000,
+							size: 75,
+							lineWidth: 3,
+							barColor: Metronic.getBrandColor('yellow')
+						});
+			
+						$('.easy-pie-chart .number.android').easyPieChart({
+							animate: 1000,
+							size: 75,
+							lineWidth: 3,
+							barColor: Metronic.getBrandColor('green')
+						});
+			
+						$('.easy-pie-chart .number.wap').easyPieChart({
+							animate: 1000,
+							size: 75,
+							lineWidth: 3,
+							barColor: Metronic.getBrandColor('red')
+						});
+						
+					}
+				});
+			}
+			
+           
 
-            $('.easy-pie-chart .number.transactions').easyPieChart({
-                animate: 1000,
-                size: 75,
-                lineWidth: 3,
-                barColor: Metronic.getBrandColor('yellow')
-            });
-
-            $('.easy-pie-chart .number.visits').easyPieChart({
-                animate: 1000,
-                size: 75,
-                lineWidth: 3,
-                barColor: Metronic.getBrandColor('green')
-            });
-
-            $('.easy-pie-chart .number.bounce').easyPieChart({
-                animate: 1000,
-                size: 75,
-                lineWidth: 3,
-                barColor: Metronic.getBrandColor('red')
-            });
-
+			loadMiniChart('index.php?c=statistics&a=client&type=order');
             $('.easy-pie-chart-reload').click(function () {
-                $('.easy-pie-chart .number').each(function () {
-                    var newValue = Math.floor(100 * Math.random());
-                    $(this).data('easyPieChart').update(newValue);
-                    $('span', this).text(newValue);
-                });
+                loadMiniChart('index.php?c=statistics&a=client&type=order');
             });
+
+
 
             $("#sparkline_bar").sparkline([8, 9, 10, 11, 10, 10, 12, 10, 10, 11, 9, 12, 11, 10, 9, 11, 13, 13, 12], {
                 type: 'bar',

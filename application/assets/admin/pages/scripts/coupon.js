@@ -83,6 +83,8 @@ var Coupon = function () {
 					"data":"value",
 					"orderable":true
 				}, {
+					"data":"category",
+				}, {
 					"data":"id",
 					"orderable": false
 				}],
@@ -148,7 +150,14 @@ var Coupon = function () {
 						return data*10+'折';
 					}
 				},{
-					"targets":[10],
+					targets:10,
+					render:function(data,type,full){
+						if(data == '')
+						return '全场有效';
+						return data;
+					}
+				},{
+					"targets":[11],
 					"data":"id",
 					"render":function(data,type,full){
 						return '<a data-id='+data+' class="btn btn-xs default red-stripen removeBtn">删除</a>';

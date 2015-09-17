@@ -1,8 +1,6 @@
 <?php
 namespace system\core;
 
-use system\core\config\viewConfig;
-
 /**
  * 应用程序类
  *
@@ -10,7 +8,6 @@ use system\core\config\viewConfig;
  */
 class webApplication extends base
 {
-
 	private $_config;
 
 	function __construct($config)
@@ -38,6 +35,7 @@ class webApplication extends base
 				$response->send();
 			}
 		}
+		
 		try {
 			$handler = $this->parseUrl();
 			if (is_array($handler)) {
@@ -48,24 +46,25 @@ class webApplication extends base
 					include $path;
 					$class = 'application\\control\\' . $control . 'Control';
 					if (class_exists($class)) {
+						//$class = new \ReflectionClass($class);
 						$class = new $class();
 						$class->response = &$response;
 						if (method_exists($class, $action)) {
 							$response->setCode(200);
-							$response->appendBody($this->__200($class, $action));
+							$response->setBody($this->__200($class, $action));
 						} else {
 							$response->setCode(404);
-							$response->appendBody($this->__404($control, $action));
+							$response->setBody($this->__404($control, $action));
 						}
 					} else {
 						$response->setCode(404);
-						$response->appendBody($this->__404($control, $action));
+						$response->setBody($this->__404($control, $action));
 					}
 				}
 				else
 				{
 					$response->setCode(404);
-					$response->appendBody($this->__404($control, $action));
+					$response->setBody($this->__404($control, $action));
 				}
 			} else {
 				include ROOT . '/application/thread/' . $handler . '.php';
@@ -77,7 +76,7 @@ class webApplication extends base
 		catch (\Exception $e)
 		{
 			$response->setCode(500);
-			$response->appendBody($this->__500($e));
+			$response->setBody($this->__500($e));
 		}
 		finally
 		{
@@ -158,8 +157,7 @@ class webApplication extends base
 		if(!empty($index404))
 			return $index404;
 		//系统404
-		$viewConfig = new viewConfig();
-		$view = new view($viewConfig, '404.html');
+		$view = new view(config('view',true), '404.html');
 		return $view->display();
 	}
 

@@ -10,7 +10,19 @@ use \ArrayAccess;
  */
 class get implements ArrayAccess
 {
-
+	static private $_instance = NULL;
+	
+	private function __construct()
+	{
+	}
+	
+	static public function getInstance()
+	{
+		if(self::$_instance === NULL)
+			self::$_instance = new self();
+		return self::$_instance;
+	}
+	
 	function __get($name)
 	{
 		return isset($_GET[$name]) ? is_string($_GET[$name])?trim(urldecode($_GET[$name])):$_GET[$name] : NULL;

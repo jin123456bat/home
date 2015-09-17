@@ -8,6 +8,7 @@ use system\core\view;
 use system\core\random;
 use system\core\filter;
 use application\classes\collection;
+use application\message\json;
 /**
  * 优惠券打折码控制器
  * @author jin12
@@ -172,6 +173,40 @@ class couponControl extends control
 	}
 	
 	/**
+	 * 新用户注册活动赠送优惠卷
+	 */
+	function register()
+	{
+		if(!login::user())
+			return new json(json::NOT_LOGIN);
+		
+		//活动id
+		$id = 1;
+		
+		$coupon_id = $this->model('register')->get($id,'template_coupon');
+		if(!empty($coupon_id))
+		{
+			$couponModel = $this->model('coupon');
+			$coupon = $couponModel->get($coupon_id);
+			if(empty($coupon))
+				return new json(json::PARAMETER_ERROR,'优惠券模板不存在');
+			$register_logModel = $this->model('register_log');
+			if(!$register_logModel->checkUser($this->session->id))
+				return new json(5,'该用户已经领取过优惠券');
+			//优惠代码
+			$couponno = $this->randomcode();
+			$couponno = json_decode($couponno)->body;
+			$cid = $couponModel->copyForUser($this->session->id,$couponno,$coupon);
+			if($cid)
+			{
+				$register_logModel->write($this->session->id,$cid);
+				return new json(json::OK);
+			}
+			return new json(4,'优惠券领取失败');
+		}
+	}
+	
+	/**
 	 * ajaxdatatable请求
 	 */
 	function ajaxdatatable()
@@ -183,6 +218,10 @@ class couponControl extends control
 		$resultObj->recordsTotal = $couponModel->count();
 		$resultObj->recordsFiltered = count($result);
 		$result = array_slice($result, $this->post->start,$this->post->length);
+		foreach ($result as &$coupon)
+		{
+			$coupon['category'] = $this->model('coupondetail')->getByCouponid($coupon['id'],'name');
+		}
 		$resultObj->data = $result;
 		return json_encode($resultObj);
 	}

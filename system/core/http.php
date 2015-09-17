@@ -8,6 +8,20 @@ namespace system\core;
  */
 class http
 {
+	static private $_instance = NULL;
+	
+	private function __construct()
+	{
+		
+	}
+	
+	static public function getInstance()
+	{
+		if(self::$_instance === NULL)
+			self::$_instance = new self();
+		return self::$_instance;
+	}
+	
 	/**
 	 * 获取当前url或者根据设置的控制器名称，方法名称，以及其他参数生成一个url
 	 *
@@ -109,9 +123,9 @@ class http
 	 *
 	 * @return HTTP /1.1
 	 */
-	function protal()
+	function isHttps()
 	{
-		return $_SERVER['SERVER_PROTOCOL'];
+		return ($this->port() == 443 || isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) != 'off') ? true : false;
 	}
 
 	/**

@@ -14,6 +14,8 @@ use system\core\file;
 use application\model\orderlistModel;
 use application\model\refundModel;
 use application\classes\time;
+use application\message\json;
+use system\core\image;
 /**
  * 订单控制器
  * @author jin12
@@ -104,6 +106,11 @@ class orderControl extends control
 			$orderModel->table('user','left join','user.id=orderlist.uid');
 			$result = $orderModel->where('orderlist.id=?',array($id))->select();
 			$goods = $orderModel->getOrderDetail($id);
+			if($this->get->type === 'json')
+			{
+				$result['orderdetail'] = $goods;
+				return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+			}
 			if(isset($result[0]))
 			{
 				$result[0]['gravatar'] = file::realpathToUrl($result[0]['gravatar']);
@@ -526,7 +533,7 @@ class orderControl extends control
 		$order = $orderModel->where('orderno=?',array($orderno))->select();
 		
 		if(empty($order))
-			return false;
+			return "订单不存在";
 		$order = $order[0];
 		
 		if($result)
@@ -712,6 +719,27 @@ class orderControl extends control
 	{
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		
+		if(empty($this->post->comment))
+			return new json(json::PARAMETER_ERROR,'没有商品评论');
+		
+		$commentModel = $this->model('comment');
+		foreach ($this->post->comment as $pid => $content)
+		{
+			$files = array();
+			if(isset($content['pic']) && !empty($content['pic']))
+			{
+				$files = array_map(function($file){
+					if(is_file($file))
+						return $file;
+				}, $content['pic']);
+			}
+			$content['score'] = empty($content['score'])?0:$content['score'];
+			$content['score'] = $content['score']>5?5:$content['score'];
+			$content['content'] = empty($content['content'])?'':$content['content'];
+			$commentModel->create($this->session->id,$pid,$content['content'],$content['score'],$files);
+		}
+		
 		$id = filter::int($this->post->id);
 		$ship_score = filter::int($this->post->ship_score);
 		$service_score = filter::int($this->post->service_score);

@@ -1,6 +1,7 @@
 <?php
 namespace system\core;
 
+use application\message\json;
 /**
  * response管理
  *
@@ -9,7 +10,6 @@ namespace system\core;
  */
 class response
 {
-
 	/**
 	 *
 	 * @var int
@@ -63,7 +63,8 @@ class response
 	 */
 	public function setBody($body)
 	{
-		$this->_body = $body;
+		if($body !== NULL)
+			$this->_body = $body;
 	}
 
 	/**
@@ -112,6 +113,10 @@ class response
 	public function send()
 	{
 		http_response_code($this->_code);
+		if (is_object($this->_body))
+		{
+			$this->addHeader('Content-Type',$this->_body->getContentType());
+		}
 		$this->_header->sendAll();
 		echo $this->_body;
 		exit();

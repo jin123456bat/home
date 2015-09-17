@@ -200,7 +200,8 @@ class file
 		if(is_file($path))
 		{
 			$path = str_replace(realpath(ROOT), '', realpath($path));
-			$http = new http();
+			$http = http::getInstance();
+			$protocal = $http->isHttps()?'https://':'http://';
 			return str_replace('\\', '/',rtrim('http://'.$http->host().$http->path(),'/\\'). $path);
 		}
 		return '';

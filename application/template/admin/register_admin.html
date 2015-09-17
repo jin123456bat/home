@@ -56,6 +56,8 @@
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
+        	<div id="alert">
+            </div>
 			<!-- BEGIN STYLE CUSTOMIZER -->
 			{%include file='admin/public/style.html'%}
 			<!-- END STYLE CUSTOMIZER -->
@@ -92,7 +94,7 @@
                             <div class="form-group">
                             <input type="text" placeholder="标题" name="title" class="form-control">
                             </div>
-                            <script id="umeditor" name="content" type="text/plain" style="width:100%;"></script>
+                            <script id="umeditor" name="content" type="text/plain"></script>
                         </form>
                         <div class="col-md-12" id="container">
                         	<div class="news-blocks">
@@ -104,24 +106,22 @@
 									<button class="btn btn-xs green-strips" id="editBtn">编辑</button>
 								</div>
                                 <hr>
-								<p id="content"></p>
+								<p id="content">
+                                </p>
 							</div>
                         </div>
                         
                     </div>
                     <div class="col-md-6">
-                    	<form role="form" class="form-horizontal">
-                        <div class="form-group">
-                        	<button class="btn green">保存 <i class="fa fa-share"></i></button>
-                        </div>
+                    	<form role="form" class="form-horizontal" id="externData">
                     	<div class="form-group">
                             <label class="control-label col-md-2">活动时间</label>
                             <div class="col-md-10">
                                 <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd">
-                                    <input type="text" class="form-control" name="starttime">
+                                    <input type="text" class="form-control" name="starttime" value="{%$register.starttime|date_format:"Y-m-d"%}">
                                     <span class="input-group-addon">
                                     到 </span>
-                                    <input type="text" class="form-control" name="endtime">
+                                    <input type="text" class="form-control" name="endtime" value="{%$register.endtime|date_format:"Y-m-d"%}">
                                 </div>
                                 <!-- /input-group -->
                                 <span class="help-block">
@@ -129,6 +129,16 @@
                             </div>
                         </div>
                         <div class="form-group">
+                        	<label class="control-label col-md-2">优惠券模板</label>
+                            <div class="col-md-10">
+                            	<select class="form-control" name="template_coupon">
+                                	{%section name=coupon loop=$coupon%}
+                                    <option value="{%$coupon[coupon].id%}" {%if $coupon[coupon].id == $register.template_coupon%}selected="selected"{%/if%}>{%$coupon[coupon].couponno%}</option>
+                                    {%/section%}
+                                </select>
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
                         	<label class="control-label col-md-2">赠送优惠券次数</label>
                             <div class="col-md-10">
                             	<input type="text" name="num" class="form-control">
@@ -143,42 +153,60 @@
                                     到 </span>
                                     <input type="text" class="form-control" name="coupon_endtime">
                                 </div>
-                                <!-- /input-group -->
+                                
                                 <span class="help-block">
                                 选择时间段 </span>
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-md-2">优惠方式</label>
+                            <div class="radio-list col-md-9">
+                                <label class="radio-inline">
+                                <input type="radio" name="type" value="fixed" checked> 固定减免 </label>
+                                <label class="radio-inline">
+                                <input type="radio" name="type" value="discount"> 百分比折扣 </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                        	<label class="control-label col-md-2">优惠金额</label>
+                            <div class="col-md-10">
+                            	<input type="text" name="num" class="form-control">
+                                <span class="help-block">
+                                百分比折扣的时候请输入一个小于1的数字 </span>
+                            </div>
+                            
+                        </div>-->
+                        <div class="form-group">
                         	<label class="control-label col-md-2">跳转方式</label>
                           	<div class="col-md-5">
                             	<select name="redict_type" size="1" class="form-control">
-                                	<option value="none" selected>无跳转</option>
-                                    <option value="index">首页</option>
-                                    <option value="theme">主题</option>
-                                    <option value="product">商品</option>
-                                    <option value="url">外部地址</option>
+                                	<option value="none" {%if $register.redict_type==none%}selected{%/if%}>无跳转</option>
+                                    <option value="index" {%if $register.redict_type==index%}selected{%/if%}>首页</option>
+                                    <option value="theme" {%if $register.redict_type==theme%}selected{%/if%}>主题</option>
+                                    <option value="product" {%if $register.redict_type==product%}selected{%/if%}>商品</option>
+                                    <option value="url" {%if $register.redict_type==url%}selected{%/if%}>外部地址</option>
                               	</select>
                                 <span class="help-block">
                                 无跳转：停留在登陆后页面，首页：跳转到首页,主题：跳转到主题详情页,商品：跳转到商品详情页,外部地址，跳转到外部的url
                                  </span>
                             </div>
-                            <div class="col-md-5" id="redict_url">
-                           	  	<input type="text" class="form-control" name="redict">
+                            <div class="col-md-5 {%if $register.redict_type != url%}display-none{%/if%}" id="redict_url">
+                           	  	<input type="text" class="form-control" name="redict_url">
                                 <span class="help-block">
                                 以http://开头的完整地址
                                  </span>
                             </div>
-                            <div class="col-md-5" id="redict_theme">
+                            <div class="col-md-5 {%if $register.redict_type != theme%}display-none{%/if%}" id="redict_theme">
                            	  	<select class="form-control" name="redict_theme">
                                 	{%section name=theme loop=$theme%}
-                              		<option value="{%$theme[theme].id%}">{%$theme[theme].name%}</option>
+                              		<option value="{%$theme[theme].id%}" {%if $register.redict == $theme[theme].id%}selected{%/if%}>{%$theme[theme].name%}</option>
                                     {%/section%}
                               	</select>
                             </div>
-                            <div class="col-md-5" id="redict_product">
+                            <div class="col-md-5 {%if $register.redict_type != product%}display-none{%/if%}" id="redict_product">
                            	  	<select class="form-control" name="redict_product">
                                 	{%section name=product loop=$product%}
-                              		<option value="{%$product[product].id%}">{%$product[product].name%}</option>
+                              		<option value="{%$product[product].id%}" {%if $register.redict == $product[product].id%}selected{%/if%}>{%$product[product].name%}</option>
                                     {%/section%}
                               	</select>
                             </div>
@@ -186,9 +214,9 @@
                         <div class="form-group">
                         	<label class="control-label col-md-2">悬浮窗停留时间</label>
                             <div class="col-md-10">
-                            	<input type="num" class="form-control" name="stoptime">
+                            	<input type="num" class="form-control" name="stoptime" value="{%$register.stoptime|default:'0'%}">
                                 <span class="help-block">
-                                单位秒 </span>
+                                单位秒,0不限制 </span>
                             </div>
                         </div>
                         </form>
@@ -237,6 +265,16 @@ jQuery(document).ready(function() {
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
 	
+	function htmlencode(s){  
+		var div = document.createElement('div');  
+		div.appendChild(document.createTextNode(s));  
+		return div.innerHTML;  
+	}  
+	function htmldecode(s){  
+		var div = document.createElement('div');  
+		div.innerHTML = s;  
+		return div.innerText || div.textContent;  
+	}  
 	
 	$('.date-picker').datepicker({
 		rtl: Metronic.isRTL(),
@@ -246,9 +284,10 @@ jQuery(document).ready(function() {
 	
 	window.um = UM.getEditor('umeditor');
 	$(".edui-container").css('z-index','').css('width','100%');
+	$('#umeditor').css('width','100%');
 	
 	$.get('{%url c=register a=information%}',{id:1},function(data){
-		$('#content').html(data.body.content);
+		$('#content').html(htmldecode(data.body.content));
 		$('#title').html(data.body.name);
 	});
 	
@@ -266,9 +305,15 @@ jQuery(document).ready(function() {
 	
 	$('#container_form').on('submit',function(){
 		var title = $(this).find('input[name=title]').val();
-		var content = window.um.getAllHtml();
-		$.post('{%url c=register a=save%}',{title:title,content:content,id:1},function(){
-			
+		var content = window.um.getContent();
+		var ajax1 = $.post('{%url c=register a=save%}',{name:'name',value:title,id:1},function(response){
+		});
+		var ajax2 = $.post('{%url c=register a=save%}',{name:'content',value:content,id:1},function(response){
+		});
+		$.when(ajax1,ajax2).done(function(response){
+			$('#content').html(content);
+			$('#container').removeClass('display-none');
+			$('#container_form').addClass('display-none');		
 		});
 		return false;
 	});
@@ -279,7 +324,7 @@ jQuery(document).ready(function() {
 		$('#redict_theme').addClass('display-none');
 		$('#redict_product').addClass('display-none');
 	}
-	redict_hide();
+	//redict_hide();
 	$('select[name=redict_type]').on('change',function(){
 		var value = $(this).val();
 		switch(value)
@@ -291,6 +336,69 @@ jQuery(document).ready(function() {
 			case 'theme':redict_hide();$('#redict_theme').removeClass('display-none');break;
 		}
 	});
+	
+	
+	function externData(form)
+	{
+		var form = form;
+		
+		var save = function(event){
+			var name = $(this).attr('name');
+			var value = $(this).val();
+			$.post('{%url c=register a=save%}',{id:1,name:name,value:value},function(response){
+				if(response.code != 1)
+				{
+					Metronic.alert({
+						type: 'danger',
+						icon: 'warning',
+						closeInSeconds: 5,
+						message: response,
+						container: $('#alert'),
+						place: 'prepend'
+					});
+				}
+			});
+			if(name == 'redict_type')
+			{
+				switch(value)
+				{
+					case 'url':
+						var name = 'redict_url';
+						var value = $('input[name=redict_url]').val();
+						break;
+					case 'theme':
+						var name = 'redict_theme';
+						var value = $('select[name=redict_theme]').val();
+						break;
+					case 'product':
+						var name = 'redict_product';
+						var value = $('select[name=redict_product]').val();
+						break;
+					default:
+						return false;
+						break;
+				}
+				$.post('{%url c=register a=save%}',{name:name,value:value,id:1},function(response){
+					if(response.code != 1)
+					{
+						Metronic.alert({
+							type: 'danger',
+							icon: 'warning',
+							closeInSeconds: 5,
+							message: response,
+							container: $('#alert'),
+							place: 'prepend'
+						});
+					}
+				});
+			}
+		}
+		
+		$('input',form).on('change',save);
+		$('select',form).on('change',save);
+	}
+	
+	externData($('#externData'));
 });
 </script>
 <!-- END JAVASCRIPTS -->

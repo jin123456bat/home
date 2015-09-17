@@ -12,6 +12,7 @@ use system\core\image;
 use system\core\filesystem;
 use application\classes\sms;
 use system\core\file;
+use application\message\json;
 
 /**
  * 用户控制器
@@ -135,6 +136,24 @@ class userControl extends control
 		unset($this->session->id);
 		unset($this->session->telephone);
 		unset($this->session->username);
+	}
+	
+	/**
+	 * 判断用户是否登陆 
+	 * @return string
+	 */
+	function islogin()
+	{
+		if(login::user())
+		{
+			$userModel = $this->model('user');
+			$user = $userModel->get($this->session->id);
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$user));;
+		}
+		else
+		{
+			return json_encode(array('code'=>0,'result'=>'failed'));
+		}
 	}
 	
 	/**
@@ -356,6 +375,7 @@ class userControl extends control
 		}
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
+		$client = $this->post->client;
 		if ($telephone != NULL && $password != NULL) {
 			$userModel = $this->model('user');
 			$uinfo = $userModel->login($telephone, $password);
@@ -367,16 +387,14 @@ class userControl extends control
 					$this->session->username = $uinfo['username'];
 					//更新用户登陆时间
 					$userModel->updateLoginTime($uinfo['id']);
-					return json_encode(array('code'=>1,'result'=>'ok'));
+					$this->model('user_login_log')->create($this->session->id,$client);
+					return new json(json::OK);
 				}
-				return json_encode(array('code'=>2,'result'=>'被管理员封印ing'));
+				return new json(json::NO_POWER,'魔封波。。。。');
 			}
-			return json_encode(array('code'=>3,'result'=>'账号或密码错误'));
+			return new json(json::PARAMETER_ERROR,'手机号或密码错误');
 		}
-		return json_encode(array(
-			'code' => 0,
-			'result' => '请求失败'
-		));
+		return new json(json::PARAMETER_ERROR,'手机号或密码不得为空');
 	}
 	
 	/**

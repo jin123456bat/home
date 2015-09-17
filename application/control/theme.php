@@ -48,7 +48,13 @@ class themeControl extends control
 		$length = filter::int($this->get->length);
 		$length = empty($length)?3:$length;
 		$themeModel = $this->model('theme');
-		$result = $themeModel->fetchAll($length);
+		
+		$filter=array(
+			'length' => $length,
+			'orderby' => 'orderby',
+		);
+		
+		$result = $themeModel->fetchAll($filter);
 		foreach ($result as &$value)
 		{
 			$value['smallpic'] = file::realpathToUrl($value['smallpic']);
@@ -77,6 +83,7 @@ class themeControl extends control
 			}
 			$this->view->assign('theme',$theme);
 			$this->response->setBody($this->view->display());
+			//return $this->view->display();
 		}
 		else
 		{
@@ -150,6 +157,7 @@ class themeControl extends control
 			$id = $this->post->id;
 			$name = $this->post->name;
 			$description = $this->post->description;
+			$orderby = $this->post->orderby;
 			$bigpic = $this->file->bigpic;
 			$middlepic = $this->file->middlepic;
 			$smallpic = $this->file->smallpic;
@@ -165,6 +173,11 @@ class themeControl extends control
 			{
 				$themeModel->where('id=?',array($id))->update('description',$description);
 				$body = $description;
+			}
+			if(!empty($orderby))
+			{
+				$themeModel->where('id=?',array($id))->update('orderby',$orderby);
+				$body = $orderby;
 			}
 			$image = new image();
 			if(!empty($bigpic))

@@ -58,8 +58,8 @@
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
-			<div class="modal fade bs-example-modal-lg" id="sale-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
+			<div class="modal fade container in" id="sale-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog" style="width:100%;">
 					<div class="modal-content">
 						<form class="form-horizontal" role="form" id="sale-config-form">
 							<input type="hidden" name="id">
@@ -80,6 +80,8 @@
 										<input type="radio" name="activity" value="fullcut">满减</label>
 										<label class="radio-inline">
 										<input type="radio" name="activity" value="theme">主题</label>
+                                        <label class="radio-inline">
+										<input type="radio" name="activity" value="hotorder">热销</label>
 									</div>
 								</div>
 								<div class="activity_form seckill sale">
@@ -155,7 +157,7 @@
 										<div class="col-md-9">
 											<select class="form-control" name="fullcut">
 												{%section name=fullcut loop=$fullcut%}
-												<option value="{%$fullcut[fullcut].id%}">{%$fullcut[fullcut].name%}</option>
+												<option value="{%$fullcut[fullcut].id%}">{%$fullcut[fullcut].sname%}</option>
 												{%/section%}
 											</select>
 										</div>
@@ -441,7 +443,7 @@ jQuery(document).ready(function() {
 		if(pid != undefined)
 		{
 			var modal = $(this);
-			modal.find('input[name=activity]:first').trigger('click');
+			//modal.find('input[name=activity]:first').trigger('click');
 			modal.find('input[name=pname]').attr('placeholder',pname);
 			modal.find('input[name=id]').val(pid);
 			modal.find('input[name=price]').val(price).parents('.form-group').removeClass('has-error');
@@ -513,6 +515,11 @@ jQuery(document).ready(function() {
 					var pid = modal.find('input[name=id]').val();
 					var tid = modal.find('select[name=theme]').val();//选择的主题
 					parameter = {tid:tid,pid:pid};
+					break;
+			case 'hotorder':
+					url = '{%url c=hotorder a=create%}';
+					var pid = modal.find('input[name=id]').val();
+					parameter = {pid:pid};
 					break;
 			default:Metronic.alert({
 					type: 'danger',

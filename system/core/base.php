@@ -27,7 +27,7 @@ class base
 	/**
 	 * file类
 	 *
-	 * @var $_FILES
+	 * @var file
 	 */
 	protected $file;
 
@@ -53,11 +53,10 @@ class base
 
 	function __construct()
 	{
-		
-		$this->session = new session();
-		$this->post = new post();
-		$this->get = new get();
-		$this->http = new http();
+		$this->session = session::getInstance();
+		$this->post = post::getInstance();
+		$this->get = get::getInstance();
+		$this->http = http::getInstance();
 		$this->file = new file();
 		$this->cookie= new cookie(config('cookie'));
 	}

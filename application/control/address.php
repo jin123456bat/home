@@ -5,6 +5,7 @@ use system\core\filter;
 use application\classes\login;
 use application\model\roleModel;
 use system\core\view;
+use application\message\json;
 /**
  * 收货地址控制器
  * @author jin12
@@ -18,11 +19,10 @@ class addressControl extends control
 	 */
 	function gethost()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
-			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+			return new json(json::NOT_LOGIN);
 		$result = $this->model('address')->getHost($this->session->id);
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+		return new json(json::OK,NULL,$result);
 	}
 	
 	/**
@@ -30,14 +30,13 @@ class addressControl extends control
 	 */
 	function fetchall()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		if(login::user())
 		{
 			$addressModel = $this->model('address');
 			$result = $addressModel->myAddress($this->session->id);
-			return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+			return new json(json::OK,NULL,$result);
 		}
-		return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		return new json(json::NOT_LOGIN);
 	}
 	
 	/**
@@ -57,9 +56,9 @@ class addressControl extends control
 		{
 			$addressModel = $this->model('address');
 			$result = $addressModel->save($id,$this->session->id,$province,$city,$address,$name,$telephone,$zcode,$host);
-			return json_encode(array('code'=>1,'result'=>'ok'));
+			return new json(json::OK);
 		}
-		return json_encode(array('code'=>0,'result'=>'尚未登陆'));
+		return new json(json::NOT_LOGIN);
 	}
 	
 	/**
@@ -76,18 +75,18 @@ class addressControl extends control
 		$zcode = empty(filter::int($this->post->zcode))?'':filter::int($this->post->zcode);
 		$host = empty(filter::int($this->post->host))?0:filter::int($this->post->host);
 		if(empty($telephone))
-			return json_encode(array('code'=>2,'result'=>'请填写正确的手机号码'));
+			return new json(json::PARAMETER_ERROR,'手机号码错误');
 		if(empty($address) || empty($city) || empty($province))
-			return json_encode(array('code'=>3,'result'=>'收货地址不完整'));
+			return new json(json::PARAMETER_ERROR,'收货地址不完整');
 		if(empty($name))
-			return json_encode(array('code'=>4,'result'=>'收货人姓名不能为空'));
+			return new json(json::PARAMETER_ERROR,'收货人姓名不能为空');
 		if(login::user())
 		{
 			$addressModel = $this->model('address');
 			$result = $addressModel->create($this->session->id,$province,$city,$address,$name,$telephone,$zcode,$host);
-			return json_encode(array('code'=>1,'result'=>'ok'));
+			return new json(json::OK);
 		}
-		return json_encode(array('code'=>0,'result'=>'尚未登陆'));
+		return new json(json::NOT_LOGIN);
 	}
 	
 	/**
@@ -96,11 +95,11 @@ class addressControl extends control
 	function information()
 	{
 		if(!login::user())
-			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+			return new json(json::NOT_LOGIN);
 		$id = filter::int($this->get->id);
 		$addressModel = $this->model('address');
 		$address = $addressModel->get($id);
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$address));
+		return new json(json::OK,NULL,$address);
 	}
 	
 	/**
@@ -109,20 +108,22 @@ class addressControl extends control
 	 */
 	function remove()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$id = filter::int($this->post->id);
 		if(!empty($id))
 		{
 			$addressModel = $this->model('address');
 			if($addressModel->remove($id))
 			{
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>2,'result'=>'删除失败'));
+			return new json(4,'删除失败');
 		}
-		return json_encode(array('code'=>0,'result'=>'参数错误'));
+		return new json(json::PARAMETER_ERROR);
 	}
 	
+	/**
+	 * 收货地址的管理界面
+	 */
 	function admin()
 	{
 		$roleModel = $this->model('role');

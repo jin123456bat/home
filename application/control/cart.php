@@ -2,14 +2,13 @@
 namespace application\control;
 
 use system\core\control;
-use system\core\file;
 use system\core\filter;
 use application\classes\login;
 use application\classes\collection;
-use system\core\random;
 use application\classes\prototype;
 use application\classes\product;
 use application\classes\order;
+use application\message\json;
 class cartControl extends control
 {
 	/**
@@ -38,9 +37,8 @@ class cartControl extends control
 	 */
 	function add()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
-			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
+			return  new json(json::NOT_LOGIN);
 		$pid = filter::int($this->post->pid);
 		$num = filter::int($this->post->num);
 		$content = $this->post->content;
@@ -51,7 +49,7 @@ class cartControl extends control
 		{
 			$productModel = $this->model('product');
 			if(!$productModel->check($pid))
-				return json_encode(array('code'=>4,'result'=>'该商品不可被购买'));
+				return new json(4,'该商品不可被购买');
 			$cartModel = $this->model('cart');
 			$prototypeModel = $this->model('prototype');
 			$radioPrototype = $prototypeModel->getByPid($pid,'radio');
@@ -64,38 +62,38 @@ class cartControl extends control
 					if($cartModel->create($uid,$pid,$content,$num))
 					{
 						$cal = json_decode($this->calculation($uid));
-						return json_encode(array('code'=>1,'result'=>'ok','body'=>$cal->body));
+						return new json(json::OK,NULL,$cal->body);
 					}
 					else
 					{
-						return json_encode(array('code'=>3,'result'=>'添加到购物车失败'));
+						return new json(5,'添加到购物车失败');
 					}
 				}
-				return json_encode(array('code'=>2,'result'=>'没有库存'));
+				return new json(6,'么有库存');
 			}
 			else
 			{
 				$collectionModel = $this->model('collection');
 				if(empty($collectionModel->find($pid,$content)))
 				{
-					return json_encode(array('code'=>5,'result'=>'可选属性值错误'));
+					return new json(7,'可选属性值错误');
 				}
 				if($collectionModel->increaseStock($pid,$content,-$num))
 				{
 					if($cartModel->create($uid,$pid,$content,$num))
 					{
 						$cal = json_decode($this->calculation($uid));
-						return json_encode(array('code'=>1,'result'=>'ok','body'=>$cal->body));
+						return new json(json::OK,NULL,$cal->body);
 					}
 					else
 					{
-						return json_encode(array('code'=>3,'result'=>'添加到购物车失败'));
+						return new json(5,'添加到购物车失败');
 					}
 				}
-				return json_encode(array('code'=>2,'result'=>'没有库存'));
+				return new json(6,'没有库存');
 			}
 		}
-		return json_encode(array('code'=>0,'result'=>'请指定商品'));
+		return new json(json::PARAMETER_ERROR,'参数错误');
 	}
 	
 	/**

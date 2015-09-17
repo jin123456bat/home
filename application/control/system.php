@@ -8,6 +8,7 @@ use system\core\image;
 use system\core\file;
 use system\core\filesystem;
 use system\core\filter;
+use application\message\json;
 /**
  * 结算管理控制器
  * @author jin12
@@ -93,6 +94,27 @@ class systemControl extends control
 			$this->response->setCode(302);
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
+	}
+	
+	/**
+	 * 获取app配置信息
+	 */
+	function app()
+	{
+		$type = $this->get->type;
+		if(empty($type))
+			return new json(json::PARAMETER_ERROR);
+		$return = array();
+		$startpage = array();
+		$systemModel = $this->model('system');
+		$app = $systemModel->fetch('app');
+		foreach ($app as $value)
+		{
+			$startpage[] = file::realpathToUrl($value['value']);
+		}
+		$return['startpage'] = $startpage;
+		$return['splitrate'] = $systemModel->get('splitrate','alipay');
+		return new json(json::OK,NULL,$return);
 	}
 	
 	/**

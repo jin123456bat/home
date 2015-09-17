@@ -7,6 +7,7 @@ use application\model\roleModel;
 use application\classes\login;
 use system\core\image;
 use system\core\file;
+use application\message\json;
 /**
  * 滚动图控制器
  * @author jin12
@@ -25,7 +26,7 @@ class carouselControl extends control
 		{
 			$carousel['pic'] = file::realpathToUrl($carousel['pic']);
 		}
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+		return new json(json::OK,NULL,$result);
 	}
 	
 	/**
@@ -109,11 +110,11 @@ class carouselControl extends control
 				default:$src = '';break;
 			}
 			$carouselModel->save($id,$title,$stop,$type,$src);
-			return json_encode(array('code'=>1,'result'=>'ok'));
+			return new json(json::OK);
 		}
 		else
 		{
-			return json_encode(array('code'=>2,'result'=>'权限不足'));
+			return new json(json::NO_POWER);
 		}
 	}
 	
@@ -122,7 +123,6 @@ class carouselControl extends control
 	 */
 	function create()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'carousel',roleModel::POWER_INSERT))
 		{
@@ -152,11 +152,11 @@ class carouselControl extends control
 			}
 			$carouselModel = $this->model('carousel');
 			$id = $carouselModel->create($title,$pic,$stop,$type,$src);
-			return json_encode(array('code'=>1,'result'=>'ok','body'=>$id));
+			return new json(json::OK,NULL,$id);
 		}
 		else
 		{
-			return json_encode(array('code'=>2,'result'=>'没有权限'));
+			return new json(json::NO_POWER);
 		}
 	}
 	
@@ -172,13 +172,13 @@ class carouselControl extends control
 			$carouselModel = $this->model('carousel');
 			if($carouselModel->remove($id))
 			{
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>0,'result'=>'删除失败'));
+			return new json(json::PARAMETER_ERROR,'删除失败');
 		}
 		else
 		{
-			return json_encode(array('code'=>2,'result'=>'没有权限'));
+			return new json(json::NO_POWER);
 		}
 	}
 }
