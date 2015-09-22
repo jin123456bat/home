@@ -74,11 +74,14 @@ class commentModel extends model
 		$array = array(NULL,$uid,$pid,$time,$content,$score);
 		$this->insert($array);
 		$cid = $this->lastInsertId();
-		if(!empty($files) && is_array($files))
+		if($cid)
 		{
-			foreach($files as $file)
+			if(!empty($files) && is_array($files))
 			{
-				$this->query('insert into comment_pic value (?,?,?)',array(NULL,$cid,$file));
+				foreach($files as $file)
+				{
+					$this->query('insert into comment_pic value (?,?,?)',array(NULL,$cid,$file));
+				}
 			}
 		}
 		return true;

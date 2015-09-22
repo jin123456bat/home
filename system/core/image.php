@@ -63,14 +63,13 @@ class image
 	/**
 	 * 图片缩放,放大,对gif动画会失去动画效果
 	 * @param string $path  文件路径
-	 * @param px $maxwidth 缩放后的宽度
+	 * @param px $maxwidth 缩放后的宽度  允许百分比缩放
 	 * @param px $maxheight 缩放后的高度
 	 * @return string 缩放后的文件的完整路径
 	 */
 	public function resizeImage($path,$width,$height)
 	{
 		$fileinfo = pathinfo(str_replace('\\', '/', $path));//原文件信息
-		$name = $fileinfo['dirname'].'/'.$fileinfo['filename'].'_'.$width.'x'.$height.'.'.$fileinfo['extension'];//缩放后文件完整路径
 		switch ($fileinfo['extension'])
 		{
 			case 'jpeg:';
@@ -81,6 +80,18 @@ class image
 		}
 		$pic_width = imagesx($im);
 		$pic_height = imagesy($im);
+		
+		if($width < 1)
+		{
+			$width = $pic_width * $width;
+		}
+		if($height<1)
+		{
+			$height = $pic_height * $height;
+		}
+		
+		$name = $fileinfo['dirname'].'/'.$fileinfo['filename'].'_'.$width.'x'.$height.'.'.$fileinfo['extension'];//缩放后文件完整路径
+		
 		if($pic_width != $width || $pic_height != $height)
 		{
 			if(function_exists("imagecopyresampled"))

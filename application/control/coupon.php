@@ -186,6 +186,7 @@ class couponControl extends control
 		$coupon_id = $this->model('register')->get($id,'template_coupon');
 		if(!empty($coupon_id))
 		{
+			
 			$couponModel = $this->model('coupon');
 			$coupon = $couponModel->get($coupon_id);
 			if(empty($coupon))

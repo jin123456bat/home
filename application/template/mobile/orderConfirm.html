@@ -8,67 +8,44 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
   <script type="text/javascript" src="js/jquery.fly.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
   <script type="text/javascript" src="js/jquery.flycart.js"></script>
+  <script type="text/javascript" src="js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
     <header class="clearfix">
-      <a class="btn left_btn"><i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>确认订单</h1>
     </header>
   </div>
   <div id="content" style="padding-top:50px;  padding-bottom: 60px;">
     <div class="order_details">
       <div class="recieve">
-        <div class="tit">收货人信息</div>
-        <div class="line_group clearfix">
-          <label>地 址</label>
-          <div class="val">浙江省温州市五马街</div>
-        </div>
-        <div class="line_group clearfix">
-          <label>收货人</label>
-          <div class="val">吴磊</div>
-        </div>
-        <div class="line_group clearfix">
-          <label>电 话</label>
-          <div class="val">18767185236</div>
-          <a class="chan">更换地址</a>
-        </div>
+        
       </div>  
       <div class="pro_De">
-        <div class="pro_info clearfix">
-          <div class="pic">
-            <img src="images/pro1.jpg">
-          </div>
-          <div class="name">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷爽肤雾补水保湿爽肤水抗敏感0ml 雅漾喷雾...</div>
-          <div class="oth">
-            <div class="othl clearfix">
-              <div class="price">￥10</div>
-              <div class="num">x2</div>
-            </div>
-            <div class="othr clearfix">
-              <div class="guige">规格:3条</div>
-              <div class="weight">重量:300.0</div>
-            </div>
-          </div>
+        <div class="proscon">
         </div>
         <div class="labels clearfix">
           <span>免税包邮</span>
-          <span>免税包邮</span>
-          <span>免税包邮</span>
+          <span>正品保障</span>
+          <span>海外直销</span>
         </div>
-        <a class="yhq">
-          可用优惠券2张
+        <a class="yhq" href="validvoucher.html" vouId="">
+          <span id="vouname">可用优惠券0张</span>
           <i class="icon r_icon arr_r"></i>
         </a>
       </div>
       <div class="pay">
-        <div class="pay_d clearfix"><label>税费</label><div class="val">￥10+10</div></div>
-        <div class="pay_d clearfix"><label>优惠</label><div class="val redtext">-￥20.0</div></div>
-        <div class="pay_d clearfix"><label>实际支付</label><div class="val redtext">￥20</div></div>
+        <div class="pay_d clearfix"><label>税费</label><div class="val">￥0</div></div>
+        <div class="pay_d clearfix"><label>优惠</label><div class="val redtext" id="discountmoney">-￥0</div></div>
+        <div class="pay_d clearfix"><label>实际支付</label><div class="val redtext" id="realpay">￥0</div></div>
         <div class="method clearfix">
           <div class="paymethod"><i class="icon wechat"></i>微信支付</div>
           <div class="paymethod"><i class="icon rest"></i>账户余额</div>
@@ -76,16 +53,214 @@
       </div>
     </div>
     <div class="statusbar clearfix bgpink">
-      <a class="paybtn">下单并支付</a>
+      <a class="paybtn" onclick="orderpay(0)">下单并支付</a>
     </div>
   </div>
   <script type="text/javascript">
     $(function () {
-      $(".car_list .item .onup").flyCart({
-        woh:$('.car_list .item .onup').width()+140,
-      });
+      loader();
     });
-
+    function loader(){
+      address();
+      pros();
+    }
+    function getvoucher(){
+      $.ajax( {    
+        url:BASEURL+'?c=coupon&a=getavaliable',// 跳转到 action    
+        data:{    
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          console.log(data);
+          if(data.code == 1){
+            var re = data.body;
+            if(!re||re.length==0){
+              $(".yhq").attr('href','javascript:;');
+              orderpay(1);
+              return;
+            }
+            $('#vouname').text(re[0].couponno);
+            $('.yhq').attr('vouId',re[0].id);
+            orderpay(1);//计算价格
+          }else{
+            // orderpay(1);
+            // alert(data.result);
+          } 
+        } 
+      });
+    }
+    function voucher(){
+      var vid = storage.getItem('usevoucherId');
+      if(vid){
+        var name = storage.getItem('usevoucherName');
+        $('#vouname').text(name);
+        $('.yhq').attr('vouId',vid);
+        storage.setItem('usevoucherId','');
+        storage.setItem('usevoucherName','');
+        orderpay(1);
+      }else{
+        getvoucher();
+      }
+    }
+    var storage = window.localStorage;
+    // storage.clear();
+    // console.log(storage.getItem('addressId'));
+    function address(){
+      var url,data;
+      if(storage.getItem('addressId')){
+        url = BASEURL+'?c=address&a=information';
+        data = {id:storage.getItem('addressId')};
+      }else{
+        url = BASEURL+'?c=address&a=gethost';
+        data = {};
+      }
+      $.ajax( {    
+        url:url,// 跳转到 action    
+        data:data,    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          // console.log(data);
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            if(!re){
+              html = '<div class="tit">收货人信息</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>地 址</label>'
+                     +       '<div class="val">请添加</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>收货人</label>'
+                     +       '<div class="val">请添加</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>电 话</label>'
+                     +       '<div class="val">请添加</div>'
+                     +      ' <a class="chan" href="address.html?back=order">更换地址</a>'
+                     +     '</div>';
+              $(".recieve").html(html);
+            }else{
+              html = '<div class="tit">收货人信息</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>地 址</label>'
+                     +       '<div class="val">'+re.province+re.city+re.address+'</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>收货人</label>'
+                     +       '<div class="val">'+re.name+'</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>电 话</label>'
+                     +       '<div class="val">'+re.telephone+'</div>'
+                     +      ' <a class="chan" href="address.html?back=order">更换地址</a>'
+                     +     '</div>';
+              $(".recieve").html(html).attr('addid',re.id);
+            }
+            voucher();
+            // orderpay(1);
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function pros(){
+      $.ajax( {    
+        url:BASEURL+'?c=cart&a=mycart',// 跳转到 action    
+        data:{    
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            // console.log(re);
+            var html = "";
+            for(var i=0;i<re.length;i++){
+              var rei = re[i];
+              var thumb = rei.img[0].thumbnail_path?rei.img[0].thumbnail_path:defaultProPic;
+              var protodesc = "";
+              var proto = rei.prototype;
+              if(proto.length>0){
+                for(var j = 0;j<proto.length;j++){
+                  if(proto[j].type=='radio'){
+                    var ppname = proto[j].name;
+                    var index = rei.content[proto[j].id];
+                    var pname = proto[j].value[index];
+                    protodesc+=ppname+":"+pname+' ';
+                  }
+                }
+              }
+              
+              var pricenow = rei.price;
+              if(rei.collection){
+                if(rei.collection.price){
+                  pricenow = rei.collection.price;
+                }
+              }
+              if(rei.activity_description){
+                if(rei.activity_description.price){
+                  pricenow = rei.activity_description.price;
+                }
+              }
+              html+='<div class="pro_info clearfix">'
+                  +  '<div class="pic">'
+                  +    '<img src="'+thumb+'">'
+                  +  '</div>'
+                  +  '<div class="name">'+rei.name+'</div>'
+                  +  '<div class="oth">'
+                   +   '<div class="othl clearfix">'
+                   +     '<div class="price">￥'+pricenow+'</div>'
+                   +     '<div class="num">x'+rei.num+'</div>'
+                   +  ' </div>'
+                   +   '<div class="othr clearfix">'
+                   +     '<div class="guige">规格:'+protodesc+'</div>'
+                   // +     '<div class="weight">重量:300.0</div>'
+                   +   '</div></div></div>';
+            }
+            $('.proscon').html(html);
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function orderpay(pre){
+      // console.log($('.recieve').attr('addid'));
+      console.log($('.yhq').attr('vouid')?$("#vouname").text():"");
+      $.ajax( {    
+        url:BASEURL+'?c=cart&a=order',// 跳转到 action    
+        data:{
+          paytype:'alipay',
+          addressid:$('.recieve').attr('addid'),
+          shipid:'1',
+          coupon:$('.yhq').attr('vouid')?$("#vouname").text():"",
+          client:config_base.pingtai,
+          preorder:pre,
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            console.log(data);
+            if(pre==1){
+              $('#discountmoney').text('-￥'+data.body.discount);
+              $("#realpay").text('￥'+data.body.ordertotalamount);
+            }else{
+              // window.location.href=BASEURL+'?c=order&a=payment&id='+data.body.id+'&trade_type='+config_base.pingtai;
+            }
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
   </script>
 </body>
 </html>

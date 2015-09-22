@@ -8,7 +8,7 @@ use system\core\filesystem;
 use application\model\roleModel;
 use system\core\file;
 use system\core\image;
-use application\message\json;
+use application\classes\user;
 class commentControl extends control
 {
 
@@ -64,12 +64,13 @@ class commentControl extends control
 		{
 			$commentModel = $this->model('comment');
 			$result = $commentModel->getByPid($pid,$start,$length);
+			$userHelper = new user();
 			foreach($result as &$comment)
 			{
 				$uinfo = $this->model('user')->get($comment['uid']);
-				$comment['telephone'] = $uinfo['telephone'];
+				$comment['telephone'] = $userHelper->hideName($uinfo['telephone']);
 				$comment['gravatar'] = file::realpathToUrl($uinfo['gravatar']);
-				$comment['username'] = $uinfo['username'];
+				$comment['username'] = $userHelper->hideName($uinfo['username']);
 				unset($comment['uid']);
 				$comment['img'] = $this->model('comment_pic')->getByCid($comment['id'],'url');
 			}

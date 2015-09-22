@@ -8,24 +8,27 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
   <script type="text/javascript" src="js/jquery.fly.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
 </head>
 <body>
   <div id="header">
     <header class="clearfix">
       <form class="searchbar clearfix">
         <i class="icon search"></i>
-        <input type="text" placeholder="输入关键字搜索">
+        <input type="text" placeholder="输入关键字搜索" id="stext">
       </form>
-      <a class="cancel">取消</a>
+      <a class="nonocancel" onclick="searcht(1)">搜索</a>
     </header>
   </div>
   <div id="content" style="padding-top:50px">
     <div class="pro_cont mt0 ">
       <div class="inner clearfix">
-        <hr>
+        <!-- <hr>
         <a class="pro">
           <div class="pic">
             <img src="images/pro1.jpg">
@@ -86,8 +89,9 @@
               <div class="discount">4.7</div>
             </div> 
           </div> 
-        </a>
+        </a> -->
       </div>
+      <div class="nonepro hide">没有了</div>
     </div>
   </div>
   <div id="footer">
@@ -95,9 +99,116 @@
   </div>
   <script type="text/javascript">
     $(function () {
-      
+      $(window).scroll(function(){  
+        var $this =$(this); 
+        var viewH =$(window).height();//可见高度  
+        var contentH = document.body.scrollHeight,//内容高度  
+        scrollTop =$(this).scrollTop();//滚动高度  
+        if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容  
+          console.log(recNum);
+          console.log(Math.floor(recNum/PERPAGE)+1);
+          console.log(curPage);
+          if(Math.floor(recNum/PERPAGE)+1>curPage){
+            curPage++;
+            searcht(curPage);
+          }
+        }  
+      });  
     });
-
+    function imgerror(obj){
+      $(obj).attr('src',defaultProPic);
+    }
+    var curPage;
+    var PERPAGE = 10;
+    var recNum = 0;
+    function searcht(p){
+      if(p==1){
+        curPage = 1;
+        $('.nonepro').hide();
+      }
+      $.ajax( {    
+        url:BASEURL+'?c=product&a=ajaxdatatable',// 跳转到 action    
+        data:{    
+          'draw':1,
+          'columns[0][data]':'id',
+          'columns[1][data]':'productname',
+          'columns[2][data]':'activity',
+          'columns[3][data]':'origin',
+          'columns[4][data]':'price',
+          'columns[5][data]':'oldprice',
+          'order[0][column]':1,
+          'order[0][dir]':'asc',
+          'start':PERPAGE*(p-1),
+          'length':PERPAGE,
+          'product_name':$('#stext').val(),
+          'action':'filter',
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          console.log(data);
+          if(1){
+            var re = data.data;
+            recNum = data.recordsFiltered;
+            var html = "";
+            if(re.length>0){
+              for(var i = 0;i<re.length;i++){
+                var rei = re[i];
+                var price = parseFloat(rei.price).toFixed(1);
+                var oldprice = (parseFloat(rei.oldprice).toFixed(1)!=0)?parseFloat(rei.oldprice).toFixed(1):price;
+                var discount = (price*10/oldprice).toFixed(1);
+                var hide=(discount==10)?'hide':'';
+                var activi = {
+                  'sale':'temai',
+                  'seckill':'miaosha',
+                  'fullcut':'manjian',
+                };
+                // price = price.toFixed(1);
+                if(i%2==0){
+                  html+='<hr>';
+                }
+                // console.log(rei.img[0]);
+                imgobj = rei.img[0];
+                if(imgobj){
+                  var src = imgobj.small_path;
+                }else{
+                  var src = defaultProPic;
+                }
+                html+='<a class="pro" proId="'+rei.id+'">'
+                     +   '<div class="pic">'
+                     +     '<img src="'+src+'" onerror="imgerror(this)">'
+                     +     '<div class="label '+activi[rei.activity]+'"></div>'
+                     +     '<div class="country">'+rei.origin+'</div>'
+                     +   '</div>'
+                     +   '<div class="downth">'
+                     +     '<div class="desc">'+rei.productname+'</div>'
+                     +     '<div class="prices clearfix">'
+                     +       '<div class="price">￥'+price+'</div>'
+                      +      '<div class="oldp '+hide+'"><span class="cross">￥'+oldprice+'</span></div>'
+                      +      '<div class="discount '+hide+'">'+discount+'</div>'
+                      +    '</div></div></a>';
+              }
+            }
+            if(re.length<PERPAGE){
+              $('.nonepro').show();
+              // console.log('end');
+            }
+            if(p==1){
+              $('.pro_cont .inner').html(html);
+            }else{
+              $('.pro_cont .inner').append(html);
+            }
+            
+          }else{
+            // alert(data.result);
+          } 
+        } ,
+        error:function(event){
+          // console.log(event);
+        }
+      });
+    } 
   </script>
 </body>
 </html>

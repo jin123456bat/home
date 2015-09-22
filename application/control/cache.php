@@ -17,4 +17,22 @@ class cacheControl extends control
 		$this->thread->call('productimg');
 		echo "OK";
 	}
+	
+	/**
+	 * 清空系统日志
+	 */
+	function log()
+	{
+		$this->thread->call('log');
+		echo "ok";
+	}
+	
+	/**
+	 * 清空用户登陆日志
+	 */
+	function user_login()
+	{
+		$this->thread->call('user_login');
+		echo "ok";
+	}
 }

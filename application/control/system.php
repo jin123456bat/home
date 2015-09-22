@@ -114,7 +114,35 @@ class systemControl extends control
 		}
 		$return['startpage'] = $startpage;
 		$return['splitrate'] = $systemModel->get('splitrate','alipay');
+		$return['servicetelephone'] = '400-400-400';
 		return new json(json::OK,NULL,$return);
+	}
+	
+	/**
+	 * 物流配置页面
+	 */
+	function shippment()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
+		{
+			$this->view = new view(config('view'), 'admin/system_shippment.html');
+			
+			$shippment = $this->model('system')->fetch(array('shippment'));
+			$system = array();
+			foreach ($shippment as $value)
+			{
+				$system['system_'.$value['type'].'_'.$value['name']] = $value['value'];
+			}
+			$this->view->assign('system',$system);
+			
+			return $this->view->display();
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
 	}
 	
 	/**

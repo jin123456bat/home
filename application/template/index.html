@@ -7,24 +7,91 @@
 
 <script src="{%$VIEW_ROOT%}/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
 <body>
-<form action="{%url c=order a=score%}" method="post">
-订单id：<input type="text" name="id" value="15"><br>
-物流评分：<input type="text" name="ship_score" value="5"><br>
-服务评分：<input type="text" name="service_score" value="5"><br>
-商品评分：<input type="text" name="goods_score" value="5"><br>
-订单评价内容：<input type="text" name="content" value="评价内容"><br>
-
-content:<input type="text" name="comment[78][content]" value="id为78的商品的评价"><br>
-score:<input type="text"  name="comment[78][score]" value="4"><br>
-file:<input type="text" name="comment[78][pic][]"><br>
-
-
-content:<input type="text" name="comment[79][content]" value="id为79的商品的评价"><br>
-score<input type="text" name="comment[79][score]" value="3"><br>
-file<input type="text" name="comment[79][pic][]"><br>
-file<input type="text" name="comment[79][pic][]"><br>
-
+<form>
+<input type="file" name="file[]">
+<input type="file" name="file[]">
+<input type="file" name="file[]">
 <input type="submit">
 </form>
+<script type="text/javascript">
+$(document).ready(function(e) {
+	
+var upload = function(input){  
+    if(window.FormData)
+    {
+		var url = arguments[1].url;
+		var data = arguments[1].data;
+		var progress = arguments[1].progress;
+		var complete = arguments[1].complete;
+		var error = arguments[1].error;
+		
+		var xhr = new XMLHttpRequest();
+		var formData = new FormData();
+		var fileReader = new FileReader();
+		$.each(input,function(index,value){
+			if($(value).attr('type') == 'file')
+			{
+				if($(value).val() == 'undefined' || $(value).val() == '')
+					return false;
+				formData.append($(value).attr('name'),value.files[0]);
+			}
+		});
+		
+		//附加额外的数据  
+        if(data != 'undefined' && data != '')  
+        {  
+            $.each(data,function(index,value){  
+                formData.append(index,value);  
+            });
+        }
+        
+        //开始上传  
+        xhr.open('POST',url,true);  
+        xhr.onload = function(){  
+            if(xhr.status == 200 && xhr.readyState == 4)  
+            {  
+                if(typeof complete == 'function')  
+                    complete(xhr.response);  
+            }  
+            else  
+            {  
+                if(typeof error == 'function')  
+                    error(xhr.response);  
+            }  
+        };  
+        xhr.upload.onprogress = function(event){  
+            progress(event);  
+        };
+        xhr.send(formData);
+        return xhr;  
+    }  
+    else  
+    {  
+        alert('浏览器版本过低');  
+        return null;  
+    }  
+}  
+	
+	
+	
+    $('form').on('submit',function(){
+		upload($('input',$(this)),{
+			url:"http://localhost/post.php",//上传地址
+			data:{c:"refund",a:"create"},//额外的数据
+			progress:function(){
+				console.log('progress');
+			},
+			complete:function(response){
+				console.log(response);
+				console.log('complete');
+			},
+			error:function(){
+				consle.log('error');
+			},
+		});
+		return false;
+	});
+});
+</script>
 </body>
 </html>

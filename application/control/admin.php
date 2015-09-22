@@ -7,6 +7,7 @@ use application\classes\login;
 use application\model\roleModel;
 use system\core\filter;
 use application\message\json;
+use application\model\refundModel;
 
 class adminControl extends control
 {
@@ -69,6 +70,53 @@ class adminControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/dashboard.html');
 			$this->model('log')->write($this->session->username,"登陆了系统");
+			
+			//发货提醒
+			$shipalertModel = $this->model('shipalert');
+			$filter = array(
+				'field' => 'shipalert.id,user.username,user.telephone,shipalert.oid,orderlist.orderno'
+			);
+			$shipalert = $shipalertModel->fetchAll($filter);
+			$this->view->assign('shipalert',$shipalert);
+			//商品无库存提醒
+			$stockalert = $this->model('system')->get('stockalert','system');
+			if(!empty($stockalert))
+			{
+				$productModel = $this->model('product');
+				$collection = $this->model('collection');
+				$product1 = $productModel->where('stock<?',array($stockalert))->select('id,name');
+				$collection->table('product','right join','product.id=collection.pid');
+				$product2 = $collection->where('collection.stock<?',array($stockalert))->select('product.id,product.name');
+				
+				$product = array_unique(array_merge($product1,$product2),SORT_REGULAR);
+				$this->view->assign('product',$product);
+			}
+			//退款提醒
+			$refundModel = $this->model('refund');
+			$refundModel->table('orderlist','left join','orderlist.id=refund.oid');
+			$refundModel->table('user','left join','user.id=refund.uid');
+			$refund = $refundModel->where('refund.handle=?',array(refundModel::REFUND_HANDLE_NO))->select('orderlist.orderno,refund.*,user.username,user.telephone');
+			//$refund = $refundModel->select();
+			//var_dump($refund);
+			$this->view->assign('refund',$refund);
+			
+			//7天以内的信息
+			$notifyTime = $_SERVER['REQUEST_TIME']-7*24*3600;
+			//新用户注册通知
+			$userModel = $this->model('user');
+			$userModel->orderby('regtime','desc');
+			$register = $userModel->where('regtime>?',array($notifyTime))->select('*');
+			//新订单产生通知
+			$orderModel = $this->model('orderlist');
+			$orderModel->orderby('createtime','desc');
+			$orderModel->orderby('tradetime','desc');
+			$order = $orderModel->where('createtime>? or tradetime>?',array($notifyTime,$notifyTime))->select();
+			$this->view->assign('register',$register);
+			$this->view->assign('order',$order);
+			
+			$recentLogin = $userModel->orderby('logtime','desc')->limit(20)->select();
+			$this->view->assign('recentLogin',$recentLogin);
+			
 			return $this->view->display();
 		}
 		else

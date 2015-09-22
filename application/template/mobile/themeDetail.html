@@ -8,97 +8,93 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
   <script type="text/javascript" src="js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"><i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>主题详情</h1>
       <a class="btn right_btn"><i class="icon share2"></i></a>
     </header>
   </div>
   <div id="content" style="padding-top:50px">
-    <div class="banner_cont">
-      <div id="slider">
-        <ul class="clearfix slide1">
-          <li>
-            <img src="images/zhuti.jpg">
-          </li>
-          <li>
-            <img src="images/zhuti.jpg">
-          </li>
-        </ul>
-      </div>
-      <div id="pagi" class="clearfix">
-      </div>
+    <div class="themeTopImg">
+      <img src="images/zhuti.jpg">
     </div>
     <div class="zhutitop">
       <div class="name">2015上半年cosme大赏</div>
       <div class="desc">2015上半年cosme大赏新鲜出炉了，照着这个单子买绝对不会错，la又是一年囤货最佳季，你的荷包还好吗？</div>
     </div>
-    <div class="zhutide_pros">
-      <div class="item clearfix">
-        <div class="pic">
-          <img src="images/pro1.jpg">
-          <div class="label miaosha"></div>
-        </div>
-        <div class="right">
-          <div class="name">日本NIVEA妮维雅隔离防晒乳离</div>
-          <div class="desc">15年最新加强防晒指数单品</div>
-          <div class="prices clearfix">
-            <div class="price">￥200</div>
-            <div class="oldp"><span class="cross">￥300</span></div>
-            <div class="discount">4.7</div>
-          </div>
-          <div class="from clearfix">
-            <div class="coutryflag australia"></div>
-            <div class="icon plane"></div>
-            <div class="text">意大利米兰发货直邮邮回国内</div>
-          </div>
-          <div class="cuxiao">
-            <div class="cuxiaoname">七月七号促销</div>
-            <div class="time">距结束时间  01:30</div>
-          </div>
-        </div>
-      </div>
-      <div class="item clearfix">
-        <div class="pic">
-          <img src="images/pro1.jpg">
-          <div class="label miaosha"></div>
-        </div>
-        <div class="right">
-          <div class="name">日本NIVEA妮维雅隔离防晒乳离</div>
-          <div class="desc">15年最新加强防晒指数单品</div>
-          <div class="prices clearfix">
-            <div class="price">￥200</div>
-            <div class="oldp"><span class="cross">￥300</span></div>
-            <div class="discount">4.7</div>
-          </div>
-          <div class="from clearfix">
-            <div class="coutryflag australia"></div>
-            <div class="icon plane"></div>
-            <div class="text">意大利米兰发货直邮邮回国内</div>
-          </div>
-          <div class="cuxiao">
-            <div class="cuxiaoname">七月七号促销</div>
-            <div class="time">距结束时间  01:30</div>
-          </div>
-        </div>
-      </div>
+    <div class="zhutide_pros" id="proList">
+      
     </div>
   </div>
   <script type="text/javascript">
     $(function () {
-      $(".banner_cont").mslides({
-        slideContainer:'slider',
-        page:'pagi',
-      });
-      
-      
+      themeid = $.query.get('id');
+      loader();
     });
+    var themeid;
+    function loader(){
+      $.ajax( {    
+        url:BASEURL+'?c=theme&a=information',// 跳转到 action    
+        data:{    
+            c:'theme',
+            a:'information',
+            id:themeid
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            $('.themeTopImg img')[0].src = re.bigpic;
+            $('.zhutitop .name').text(re.name);
+            $('.zhutitop .desc').text(re.description);
+            $('#header h1').text(re.name);
+            for(var i=0;i<re.length;i++){
+              var rei = re[i];
+              var discount = (rei.price*10/rei.oldprice).toFixed(1);
+              discount = discount>=10?'无':discount;
+              html+='<a class="item clearfix">'
+                  +    '<div class="pic">'
+                  +      '<img src="'+rei.img[0].thumbnail_path+'">'
+                  +      '<div class="label miaosha"></div>'
+                  +    '</div>'
+                   +   '<div class="right">'
+                   +     '<div class="name">'+rei.name+'</div>'
+                   +     '<div class="desc">'+rei.short_description+'</div>'
+                   +     '<div class="prices clearfix">'
+                   +       '<div class="price">￥'+rei.price+'</div>'
+                   +       '<div class="oldp"><span class="cross">￥'+rei.oldprice+'</span></div>'
+                   +       '<div class="discount">'+discount+'</div>'
+                   +     '</div>'
+                   +     '<div class="from clearfix">'
+                   +       '<div class="coutryflag"><img src="images/flag-'+rei.origin+'.jpg"/></div>'
+                   +       '<div class="icon plane"></div>'
+                   +       '<div class="text">'+rei.origin+'发货直邮邮回国内</div>'
+                   +     '</div>'
+                   +     '<div class="cuxiao">'
+                   +       '<div class="cuxiaoname">activityname</div>'
+                   +       '<div class="time">距结束时间  </a>'
+                   +     '</div></div></div>';
+            }
+            $('#proList').html(html);
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
 
   </script>
 </body>

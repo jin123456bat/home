@@ -8,14 +8,18 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
   <script type="text/javascript" src="js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
+  <script type="text/javascript" src="js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"><i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>申请退款</h1>
     </header>
   </div>
@@ -24,52 +28,246 @@
       <div class="item">
         <div class="tit">退款类型</div>
         <div class="tuiType tui">
-          <div class="one" sele="yes">我要退款<span>(无需退货)</span> <i class="icon-check"></i></div>
-          <div class="one" sele="no">我要退货 <i class="icon-check"></i></div>
+          <div class="one" sele="yes" onclick="setTuiType(0)">我要退款<span>(无需退货)</span> <i class="icon-check"></i></div>
+          <div class="one" sele="no" onclick="setTuiType(1)">我要退货 <i class="icon-check"></i></div>
         </div>
       </div>
       <div class="item">
         <div class="tit">退款原因</div>
         <div class="tuiYuan tui">
           <section class="field-bd select-box J_Select">
-            <select name="">
+            <select name="reason_0" id="reason_0">
               <option value="">请选择退款原因</option>
-              <option value="11">七天无理由退换货</option>
-              <option value="15">退运费</option>
-              <option value="34">收到商品破损</option>
-              <option value="33">商品错发/漏发</option>
-              <option value="35">商品需要维修</option>
-              <option value="16">发票问题</option>
-              <option value="13">收到商品不符</option>
-              <option value="12">商品质量问题</option>
-              <option value="6">未按约定时间发货</option>
-              <option value="18">假冒品牌</option>
+              <option value="七天无理由退换货">七天无理由退换货</option>
+              <option value="退运费">退运费</option>
+              <option value="收到商品破损">收到商品破损</option>
+              <option value="商品错发/漏发">商品错发/漏发</option>
+              <option value="商品需要维修">商品需要维修</option>
+              <option value="发票问题">发票问题</option>
+              <option value="收到商品不符">收到商品不符</option>
+              <option value="商品质量问题">商品质量问题</option>
+              <option value="未按约定时间发货">未按约定时间发货</option>
+              <option value="假冒品牌">假冒品牌</option>
             </select>
             <span class="icon-select"></span>
+          </section>
+          <section class="field-bd select-box J_Select hide">
+            <select name="reason_1" id="reason_1">
+              <option value="">请选择退款原因</option>
+              <option value="退运费">退运费</option>
+              <option value="收到商品破损">收到商品破损</option>
+              <option value="商品错发/漏发">商品错发/漏发</option>
+              <option value="商品需要维修">商品需要维修</option>
+              <option value="发票问题">发票问题</option>
+              <option value="收到商品不符">收到商品不符</option>
+              <option value="商品质量问题">商品质量问题</option>
+              <option value="未收到货">未收到货</option>
+              <option value="未按约定时间发货">未按约定时间发货</option></select>
           </section>
         </div>
       </div>
       <div class="item">
-        <div class="tit">退款金额 <small>最多20.09</small></div>
+        <div class="tit">退款金额 <small id="maxprice">最多20.09</small></div>
         <div class="tuiYuan tui">
-          <input type="text" placeholder="请输入退款金额">
+          <input type="text" placeholder="请输入退款金额" id="fundnum">
         </div>
       </div>
       <div class="item">
         <div class="tit">退款说明 <small>（可不填）</small></div>
         <div class="tuiYuan tui">
-          <input type="text" placeholder="请输入退款说明">
+          <input type="text" placeholder="请输入退款说明" id="shuoming">
         </div>
       </div>
     </div>
-    <a class="upimage">
+    <a class="upimage" onclick="camera()">
       <img src="images/camera2.png">
       上传凭证，最多3张
     </a>
-    <a class="btnone_pink red">提交申请</a>
+    <div class="refundApplic clearfix">
+      <img src="">
+      <img src="">
+      <img src="">
+    </div>
+    <a class="btnone_pink red" onclick="validForm()">提交申请</a>
   </div>
+  <form id="form" action="" enctype="multipart/form-data" method="post" style="display:none;"> 
+    <input type="file" name="img[]" data-url="" onchange="setImagePreview(0)">
+    <input type="file" name="img[]" data-url="" onchange="setImagePreview(1)">
+    <input type="file" name="img[]" data-url="" onchange="setImagePreview(2)">
+  </form>
   <script type="text/javascript">
+  $(function(){
+    oid=$.query.get('id');
+    loader();
+  });
+  var oid;
+  var tuiType = 0;
+  var maxTui = 0;
+  function loader(){
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=information',// 跳转到 action    
+      data:{
+        id:oid,
+        type:'json',
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          var price = data.body[0].ordertotalamount;
+          $('#maxprice').text('最多'+price);
+          maxTui = price;
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function setTuiType(n){
+    $('.tuikuanForm .item .tui .one').attr('sele','no');
+    $('.tuikuanForm .item .tui .one').eq(n).attr('sele','yes');
+    $('.J_Select').hide();
+    $('.J_Select').eq(n).show();
+    tuiType = n;
+  }
+  function validForm(){
+    if(!$('#reason_'+tuiType).val()){
+      alert('请选择退款原因');
+      return;
+    }
+    if(!$("#fundnum").val()||isNaN($("#fundnum").val())){
+      alert('请填写退款金额');
+      return;
+    }
+    if(parseFloat($("#fundnum").val())>parseFloat(maxTui)){
+      alert('退款金额最大为'+maxTui);
+      return;
+    }
+    submitForm();
+  }
+  function submitForm(){
+    console.log($('#reason_'+tuiType).val());
+    uploadimages($("#form input"),{
+      url:BASEURL+'?c=refund&a=create',//上传地址
+      data:{
+        id:oid,
+        type:tuiType,
+        reason:$('#reason_'+tuiType).val(),
+        money:$("#fundnum").val(),
+        description:$('#shuoming').val(),
+      },//额外的数据
+      progress:function(){
+        console.log('progress');
+      },
+      complete:function(response){
+        console.log(response);
+        console.log('complete');
+      },
+      error:function(){
+        consle.log('error');
+      },
+    });
+  }
+  function camera(){
+    $('#form input').each(function(){
+      console.log($(this).val());
+      if(!$(this).val()){
+        $(this).click();
+        return false;
+      }
+    });
+  }
+  var uploadimages = function(input){  
+    if(window.FormData)
+    {
+    var url = arguments[1].url;
+    var data = arguments[1].data;
+    var progress = arguments[1].progress;
+    var complete = arguments[1].complete;
+    var error = arguments[1].error;
     
+    var xhr = new XMLHttpRequest();
+    var formData = new FormData();
+    var fileReader = new FileReader();
+    $.each(input,function(index,value){
+      if($(value).attr('type') == 'file')
+      {
+        if($(value).val() == 'undefined' || $(value).val() == '')
+          return false;
+        formData.append($(value).attr('name'),value.files[0]);
+      }
+    });
+    //附加额外的数据  
+        if(data != 'undefined' && data != '')  
+        {  
+            $.each(data,function(index,value){  
+                formData.append(index,value);  
+            });
+        }
+        
+        //开始上传  
+        xhr.open('POST',url,true);  
+        xhr.onload = function(){  
+            if(xhr.status == 200 && xhr.readyState == 4)  
+            {  
+                if(typeof complete == 'function')  
+                    complete(xhr.response);  
+            }  
+            else  
+            {  
+                if(typeof error == 'function')  
+                    error(xhr.response);  
+            }  
+        };  
+        xhr.upload.onprogress = function(event){  
+            progress(event);  
+        };
+        xhr.send(formData);
+        return xhr;  
+    }  
+    else  
+    {  
+        alert('浏览器版本过低');  
+        return null;  
+    }  
+  }  
+  function setImagePreview(n) {
+    var docObj=$("#form input")[n];
+     
+    var imgObjPreview=$('.refundApplic img')[n];
+    if(docObj.files &&docObj.files[0]){
+      //火狐下，直接设img属性
+      imgObjPreview.style.display = 'block';
+      imgObjPreview.style.width = '50px';
+      imgObjPreview.style.height = '50px'; 
+      //imgObjPreview.src = docObj.files[0].getAsDataURL();
+       
+      //火狐7以上版本不能用上面的getAsDataURL()方式获取，需要一下方式
+      imgObjPreview.src = window.URL.createObjectURL(docObj.files[0]);
+    }
+    else{
+      //IE下，使用滤镜
+      docObj.select();
+      var imgSrc = document.selection.createRange().text;
+      var localImagId = document.getElementById("localImag");
+      //必须设置初始大小
+      localImagId.style.width = "50px";
+      localImagId.style.height = "50px";
+      //图片异常的捕捉，防止用户修改后缀来伪造图片
+      try{
+        localImagId.style.filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+        localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = imgSrc;
+      }
+      catch(e){
+        alert("您上传的图片格式不正确，请重新选择!");
+        return false;
+      }
+      imgObjPreview.style.display = 'none';
+      document.selection.empty();
+    }
+    return true;
+  }
 
   </script>
 </body>

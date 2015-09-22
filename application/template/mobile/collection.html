@@ -11,90 +11,37 @@
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
   <script type="text/javascript" src="js/jquery.fly.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"><i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>我的收藏</h1>
-      <a class="btn right_btn"><i class="icon magnify"></i></a>
+      <a class="btn right_btn" href="search.html"><i class="icon magnify"></i></a>
     </header>
   </div>
   <div id="content" style="padding-top:50px">
     <div class="class_cont">
       <div class="classify clearfix">
-        <div class="item active">
-          <a href="">全部分类（12）</a>
+        <div class="item active" onclick="tabb(this,1)">
+          <a>全部分类</a>
         </div>
-        <div class="item">
-          <a href="">失效</a>
+        <div class="item" onclick="tabb(this,2)">
+          <a>失效</a>
         </div>
       </div>  
     </div>
-    <div class="pro_cont">
-      <div class="inner clearfix">
-        <hr>
-        <a class="pro">
-          <div class="pic">
-            <img src="images/pro1.jpg">
-            <div class="label miaosha"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
-        <a class="pro">
-          <div class="pic">
-            <img src="images/pro1.jpg">
-            <div class="label temai"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
-        <hr>
-        <a class="pro">
-          <div class="pic">
-            <img src="images/pro1.jpg">
-            <div class="label manjian"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
-        <a class="pro">
-          <div class="pic">
-            <img src="images/pro1.jpg">
-            <div class="label zuhe"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
+    <div class="pro_cont_con">
+      <div class="pro_cont pro_cont_1">
+        <div class="inner clearfix">
+          
+        </div>
+      </div>
+      <div class="pro_cont pro_cont_2 hide">
+        <div class="inner clearfix">
+          
+        </div>
       </div>
     </div>
   </div>
@@ -103,6 +50,7 @@
   </div>
   <script type="text/javascript">
     $(function () {
+      checklogin();
       $('.subclass .inner .item .pic').each(function(){
         $(this).css('height',$(this).outerWidth()-2);
       });
@@ -123,8 +71,132 @@
       }
       $('.pro .pic').css('height',$('.pro .pic').eq(0).width());
       // console.log(cwi);
-      
+      loader();
+
+      $(window).scroll(function(){  
+        var $this =$(this); 
+        var viewH =$(window).height();//可见高度  
+        var contentH = document.body.scrollHeight,//内容高度  
+        scrollTop =$(this).scrollTop();//滚动高度  
+        if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容 
+        // console.log('11'); 
+          products();
+        }  
+      });  
     });
+    function checklogin(){
+      $.ajax( {    
+        url:BASEURL+'?c=user&a=information',// 跳转到 action    
+        data:{    
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code != 1){
+            window.location.href="login.html";
+          }else{
+          } 
+        } 
+      });
+    }
+    function gotoPro(id){
+      window.location.href = "proDetail.html?pid="+id;
+    }
+    var curPage = {
+      '1':0,
+      '2':0,
+    };
+    var hasEnd = {
+      '1':false,
+      '2':false,
+    };
+    var curStates = '1';
+    function loader(){
+      products();
+    }
+    function tabb(obj,status){
+      $('.classify .item').removeClass('active');
+      $(obj).addClass('active');
+      curStates = status;
+      products();
+      $('.pro_cont').hide();
+      $('.pro_cont_'+curStates).show();
+    }
+    var loadNum = 6;
+    function products(){
+      if(hasEnd[curStates]){
+        return;
+      }
+      console.log(curPage);
+      var start = loadNum*curPage[curStates];
+      $.ajax( {    
+        url:BASEURL+'?c=favourite&a=getlist',// 跳转到 action    
+        data:{    
+            start:start,
+            length:loadNum,
+            status:curStates,
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            console.log(data);
+            var html = "";
+            if(re.length>0){
+              for(var i = 0;i<re.length;i++){
+                var rei = re[i];
+                var price = parseFloat(rei.price).toFixed(1);
+                if(re.activity_description&&re.activity_description.price){
+                  price = parseFloat(re.activity_description.price).toFixed(1);
+                }
+                var oldprice = (parseFloat(rei.oldprice).toFixed(1)!=0)?parseFloat(rei.oldprice).toFixed(1):price;
+                var discount = (price*10/oldprice).toFixed(1);
+                var hide=(discount==10)?'hide':'';
+                var activi = {
+                  'sale':'temai',
+                  'seckill':'miaosha',
+                  'fullcut':'manjian',
+                };
+                // price = price.toFixed(1);
+                if(i%2==0){
+                  html+='<hr>';
+                }
+                // console.log(rei.img[0]);
+                imgobj = rei.img[0];
+                if(imgobj){
+                  var src = imgobj.small_path;
+                }else{
+                  var src = defaultProPic;
+                }
+                html+='<a class="pro" proId="'+rei.id+'" onclick="gotoPro('+rei.id+')">'
+                     +   '<div class="pic">'
+                     +     '<img src="'+src+'" onerror="imgerror(this)">'
+                     +     '<div class="label '+activi[rei.activity]+'"></div>'
+                     +     '<div class="country">'+rei.origin['name']+'</div>'
+                     +   '</div>'
+                     +   '<div class="downth">'
+                     +     '<div class="desc">'+rei.name+'</div>'
+                     +     '<div class="prices clearfix">'
+                     +       '<div class="price">￥'+price+'</div>'
+                      +      '<div class="oldp '+hide+'"><span class="cross">￥'+oldprice+'</span></div>'
+                      +      '<div class="discount '+hide+'">'+discount+'</div>'
+                      +    '</div></div></a>';
+              }
+            }
+            if(re.length<loadNum){
+              hasEnd[curStates] = true;
+            }
+            $('.pro_cont_'+curStates+' .inner').append(html);
+            curPage[curStates]++;
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
 
   </script>
 </body>

@@ -1,95 +1,8 @@
 var Index = function () {
 
     return {
-
         //main function
-        init: function () {
-            Metronic.addResizeHandler(function () {
-                jQuery('.vmaps').each(function () {
-                    var map = jQuery(this);
-                    map.width(map.parent().width());
-                });
-            });
-        },
-
-        initJQVMAP: function () {
-
-            var showMap = function (name) {
-                jQuery('.vmaps').hide();
-                jQuery('#vmap_' + name).show();
-            }
-
-            var setMap = function (name) {
-                var data = {
-                    map: 'world_en',
-                    backgroundColor: null,
-                    borderColor: '#333333',
-                    borderOpacity: 0.5,
-                    borderWidth: 1,
-                    color: '#c6c6c6',
-                    enableZoom: true,
-                    hoverColor: '#c9dfaf',
-                    hoverOpacity: null,
-                    values: sample_data,
-                    normalizeFunction: 'linear',
-                    scaleColors: ['#b6da93', '#909cae'],
-                    selectedColor: '#c9dfaf',
-                    selectedRegion: null,
-                    showTooltip: true,
-                    onLabelShow: function (event, label, code) {
-
-                    },
-                    onRegionOver: function (event, code) {
-                        if (code == 'ca') {
-                            event.preventDefault();
-                        }
-                    },
-                    onRegionClick: function (element, code, region) {
-                        var message = 'You clicked "' + region + '" which has the code: ' + code.toUpperCase();
-                        alert(message);
-                    }
-                };
-
-                data.map = name + '_en';
-                var map = jQuery('#vmap_' + name);
-                if (!map) {
-                    return;
-                }
-                map.width(map.parent().parent().width());
-                map.show();
-                map.vectorMap(data);
-                map.hide();
-            }
-
-            setMap("world");
-            setMap("usa");
-            setMap("europe");
-            setMap("russia");
-            setMap("germany");
-            showMap("world");
-
-            jQuery('#regional_stat_world').click(function () {
-                showMap("world");
-            });
-
-            jQuery('#regional_stat_usa').click(function () {
-                showMap("usa");
-            });
-
-            jQuery('#regional_stat_europe').click(function () {
-                showMap("europe");
-            });
-            jQuery('#regional_stat_russia').click(function () {
-                showMap("russia");
-            });
-            jQuery('#regional_stat_germany').click(function () {
-                showMap("germany");
-            });
-
-            $('#region_statistics_loading').hide();
-            $('#region_statistics_content').show();
-        },
-
+        
         initCharts: function () {
             if (!jQuery.plot) {
                 return;
@@ -406,7 +319,7 @@ var Index = function () {
 			
 			
 			 
-			function loadMiniChart(url)
+			function loadMiniChart(url,selector)
 			{
 				$.ajax({
 					url:url,
@@ -422,27 +335,27 @@ var Index = function () {
 						
 						var total = ios+android+wap+web+weixin;
 						
-						$('.easy-pie-chart .android').attr('data-percent',android*100/total).find('span').html(android);
-						$('.easy-pie-chart .ios').attr('data-percent',ios*100/total).find('span').html(ios);
-						$('.easy-pie-chart .wap').attr('data-percent',(wap+weixin)*100/total).find('span').html(wap+weixin);
+						$('.easy-pie-chart .android',selector).attr('data-percent',android*100/total).find('span').html(android);
+						$('.easy-pie-chart .ios',selector).attr('data-percent',ios*100/total).find('span').html(ios);
+						$('.easy-pie-chart .wap',selector).attr('data-percent',(wap+weixin)*100/total).find('span').html(wap+weixin);
 						
 						//$('.easy-pie-chart .ios').attr('data-percent',(ios*100/total));
 						
-						$('.easy-pie-chart .number.ios').easyPieChart({
+						$('.easy-pie-chart .number.ios',selector).easyPieChart({
 							animate: 1000,
 							size: 75,
 							lineWidth: 3,
 							barColor: Metronic.getBrandColor('yellow')
 						});
 			
-						$('.easy-pie-chart .number.android').easyPieChart({
+						$('.easy-pie-chart .number.android',selector).easyPieChart({
 							animate: 1000,
 							size: 75,
 							lineWidth: 3,
 							barColor: Metronic.getBrandColor('green')
 						});
 			
-						$('.easy-pie-chart .number.wap').easyPieChart({
+						$('.easy-pie-chart .number.wap',selector).easyPieChart({
 							animate: 1000,
 							size: 75,
 							lineWidth: 3,
@@ -455,10 +368,11 @@ var Index = function () {
 			
            
 
-			loadMiniChart('index.php?c=statistics&a=client&type=order');
-            $('.easy-pie-chart-reload').click(function () {
+			loadMiniChart('index.php?c=statistics&a=client&type=order',$('#order-easy-pie-chart'));
+			loadMiniChart('index.php?c=statistics&a=client&type=user',$('#user-easy-pie-chart'));
+            /*$('.easy-pie-chart-reload').click(function () {
                 loadMiniChart('index.php?c=statistics&a=client&type=order');
-            });
+            });*/
 
 
 
@@ -487,220 +401,6 @@ var Index = function () {
                 lineColor: '#ffb848'
             });
 
-        },
-
-        initChat: function () {
-
-            var cont = $('#chats');
-            var list = $('.chats', cont);
-            var form = $('.chat-form', cont);
-            var input = $('input', form);
-            var btn = $('.btn', form);
-
-            var handleClick = function (e) {
-                e.preventDefault();
-
-                var text = input.val();
-                if (text.length == 0) {
-                    return;
-                }
-
-                var time = new Date();
-                var time_str = (time.getHours() + ':' + time.getMinutes());
-                var tpl = '';
-                tpl += '<li class="out">';
-                tpl += '<img class="avatar" alt="" src="' + Layout.getLayoutImgPath() + 'avatar1.jpg"/>';
-                tpl += '<div class="message">';
-                tpl += '<span class="arrow"></span>';
-                tpl += '<a href="#" class="name">Bob Nilson</a>&nbsp;';
-                tpl += '<span class="datetime">at ' + time_str + '</span>';
-                tpl += '<span class="body">';
-                tpl += text;
-                tpl += '</span>';
-                tpl += '</div>';
-                tpl += '</li>';
-
-                var msg = list.append(tpl);
-                input.val("");
-
-                var getLastPostPos = function () {
-                    var height = 0;
-                    cont.find("li.out, li.in").each(function () {
-                        height = height + $(this).outerHeight();
-                    });
-
-                    return height;
-                }
-
-                cont.find('.scroller').slimScroll({
-                    scrollTo: getLastPostPos()
-                });
-            }
-
-            $('body').on('click', '.message .name', function (e) {
-                e.preventDefault(); // prevent click event
-
-                var name = $(this).text(); // get clicked user's full name
-                input.val('@' + name + ':'); // set it into the input field
-                Metronic.scrollTo(input); // scroll to input if needed
-            });
-
-            btn.click(handleClick);
-
-            input.keypress(function (e) {
-                if (e.which == 13) {
-                    handleClick(e);
-                    return false; //<---- Add this line
-                }
-            });
-        },
-
-        initDashboardDaterange: function () {
-
-            $('#dashboard-report-range').daterangepicker({
-                    opens: (Metronic.isRTL() ? 'right' : 'left'),
-                    startDate: moment().subtract('days', 29),
-                    endDate: moment(),
-                    minDate: '01/01/2012',
-                    maxDate: '12/31/2014',
-                    dateLimit: {
-                        days: 60
-                    },
-                    showDropdowns: false,
-                    showWeekNumbers: true,
-                    timePicker: false,
-                    timePickerIncrement: 1,
-                    timePicker12Hour: true,
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-                        'Last 7 Days': [moment().subtract('days', 6), moment()],
-                        'Last 30 Days': [moment().subtract('days', 29), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-                    },
-                    buttonClasses: ['btn btn-sm'],
-                    applyClass: ' blue',
-                    cancelClass: 'default',
-                    format: 'MM/DD/YYYY',
-                    separator: ' to ',
-                    locale: {
-                        applyLabel: 'Apply',
-                        fromLabel: 'From',
-                        toLabel: 'To',
-                        customRangeLabel: 'Custom Range',
-                        daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                        firstDay: 1
-                    }
-                },
-                function (start, end) {
-                    $('#dashboard-report-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                }
-            );
-
-
-            $('#dashboard-report-range span').html(moment().subtract('days', 29).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
-            $('#dashboard-report-range').show();
-        },
-
-        initIntro: function () {
-
-            // display marketing alert only once
-            if (!$.cookie('intro_show')) {
-                setTimeout(function () {
-                    var unique_id = $.gritter.add({
-                        // (string | mandatory) the heading of the notification
-                        title: '<a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" target="_blank">Get Metronic Just For 25$</a>',
-                        // (string | mandatory) the text inside the notification
-                        text: 'Metronic is World\'s #1 Selling Bootstrap 3 Admin Theme Ever! 18000+ Users Can\'t be Wrong.',
-                        // (string | optional) the image to display on the left
-                        image: '../../assets/admin/layout/img/avatar1.jpg',
-                        // (bool | optional) if you want it to fade out on its own or just sit there
-                        sticky: true,
-                        // (int | optional) the time you want it to be alive for before fading out
-                        time: '',
-                        // (string | optional) the class name you want to apply to that specific message
-                        class_name: 'my-sticky-class'
-                    });
-
-                    // You can have it return a unique id, this can be used to manually remove it later using
-                    setTimeout(function () {
-                        $.gritter.remove(unique_id, {
-                            fade: true,
-                            speed: 'slow'
-                        });
-                    }, 12000);
-                }, 2000);
-
-                setTimeout(function () {
-                    var unique_id = $.gritter.add({
-                        // (string | mandatory) the heading of the notification
-                        title: '<a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" target="_blank">Develop with Metronic!</a>',
-                        // (string | mandatory) the text inside the notification
-                        text: 'Metronic comes with 160+ templates, 70+ plugins and 500+ UI components. Also 3 Frontend Themes, Corporate Frontend, eCommerce Frontend and One Page Parallax Frontend are included. Buy 1 Get 4!',
-                        // (string | optional) the image to display on the left
-                        image: '../../assets/admin/layout/img/avatar1.jpg',
-                        // (bool | optional) if you want it to fade out on its own or just sit there
-                        sticky: true,
-                        // (int | optional) the time you want it to be alive for before fading out
-                        time: '',
-                        // (string | optional) the class name you want to apply to that specific message
-                        class_name: 'my-sticky-class'
-                    });
-
-                    // You can have it return a unique id, this can be used to manually remove it later using
-                    setTimeout(function () {
-                        $.gritter.remove(unique_id, {
-                            fade: true,
-                            speed: 'slow'
-                        });
-                    }, 13000);
-                }, 8000);
-
-                setTimeout(function () {
-
-                    $('#styler').pulsate({
-                        color: "#bb3319",
-                        repeat: 10
-                    });
-
-                    $.extend($.gritter.options, {
-                        position: 'top-left'
-                    });
-
-                    var unique_id = $.gritter.add({
-                        position: 'top-left',
-                        // (string | mandatory) the heading of the notification
-                        title: '<a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" target="_blank">Customize Metronic!</a>',
-                        // (string | mandatory) the text inside the notification
-                        text: 'Metronic allows you to easily customize the theme with unlimited layout options and color schemes. Try Metronic Today!',
-                        // (string | optional) the image to display on the left
-                        image1: './assets/img/avatar1.png',
-                        // (bool | optional) if you want it to fade out on its own or just sit there
-                        sticky: true,
-                        // (int | optional) the time you want it to be alive for before fading out
-                        time: '',
-                        // (string | optional) the class name you want to apply to that specific message
-                        class_name: 'my-sticky-class'
-                    });
-
-                    $.extend($.gritter.options, {
-                        position: 'top-right'
-                    });
-
-                    // You can have it return a unique id, this can be used to manually remove it later using
-                    setTimeout(function () {
-                        $.gritter.remove(unique_id, {
-                            fade: true,
-                            speed: 'slow'
-                        });
-                    }, 10000);
-
-                }, 23000);
-
-                $.cookie('intro_show', 1);
-            }
         }
 
     };

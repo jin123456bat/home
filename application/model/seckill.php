@@ -77,7 +77,7 @@ class seckillModel extends model
 	 * @param int $last 单位小时
 	 * @param number $orderby
 	 */
-	function create($sname,$pid,$starttime,$endtime,$price,$orderby)
+	function create($sname,$pid,$starttime,$endtime,$price,$orderby,$logo)
 	{
 		$result = $this->where('pid=?',array($pid))->select('count(*)');
 		if(isset($result[0]['count(*)']) && $result[0]['count(*)']>0)
@@ -85,7 +85,7 @@ class seckillModel extends model
 		$orderby = empty($orderby)?1:$orderby;
 		$starttime = empty(strtotime($starttime))?$_SERVER['REQUEST_TIME']:strtotime($starttime);
 		$endtime = empty(strtotime($endtime))?$_SERVER['REQUEST_TIME']+3600*24:strtotime($endtime);
-		$array = array(NULL,$sname,$pid,$starttime,$endtime,$orderby,$price);
+		$array = array(NULL,$sname,$pid,$starttime,$endtime,$orderby,$price,$logo);
 		if($this->insert($array))
 			return $this->lastInsertId();
 		return false;

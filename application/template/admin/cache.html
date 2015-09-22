@@ -76,6 +76,9 @@
 			<div class="row">
 				<div class="col-md-12">
 					 <button class="btn green" id="productimg">清空无效商品图像缓存</button>
+                     <button class="btn green" id="log">清空系统日志</button>
+                     <button class="btn green" id="user_login">清空用户登录日志</button>
+                     <button class="btn green" id="waybills">清空缓存物流信息</button>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
@@ -117,6 +120,24 @@ jQuery(document).ready(function() {
 	
 	$('#productimg').on('click',function(){
 		$.get('{%url c=cache a=productimg%}',{},function(data){
+			alert(data);
+		});
+	});
+	
+	$('#log').on('click',function(){
+		$.get('{%url c=cache a=log%}',{},function(data){
+			alert(data);
+		});
+	});
+	
+	$('#user_login').on('click',function(){
+		$.get('{%url c=cache a=user_login%}',{},function(data){
+			alert(data);
+		});
+	});
+	
+	$('#waybills').on('click',function(){
+		$.get('{%url c=cache a=waybills%}',{},function(data){
 			alert(data);
 		});
 	});

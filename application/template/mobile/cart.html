@@ -18,10 +18,11 @@
   <div id="header">
     <header class="clearfix">
       <h1>购物车</h1>
+      <a class="btn right_btn hide" id="dlt" onclick="dltSele()">删除</a>
     </header>
   </div>
   <div class="caidanCon">
-    <div class="logo J_caidan" onclick="toggleCaidan()"></div>
+    <div class="logo J_caidan low" onclick="toggleCaidan()"></div>
     <div class="caidan small">
       <a class="home"></a>
       <a class="cart"></a>
@@ -30,102 +31,223 @@
       <a class="kefu"></a>
     </div>
   </div>
-  <div id="content" style="padding-top:50px">
+  <div id="content" style="padding-top:50px;padding-bottom:110px;">
     <div class="car_list">
-      <div class="item">
-        <div class="onup clearfix">
-          <div class="choo" sele></div>
-          <div class="carpro clearfix" href="">
-            <div class="pic">
-              <img src="images/pro1.jpg">
-            </div>
-            <div class="name">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿</div>
-            <div class="num clearfix">
-              <a class="add"></a>
-              <a class="number">1</a>
-              <a class="minus"></a>
-            </div>
-            <div class="rb">
-              <div class="price">￥130</div>
-              <div class="buynum">x1</div>
-              <div class="act">手机秒杀 <span class="redtext">00:01:30</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="ondown">
-          <a class="deletebtn">删除</a>
-        </div>
-      </div>
-      <div class="item">
-        <div class="onup clearfix">
-          <div class="choo" sele></div>
-          <div class="carpro clearfix" href="">
-            <div class="pic">
-              <img src="images/pro1.jpg">
-            </div>
-            <div class="name">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿</div>
-            <div class="num clearfix">
-              <a class="add"></a>
-              <a class="number">1</a>
-              <a class="minus"></a>
-            </div>
-            <div class="rb">
-              <div class="price">￥130</div>
-              <div class="buynum">x1</div>
-              <div class="act">手机秒杀 <span class="redtext">00:01:30</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="ondown">
-          <a class="deletebtn">删除</a>
-        </div>
-      </div>
-      <div class="item">
-        <div class="onup clearfix">
-          <div class="choo" sele></div>
-          <div class="carpro clearfix" href="">
-            <div class="pic">
-              <img src="images/pro1.jpg">
-            </div>
-            <div class="name">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿</div>
-            <div class="num clearfix">
-              <a class="add"></a>
-              <a class="number">1</a>
-              <a class="minus"></a>
-            </div>
-            <div class="rb">
-              <div class="price">￥130</div>
-              <div class="buynum">x1</div>
-              <div class="act">手机秒杀 <span class="redtext">00:01:30</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="ondown">
-          <a class="deletebtn">删除</a>
-        </div>
-      </div>
     </div>
-    <div class="statusbar clearfix">
-      <div class="allselect">
+    <div class="emptyCart hide">
+      <img src="images/cartemp.png">
+      <a class="btn" href="category.html">去逛逛</a>
+    </div>
+    <div class="statusbar clearfix hide">
+      <div class="allselect" onclick="seleAll(this);showDiv('#dlt');" seleAll="no">
         全选
       </div>
       <div class="right">
-        <div class="allprice"><span class="redtext">合计:100</span>元</div>
-        <div class="youhui">已优惠:-20元</div>
-        <a class="gocount">去结算</a>
+        <div class="allprice">合计:<span class="redtext" id="calsum"></span>元</div>
+        <!-- <div class="youhui">已优惠:-20元</div> -->
+        <a class="gocount" href="orderConfirm.html">去结算</a>
         <div class="tips">我们家全场包税免邮</div>
       </div>
     </div>
   </div>
   <div id="footer">
-
   </div>
   <script type="text/javascript">
     $(function () {
-      $(".car_list .item .onup").flyCart({
-        woh:$('.car_list .item .onup').width()+140,
-      });
+      checklogin();
+      loadCart();
+      calSum('calsum');
     });
+    function checklogin(){
+      $.ajax( {    
+        url:BASEURL+'?c=user&a=information',// 跳转到 action    
+        data:{    
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code != 1){
+            window.location.href="login.html";
+          }else{
+          } 
+        } 
+      });
+    }
+    function dltSele(){
+      $('.choo[sele="sele"]').each(function(){
+        $(this).parents('.item').find('.deletebtn').click();
+      });
+    }
+    function seleAll(obj){
+      togleAttr(obj,'seleAll','yes','no'); 
+      if($('.allselect').attr('seleAll')=='yes'){
+        $('.item .choo').attr('sele','sele');
+      }else{
+        $('.item .choo').attr('sele','no');
+      }
+    }
+    function loadCart(){
+      $.ajax( {    
+        url:BASEURL+'?c=cart&a=mycart',// 跳转到 action    
+        data:{    
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            if(re.length==0){
+              $(".statusbar").hide();
+              $('.emptyCart').show();
+              return;
+            }
+            $(".statusbar").show();
+            for(var i=0;i<re.length;i++){
+              var rei = re[i];
+              var activity_description = rei.activity_description;
+              var act = '';
+              // console.log(activity_description.id);
+              if(!activity_description.id){
+                act = 'hide';
+              }else{
+                var restTime = calRestTime(activity_description.endtime);
+                var endtime = activity_description.endtime*1000;
+                var sname = activity_description.sname;
+              }
+              var thumb = rei.img[0].thumbnail_path?rei.img[0].thumbnail_path:defaultProPic;
+              var proto = rei.prototype;
+              var protodesc = "";
+              if(proto.length>0){
+                for(var j = 0;j<proto.length;j++){
+                  if(proto[j].type=='radio'){
+                    var ppname = proto[j].name;
+                    var index = rei.content[proto[j].id];
+                    var pname = proto[j].value[index];
+                    protodesc+=ppname+":"+pname+' ';
+                  }
+                }
+              }
+              var choiceProto = rei.content;
+              var s = '';
+              for(var key in choiceProto){  
+                s+=key+':'+choiceProto[key]+',';
+              }  
+              s = s.substring(0,s.length-1);
+              // console.log(s);
+              // html+=i;
+              var pricenow = rei.price;
+              if(rei.collection){
+                if(rei.collection.price){
+                  pricenow = rei.collection.price;
+                }
+              }
+              if(rei.activity_description){
+                if(rei.activity_description.price){
+                  pricenow = rei.activity_description.price;
+                }
+              }
+              var phtml = '<div class="item" data-id="'+rei.id+'" data-content="'+s+'">'
+                   +     '<div class="onup clearfix">'
+                   +       '<div class="choo" sele="no" onclick="togleAttr(this,\'sele\',\'sele\',\'no\');showDiv(\'#dlt\');"></div>'
+                   +       '<div class="carpro clearfix">'
+                   +         '<div class="pic">'
+                   +           '<img src="'+thumb+'">'
+                   +         '</div>'
+                   +         '<div class="name">'+rei.name+'</div>'
+                   +         '<div class="num clearfix">'
+                    +          '<a class="add" onclick="addtoCart(this,1,'+rei.id+',\''+s+'\')"></a>'
+                    +          '<div class="number">'+rei.num+'</div>'
+                   +           '<a class="minus" onclick="addtoCart(this,-1,'+rei.id+',\''+s+'\')"></a>'
+                   +         '</div>'
+                   +         '<div class="rb">'
+                   +           '<div class="price">￥'+pricenow+'</div>'
+                   +           '<div class="buynum">'+protodesc+'</div>'
+                   +           '<div class="act '+act+'">'+sname+'<span class="redtext" id="ctime_'+i+'" eTime-data="'+endtime+'">'+restTime+'</span></div>'
+                   +         '</div></div></div>'
+                   +     '<div class="ondown">'
+                   +       '<a class="deletebtn" onclick="dltCart(this)">删除</a>'
+                   +     '</div>'
+                   +   '</div>';
+              $(".car_list").append(phtml);
+              if(activity_description.id){
+                countTime('ctime_'+i);
+              }
+            }
+            // $(".car_list").html(html);
+            $(".car_list .item .onup").flyCart({
+              woh:$('.car_list .item .onup').width()+140,
+            });
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function dltCart(obj){
+      var _this = $(obj);
+      var prt = _this.parents('.item');
+      var n = parseInt(prt.find('.number').text());
+      var pid = prt.attr('data-id');
+      var s = prt.attr('data-content');
+      $.ajax( {    
+        url:BASEURL+'?c=cart&a=remove',// 跳转到 action    
+        data:{    
+            pid:pid,
+            num:n,
+            content:s,
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            console.log('success');
+            prt.remove();
+            calSum('calsum');
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function addtoCart(obj,n,pid,s){
+      var nobj = $(obj).parent().find('.number');
+      var num = parseInt(nobj.text())+n;
+      if(num>100){
+        return;
+      }
+      var control = 'add';
+      if(n<0){
+        control = 'remove';
+      }
+      $.ajax( {    
+        url:BASEURL+'?c=cart&a='+control,// 跳转到 action    
+        data:{    
+            pid:pid,
+            num:n,
+            content:s,
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            console.log('success');
+            if(num<1){
+              $(obj).parents('.item').remove();
+            }else{
+              nobj.text(num);
+            }
+            calSum('calsum');
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
 
   </script>
 </body>

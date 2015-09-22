@@ -22,7 +22,7 @@ class couponModel extends model
 	{
 		$total = $coupon['total'];
 		$starttime = $coupon['starttime'];
-		$endtime = $coupon['endtim'];
+		$endtime = $coupon['endtime'];
 		$max = $coupon['max'];
 		$display = 0;
 		$type = $coupon['type'];
@@ -182,7 +182,7 @@ class couponModel extends model
 	 */
 	function get($couponno,$name = '*')
 	{
-		$result = $this->where('couponno=?',array($couponno))->select($name);
+		$result = $this->where('couponno=? or id=?',array($couponno,$couponno))->select($name);
 		if($name == '*')
 			return isset($result[0])?$result[0]:NULL;
 		return isset($result[0][$name])?$result[0][$name]:NULL;

@@ -6,16 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="Keywords" content="" />
   <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="css/reset.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="js/jquery.transit.js"></script>
-  <script type="text/javascript" src="js/jquery.mslides.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"><i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>登录</h1>
     </header>
   </div>
@@ -23,14 +26,14 @@
     <div class="loginform">
       <div class="item clearfix">
         <div class="icon user"></div>
-        <input type="text" placeholder="手机号码">
+        <input type="text" placeholder="手机号码" id="telephone">
       </div>
       <div class="item clearfix">
         <div class="icon lock2"></div>
-        <input type="text" placeholder="密码">
+        <input type="password" placeholder="密码" id="pwd">
       </div>
     </div>
-    <a class="btnone_pink">登录</a>
+    <a class="btnone_pink" onclick="login()">登录</a>
     <div class="undloform">
       <a class="left">
         <i class="icon doublearrow"></i>
@@ -40,7 +43,76 @@
     </div>
   </div>
   <script type="text/javascript">
-    
+  $(function(){
+    checklogin();
+  });
+  function checklogin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          window.location.href="index.html";
+        }else{
+        } 
+      } 
+    });
+  }
+  function login(){
+    if(!valid()){
+      return false;
+    }
+    dologin();
+  }
+  function valid () {
+    if(!$('#telephone').val()){
+      alert('请填写手机号！');
+      return false;
+    }
+    if(!$('#pwd').val()){
+      alert('请填写密码！');
+      return false;
+    }
+    if(!checkMobile($('#telephone').val())){
+      alert('手机号码格式错误！');
+      return false;
+    }
+    return true;
+  }
+  function checkMobile(text){
+    // alert(text);
+    var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+      if(!myreg.test(text)){
+        return false;
+      }else{
+        return true;
+      }
+  }
+  function dologin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=login',// 跳转到 action    
+      data:{    
+        telephone:$('#telephone').val(),
+        password:$('#pwd').val(),
+        client:'wap',
+      },    
+      crossDomain:true,
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          window.location.href="index.html";
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
 
   </script>
 </body>

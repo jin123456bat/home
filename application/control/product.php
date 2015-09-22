@@ -73,16 +73,16 @@ class productControl extends control
 		{
 			//存在多选属性的话价格以多选属性中的价格为准
 			$skupricestock = $this->model('collection')->find($pid,$content);
-			if($skupricestock == NULL)
+			if(empty($content))
 				return json_encode(array('code'=>4,'result'=>'可选属性组合错误'));
 			$prototype = (new prototype())->format($prototype,$content);
 			$ordergoodsamount = $skupricestock['price']*$num;
-			$orderdetail[] = array('sku'=>$skupricestock['sku'],'pid'=>$product['id'],'productname'=>$product['name'],'unitprice'=>$skupricestock['price'],'content'=>serialize($content),'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$num);
+			$orderdetail[] = array('sku'=>$skupricestock['sku'],'pid'=>$product['id'],'productname'=>$product['name'],'brand'=>$this->model('brand')->get($product['bid'],'name'),'unitprice'=>$skupricestock['price'],'content'=>serialize($content),'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$num);
 		}
 		else
 		{
 			$prototype = (new prototype())->format($prototype,$content);
-			$orderdetail[] = array('sku'=>$product['sku'],'pid'=>$product['id'],'productname'=>$product['name'],'unitprice'=>$product['price'],'content'=>serialize($content),'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$num);
+			$orderdetail[] = array('sku'=>$product['sku'],'pid'=>$product['id'],'productname'=>$product['name'],'brand'=>$this->model('brand')->get($product['bid'],'name'),'unitprice'=>$product['price'],'content'=>serialize($content),'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$num);
 		}
 		//收货地址id
 		$addressid = $this->post->addressid;
@@ -410,21 +410,21 @@ class productControl extends control
 			$productModel = $this->model('product');
 			$id = $productModel->save($this->post);
 			
-				$pid = empty($this->post->id)?$id:$this->post->id;
-				if(!empty($this->post->picid))
-				{
-					$picid = json_decode(htmlspecialchars_decode($this->post->picid));
-					$productimgModel = $this->model('productimg');
-					$productimgModel->updatepid($picid,$pid);
-				}
-				if(!empty($this->post->prototype_id))
-				{
-					$prototype_id = json_decode(htmlspecialchars_decode($this->post->prototype_id));
-					$prototypeModel = $this->model('prototype');
-					$prototypeModel->updatepid($prototype_id,$pid);
-				}
-				$this->model('log')->write($this->session->username,'修改了商品属性'.$id);
-				return json_encode(array('code'=>1,'result'=>'ok','id'=>$id));
+			$pid = empty($this->post->id)?$id:$this->post->id;
+			if(!empty($this->post->picid))
+			{
+				$picid = json_decode(htmlspecialchars_decode($this->post->picid));
+				$productimgModel = $this->model('productimg');
+				$productimgModel->updatepid($picid,$pid);
+			}
+			if(!empty($this->post->prototype_id))
+			{
+				$prototype_id = json_decode(htmlspecialchars_decode($this->post->prototype_id));
+				$prototypeModel = $this->model('prototype');
+				$prototypeModel->updatepid($prototype_id,$pid);
+			}
+			$this->model('log')->write($this->session->username,'修改了商品属性'.$id);
+			return json_encode(array('code'=>1,'result'=>'ok','id'=>$id));
 		}
 		return json_encode(array('code'=>0,'result'=>'权限不足'));
 	}

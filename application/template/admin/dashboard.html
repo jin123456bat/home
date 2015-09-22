@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Metronic | Dashboard - Dashboard</title>
+<title>我们家后台管理</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -77,13 +77,6 @@
 						<a href="#">仪表板</a>
 					</li>
 				</ul>
-				<div class="page-toolbar">
-					<div id="dashboard-report-range" class="pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-						<i class="icon-calendar"></i>&nbsp;
-						<span class="thin uppercase visible-lg-inline-block"></span>&nbsp;
-						<i class="fa fa-angle-down"></i>
-					</div>
-				</div>
 			</div>
 			<h3 class="page-title">
 			仪表板 <small>仪表板 & 统计</small>
@@ -228,22 +221,22 @@
 								<div class="row">
 									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
 										<span class="label label-sm label-success">
-										Revenue: </span>
+										收入: </span>
 										<h3 id="revenue"></h3>
 									</div>
 									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
 										<span class="label label-sm label-info">
-										Tax: </span>
+										税费: </span>
 										<h3 id="tax"></h3>
 									</div>
 									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
 										<span class="label label-sm label-danger">
-										Shipment: </span>
+										运费: </span>
 										<h3 id="shipment"></h3>
 									</div>
 									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
 										<span class="label label-sm label-warning">
-										Orders: </span>
+										订单: </span>
 										<h3 id="order"></h3>
 									</div>
 								</div>
@@ -261,26 +254,14 @@
 						<div class="portlet-title">
 							<div class="caption">
 								<i class="icon-share font-blue-steel hide"></i>
-								<span class="caption-subject font-blue-steel bold uppercase">Recent Activities</span>
-							</div>
-							<div class="actions">
-								<div class="btn-group">
-									<a class="btn btn-sm btn-default btn-circle" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-									Filter By <i class="fa fa-angle-down"></i>
-									</a>
-									<div class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
-										<label><input type="checkbox"/> Finance</label>
-										<label><input type="checkbox" checked=""/> Membership</label>
-										<label><input type="checkbox"/> Customer Support</label>
-										<label><input type="checkbox" checked=""/> HR</label>
-										<label><input type="checkbox"/> System</label>
-									</div>
-								</div>
+								<span class="caption-subject font-blue-steel bold uppercase">近期日志</span>
 							</div>
 						</div>
 						<div class="portlet-body">
 							<div class="scroller" style="height: 300px;" data-always-visible="1" data-rail-visible="0">
 								<ul class="feeds">
+                                	{%section name=order loop=$order%}
+                                    {%if $order[order].status == 1%}
 									<li>
 										<div class="col1">
 											<div class="cont">
@@ -291,63 +272,45 @@
 												</div>
 												<div class="cont-col2">
 													<div class="desc">
-														 You have 4 pending tasks. <span class="label label-sm label-warning ">
-														Take action <i class="fa fa-share"></i>
-														</span>
+														 收到了订单号 <span class="label label-sm label-warning "><a href="{%url c=order a=orderlist%}">{%$order[order].orderno%}</a></span> 的订款<span class="label label-sm label-success"> {%$order[order].totalamount%} </span>
 													</div>
 												</div>
 											</div>
 										</div>
 										<div class="col2">
 											<div class="date">
-												 Just now
+												 {%formattime second = ($smarty.now - $order[order].tradetime)%}
 											</div>
 										</div>
 									</li>
+                                    {%/if%}
+                                    {%/section%}
+									
+                                    {%section name=register loop=$register%}
 									<li>
-										<a href="#">
 										<div class="col1">
 											<div class="cont">
 												<div class="cont-col1">
 													<div class="label label-sm label-success">
-														<i class="fa fa-bar-chart-o"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 Finance Report for year 2013 has been released.
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 20 mins
-											</div>
-										</div>
-										</a>
-									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-danger">
 														<i class="fa fa-user"></i>
 													</div>
 												</div>
 												<div class="cont-col2">
 													<div class="desc">
-														 You have 5 pending membership that requires a quick review.
+														 新增了一位用户 <a href="{%url c=user a=userlist%}">{%$register[register].telephone%}</a>
 													</div>
 												</div>
 											</div>
 										</div>
 										<div class="col2">
 											<div class="date">
-												 24 mins
+												 {%formattime second = ($smarty.now - $register[register].regtime)%}
 											</div>
 										</div>
 									</li>
+                                    {%/section%}
+                                    {%section name=order loop=$order%}
+                                    {%if $order[order].status == 0%}
 									<li>
 										<div class="col1">
 											<div class="cont">
@@ -358,247 +321,29 @@
 												</div>
 												<div class="cont-col2">
 													<div class="desc">
-														 New order received with <span class="label label-sm label-success">
-														Reference Number: DR23923 </span>
+														 新订单产生 <span class="label label-sm label-success">
+														编号: <a href="{%url c=order a=information id=$order[order].id%}">{%$order[order].orderno%}</a> </span>
 													</div>
 												</div>
 											</div>
 										</div>
 										<div class="col2">
 											<div class="date">
-												 30 mins
+												 {%formattime second = ($smarty.now - $order[order].createtime)%}
 											</div>
 										</div>
 									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-success">
-														<i class="fa fa-user"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 You have 5 pending membership that requires a quick review.
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 24 mins
-											</div>
-										</div>
-									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-default">
-														<i class="fa fa-bell-o"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 Web server hardware needs to be upgraded. <span class="label label-sm label-default ">
-														Overdue </span>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 2 hours
-											</div>
-										</div>
-									</li>
-									<li>
-										<a href="#">
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-default">
-														<i class="fa fa-briefcase"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 IPO Report for year 2013 has been released.
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 20 mins
-											</div>
-										</div>
-										</a>
-									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-info">
-														<i class="fa fa-check"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 You have 4 pending tasks. <span class="label label-sm label-warning ">
-														Take action <i class="fa fa-share"></i>
-														</span>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 Just now
-											</div>
-										</div>
-									</li>
-									<li>
-										<a href="#">
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-danger">
-														<i class="fa fa-bar-chart-o"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 Finance Report for year 2013 has been released.
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 20 mins
-											</div>
-										</div>
-										</a>
-									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-default">
-														<i class="fa fa-user"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 You have 5 pending membership that requires a quick review.
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 24 mins
-											</div>
-										</div>
-									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-info">
-														<i class="fa fa-shopping-cart"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 New order received with <span class="label label-sm label-success">
-														Reference Number: DR23923 </span>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 30 mins
-											</div>
-										</div>
-									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-success">
-														<i class="fa fa-user"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 You have 5 pending membership that requires a quick review.
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 24 mins
-											</div>
-										</div>
-									</li>
-									<li>
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-warning">
-														<i class="fa fa-bell-o"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 Web server hardware needs to be upgraded. <span class="label label-sm label-default ">
-														Overdue </span>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 2 hours
-											</div>
-										</div>
-									</li>
-									<li>
-										<a href="#">
-										<div class="col1">
-											<div class="cont">
-												<div class="cont-col1">
-													<div class="label label-sm label-info">
-														<i class="fa fa-briefcase"></i>
-													</div>
-												</div>
-												<div class="cont-col2">
-													<div class="desc">
-														 IPO Report for year 2013 has been released.
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col2">
-											<div class="date">
-												 20 mins
-											</div>
-										</div>
-										</a>
-									</li>
+                                    {%/if%}
+                                    {%/section%}
+									
 								</ul>
 							</div>
-							<div class="scroller-footer">
+							<!--<div class="scroller-footer">
 								<div class="btn-arrow-link pull-right">
 									<a href="#">See All Records</a>
 									<i class="icon-arrow-right"></i>
 								</div>
-							</div>
+							</div>-->
 						</div>
 					</div>
 				</div>
@@ -607,9 +352,10 @@
 						<div class="portlet-title">
 							<div class="caption">
 								<i class="icon-share font-green-haze hide"></i>
-								<span class="caption-subject font-green-haze bold uppercase">Tasks</span>
-								<span class="caption-helper">tasks summary...</span>
+								<span class="caption-subject font-green-haze bold uppercase">提醒</span>
+								<span class="caption-helper">发货提醒 & 库存提醒</span>
 							</div>
+                            <!--
 							<div class="actions">
 								<div class="btn-group">
 									<a class="btn green-haze btn-circle btn-sm" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
@@ -657,20 +403,20 @@
 									</ul>
 								</div>
 							</div>
+                            -->
 						</div>
 						<div class="portlet-body">
 							<div class="task-content">
 								<div class="scroller" style="height: 305px;" data-always-visible="1" data-rail-visible1="1">
 									<!-- START TASK LIST -->
 									<ul class="task-list">
+                                    	{%section name=shipalert loop=$shipalert%}
 										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
+											
 											<div class="task-title">
 												<span class="task-title-sp">
-												Present 2013 Year IPO Statistics at Board Meeting </span>
-												<span class="label label-sm label-success">Company</span>
+												{%if !empty($shipalert[shipalert].username)%}一个名字叫：{%$shipalert[shipalert].username%}{%else%}手机号:{%$shipalert[shipalert].telephone%}{%/if%} 的用户提醒您对订单<a href="{%url c=order a=information id=$shipalert[shipalert].oid%}">{%$shipalert[shipalert].orderno%}</a>速速发货 </span>
+												<span class="label label-sm label-success">发货</span>
 												<span class="task-bell">
 												<i class="fa fa-bell-o"></i>
 												</span>
@@ -682,60 +428,23 @@
 													</a>
 													<ul class="dropdown-menu pull-right">
 														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
+															<a href="#" class="yesiknow" data-id="{%$shipalert[shipalert].id%}">
+																<i class="fa fa-check"></i> 知道了 
+                                                            </a>
 														</li>
 													</ul>
 												</div>
 											</div>
 										</li>
-										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
+										{%/section%}
+                                        
+                                        {%section name=refund loop=$refund%}
+                                        <li>
+											
 											<div class="task-title">
 												<span class="task-title-sp">
-												Hold An Interview for Marketing Manager Position </span>
-												<span class="label label-sm label-danger">Marketing</span>
-											</div>
-											<div class="task-config">
-												<div class="task-config-btn btn-group">
-													<a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-													<i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
-													</a>
-													<ul class="dropdown-menu pull-right">
-														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
-											<div class="task-title">
-												<span class="task-title-sp">
-												AirAsia Intranet System Project Internal Meeting </span>
-												<span class="label label-sm label-success">AirAsia</span>
+												{%if !empty($refund[refund].username)%}一个名字叫：{%$refund[refund].username%}{%else%}手机号:{%$refund[refund].telephone%}{%/if%} 的用发起了一个退款请求 <a href="{%url c=order a=information id=$refund[refund].oid%}">{%$refund[refund].orderno%}</a></span>
+												<span class="label label-sm label-info">退款</span>
 												<span class="task-bell">
 												<i class="fa fa-bell-o"></i>
 												</span>
@@ -747,223 +456,41 @@
 													</a>
 													<ul class="dropdown-menu pull-right">
 														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
+															<a href="{%url c=refund a=admin%}">
+																<i class="fa fa-car"></i> 看看
+                                                            </a>
 														</li>
 													</ul>
 												</div>
 											</div>
 										</li>
-										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
+                                        {%/section%}
+                                        {%if isset($product)%}
+                                    	{%section name=product loop=$product%}
+										<li{%if $smarty.section.product.last%} class="last-line"{%/if%}>
+											
 											<div class="task-title">
 												<span class="task-title-sp">
-												Technical Management Meeting </span>
-												<span class="label label-sm label-warning">Company</span>
-											</div>
-											<div class="task-config">
-												<div class="task-config-btn btn-group">
-													<a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-													<i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
-													</a>
-													<ul class="dropdown-menu pull-right">
-														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
-											<div class="task-title">
-												<span class="task-title-sp">
-												Kick-off Company CRM Mobile App Development </span>
-												<span class="label label-sm label-info">Internal Products</span>
-											</div>
-											<div class="task-config">
-												<div class="task-config-btn btn-group">
-													<a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-													<i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
-													</a>
-													<ul class="dropdown-menu pull-right">
-														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
-											<div class="task-title">
-												<span class="task-title-sp">
-												Prepare Commercial Offer For SmartVision Website Rewamp </span>
-												<span class="label label-sm label-danger">SmartVision</span>
-											</div>
-											<div class="task-config">
-												<div class="task-config-btn btn-group">
-													<a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-													<i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
-													</a>
-													<ul class="dropdown-menu pull-right">
-														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
-											<div class="task-title">
-												<span class="task-title-sp">
-												Sign-Off The Comercial Agreement With AutoSmart </span>
-												<span class="label label-sm label-default">AutoSmart</span>
+                                                <a href="{%url c=product a=edit action=edit id=$product[product].id%}">{%$product[product].name%}</a> 库存量不足
+												</span>
+												<span class="label label-sm label-danger">库存</span>
 												<span class="task-bell">
 												<i class="fa fa-bell-o"></i>
 												</span>
 											</div>
-											<div class="task-config">
-												<div class="task-config-btn btn-group">
-													<a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-													<i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
-													</a>
-													<ul class="dropdown-menu pull-right">
-														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
-														</li>
-													</ul>
-												</div>
-											</div>
 										</li>
-										<li>
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
-											<div class="task-title">
-												<span class="task-title-sp">
-												Company Staff Meeting </span>
-												<span class="label label-sm label-success">Cruise</span>
-												<span class="task-bell">
-												<i class="fa fa-bell-o"></i>
-												</span>
-											</div>
-											<div class="task-config">
-												<div class="task-config-btn btn-group">
-													<a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-													<i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
-													</a>
-													<ul class="dropdown-menu pull-right">
-														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li class="last-line">
-											<div class="task-checkbox">
-												<input type="checkbox" class="liChild" value=""/>
-											</div>
-											<div class="task-title">
-												<span class="task-title-sp">
-												KeenThemes Investment Discussion </span>
-												<span class="label label-sm label-warning">KeenThemes </span>
-											</div>
-											<div class="task-config">
-												<div class="task-config-btn btn-group">
-													<a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-													<i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
-													</a>
-													<ul class="dropdown-menu pull-right">
-														<li>
-															<a href="#">
-															<i class="fa fa-check"></i> Complete </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-pencil"></i> Edit </a>
-														</li>
-														<li>
-															<a href="#">
-															<i class="fa fa-trash-o"></i> Cancel </a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
+										{%/section%}
+                                        {%/if%}
 									</ul>
 									<!-- END START TASK LIST -->
 								</div>
 							</div>
-							<div class="task-footer">
+							<!--<div class="task-footer">
 								<div class="btn-arrow-link pull-right">
 									<a href="#">See All Records</a>
 									<i class="icon-arrow-right"></i>
 								</div>
-							</div>
+							</div>-->
 						</div>
 					</div>
 				</div>
@@ -976,22 +503,18 @@
 						<div class="portlet-title">
 							<div class="caption">
 								<i class="icon-cursor font-purple-intense hide"></i>
-								<span class="caption-subject font-purple-intense bold uppercase">来源</span>
-							</div>
-							<div class="actions">
-								<a href="javascript:;" class="btn btn-sm btn-circle btn-default easy-pie-chart-reload">
-								<i class="fa fa-repeat"></i> 刷新 </a>
+								<span class="caption-subject font-purple-intense bold uppercase">订单来源</span>
 							</div>
 						</div>
 						<div class="portlet-body">
-							<div class="row">
+							<div class="row" id="order-easy-pie-chart">
 								<div class="col-md-4">
 									<div class="easy-pie-chart">
 										<div class="number ios" data-percent="0">
 											<span>
 											</span>
 										</div>
-										<a class="title" href="#">
+										<a class="title" href="{%url c=order a=orderlist%}">
 										IOS <i class="icon-arrow-right"></i>
 										</a>
 									</div>
@@ -1004,7 +527,7 @@
 											<span>
 											</span>
 										</div>
-										<a class="title" href="#">
+										<a class="title" href="{%url c=order a=orderlist%}">
 										ANDROID <i class="icon-arrow-right"></i>
 										</a>
 									</div>
@@ -1017,7 +540,7 @@
 											<span>
 											</span>
 										</div>
-										<a class="title" href="#">
+										<a class="title" href="{%url c=order a=orderlist%}">
 										WAP <i class="icon-arrow-right"></i>
 										</a>
 									</div>
@@ -1030,51 +553,46 @@
 					<div class="portlet light ">
 						<div class="portlet-title">
 							<div class="caption">
-								<i class="icon-equalizer font-purple-plum hide"></i>
-								<span class="caption-subject font-red-sunglo bold uppercase">Server Stats</span>
-								<span class="caption-helper">monthly stats...</span>
-							</div>
-							<div class="tools">
-								<a href="" class="collapse">
-								</a>
-								<a href="#portlet-config" data-toggle="modal" class="config">
-								</a>
-								<a href="" class="reload">
-								</a>
-								<a href="" class="remove">
-								</a>
+								<i class="icon-cursor font-purple-intense hide"></i>
+								<span class="caption-subject font-purple-intense bold uppercase">用户来源</span>
 							</div>
 						</div>
 						<div class="portlet-body">
-							<div class="row">
+							<div class="row" id="user-easy-pie-chart">
 								<div class="col-md-4">
-									<div class="sparkline-chart">
-										<div class="number" id="sparkline_bar">
+									<div class="easy-pie-chart">
+										<div class="number ios" data-percent="0">
+											<span>
+											</span>
 										</div>
-										<a class="title" href="#">
-										Network <i class="icon-arrow-right"></i>
+										<a class="title" href="{%url c=user a=userlist%}">
+										IOS <i class="icon-arrow-right"></i>
 										</a>
 									</div>
 								</div>
 								<div class="margin-bottom-10 visible-sm">
 								</div>
 								<div class="col-md-4">
-									<div class="sparkline-chart">
-										<div class="number" id="sparkline_bar2">
+									<div class="easy-pie-chart">
+										<div class="number android" data-percent="0">
+											<span>
+											</span>
 										</div>
-										<a class="title" href="#">
-										CPU Load <i class="icon-arrow-right"></i>
+										<a class="title" href="{%url c=user a=userlist%}">
+										ANDROID <i class="icon-arrow-right"></i>
 										</a>
 									</div>
 								</div>
 								<div class="margin-bottom-10 visible-sm">
 								</div>
 								<div class="col-md-4">
-									<div class="sparkline-chart">
-										<div class="number" id="sparkline_line">
+									<div class="easy-pie-chart">
+										<div class="number wap" data-percent="0">
+											<span>
+											</span>
 										</div>
-										<a class="title" href="#">
-										Load Rate <i class="icon-arrow-right"></i>
+										<a class="title" href="{%url c=user a=userlist%}">
+										WAP <i class="icon-arrow-right"></i>
 										</a>
 									</div>
 								</div>
@@ -1086,1066 +604,60 @@
 			<div class="clearfix">
 			</div>
 			<div class="row">
-				<div class="col-md-6 col-sm-6">
-					<!-- BEGIN REGIONAL STATS PORTLET-->
-					<div class="portlet light ">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="icon-share font-red-sunglo"></i>
-								<span class="caption-subject font-red-sunglo bold uppercase">Regional Stats</span>
-							</div>
-							<div class="actions">
-								<a class="btn btn-circle btn-icon-only btn-default" href="#">
-								<i class="icon-cloud-upload"></i>
-								</a>
-								<a class="btn btn-circle btn-icon-only btn-default" href="#">
-								<i class="icon-wrench"></i>
-								</a>
-								<a class="btn btn-circle btn-icon-only btn-default" href="#">
-								<i class="icon-trash"></i>
-								</a>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div id="region_statistics_loading">
-								<img src="{%$VIEW_ROOT%}/assets/admin/layout/img/loading.gif" alt="loading"/>
-							</div>
-							<div id="region_statistics_content" class="display-none">
-								<div class="btn-toolbar margin-bottom-10">
-									<div class="btn-group btn-group-circle" data-toggle="buttons">
-										<a href="" class="btn grey-salsa btn-sm active">
-										Users </a>
-										<a href="" class="btn grey-salsa btn-sm">
-										Orders </a>
-									</div>
-									<div class="btn-group pull-right">
-										<a href="" class="btn btn-circle grey-salsa btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-										Select Region <span class="fa fa-angle-down">
-										</span>
-										</a>
-										<ul class="dropdown-menu pull-right">
-											<li>
-												<a href="javascript:;" id="regional_stat_world">
-												World </a>
-											</li>
-											<li>
-												<a href="javascript:;" id="regional_stat_usa">
-												USA </a>
-											</li>
-											<li>
-												<a href="javascript:;" id="regional_stat_europe">
-												Europe </a>
-											</li>
-											<li>
-												<a href="javascript:;" id="regional_stat_russia">
-												Russia </a>
-											</li>
-											<li>
-												<a href="javascript:;" id="regional_stat_germany">
-												Germany </a>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div id="vmap_world" class="vmaps display-none">
-								</div>
-								<div id="vmap_usa" class="vmaps display-none">
-								</div>
-								<div id="vmap_europe" class="vmaps display-none">
-								</div>
-								<div id="vmap_russia" class="vmaps display-none">
-								</div>
-								<div id="vmap_germany" class="vmaps display-none">
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- END REGIONAL STATS PORTLET-->
-				</div>
 				<div class="col-md-6 col-sm-6">
 					<!-- BEGIN PORTLET-->
 					<div class="portlet light">
 						<div class="portlet-title tabbable-line">
 							<div class="caption">
 								<i class="icon-globe font-green-sharp"></i>
-								<span class="caption-subject font-green-sharp bold uppercase">Feeds</span>
+								<span class="caption-subject font-green-sharp bold uppercase">在线用户</span>
 							</div>
 							<ul class="nav nav-tabs">
 								<li class="active">
-									<a href="#tab_1_1" data-toggle="tab">
-									System </a>
-								</li>
-								<li>
-									<a href="#tab_1_2" data-toggle="tab">
-									Activities </a>
-								</li>
-								<li>
 									<a href="#tab_1_3" data-toggle="tab">
-									Recent Users </a>
+									最近登陆 </a>
 								</li>
 							</ul>
 						</div>
 						<div class="portlet-body">
 							<!--BEGIN TABS-->
 							<div class="tab-content">
-								<div class="tab-pane active" id="tab_1_1">
-									<div class="scroller" style="height: 339px;" data-always-visible="1" data-rail-visible="0">
-										<ul class="feeds">
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 You have 4 pending tasks. <span class="label label-sm label-info">
-																Take action <i class="fa fa-share"></i>
-																</span>
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New version v1.4 just lunched!
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 20 mins
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-danger">
-																<i class="fa fa-bolt"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 Database server #12 overloaded. Please fix the issue.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 24 mins
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-info">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 30 mins
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 40 mins
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-warning">
-																<i class="fa fa-plus"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 1.5 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 Web server hardware needs to be upgraded. <span class="label label-sm label-default ">
-																Overdue </span>
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 2 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-default">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 3 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-warning">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 5 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-info">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 18 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-default">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 21 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-info">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 22 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-default">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 21 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-info">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 22 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-default">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 21 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-info">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 22 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-default">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 21 hours
-													</div>
-												</div>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-info">
-																<i class="fa fa-bullhorn"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received. Please take care of it.
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 22 hours
-													</div>
-												</div>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="tab-pane" id="tab_1_2">
+								<div class="tab-pane active" id="tab_1_3">
 									<div class="scroller" style="height: 290px;" data-always-visible="1" data-rail-visible1="1">
-										<ul class="feeds">
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New order received
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 10 mins
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-danger">
-																<i class="fa fa-bolt"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 Order #24DOP4 has been rejected. <span class="label label-sm label-danger ">
-																Take action <i class="fa fa-share"></i>
-																</span>
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 24 mins
-													</div>
-												</div>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-												<div class="col1">
-													<div class="cont">
-														<div class="cont-col1">
-															<div class="label label-sm label-success">
-																<i class="fa fa-bell-o"></i>
-															</div>
-														</div>
-														<div class="cont-col2">
-															<div class="desc">
-																 New user registered
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col2">
-													<div class="date">
-														 Just now
-													</div>
-												</div>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="tab-pane" id="tab_1_3">
-									<div class="scroller" style="height: 290px;" data-always-visible="1" data-rail-visible1="1">
+                                    	{%section name=recentLogin loop=$recentLogin%}
+                                        {%if $smarty.section.recentLogin.index % 2 == 0%}
 										<div class="row">
+                                        {%/if%}
 											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
+												<img alt="" width="45" height="45" src="{%if empty($recentLogin[recentLogin].gravatar)%}{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png{%else%}{%resource path=$recentLogin[recentLogin].gravatar%}{%/if%}" class="img-responsive"/>
 												<div class="details">
 													<div>
 														<a href="#">
-														Robert Nilson </a>
+														{%if empty($recentLogin[recentLogin].username)%}{%$recentLogin[recentLogin].telephone%}{%else%}{%$recentLogin[recentLogin].username%}{%/if%} </a>
+                                                        {%if $smarty.now - $recentLogin[recentLogin].logtime < 5*60%}
 														<span class="label label-sm label-success label-mini">
-														Approved </span>
+														在线 </span>
+                                                        {%else%}
+                                                        <span class="label label-sm label-default label-mini">
+														离线 </span>
+                                                        {%/if%}
 													</div>
 													<div>
-														 29 Jan 2013 10:45AM
+														 {%$recentLogin[recentLogin].logtime|date_format:"Y-m-d H:i:s"%}
 													</div>
 												</div>
 											</div>
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Lisa Miller </a>
-														<span class="label label-sm label-info">
-														Pending </span>
-													</div>
-													<div>
-														 19 Jan 2013 10:45AM
-													</div>
-												</div>
-											</div>
+										{%if $smarty.section.recentLogin.index % 2 == 1%}
 										</div>
-										<div class="row">
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Eric Kim </a>
-														<span class="label label-sm label-info">
-														Pending </span>
-													</div>
-													<div>
-														 19 Jan 2013 12:45PM
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Lisa Miller </a>
-														<span class="label label-sm label-danger">
-														In progress </span>
-													</div>
-													<div>
-														 19 Jan 2013 11:55PM
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Eric Kim </a>
-														<span class="label label-sm label-info">
-														Pending </span>
-													</div>
-													<div>
-														 19 Jan 2013 12:45PM
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Lisa Miller </a>
-														<span class="label label-sm label-danger">
-														In progress </span>
-													</div>
-													<div>
-														 19 Jan 2013 11:55PM
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Eric Kim </a>
-														<span class="label label-sm label-info">
-														Pending </span>
-													</div>
-													<div>
-														 19 Jan 2013 12:45PM
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Lisa Miller </a>
-														<span class="label label-sm label-danger">
-														In progress </span>
-													</div>
-													<div>
-														 19 Jan 2013 11:55PM
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Eric Kim </a>
-														<span class="label label-sm label-info">
-														Pending </span>
-													</div>
-													<div>
-														 19 Jan 2013 12:45PM
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Lisa Miller </a>
-														<span class="label label-sm label-danger">
-														In progress </span>
-													</div>
-													<div>
-														 19 Jan 2013 11:55PM
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Eric Kim </a>
-														<span class="label label-sm label-info">
-														Pending </span>
-													</div>
-													<div>
-														 19 Jan 2013 12:45PM
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 user-info">
-												<img alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar.png" class="img-responsive"/>
-												<div class="details">
-													<div>
-														<a href="#">
-														Lisa Miller </a>
-														<span class="label label-sm label-danger">
-														In progress </span>
-													</div>
-													<div>
-														 19 Jan 2013 11:55PM
-													</div>
-												</div>
-											</div>
-										</div>
+                                        {%/if%}
+                                        {%/section%}
+										
+										
+										
 									</div>
 								</div>
 							</div>
 							<!--END TABS-->
-						</div>
-					</div>
-					<!-- END PORTLET-->
-				</div>
-			</div>
-			<div class="clearfix">
-			</div>
-			<div class="row">
-				
-				<div class="col-md-6 col-sm-6">
-					<!-- BEGIN PORTLET-->
-					<div class="portlet light ">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="icon-bubble font-red-sunglo"></i>
-								<span class="caption-subject font-red-sunglo bold uppercase">Chats</span>
-							</div>
-							<div class="actions">
-								<div class="portlet-input input-inline">
-									<div class="input-icon right">
-										<i class="icon-magnifier"></i>
-										<input type="text" class="form-control input-circle" placeholder="search...">
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="portlet-body" id="chats">
-							<div class="scroller" style="height: 385px;" data-always-visible="1" data-rail-visible1="1">
-								<ul class="chats">
-									<li class="in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar1.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Bob Nilson </a>
-											<span class="datetime">
-											at 20:09 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-										</div>
-									</li>
-									<li class="out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar2.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Lisa Wong </a>
-											<span class="datetime">
-											at 20:11 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-										</div>
-									</li>
-									<li class="in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar1.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Bob Nilson </a>
-											<span class="datetime">
-											at 20:30 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-										</div>
-									</li>
-									<li class="out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Richard Doe </a>
-											<span class="datetime">
-											at 20:33 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-										</div>
-									</li>
-									<li class="in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Richard Doe </a>
-											<span class="datetime">
-											at 20:35 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-										</div>
-									</li>
-									<li class="out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar1.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Bob Nilson </a>
-											<span class="datetime">
-											at 20:40 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-										</div>
-									</li>
-									<li class="in">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar3.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Richard Doe </a>
-											<span class="datetime">
-											at 20:40 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-										</div>
-									</li>
-									<li class="out">
-										<img class="avatar" alt="" src="{%$VIEW_ROOT%}/assets/admin/layout/img/avatar1.jpg"/>
-										<div class="message">
-											<span class="arrow">
-											</span>
-											<a href="#" class="name">
-											Bob Nilson </a>
-											<span class="datetime">
-											at 20:54 </span>
-											<span class="body">
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. sed diam nonummy nibh euismod tincidunt ut laoreet. </span>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="chat-form">
-								<div class="input-cont">
-									<input class="form-control" type="text" placeholder="Type a message here..."/>
-								</div>
-								<div class="btn-cont">
-									<span class="arrow">
-									</span>
-									<a href="" class="btn blue icn-only">
-									<i class="fa fa-check icon-white"></i>
-									</a>
-								</div>
-							</div>
 						</div>
 					</div>
 					<!-- END PORTLET-->
@@ -2177,13 +689,6 @@
 <script src="{%$VIEW_ROOT%}/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
@@ -2201,7 +706,6 @@
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script src="{%$VIEW_ROOT%}/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {	
@@ -2209,14 +713,13 @@ jQuery(document).ready(function() {
 	Layout.init(); // init layout
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
-	Index.init();   
-	Index.initDashboardDaterange();
-	Index.initJQVMAP(); // init index page's custom scripts
+	//Index.init();   
+	//Index.initDashboardDaterange();
+	//Index.initJQVMAP(); // init index page's custom scripts
 	Index.initCharts(); // init index page's custom scripts
-	Index.initChat();
+	//Index.initChat();
 	Index.initMiniCharts();
-	Index.initIntro();
-	Tasks.initDashboardWidget();
+	//Index.initIntro();
 	
 	var get=function (url)
 	{
@@ -2242,6 +745,19 @@ jQuery(document).ready(function() {
 	
 	var product = get('{%url c=statistics a=product%}');
 	$('#productnum').html(product.num);
+	
+	
+	$('.yesiknow').on('click',function(){
+		var id = $(this).data('id');
+		var ths = $(this);
+		$.post('{%url c=order a=shipalert%}',{id:id,ok:1},function(response){
+			if(response.code == 1)
+			{
+				ths.parents('li').remove();
+			}
+		});
+		return false;
+	});
 });
 </script>
 <!-- END JAVASCRIPTS -->

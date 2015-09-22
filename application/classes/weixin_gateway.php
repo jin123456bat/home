@@ -224,15 +224,16 @@ class weixin_gateway
 	{
 		$order = empty($order)?$this->_order:$order;
 		$url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
+		
 		$data = array(
 			'appid' => $this->_system->get('appid','weixin'),
 			'mch_id' => $this->_system->get('mchid','weixin'),
 			'nonce_str'=> random::word(32),
 			'transaction_id' => $order['paynumber'], //支付单号
 			'out_trade_no' => $order['orderno'],  //订单号
-			'out_refund_no' => $order['refundid'],  //退款单号id
+			'out_refund_no' => $refund['refundno'],  //退款单号id
 			'total_fee' => $order['ordertotalamount'] * 100,  //订单总金额
-			'refund_fee' => $order['refund_fee']*100,//退款金额
+			'refund_fee' => $refund['money']*100,//退款金额
 			'refund_fee_type' => 'CNY',
 			'op_user_id' => $this->_system->get('mchid','weixin'),  //同意退款人
 		);
@@ -243,12 +244,15 @@ class weixin_gateway
 			$content .= ('<'.$key.'>'.$value.'</'.$key.'>');
 		}
 		$content .= '</xml>';
-		$pem = ROOT.'/extends/weixin/cert/apiclient_cert.pem';//证书地址
-		$key = ROOT.'/extends/weixin/cert/apiclient_key.pem';//第二个证书
-		$response = $this->postSsl($url, $content, $pem,$key);
+		
+		$certFilePath = $this->_system->get('weixincertfile','costums');
+		$certPassword = $this->_system->get('weixincertfilepassword','costums');
+		//带证书的curl
+		$response = $this->postSsl($url, $data, $certFilePath, $certPassword);
+		
 		$response = simplexml_load_string($response);
 		$response = $this->xmlToArray($response);
-		if($response['result_code'] == 'SUCCESS')
+		if(isset($response['result_code']) && $response['result_code'] == 'SUCCESS')
 		{
 			return $response;
 		}
@@ -336,24 +340,7 @@ class weixin_gateway
 		$certFilePath = $this->_system->get('weixincertfile','costums');
 		$certPassword = $this->_system->get('weixincertfilepassword','costums');
 		//带证书的curl
-		$ch = curl_init($url);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
-		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-		
-		//pem证书
-		curl_setopt($ch, CURLOPT_SSLCERT, $certFilePath);
-		curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $certPassword);
-		curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
-		
-		curl_setopt($ch,CURLOPT_HEADER,0);
-		curl_setopt($ch,CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-		curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
-		$result = curl_exec($ch);
-		
-		//返回字符集居然是GBK的 还不能设置为UTF-8
-		//$result = iconv("GBK", "UTF-8", $result);
+		$result = $this->postSsl($url, $data, $certFilePath, $certPassword);
 		
 		$result = simplexml_load_string($result);
 		$result = $this->xmlToArray($result);
@@ -387,21 +374,24 @@ class weixin_gateway
 	/**
 	 * 带ssl的post提交
 	 */
-	function postSsl($url,$data,$pem,$key)
+	function postSsl($url,$data,$certFilePath,$certPassword)
 	{
 		$ch = curl_init($url);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch,CURLOPT_SSLCERTTYPE,'PEM');
-		curl_setopt($ch,CURLOPT_SSLCERT, $pem);
-		curl_setopt($ch,CURLOPT_SSLKEYTYPE,'PEM');
-		curl_setopt($ch,CURLOPT_SSLKEY, $key);
+		
+		//pem证书
+		curl_setopt($ch, CURLOPT_SSLCERT, $certFilePath);
+		curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $certPassword);
+		curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
+		
 		curl_setopt($ch,CURLOPT_HEADER,0);
 		curl_setopt($ch,CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 		curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
-		return curl_exec($ch);
+		$result = curl_exec($ch);
+		return $result;
 	}
 	
 	/**

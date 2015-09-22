@@ -78,6 +78,25 @@ class orderlistModel extends model
 	{
 		return $this->where('id=?',array($id))->update('note',$note);
 	}
+	
+	/**
+	 * 根据订单号更新运单号
+	 * @param unknown $orderno
+	 * @param array $waybills
+	 * @param string $cover
+	 */
+	function updateWaybill($orderno,array $waybills,$cover = false)
+	{
+		if(!$cover)
+		{
+			$result = $this->where('orderno=?',array($orderno))->select('waybills');
+			if(isset($result['0']['waybills']) && empty($result[0]['waybills']))
+			{
+				$this->where('orderno=?',array($orderno))->update('waybills',serialize($waybills));
+			}
+		}
+		$this->where('orderno=?',array($orderno))->update('waybills',serialize($waybills));
+	}
 
 	/**
 	 * 获得用户订单详情
@@ -158,11 +177,16 @@ class orderlistModel extends model
 	 * 自定义导出
 	 * 
 	 * @param unknown $parameter        	
-	 * @param array $id        	
+	 * @param array $id
+	 * @param array $filter
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function export($parameter, array $id)
+	function export($parameter, array $id,array $filter)
 	{
+		if(isset($filter['status']) && $filter['status']!==NULL)
+		{
+			$this->where('status=?',array($filter['status']));
+		}
 		if (! empty($id)) {
 			$this->where('id in (?)', $id);
 		}
@@ -201,9 +225,9 @@ class orderlistModel extends model
 	 * @param unknown $goods_score 商品评分
 	 * @param string $content 评价内容
 	 */
-	function score($id,$uid,$ship_score,$service_score,$goods_score,$content)
+	function score($id,$uid,$ship_score,$service_score,$goods_score)
 	{
-		return ($this->where('id=? and uid=?',array($id,$uid))->update(array('ship_score'=>$ship_score,'service_score'=>$service_score,'goods_score'=>$goods_score,'content'=>$content,'status'=>self::STATUS_COMPLETE)));
+		return ($this->where('id=? and uid=?',array($id,$uid))->update(array('ship_score'=>$ship_score,'service_score'=>$service_score,'goods_score'=>$goods_score,'status'=>self::STATUS_COMPLETE)));
 	}
 
 	/**
@@ -217,7 +241,9 @@ class orderlistModel extends model
 		$data[] = 0;
 		$data[] = 0;
 		$data[] = 0;
-		$data[] = '';
+		$data[] = 0;
+		$data[] = 0;
+		
 		if ($this->insert($data)) {
 			$oid = $this->lastInsertId();
 			$orderdetailModel = $this->model('orderdetail');
@@ -251,7 +277,11 @@ class orderlistModel extends model
 	 */
 	function setShipping($orderno)
 	{
-		return $this->where('orderno=?',array($orderno))->update('status',self::STATUS_SHIPPING);
+		$data = array(
+			'status' => self::STATUS_SHIPPING,
+			'shiptime' => $_SERVER['REQUEST_TIME']
+		);
+		return $this->where('orderno=?',array($orderno))->update($data);
 	}
 	
 	/**

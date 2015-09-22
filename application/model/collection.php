@@ -36,8 +36,9 @@ class collectionModel extends model
 			$stock = 0;
 			$price = 0;
 			$sku = '';
+			$pic = '';
 			$$type = $value;
-			$data = array(NULL,$pid,$content,$stock,$price,$sku);
+			$data = array(NULL,$pid,$content,$stock,$price,$sku,$pic);
 			if($this->insert($data))
 			{
 				return $this->lastInsertId();

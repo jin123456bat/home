@@ -4,20 +4,18 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <title>我们家</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <meta name="Keywords" content="" />
-  <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/mobile/css/reset.css">
-  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/mobile/css/style.css">
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/common.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/jquery.transit.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/jquery.mslides.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
+  <script type="text/javascript" src="js/jquery.transit.js"></script>
+  <script type="text/javascript" src="js/jquery.mslides.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
       <h1>我们家</h1>
-      <a class="btn right_btn"><i class="icon magnify"></i></a>
+      <a class="btn right_btn" href="search.html"><i class="icon magnify"></i></a>
     </header>
   </div>
   <div class="caidanCon">
@@ -34,25 +32,19 @@
     <div class="banner_cont">
       <div id="slider">
         <ul class="clearfix slide1">
-          <li>
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/zhuti.jpg">
-          </li>
-          <li>
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/zhuti.jpg">
-          </li>
         </ul>
       </div>
       <div id="pagi" class="clearfix">
       </div>
     </div>
     <div class="homemid">
-      <img src="{%$VIEW_ROOT%}/assets/mobile/images/homemid.png">
+      <img src="images/homemid.png">
     </div>  
     <div class="homemiaosha">
       <div class="label"></div>
       <div class="tith">手机秒杀</div>
-      <div class="upper">
-        <img src="{%$VIEW_ROOT%}/assets/mobile/images/ms.png">
+      <div class="upper hide" id="miaosha" aId="" onclick="">
+        <img src="images/ms.png" class="mspic">
         <div class="timmer">
           <div class="tit">距本场结束还有</div>
           <div class="clock clearfix">
@@ -67,134 +59,327 @@
           </div>
           <div class="next">
             <span>下一场</span>
-            <a href="">11:00</a>
+            <a href="" id="nextms">11:00</a>
           </div>
         </div>
       </div>
-      <div class="downer clearfix">
-        <a class="leftpic">
-          <img src="{%$VIEW_ROOT%}/assets/mobile/images/leftpic.png">
-        </a>
-        <a class="rightpic">
-          <img src="{%$VIEW_ROOT%}/assets/mobile/images/rightpic1.png">
-        </a>
-        <a class="rightpic">
-          <img src="{%$VIEW_ROOT%}/assets/mobile/images/rightpic2.png">
-        </a>
+      <div class="downer clearfix" id="themes">
       </div>
     </div>
-    <div class="zhutide_pros">
+    <div class="zhutide_pros" id="temai">
       <div class="tits"><div class="icon clocko"></div>今日限时特卖</div>
-      <div class="item clearfix">
-        <div class="pic">
-          <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-          <div class="label miaosha"></div>
-        </div>
-        <div class="right">
-          <div class="name">日本NIVEA妮维雅隔离防晒乳离</div>
-          <div class="desc">15年最新加强防晒指数单品</div>
-          <div class="prices clearfix">
-            <div class="price">￥200</div>
-            <div class="oldp"><span class="cross">￥300</span></div>
-            <div class="discount">4.7</div>
-          </div>
-          <div class="from clearfix">
-            <div class="coutryflag australia"></div>
-            <div class="icon plane"></div>
-            <div class="text">意大利米兰发货直邮邮回国内</div>
-          </div>
-          <div class="cuxiao">
-            <div class="cuxiaoname">七月七号促销</div>
-            <div class="time">距结束时间  01:30</div>
-          </div>
-        </div>
-      </div>
-      <div class="item clearfix">
-        <div class="pic">
-          <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-          <div class="label miaosha"></div>
-        </div>
-        <div class="right">
-          <div class="name">日本NIVEA妮维雅隔离防晒乳离</div>
-          <div class="desc">15年最新加强防晒指数单品</div>
-          <div class="prices clearfix">
-            <div class="price">￥200</div>
-            <div class="oldp"><span class="cross">￥300</span></div>
-            <div class="discount">4.7</div>
-          </div>
-          <div class="from clearfix">
-            <div class="coutryflag australia"></div>
-            <div class="icon plane"></div>
-            <div class="text">意大利米兰发货直邮邮回国内</div>
-          </div>
-          <div class="cuxiao">
-            <div class="cuxiaoname">七月七号促销</div>
-            <div class="time">距结束时间  01:30</div>
-          </div>
-        </div>
-      </div>
+      
     </div>
     <div class="zhutide_pros">
       <div class="tits"><div class="icon earth"></div>全球热销</div>
-      <div class="item clearfix">
-        <div class="pic">
-          <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-          <div class="label miaosha"></div>
-        </div>
-        <div class="right">
-          <div class="name">日本NIVEA妮维雅隔离防晒乳离</div>
-          <div class="desc">15年最新加强防晒指数单品</div>
-          <div class="prices clearfix">
-            <div class="price">￥200</div>
-            <div class="oldp"><span class="cross">￥300</span></div>
-            <div class="discount">4.7</div>
-          </div>
-          <div class="from clearfix">
-            <div class="coutryflag australia"></div>
-            <div class="icon plane"></div>
-            <div class="text">意大利米兰发货直邮邮回国内</div>
-          </div>
-          <div class="cuxiao">
-            <div class="cuxiaoname">七月七号促销</div>
-            <div class="time">距结束时间  01:30</div>
-          </div>
-        </div>
-      </div>
-      <div class="item clearfix">
-        <div class="pic">
-          <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-          <div class="label miaosha"></div>
-        </div>
-        <div class="right">
-          <div class="name">日本NIVEA妮维雅隔离防晒乳离</div>
-          <div class="desc">15年最新加强防晒指数单品</div>
-          <div class="prices clearfix">
-            <div class="price">￥200</div>
-            <div class="oldp"><span class="cross">￥300</span></div>
-            <div class="discount">4.7</div>
-          </div>
-          <div class="from clearfix">
-            <div class="coutryflag australia"></div>
-            <div class="icon plane"></div>
-            <div class="text">意大利米兰发货直邮邮回国内</div>
-          </div>
-          <div class="cuxiao">
-            <div class="cuxiaoname">七月七号促销</div>
-            <div class="time">距结束时间  01:30</div>
-          </div>
-        </div>
-      </div>
+      <div id="rexiao"></div>
     </div>
   </div>
   <script type="text/javascript">
     $(function () {
-      $(".banner_cont").mslides({
-        slideContainer:'slider',
-        page:'pagi',
-      });
-      
-      
+      carousl();
+      themes();
+      miaosha();
+      temai();
+      changxiao();
     });
+    var time_end;
+    function countDown(tm,s_endtime){
+      var time_now = new Date();  // 获取当前时间
+            time_now = time_now.getTime();
+        var time_distance;
+        if(s_endtime){
+          time_distance = s_endtime*1000 - time_now;
+        }else{
+          time_distance = time_end - time_now;  // 结束时间减去当前时间
+        }
+        // console.log(time_distance);
+        var int_day, int_hour, int_minute, int_second;
+        if(time_distance >= 0){
+            // 天时分秒换算
+            int_day = Math.floor(time_distance/86400000);
+            // console.log(int_day);
+            int_day1 = Math.floor(int_day/10);
+            int_day2 = int_day-int_day1*10;
+
+            time_distance -= int_day * 86400000;
+            int_hour = Math.floor(time_distance/3600000);
+            int_hour1 = Math.floor(int_hour/10);
+            int_hour2 = int_hour-int_hour1*10;
+
+            time_distance -= int_hour * 3600000;
+            int_minute = Math.floor(time_distance/60000);
+            int_minute1 = Math.floor(int_minute/10);
+            int_minute2 = int_minute-int_minute1*10;
+
+            time_distance -= int_minute * 60000;
+            int_second = Math.floor(time_distance/1000);
+            int_second1 = Math.floor(int_second/10);
+            int_second2 = int_second-int_second1*10;
+     
+            // 时分秒为单数时、前面加零站位
+            if(int_hour < 10)
+            int_hour = "0" + int_hour;
+            if(int_minute < 10)
+            int_minute = "0" + int_minute;
+            if(int_second < 10)
+            int_second = "0" + int_second;
+              
+            // time_wrap.innerHTML = int_day+'天'+int_hour+':'+int_minute+':'+int_second;
+            if(tm){
+              return int_day+"天"+int_hour+":"+int_minute+":"+int_second;
+            }else{
+              // 显示时间
+              var html = '<span id="c1">'+int_hour1+'</span>'
+                        +  '<span id="c2">'+int_hour2+'</span>'
+                        +  '<span class="clockm">:</span>'
+                        +  '<span id="c3">'+int_minute1+'</span>'
+                        +  '<span id="c4">'+int_minute2+'</span>'
+                        +  '<span class="clockm">:</span>'
+                        +  '<span id="c5">'+int_second1+'</span>'
+                        +  '<span id="c6">'+int_second2+'</span>';
+              $('.timmer .clock').html(html);
+              setTimeout("countDown()",1000);
+            }
+        }else{
+            // time_wrap.innerHTML = time_wrap.innerHTML;
+            // $('.prode_se .prices .price').text('￥'+pageprice);
+        }
+    }
+    var miaoshaing = false;
+    var miaoshacome = false;
+    function miaosha(){
+      $.ajax( {    
+        url:BASEURL+'?c=seckill&a=product',// 跳转到 action    
+        data:{    
+          length:6
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            for(var i=0;i<re.length;i++){
+              var rei = re[i];
+              var stime = rei.s_starttime;
+              var etime = rei.s_endtime;
+              var now = Date.parse(new Date())/1000;
+              // console.log(now);
+              if(!miaoshaing&&now>stime&&now<etime){
+                //正在的活动
+                miaoshaing = true;
+                if(rei.img[0].base_path){
+                  $('#miaosha .mspic')[0].src = rei.img[0].base_path;
+                }
+                $('#miaosha').attr('aId',rei.id);
+                $('#miaosha').attr('onclick','showpro('+rei.id+')');
+                $('#miaosha').show();
+                time_end = etime*1000;
+                console.log(time_end);
+                countDown();
+              }else if(!miaoshacome){
+                //即将的活动
+                console.log(rei.id);
+                miaoshacome = true;
+                var d = new Date(parseInt(stime)*1000);
+                var timestring = d.format('h:m');
+                // console.log(timestring);
+                $('#nextms').text(timestring);
+              }
+            }
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function carousl(){
+      $.ajax( {    
+        url:BASEURL+'?c=carousel&a=getlist',// 跳转到 action    
+        data:{    
+          
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            for(var i=0;i<re.length;i++){
+              var rei = re[i];
+              var image = rei.pic;
+              var func = '';
+              switch(rei.type){
+                case 'product':
+                  func = 'onclick="showpro('+rei.src+')"';
+                  break;
+                case 'theme':
+                  func = 'onclick="showtheme('+rei.src+')"';
+                  break;
+                case 'url':
+                  func = 'onclick="showurl('+rei.src+')"';
+                  break;
+                default:
+                  break;
+              }
+              html+='<li '+func+'><img src="'+image+'"></li>';
+            }
+            $("#slider .slide1").html(html);
+            if($("#slider .slide1 li").length>2){
+              bindSlider();
+              console.log($("#slider .slide1 li").length);
+            }else{
+              $(".banner_cont").css('height',$(window).width()/600*400);
+            }
+            // 
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function showpro(id){
+      window.location.href=baseProUrl+'?pid='+id;
+    }
+    function showtheme(id){
+      window.location.href=baseThemeUrl+'?id='+id;
+    }
+    function showurl(src){
+      window.location.href=src;
+    }
+    var binl = false;
+    function bindSlider(){
+      if(!binl){
+        binl = true;
+        $(".banner_cont").mslides({
+          slideContainer:'slider',
+          page:'pagi',
+          height:$(window).width()/2,
+        });
+      }
+    }
+    function themes(){
+      $.ajax( {    
+        url:BASEURL+'?c=theme&a=getlist',// 跳转到 action    
+        data:{    
+          length:3
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            if(re.length>=3){
+              var re0 = re[0];
+              var re1 = re[1];
+              var re2 = re[2];
+              var html = '<a class="leftpic" onclick="showtheme('+re0.id+')">'
+                    +    '<img src="'+re0.middlepic+'">'
+                    + '</a>'
+                    +  '<a class="rightpic" onclick="showtheme('+re1.id+')">'
+                    +    '<img src="'+re1.smallpic+'">'
+                    +  '</a>'
+                    +  '<a class="rightpic" onclick="showtheme('+re2.id+')">'
+                    +    '<img src="'+re2.smallpic+'">'
+                    +  '</a>';
+              $('#themes').html(html);
+            }
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function temai(){
+      $.ajax( {    
+        url:BASEURL+'?c=sale&a=product',// 跳转到 action    
+        data:{    
+          length:6
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          // console.log(data);
+          if(data.code == 1){
+            var re = data.body;
+            if(re.length>0){
+              var html = fillprodata(re);
+              $("#temai").append(html);
+            }
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function changxiao(){
+      $.ajax( {    
+        url:BASEURL+'?c=hotorder&a=product',// 跳转到 action    
+        data:{    
+          length:6
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          console.log(data);
+          if(data.code == 1){
+            var re = data.body;
+            if(re.length>0){
+              var html = fillprodata(re);
+              $("#rexiao").append(html);
+            }
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function fillprodata(re){
+      var activi = {
+                  'sale':'temai',
+                  'seckill':'miaosha',
+                  'fullcut':'manjian',
+                };
+      var html = "";
+      for(var i=0;i<re.length;i++){
+        var rei = re[i];
+        var discount = (rei.price*10/rei.oldprice).toFixed(1);
+        var shipchar = re.shipchar?re.shipchar:'';
+        discount = discount>=10?'无':discount;
+        var jieshutm = '';
+        if(rei.s_endtime){
+          jieshutm = '<div class="cuxiaoname">'+rei.sname+'</div>'
+             +       '<div class="time">距结束时间  '+countDown(1,rei.s_endtime)+'</div>';
+        }
+        html+='<div class="item clearfix" onclick="showpro('+rei.id+')">'
+            +    '<div class="pic">'
+            +      '<img src="'+rei.img[0].thumbnail_path+'">'
+            +      '<div class="label '+activi[rei.activity]+'"></div>'
+            +    '</div>'
+             +   '<div class="right">'
+             +     '<div class="name">'+rei.name+'</div>'
+             +     '<div class="desc">'+rei.short_description+'</div>'
+             +     '<div class="prices clearfix">'
+             +       '<div class="price">￥'+rei.price+'</div>'
+             +       '<div class="oldp"><span class="cross">￥'+rei.oldprice+'</span></div>'
+             +       '<div class="discount">'+discount+'</div>'
+             +     '</div>'
+             +     '<div class="from clearfix">'
+             +       '<div class="coutryflag"><img src="'+BASER+'/application/assets/flag/'+rei.origin['name']+'.jpg"/></div>'
+             +       '<div class="icon plane"></div>'
+             +       '<div class="text">'+shipchar+'</div>'
+             +     '</div>'
+             +     '<div class="cuxiao">'
+             +       jieshutm
+             +     '</div></div></div>';
+      }
+      return html;
+    }
 
   </script>
 </body>

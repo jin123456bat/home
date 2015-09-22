@@ -34,4 +34,24 @@ class shipalertModel extends model
 		return !empty($result);
 	}
 	
+	/**
+	 * 检索
+	 * @param array $filter
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	function fetchAll(array $filter)
+	{
+		$field = (isset($filter['field']) && !empty($filter['field']))?$filter['field']:'*';
+		$this->table('user','left join','user.id=shipalert.uid');
+		$this->table('orderlist','left join','orderlist.id=shipalert.oid');
+		$this->where('ok=?',array(0));
+		$this->orderby('shipalert.time','desc');
+		return $this->select($field);
+	}
+	
+	function ok($id)
+	{
+		return $this->where('id=?',array($id))->update('ok',1);
+	}
+	
 }

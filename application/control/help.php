@@ -1,11 +1,10 @@
-h<?php
+<?php
 namespace application\control;
 
 use system\core\control;
 use application\classes\login;
 use system\core\filter;
 use application\model\roleModel;
-use system\core\validate;
 use system\core\view;
 use application\classes\blog;
 use application\message\json;

@@ -8,94 +8,223 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
   <script type="text/javascript" src="js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
+  <script type="text/javascript" src="js/Jquery.Query.js"></script>
+  <script type="text/javascript" src="js/ajaxfileupload.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"><i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>评价</h1>
     </header>
   </div>
   <div id="content" style="padding-top:50px;padding-bottom:40px;">
     <div class="uCommentList">
-      <div class="item">
-        <div class="prode clearfix">
-          <div class="leftpic">
-            <img src="images/pro1.jpg">
-          </div>
-          <div class="desc">Puritan’s Pride 普丽普莱 维生素B-12 钴胺素 改善贫血 缓解压力  缓释型易吸收 1000mcg 100粒</div>
-          <div class="price redtext">￥100</div>
-        </div>
-        <div class="comm">
-          <div class="stCon clearfix">
-            描述相符
-            <div class="right">
-              <div class="stars s1"></div><!-- s1 s2 s3 s4 s5 -->
-            </div>
-          </div>
-          <div class="text clearfix">
-            <textarea placeholder="评价一下..."></textarea>
-            <div class="camera"></div>
-          </div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="prode clearfix">
-          <div class="leftpic">
-            <img src="images/pro1.jpg">
-          </div>
-          <div class="desc">Puritan’s Pride 普丽普莱 维生素B-12 钴胺素 改善贫血 缓解压力  缓释型易吸收 1000mcg 100粒</div>
-          <div class="price redtext">￥100</div>
-        </div>
-        <div class="comm">
-          <div class="stCon clearfix">
-            描述相符
-            <div class="right">
-              <div class="stars s1"></div><!-- s1 s2 s3 s4 s5 -->
-            </div>
-          </div>
-          <div class="text clearfix">
-            <textarea placeholder="评价一下..."></textarea>
-            <div class="camera"></div>
-          </div>
-        </div>
-      </div>
+      
     </div>
     <div class="commapp">
       <div class="tit">给我们评分</div>
       <div class="item clearfix">
         <label>物流服务</label>
         <div class="right">
-          <div class="stars s1"></div>
+          <div class="stars s0 clearfix" score=""><i onclick="score(this,1)"></i><i onclick="score(this,2)"></i><i onclick="score(this,3)"></i><i onclick="score(this,4)"></i><i onclick="score(this,5)"></i></div>
         </div>
       </div>
       <div class="item clearfix">
-        <label>发货速度</label>
+        <label>商品评分</label>
         <div class="right">
-          <div class="stars s2"></div>
+          <div class="stars s0 clearfix" score=""><i onclick="score(this,1)"></i><i onclick="score(this,2)"></i><i onclick="score(this,3)"></i><i onclick="score(this,4)"></i><i onclick="score(this,5)"></i></div>
         </div>
       </div>
       <div class="item clearfix">
         <label>服务态度</label>
         <div class="right">
-          <div class="stars s3"></div>
+          <div class="stars s0 clearfix" score=""><i onclick="score(this,1)"></i><i onclick="score(this,2)"></i><i onclick="score(this,3)"></i><i onclick="score(this,4)"></i><i onclick="score(this,5)"></i></div>
         </div>
       </div>
     </div>
+    <form id="form" action="" enctype="multipart/form-data" method="post" style="display:none;"> 
+      <input type="file" name="file" data-url="" id="fileToUpload">
+      <input type="submit">
+    </form>
     <div class="statusbar clearfix">
-      <div class="nmcomm">
+      <!-- <div class="nmcomm">
         <div class="tickono" sele="yes"></div>
         匿名评价
-      </div>
-      <a class="fbcomm">发表评价</a>
+      </div> -->
+      <a class="fbcomm" onclick="commetUp()">发表评价</a>
     </div>
   </div>
   <script type="text/javascript">
-    
-
+  function commetUp(){
+    var sc1 = $('.commapp .item').eq(0).find('.stars').attr('score');
+    var sc2 = $('.commapp .item').eq(2).find('.stars').attr('score');
+    var sc3 = $('.commapp .item').eq(1).find('.stars').attr('score');
+    if(!sc1||!sc2||!sc3){
+      alert('请先打分哦！');
+      return;
+    }
+    var updatas = {
+          id:oid,
+          ship_score:sc1,
+          service_score:sc2,
+          goods_score:sc3,
+          content:'11',
+          comment:[],
+        };
+    $('.uCommentList .item').each(function(){
+      var pscore = $(this).find('.stars').attr('score');
+      var pcontent = $(this).find('.text textarea').val();
+      var proid = $(this).attr('proid');
+      var pic = [];
+      if(!pscore){
+        alert('请先打分哦！');
+        return;
+      }
+      $(this).find('.picts img').each(function(){
+        pic.push($(this).attr('src'));
+      });
+      updatas['comment'][proid] = {
+        content:pcontent,
+        score:pscore,
+        pic:pic,
+      };
+    });
+    console.log(updatas);
+    // console.log(JSON.stringify(updatas));
+    var supsdata = JSON.stringify(updatas);
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=score',// 跳转到 action    
+      data:updatas,    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          console.log(data);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  $(function(){
+    oid = $.query.get('id');
+    loader();
+    upimage();
+  });
+  function loader(){
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=information',// 跳转到 action    
+      data:{
+        id:oid,
+        type:'json',
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          // console.log(data.body.orderdetail);
+          fillOrder(data.body.orderdetail);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function fillOrder(data){
+    // console.log(data.length);
+    var html = "";
+    for(var i = 0;i<data.length;i++){
+      // console.log(data[i]);
+      // html+='1,';
+      html+='<div class="item" proid="'+data[i]["pid"]+'" id="J_item'+data[i]["pid"]+'">'
+           +   '<div class="prode clearfix">'
+           +     '<div class="leftpic">'
+           +       '<img src="'+data[i]["img"]+'">'
+           +     '</div>'
+           +     '<div class="desc">'+data[i]["productname"]+' '+data[i]["prototype"]+'</div>'
+           +     '<div class="price redtext">￥'+data[i]["unitprice"]+'</div>'
+           +   '</div>'
+           +   '<div class="comm">'
+           +     '<div class="stCon clearfix">'
+           +       '描述相符'
+           +       '<div class="right">'
+           +         '<div class="stars s0 clearfix" score=""><i onclick="score(this,1)"></i><i onclick="score(this,2)"></i><i onclick="score(this,3)"></i><i onclick="score(this,4)"></i><i onclick="score(this,5)"></i></div>'
+           +       '</div>'
+           +     '</div>'
+           +     '<div class="text clearfix">'
+           +       '<textarea placeholder="评价一下..."></textarea>'
+           +       '<div class="camera" onclick="camera('+data[i]["pid"]+')"></div>'
+           +    ' </div>'
+           +     '<div class="picts clearfix">'
+           +     '</div>'
+           +   '</div>'
+           + '</div>';
+    }
+    $(".uCommentList").html(html);
+  }
+  function score(obj,n){
+    $(obj).parent().removeClass('s0 s1 s2 s3 s4 s5').addClass('s'+n).attr('score',n);
+  }
+  function camera(id){
+    $('#fileToUpload').attr('proid',id);
+    return $('#fileToUpload').click();  
+  }
+  function upimage(){
+    $("#form").attr('action',BASEURL+'?c=index&a=image');
+    $("#fileToUpload").attr('data-url',BASEURL+'?c=index&a=image');
+    $("#fileToUpload").on('change',function(){
+      // $('#form').submit();
+      console.log(1);
+      upload($('#fileToUpload'),{
+        progress:function(){
+          console.log('progress');
+        },
+        complete:function(response,file,key){
+          console.log(response);
+          var re = JSON.parse(response);
+          // console.log(html_decode(re.body));
+          console.log('complete');
+          var url = html_decode(re.body);
+          var proid = $('#fileToUpload').attr('proid');
+          var htimg = '<img src="'+url+'" />';
+          $("#J_item"+proid).find('.picts').append(htimg);
+        },
+        error:function(){
+          consle.log('error');
+        },
+      });
+    });
+    $('#form').on('submit',function(){
+      upload($('input',$(this)),{
+        progress:function(){
+          console.log('progress');
+        },
+        complete:function(response,file,key){
+          console.log(response);
+          var re = JSON.parse(response);
+          console.log(html_decode(re.body));
+          console.log('complete');
+          var url = html_decode(re.body);
+          var proid = $('#fileToUpload').attr('proid');
+          var htimg = '<img src="'+url+'" />';
+          $("#J_item"+proid).find('.picts').append(htimg);
+        },
+        error:function(){
+          consle.log('error');
+        },
+      });
+      return false;
+    });
+  }
   </script>
 </body>
 </html>

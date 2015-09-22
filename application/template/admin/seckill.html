@@ -114,6 +114,9 @@
 									<th>
 										 商品名称
 									</th>
+                                    <th>
+                                    	首页LOGO图
+                                    </th>
 									<th>
 										 开始时间
 									</th>
@@ -143,6 +146,11 @@
 									<td>
 										 {%$product[product].name%}
 									</td>
+                                    <td>
+                                    	{%if !empty($product[product].logo)%}
+                                    	<img src="{%$product[product].logo%}" width="100" height="50">
+                                        {%/if%}
+                                    </td>
 									<td class="serverside" data-type="time" data-name="starttime">
 										 {%$product[product].starttime|date_format:"Y-m-d H:i:s"%}
 									</td>
@@ -221,8 +229,8 @@ Demo.init(); // init demo features
 					return;
 				$.each(td,function(index,value){
 					var old = $.trim($(value).html());
-					var input = $('<input class="form-control" type="text" name="'+$(value).data('name')+'" value="'+old+'">');
 					var type = $(value).data('type');
+					var input = $('<input class="form-control" type="text" name="'+$(value).data('name')+'" value="'+old+'">');
 					if(type == 'time')
 					{
 						input.datetimepicker({

@@ -149,7 +149,6 @@ class alipay_gateway
 			'amount' => $this->_order['ordertotalamount'],
 			'customs_place' => $this->_system->get('customs','system'),
 		);
-		
 		$url = $this->_config['gateway_url'];
 		
 		$data = $this->trade($data);
@@ -174,11 +173,46 @@ class alipay_gateway
 	 * 退款
 	 * @param $refund 退款申请记录
 	 * @param $order 订单
-	 * @param $orderdetail 商品记录
 	 */
-	function refund($refund,$order,$orderdetail)
+	function refund($refund,$order)
 	{
+		$http = http::getInstance();
 		
+		$account = new \stdClass();
+		$account->transOut = $this->_system->get('splitpartner','alipay');
+		$account->amount = $this->_system->get('splitrate','alipay') * $refund['money'];
+		$account->currency = 'CNY';
+		
+		$split_fund_info = array(
+			$account
+		);
+		
+		$data = array(
+			'service' => 'forex_refund',
+			'partner' => $this->_system->get('partner','alipay'),
+			'_input_charset' => $this->_config['input_charset'],
+			'sign_type' => $this->_config['sign_type'],
+			'notify_url' => ($http->isHttps()?'https://':'http://').$http->host().'/gateway/alipay/notify.php',
+			'out_return_no' => $refund['refundno'],
+			'out_trade_no' => $order['orderno'],
+			'return_rmb_amount' => $refund['money'],
+			'currency' => 'EUR',
+			'gmt_return' => date("YmdHis",$refund['time']),
+			'reason' => $refund['reason'],
+			'product_code' => 'NEW_WAP_OVERSEAS_SELLER',
+			'split_fund_info' => json_encode($split_fund_info)
+		);
+		
+		if($order['client'] == 'web')
+		{
+			$data['product_code'] = 'NEW_OVERSEAS_SELLER';
+		}
+		
+		$data = $this->trade($data);
+	
+		$response = file_get_contents($this->_config['gateway_url'].'?'.http_build_query($data));
+		$response = xmlToArray($response);
+		return $response;
 	}
 	
 	/**

@@ -6,20 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="Keywords" content="" />
   <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/mobile/css/reset.css">
-  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/assets/mobile/css/style.css">
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/jquery.transit.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/common.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/assets/mobile/js/jquery.fly.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="js/jquery.transit.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
+  <script type="text/javascript" src="js/jquery.fly.js"></script>
+  <script type="text/javascript" src="js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
       <h1>分类</h1>
-      <a class="btn right_btn"><i class="icon magnify"></i></a>
+      <a class="btn right_btn" href="search.html"><i class="icon magnify"></i></a>
     </header>
   </div>
+  <div id="mask2" class="hide" onclick="toggleCaidan()"></div>
   <div class="caidanCon">
     <div class="logo J_caidan" onclick="toggleCaidan()"></div>
     <div class="caidan small">
@@ -33,169 +37,131 @@
   <div id="content" style="padding-top:50px">
     <div class="class_cont">
       <div class="classify clearfix">
-        <div class="item active">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
-        <div class="item">
-          <a href="">分类1</a>
-        </div>
       </div>  
     </div>
-    <div class="subclass">
+    <div class="subclass hide">
       <div class="inner clearfix">
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon001.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon002.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon003.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon004.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon005.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon006.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon007.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
-        <a class="item">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/icon008.png">
-          </div>
-          <div class="name">子分类1.1</div>
-        </a>
       </div>
     </div>
-    <div class="pro_cont">
+    <div class="pro_cont" id="pro_cont">
       <div class="inner clearfix">
-        <hr>
-        <a class="pro">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-            <div class="label miaosha"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
-        <a class="pro">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-            <div class="label temai"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
-        <hr>
-        <a class="pro">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-            <div class="label manjian"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
-        <a class="pro">
-          <div class="pic">
-            <img src="{%$VIEW_ROOT%}/assets/mobile/images/pro1.jpg">
-            <div class="label zuhe"></div>
-            <div class="country">美国</div>
-          </div>
-          <div class="downth">
-            <div class="desc">香港代购Avene雅漾活泉水喷雾300ml 雅漾喷雾补水保湿爽肤水抗敏感...</div>
-            <div class="prices clearfix">
-              <div class="price">￥200</div>
-              <div class="oldp"><span class="cross">￥300</span></div>
-              <div class="discount">4.7</div>
-            </div> 
-          </div> 
-        </a>
       </div>
+      <div class="nonepro hide">没有了</div>
     </div>
   </div>
   <div id="footer">
-
   </div>
   <script type="text/javascript">
     $(function () {
-      $('.subclass .inner .item .pic').each(function(){
-        $(this).css('height',$(this).outerWidth()-2);
+      $('.pro .pic').css('height',$('.pro .pic').eq(0).width());
+      pid = $.query.get('pid');
+      sid = $.query.get('sid');
+      curcid = sid?sid:pid;
+
+      //分类请求
+      category();
+      //商品请求
+      products(curcid,0);
+      //页面滚动事件绑定加载数据
+      $(window).scroll(function(){  
+        var $this =$(this); 
+        var viewH =$(window).height();//可见高度  
+        var contentH = document.body.scrollHeight,//内容高度  
+        scrollTop =$(this).scrollTop();//滚动高度  
+        if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容  
+          curPage++;
+          products(curcid,curPage);
+        }  
+      });  
+
+    });
+    var curPage = 0;
+    function products(cid,p){
+      var page =p ? p:0;
+      var start = loadNum*page;
+      // console.log("page:"+page+"s:"+start+"lo:"+loadNum);
+      $.ajax( {    
+        url:BASEURL+'?c=product&a=category',// 跳转到 action    
+        data:{    
+            cid:cid,
+            start:start,
+            length:loadNum,
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            if(re.length>0){
+              for(var i = 0;i<re.length;i++){
+                var rei = re[i];
+                var price = parseFloat(rei.price).toFixed(1);
+                if(re.activity_description&&re.activity_description.price){
+                  price = parseFloat(re.activity_description.price).toFixed(1);
+                }
+                var oldprice = (parseFloat(rei.oldprice).toFixed(1)!=0)?parseFloat(rei.oldprice).toFixed(1):price;
+                var discount = (price*10/oldprice).toFixed(1);
+                var hide=(discount==10)?'hide':'';
+                var activi = {
+                  'sale':'temai',
+                  'seckill':'miaosha',
+                  'fullcut':'manjian',
+                };
+                // price = price.toFixed(1);
+                if(i%2==0){
+                  html+='<hr>';
+                }
+                // console.log(rei.img[0]);
+                imgobj = rei.img[0];
+                if(imgobj){
+                  var src = imgobj.small_path;
+                }else{
+                  var src = defaultProPic;
+                }
+                html+='<a class="pro" proId="'+rei.id+'" onclick="gotoPro('+rei.id+')">'
+                     +   '<div class="pic">'
+                     +     '<img src="'+src+'" onerror="imgerror(this)">'
+                     +     '<div class="label '+activi[rei.activity]+'"></div>'
+                     +     '<div class="country">'+rei.origin.name+'</div>'
+                     +   '</div>'
+                     +   '<div class="downth">'
+                     +     '<div class="desc">'+rei.name+'</div>'
+                     +     '<div class="prices clearfix">'
+                     +       '<div class="price">￥'+price+'</div>'
+                      +      '<div class="oldp '+hide+'"><span class="cross">￥'+oldprice+'</span></div>'
+                      +      '<div class="discount '+hide+'">'+discount+'</div>'
+                      +    '</div></div></a>';
+              }
+            }
+            if(re.length<loadNum){
+              $('.nonepro').show();
+              // console.log('end');
+            }
+            if(page==0){
+              $('.pro_cont .inner').html('');
+            }
+            $('.pro_cont .inner').append(html);
+          }else{
+            alert(data.result);
+          } 
+        } 
       });
+    }
+    function gotoPro(id){
+      window.location.href = "proDetail.html?pid="+id;
+    }
+    function imgerror(obj){
+      $(obj).attr('src',defaultProPic);
+    }
+ 
+    //滑动分类
+    function catefly(){
       var cwi = 0;
       $('.classify .item').each(function(){
         cwi += $(this).outerWidth();
-        console.log(cwi);
+        // console.log(cwi);
       });
       if(cwi<=$(window).width()){
         var clwth = $(window).width()/$('.classify .item').length;
@@ -207,9 +173,95 @@
           woh:$('.classify').width(),
         });
       }
-      $('.pro .pic').css('height',$('.pro .pic').eq(0).width());
-      // console.log(cwi);
-    });
+    }
+    function category(){
+      $.ajax( {    
+        url:BASEURL,// 跳转到 action    
+        data:{    
+            c:'category',
+            a:'getchild',
+            cid:0
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            for(var i = 0;i<re.length;i++){
+              var id = re[i].id;
+              var name = re[i].name;
+              console.log(pid+' '+id);
+              if(id == pid){
+                categorySub(id);
+                html += '<div class="item active" aid="'+id+'" onclick="changePid(this,'+id+')"><a>'+name+'</a></div>';
+              }else{
+                html += '<div class="item" aid="'+id+'" onclick="changePid(this,'+id+')"><a>'+name+'</a></div>';
+              }
+            }
+            $('.class_cont .classify').html(html);
+            catefly();
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function  changePid(obj,pid){
+      if($('.subclass').hasClass('hide')){
+        $('.subclass').removeClass('hide');
+      }
+      categorySub(pid);
+      products(pid,0);
+      curcid = pid;
+      curPage = 0;
+      $('.nonepro').hide();
+      $('.class_cont .classify .item').removeClass('active');
+      $(obj).addClass('active');
+    }
+    function  changeSid(sid){
+      products(sid,0);
+      curcid = sid;
+      curPage = 0;
+      $('.nonepro').hide();
+    }
+    function categorySub(cid){
+      $.ajax( {    
+        url:BASEURL,// 跳转到 action    
+        data:{    
+            c:'category',
+            a:'getchild',
+            cid:cid?cid:$('.class_cont .classify .item').eq(0).attr('aid'),
+        },    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            for(var i = 0;i<re.length;i++){
+              var id = re[i].id;
+              var name = re[i].name;
+              var si = i+1;
+              if(si<10){
+                si = '0'+si;
+              }
+              html += '<a class="item" aid="'+id+'" onclick="changeSid('+id+')">'
+                   + '<div class="name">'+name+'</div>'
+                +  '</a>';
+            }
+            $('.subclass .inner').html(html);
+            $('.subclass .inner .item .pic').each(function(){
+              $(this).css('height',$(this).outerWidth()-2);
+            });
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
 
   </script>
 </body>

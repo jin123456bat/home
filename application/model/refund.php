@@ -1,6 +1,7 @@
 <?php
 namespace application\model;
 use system\core\model;
+use system\core\random;
 /**
  * 退货申请数据模型
  * @author jin12
@@ -65,8 +66,11 @@ class refundModel extends model
 		
 		$money = (isset($ordertotalamount[0]['ordertotalamount']) && $ordertotalamount[0]['ordertotalamount']>=$money)?$money:$ordertotalamount[0]['ordertotalamount'];
 		
+		$refundno = date("YmdHis").$uid.$oid.random::number(4);
+		
 		$data = array(
 			'id' => NULL,
+			'refundno' => $refundno,
 			'uid' => $uid,
 			'oid' => $oid,
 			'type'=> $type,
@@ -78,10 +82,13 @@ class refundModel extends model
 			'handle' => self::REFUND_HANDLE_NO
 		);
 		$rid = $this->insert($data);
-		foreach($imgs as $img)
+		if($rid)
 		{
-			$refundimg = $this->model('refundimg');
-			$refundimg->create($rid,$img);
+			foreach($imgs as $img)
+			{
+				$refundimg = $this->model('refundimg');
+				$refundimg->insert(array(NULL,$rid,$img));
+			}
 		}
 		return $rid;
 	}

@@ -31,6 +31,11 @@ class o2oControl extends control
 		}
 	}
 	
+	function login()
+	{
+		
+	}
+	
 	function o2oclient()
 	{
 		$roleModel = $this->model('role');

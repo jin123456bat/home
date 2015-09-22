@@ -4,47 +4,132 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <title>收货地址</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <meta name="Keywords" content="abc" />
-  <meta name="description" content="zhuzhi" />
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
+  <script type="text/javascript" src="js/jquery.flycart.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
   <script type="text/javascript" src="js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"> <i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>收货地址</h1>
     </header>
   </div>
   <div id="content" style="padding-top:50px;padding-bottom:40px;">
     <div class="addrList">
-      <div class="item clearfix">
-        <div class="one clearfix">
-          <a class="right">187****8298</a>
-          白子画
-        </div>
-        <div class="addr">浙江省杭州市西湖区文二西路蒋村花园兴达苑47幢一单502室</div>
-        <div class="redtext moren">【 默认 】</div>
-      </div>
-      <div class="item clearfix">
-        <div class="one clearfix">
-          <a class="right">187****8298</a>
-          白子画
-        </div>
-        <div class="addr">浙江省杭州市西湖区文二西路蒋村花园兴达苑47幢一单502室</div>
-      </div>
+      
     </div>
-    <a class="addaddrbtn">
+    <a class="addaddrbtn" href="addressAdd.html">
       <div class="icon addaddr"></div>
       新添收货地址
     </a>
   </div>
   <script type="text/javascript">
-    
+  $(function(){
+    loader();
+    checklogin();
+  });
+  function checklogin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code != 1){
+          window.location.href="login.html";
+        }else{
+        } 
+      } 
+    });
+  }
+  function loader(){
+    $.ajax( {    
+      url:BASEURL+'?c=address&a=fetchall',// 跳转到 action    
+      data:{  
 
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        // console.log(data);
+        if(data.code == 1){
+          var re = data.body;
+          // console.log(re);
+          var html = "";
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            var full = rei.province+rei.city+rei.address;
+            var moren = "";
+            var m = rei.telephone.substring(0,3)+"****"+rei.telephone.substring(8,11);
+            if(rei.host==1){
+              moren = '<div class="redtext moren">【 默认 】</div>';
+            }
+            var ht = '<div class="item clearfix">'
+                    +    '<div class="onup clearfix" onclick="showAddr('+rei.id+')">'
+                    +    '<div class="one clearfix">'
+                    +      '<a class="right">'+m+'</a>'
+                    +      rei.name
+                    +    '</div>'
+                    +    '<div class="addr">'+full+'</div>'
+                    +    moren
+                    +  '</div><div class="ondown"><a class="dlt" onclick="dltaddr(this,'+rei.id+')">删除</a></div></div>';
+            if(rei.host==1){
+              $('.addrList').prepend(ht);
+            }else{
+              $('.addrList').append(ht);
+            }
+          }
+          $(".addrList .item .onup").flyCart({
+              woh:$('.addrList .item .onup').width()+140,
+            });
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function dltaddr(obj,id){
+    $.ajax( {    
+      url:BASEURL+'?c=address&a=remove',// 跳转到 action    
+      data:{  
+        id:id
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          $(obj).parents('.item').remove();
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function showAddr(id){
+    if($.query.get('back')=='order'){
+      console.log('dododododo');
+      var storage = window.localStorage;
+      storage.setItem('addressId',id);
+      history.go(-1);
+    }else{
+      window.location.href="editAddress.html?id="+id;
+    }
+    
+  }
   </script>
 </body>
 </html>

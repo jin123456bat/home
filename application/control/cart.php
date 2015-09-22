@@ -254,10 +254,11 @@ class cartControl extends control
 	 */
 	function order()
 	{
+		//$this->session->id = 3;
 		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
-		$response = json_decode($this->calculation($this->session->id));
+		//$response = json_decode($this->calculation($this->session->id));
 		
 		$preorder = $this->post->preorder;
 		//总金额 优惠前的价格
@@ -283,6 +284,7 @@ class cartControl extends control
 		$tobeCouponamount = 0;
 		foreach ($cart as $product)
 		{
+			//var_dump($product);
 			$pricestocksku = $collectionModel->find($product['pid'],unserialize($product['content']));
 			$prototype = $prototypeModel->getByPid($product['pid']);
 			$prototype = (new prototype())->format($prototype,$product['content']);
@@ -320,15 +322,18 @@ class cartControl extends control
 					}
 					break;
 				default:
-					$used = $couponModel->check($coupon,$product);
-					if(!empty($used))
+					if(is_string($coupon) && !empty($coupon))
 					{
-						$tobeCouponamount += ($goodstruthprice*$product['num']);
-						$coupon = $used;
+						$used = $couponModel->check($coupon,$product);
+						if(!empty($used))
+						{
+							$tobeCouponamount += ($goodstruthprice*$product['num']);
+							$coupon = $used[0];
+						}
 					}
 			}
 			
-			$t_orderdetail = array('sku'=>$product['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'unitprice'=>$goodstruthprice,'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
+			$t_orderdetail = array('sku'=>$product['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'brand'=>$this->model('brand')->get($product['bid'],'name'),'unitprice'=>$goodstruthprice,'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
 			if(!empty($pricestocksku))
 			{
 				$t_orderdetail['sku'] = $pricestocksku['sku'];
@@ -379,7 +384,7 @@ class cartControl extends control
 				$discount = $minus;
 				if(!$preorder)
 				{
-					$couponModel->increaseTimes($coupon,-1);
+					$couponModel->increaseTimes($coupon['couponno'],-1);
 				}
 			}
 		}

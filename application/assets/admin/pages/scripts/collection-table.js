@@ -5,7 +5,7 @@ var collection = function(){
 	return {
 		init:function(){
 			var container = $('#collection_container');
-			table = $('<table class="table table-hover"><thead><th>属性</th><th>价格</th><th>库存</th><th>编码</th></thead><tbody></tbody></table>');
+			table = $('<table class="table table-hover"><thead><th>属性</th><th>价格</th><th>库存</th><th>编码</th><th>图像</th></thead><tbody></tbody></table>');
 			container.append(table);
 		},
 		
@@ -25,7 +25,7 @@ var collection = function(){
 			{
 				for(var i=0;i<prototype.length;i++)
 				{
-					var tpl = '<tr><td>'+prototype[i]+'</td><td><input name="price" class="serverside" data-id="'+id+':'+i+'" type="text"></td><td><input class="serverside" name="stock" data-id="'+id+':'+i+'" type="text"></td><td><input name="sku" class="serverside" data-id="'+id+':'+i+'" type="text"></td></tr>';
+					var tpl = '<tr><td>'+prototype[i]+'</td><td><input name="price" class="serverside" data-id="'+id+':'+i+'" type="text"></td><td><input class="serverside" name="stock" data-id="'+id+':'+i+'" type="text"></td><td><input name="sku" class="serverside" data-id="'+id+':'+i+'" type="text"></td><td><input type="file" class="previewImg"><img class="clicktoupload display-none" height="50" width="50" style="cursor:pointer;"><input name="pic" class="serverside hide" data-id="'+id+':'+i+'"></td></tr>';
 					table.find('tbody').append(tpl);
 				}
 			}
@@ -56,7 +56,7 @@ var collection = function(){
 				did = $(value).attr('data-id');
 				data.push({did:did,type:type,value:val});
 			});
-			
+			console.log(data);
 			$.post('?c=collection&a=updatevalue',{pid:pid,data:JSON.stringify(data)},function(data){
 			});
 		}

@@ -8,7 +8,10 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
 </head>
 <body>
@@ -27,44 +30,176 @@
             国家地区
           </li>
           <li>
-            <input type="text" placeholder="请输入手机号">
+            <input type="text" placeholder="请输入手机号" id="telephone">
           </li>
         </ul>
         <div class="tip">此手机号用来接收验证码，请仔细填写</div>
-        <a class="btnone_pink" onclick="topage(2)">下一步</a>
+        <a class="btnone_pink" onclick="telChange();">下一步</a>
         <div class="xieyicon">注册即表示阅读并同意 <a href="">用户服务协议</a></div>
       </div>
       <div class="J_page_2 pageitem">
-        <div class="tip2">请输入手机号<a href="">18658843018</a>收到的短信验证码</div>
+        <div class="tip2">请输入手机号<a id="telagain"></a>收到的短信验证码</div>
         <div class="oneform">
           <div class="item clearfix">
             <i class="icon g_tick_o"></i>
             <label>验证码</label>
-            <input type="text" placeholder="收到的验证码" >
-            <a href="" class="yzmbtn">获取验证码</a>
+            <input type="text" placeholder="收到的验证码" id="valicode">
+            <a class="yzmbtn" onclick="getCode()">获取验证码</a>
+            <a class="timer hide"><span id="timeout">90</span>秒后重新获取</a>
           </div>
           <div class="item clearfix">
             <i class="icon g_mobile"></i>
             <label>手机号</label>
-            <input type="text" placeholder="邀请人手机号" >
+            <input type="text" placeholder="邀请人手机号" id="mobile">
           </div>
           <div class="item clearfix">
             <i class="icon g_lock"></i>
             <label>密码</label>
-            <input type="text" placeholder="请输入密码" >
+            <input type="password" placeholder="请输入密码" id="pwd">
             <span class="tip_right">（6-20个数字或字母）</span>
           </div>
           <div class="item clearfix">
             <i class="icon kong"></i>
             <label> </label>
-            <input type="text" placeholder="确认登录密码" >
+            <input type="password" placeholder="确认登录密码" id="againpwd">
           </div>
         </div>
-        <a class="btnone_pink">完成</a>
+        <a class="btnone_pink" onclick="finish()">完成</a>
       </div>
     </div>
   </div>
   <script type="text/javascript">
+
+    function valid () {
+      if(!$('#valicode').val()){
+        alert('请填写验证码！');
+        return false;
+      }
+      if(!$('#pwd').val()){
+        alert('请填写密码！');
+        return false;
+      }
+      if(!$('#againpwd').val()){
+        alert('请确认密码！');
+        return false;
+      }
+      if($('#pwd').val()!=$('#againpwd').val()){
+        alert('两次密码不一致！');
+        return false;
+      }
+      if($('#mobile').val()&&!checkMobile($('#mobile').val())){
+        alert('手机号码格式错误！');
+        return false;
+      }
+      return true;
+    }
+    function checkMobile(text){
+      // alert(text);
+      var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+        if(!myreg.test(text)){
+          return false;
+        }else{
+          return true;
+        }
+    }
+    function finish(){
+      if(!valid()){
+        return false;
+      }else{
+        $.ajax( {    
+          url:BASEURL+'?c=user&a=register',// 跳转到 action    
+          data:{    
+            telephone:$('#telephone').val(),
+            code:$('#valicode').val(),
+            o2o:$('#mobile').val(),
+            password:$('#pwd').val(),
+            client:'weixin',
+          },    
+          type:'post',    
+          cache:false,    
+          dataType:'json',    
+          success:function(data) { 
+            if(data.code == 1){
+              autologin();
+            }else{
+              alert(data.result);
+            } 
+          } 
+        });
+      }
+    }
+    function autologin(){
+      $.ajax( {    
+        url:BASEURL+'?c=user&a=login',// 跳转到 action    
+        data:{    
+          telephone:$('#telephone').val(),
+          password:$('#pwd').val(),
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            window.location.href="index.html";
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function getCode(){
+      var tel = $('#telephone').val();
+      $.ajax( {    
+        url:BASEURL+'?c=index&a=code',// 跳转到 action    
+        data:{    
+            telephone:tel
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            $('.yzmbtn').hide();
+            $('.timer').show();
+            timeout = 90;
+            timer();
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    var timeout;
+    function timer(){
+      timeout--;
+      $("#timeout").text(timeout);
+      if(timeout>0){
+        setTimeout(function(){
+          timer();
+        },1000);
+      }else{
+        $('.yzmbtn').show();
+        $('.timer').hide();
+      }
+    }
+    function checkMobile(text){
+      // alert(text);
+      var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+        if(!myreg.test(text)){
+          return false;
+        }else{
+          return true;
+        }
+    }
+    function telChange(){
+      var tel = $('#telephone').val();
+      if(!checkMobile(tel)){
+        alert('手机号格式不正确');
+        return false;
+      }
+      $('#telagain').text(tel);
+      topage(2);
+    }
     function topage(n){
       if(n==1){
         // alert($('.pages').css("x"));

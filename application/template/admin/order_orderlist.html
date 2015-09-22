@@ -118,17 +118,23 @@
 								<i class="fa fa-shopping-cart"></i>订单列表
 							</div>
 							<div class="actions">
+                                <button class="btn" id="import">导入物流订单</button>
+                                <input type="file" class="hide" id="import_file_selector">
 								<div class="btn-group">
 									<a class="btn default yellow-stripe" href="#" data-toggle="dropdown">
-									<i class="fa fa-share"></i>
-									<span class="hidden-480">
-									工具 </span>
-									<i class="fa fa-angle-down"></i>
+                                        <i class="fa fa-share"></i>
+                                        <span class="hidden-480">
+                                        工具 </span>
+                                        <i class="fa fa-angle-down"></i>
 									</a>
 									<ul class="dropdown-menu pull-right">
 										<li>
-											<a href="#" id="export">
-											导出 </a>
+											<a href="#" class="export">
+											导出订单文档 </a>
+										</li>
+                                        <li>
+											<a href="#" data-status="1" class="export">
+											导出报关文档 </a>
 										</li>
 										<li class="divider">
 										</li>
@@ -148,7 +154,7 @@
 									<select class="table-group-action-input form-control input-inline input-small input-sm">
 										<option value="">请选择</option>
 										<option value="remove">删除</option>
-                                        <option value="costums">报关</option>
+                                        <option value="costums">发货</option>
 									</select>
 									<button class="btn btn-sm yellow table-group-action-submit"><i class="fa fa-check"></i> 提交</button>
 								</div>
@@ -327,24 +333,29 @@ EcommerceOrders.init();
 		$('.popovers').popover();
 	});
 	
-	$('#export').on('click',function(){
+	$('.export').on('click',function(){
+		var status = $(this).data('status');
+		var url = '{%url c=order a=export%}';
+		if(status != undefined)
+			url += ('&status='+status);
 		var box = $('.checkboxes:checked');
 		if(box.length == 0)
 		{
 			if(window.confirm('您确定要导出所有订单输出?'))
 			{
-				window.open('{%url c=order a=export%}','');
+				window.open(url,'');
 			}
 		}
 		else
 		{
 			var data =[];
 			$.each(box,function(index,value){
-				data.push();
+				data.push($(value).val());
 			});
 			data = JSON.stringify(data);
-			window.open('{%url c=order a=export%}&data='+data,'');
+			window.open(url+'&data='+data,'');
 		}
+		return false;
 	});
 	
 	$('#note').bind('show.bs.modal',function(event){
@@ -369,6 +380,76 @@ EcommerceOrders.init();
 		});
 		return false;
 	});
+	
+	$('#import').on('click',function(){
+		$(this).next().trigger('click');
+	});
+	
+	$('#import_file_selector').on('change',function(event){
+		var ths = $(this);
+		$('#import').html('正在上传');
+		var formData = new FormData();//文件上传通道  
+		var fileReader = new FileReader();
+		var filesize = this.files[0].size;
+		var getFileType = function(filename){  
+			var extStart  = filename.lastIndexOf(".")+1;  
+			return filename.substring(extStart,filename.length).toUpperCase();  
+		};
+		if(filesize>10*1024*1024)
+		{
+			alert('文件大小不得超出10MB');
+			$('#import').html('导入物流订单');
+			return false;
+		}
+		
+		formData.append('file',this.files[0]);
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST','{%url c=order a=import%}',true);
+		xhr.onload = function(){  
+			if(xhr.status == 200 && xhr.readyState == 4)  
+			{
+				var response = xhr.response;
+				response = $.parseJSON(response);
+			}
+			else
+			{
+				alert('通信失败:'+xhr.status);
+			}
+			$('#import').html('导入物流订单');
+		};
+		xhr.send(formData);
+	});
+	
+	$('.costums').live('click',function(event){
+		var id = $(this).data('id');
+		$.post('{%url c=order a=costums%}',{id:id},function(response){
+			if(response.code == 1)
+			{
+				window.location.reload();
+			}
+			else
+			{
+				alert(response.result);
+			}
+		});
+		return false;
+	});
+	
+	$('.outship').live('click',function(){
+		var id = $(this).data('id');
+		$.post('{%url c=order a=outship%}',{id:id},function(response){
+			if(response.code == 1)
+			{
+				window.location.reload();
+			}
+			else
+			{
+				alert(response.result);
+			}
+		});
+		return false;
+	});
+	
 });
 </script>
 <!-- END JAVASCRIPTS -->

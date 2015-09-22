@@ -16,17 +16,8 @@ class indexControl extends control
 	
 	function index()
 	{
-		//$weixin = new weixin_gateway(config('weixin'));
-		//return $weixin->output('wx201508241358272acbe3a4ea0291668002');
-		if(isset($_POST['post']))
-		{
-			var_dump($_FILES);
-		}
-		else
-		{
-			$view = new view(config('view'), 'index.html');
-			return $view->display();
-		}
+		$this->response->setCode(302);
+		$this->response->addHeader('Location',$this->http->url('mobile','index'));
 	}
 	
 	/**
@@ -91,11 +82,29 @@ class indexControl extends control
 		$file = $this->file->file;
 		if(is_file($file))
 		{
+			$width = $this->get->width;
+			$height = $this->get->height;
+			$width = empty($width)?640:$width;
+			$height = empty($height)?640*2:$height;
 			$image = new image();
-			$file = $image->resizeImage($file, 640, 640*2);
-			return new json(json::OK,NULL,file::realpathToUrl($file));
+			$file = $image->resizeImage($file, $width, $height);
+			if($this->get->type == 'text')
+			{
+				return json_encode(array('code'=>1,'result'=>'ok','body'=>file::realpathToUrl($file)));
+			}
+			else
+			{
+				return new json(json::OK,NULL,file::realpathToUrl($file));
+			}
 		}
-		return new json(json::PARAMETER_ERROR,'图片上传失败');
+		if($this->get->type == 'text')
+		{
+			return json_encode(array('code'=>0,'result'=>'图片上传失败'));
+		}
+		else
+		{
+			return new json(json::PARAMETER_ERROR,'图片上传失败');
+		}
 	}
 
 	/**

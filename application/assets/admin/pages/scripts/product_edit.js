@@ -186,6 +186,12 @@ var ProductEditPage = function(){
 									$('input[name=price][data-id="'+content+'"]').val(data.body.price);
 									$('input[name=stock][data-id="'+content+'"]').val(data.body.stock);
 									$('input[name=sku][data-id="'+content+'"]').val(data.body.sku);
+									if(data.body.pic.length != 0)
+									{
+										var td = $('input[name=pic][data-id="'+content+'"]').val(data.body.pic).parent();
+										td.find('input.previewImg').addClass('hide');
+										td.find('img').attr('src',data.body.pic).removeClass('display-none');
+									}
 								}
 							}
 						});
@@ -247,6 +253,45 @@ var ProductEditPage = function(){
 						$(ths).parents('tr').remove();
 					}
 				});
+			});
+			
+			$('.clicktoupload').live('click',function(){
+				$(this).prev('input[type=file]').trigger('click');
+			});
+			
+			$('.previewImg').live('change',function(){
+				if($(this).val() == '' || $(this).val() == 'undefined')
+					return false;
+				
+				var url = 'index.php?c=index&a=image&width=100&height=100';
+				var ths = $(this);
+				var xhr = new XMLHttpRequest();
+				var formData = new FormData();
+				formData.append('file',this.files[0]);
+				xhr.open('POST',url,true);
+				xhr.onload = function(){  
+					if(xhr.status == 200 && xhr.readyState == 4)  
+					{  
+						var response = $.parseJSON(xhr.response);
+						if(response.code == 1)
+						{
+							var img = ths.next('img');
+							var input = ths.next().next();
+							img.attr('src',response.body).removeClass('display-none');
+							input.attr('value',response.body);
+							ths.addClass('hide');
+						}
+						else
+						{
+							alert('文件上传失败');
+						}
+					}
+					else
+					{
+						alert('文件上传失败');
+					}
+				};
+				xhr.send(formData);
 			});
 		}
 		

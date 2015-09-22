@@ -65,10 +65,46 @@ class view extends base
 		$this->_smarty->assign("VIEW_ROOT",$baseUrl);
 		$this->_smarty->registerPlugin('function',"url", array($this,'url'));
 		$this->_smarty->registerPlugin('function','resource',array($this,'resource'));
+		$this->_smarty->registerPlugin('function','formattime',array($this,'formattime'));
 		//include ROOT.'/extends/smarty/smartyex.class.php';
 		//$this->_smarty->registerObject("smartyex",new \smartyex());
 	}
 	
+	function formattime($parameter)
+	{
+		$second = $parameter['second'];
+		if($second < 5*60)
+		{
+			return "就在刚才";
+		}
+		else
+		{
+			$min = floor($second/60);
+			if($min <60)
+			{
+				return $min.'分钟前';
+			}
+			else
+			{
+				$hour = floor($min/60);
+				if($hour<24)
+				{
+					return $hour.'小时前';
+				}
+				else
+				{
+					$day = floor($hour/24);
+					return $day.'天前';
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 图片路径转化
+	 * @param unknown $parameter
+	 * @return string
+	 */
 	function resource($parameter)
 	{
 		$path = $parameter['path'];
@@ -78,6 +114,11 @@ class view extends base
 		return is_file($path)?$url:$default;
 	}
 	
+	/**
+	 * url生成
+	 * @param unknown $parameter
+	 * @return mixed
+	 */
 	function url($parameter)
 	{
 		$http = http::getInstance();

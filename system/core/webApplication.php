@@ -1,6 +1,7 @@
 <?php
 namespace system\core;
 
+use application\control\mobileControl;
 /**
  * 应用程序类
  *
@@ -53,8 +54,16 @@ class webApplication extends base
 							$response->setCode(200);
 							$response->setBody($this->__200($class, $action));
 						} else {
-							$response->setCode(404);
-							$response->setBody($this->__404($control, $action));
+							if ($class instanceof mobileControl)
+							{
+								$response->setCode(200);
+								$response->setBody($this->__200($class, $action));
+							}
+							else
+							{
+								$response->setCode(404);
+								$response->setBody($this->__404($control, $action));
+							}
 						}
 					} else {
 						$response->setCode(404);

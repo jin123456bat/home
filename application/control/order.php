@@ -15,7 +15,8 @@ use application\model\orderlistModel;
 use application\model\refundModel;
 use application\classes\time;
 use application\message\json;
-use system\core\image;
+use application\classes\cbti;
+use application\classes\express;
 /**
  * 订单控制器
  * @author jin12
@@ -162,6 +163,7 @@ class orderControl extends control
 	 */
 	function export()
 	{
+		$this->response->addHeader('cache-control','nocache');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_SELECT))
 		{
@@ -173,16 +175,64 @@ class orderControl extends control
 			{
 				$id = array();
 			}
+			
+			$filter = array(
+				'status' => $this->get->status
+			);
+			
+			$select_field = 'orderno,paytype,paynumber,ordertotalamount,ordertaxamount,ordergoodsamount,feeamount,tradetime,totalamount,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneeaddress,postmode,username,sku,productname,unitprice,num';
+			$select_name = array('订单号','支付方式','支付编号','订单总金额','订单税额','订单货款','运费','成交时间','成交总价','收件人联系方式','收件人姓名','收件人邮编','收件人省','收件人市','收件人地址','物流公司编码','购买人ID','商品编码','商品名称','申报单价','申报数量');
+			$filename = '订单报表 '.date('Y-m-d H:i:s');
+			if($filter['status'] === '1')
+			{
+				$filename = '待报关订单 '.date('Y-m-d H:i:s');
+				$select_field = 'orderno,paytype,paynumber,ordertotalamount,tradetime,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneeaddress,postmode,username,sku,unitprice,num';
+				$select_name = array('订单号','支付方式','支付单号','订单总金额','成交时间','收件人联系方式','收件人姓名','收件人邮编','收件人省','收件人市','收件人地址','物流公司编码','购买人ID','商品编码','商品名称','商品单价','申报数量');
+			}
+			
 			$orderModel = $this->model('orderlist');
-			$order = $orderModel->export('orderno,paytype,paynumber,ordertotalamount,ordertaxamount,ordergoodsamount,feeamount,tradetime,totalamount,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneeaddress,postmode,telephone,sku,productname,unitprice,num',$id);
+			$order = $orderModel->export($select_field,$id,$filter);
 			$excel = new excel();
-			$excel->xls($order,array('订单号','支付方式','支付编号','订单总金额','订单税额','订单货款','运费','成交时间','成交总价','收件人联系方式','收件人姓名','收件人邮编','收件人省','收件人市','收件人地址','物流公司编码','购买人ID','商品编码','商品名称','申报单价','申报数量'),'order');
+			$excel->xls($order,$select_name,$filename);
 		}
 		else
 		{
 			$this->response->setCode(302);
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
+	}
+	
+	/**
+	 * 导入物流订单
+	 */
+	function import()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_ALL))
+		{
+			if(isset($_FILES['file']['tmp_name']) && is_file($_FILES['file']['tmp_name']));
+			{
+				$cover = empty($this->post->cover)?true:false;
+				$orderModel = $this->model('orderlist');
+				$file = file($_FILES['file']['tmp_name']);
+				foreach ($file as $line)
+				{
+					$pattern = '$\d+$';
+					if(preg_match_all($pattern, $line,$match));
+					{
+						if(count($match[0]) == 2)
+						{
+							$orderno = $match[0][0];
+							$waybills = array_slice($match[0], 1);
+							$orderModel->updateWaybill($orderno,$waybills,$cover);
+						}
+					}
+				}
+				return new json(json::OK);
+			}
+			return new json(json::PARAMETER_ERROR,'文件上传失败');
+		}
+		return new json(json::NO_POWER);
 	}
 	
 	/**
@@ -330,7 +380,8 @@ class orderControl extends control
 					$order = $this->model('orderlist')->get($refund['oid']);
 					if(!empty($order))
 					{
-						if($order['status'] == 1)
+						$refund_array = array(orderlistModel::STATUS_COMPLETE,orderlistModel::STATUS_PAYED,orderlistModel::STATUS_SHIPPED,orderlistModel::STATUS_SHIPPING);
+						if(in_array($order['status'], $refund_array))
 						{
 							switch ($order['paytype'])
 							{
@@ -341,46 +392,80 @@ class orderControl extends control
 									{
 										if($response['result_code'] == 'SUCCESS')
 										{
-											return json_encode(array('code'=>1,'result'=>'微信正在处理退款，请稍后'));
+											return new json(json::OK,'微信正在处理退款，请稍后');
 										}
 										else
 										{
-											return json_encode(array('code'=>11,'result'=>'申请退款失败'.$response['err_code_des']));
+											return new json(11,'申请退款失败'.$response['err_code_des']);
 										}
 									}
 									else
 									{
-										return json_encode(array('code'=>10,'result'=>'微信接口通信失败，请检查微信配置'));
+										return new json(10,'微信接口通信失败，请检查微信配置');
 									}
 									break;
+								case 'alipay':
+									$alipay = new alipay_gateway(config('alipay'), $this->model('system'), '');
+									$response = $alipay->refund($refund, $order);
+									if($response['is_success'] == 'F')
+									{
+										return new json(json::PARAMETER_ERROR,$response['error']);
+									}
+									return new json(json::OK);
 								default:
 									break;
 							}
 						}
 						else
 						{
-							return json_encode(array('code'=>0,'result'=>'该订单无法退款'));
+							return new json(6,'订单无法退款');
 						}
 					}
 					else
 					{
-						return json_encode(array('code'=>2,'result'=>'没有找到订单'));
+						return new json(5,'退款对应的订单不存在');
 					}
 				}
 				else
 				{
-					return json_encode(array('code'=>5,'result'=>'退款申请已经关闭或已经完成'));
+					return new json(4,'退款申请已经关闭或已经完成');
 				}
 			}
 			else
 			{
-				return json_encode(array('code'=>3,'result'=>'参数错误'));
+				return new json(json::PARAMETER_ERROR);
 			}
 		}
 		else
 		{
-			return json_encode(array('code'=>4,'result'=>'没有权限'));
+			return new json(json::NO_POWER);
 		}
+	}
+	
+	/**
+	 * 出关
+	 */
+	function outship()
+	{
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
+		{
+			$id = $this->post->id;
+			$orderModel = $this->model('orderlist');
+			$order = $orderModel->get($id);
+			if(empty($order))
+				return new json(json::PARAMETER_ERROR,'订单不存在');
+			if($order['status'] == orderlistModel::STATUS_SHIPPING)
+			{
+				if($orderModel->where('id=?',array($id))->update('outship',1))
+				{
+					return new json(json::OK);
+				}
+				return new json(json::PARAMETER_ERROR,'已经出关了');
+			}
+			return new json(json::PARAMETER_ERROR,'订单状态不符合');
+		}
+		return new json(json::NO_POWER);
 	}
 	
 	/**
@@ -389,16 +474,15 @@ class orderControl extends control
 	function costums($id = NULL)
 	{
 		if(!login::admin())
-			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
-		
-		$id = ($id === NULL)?$this->get->id:$id;
+			return new json(json::NOT_LOGIN);
+		$id = ($id === NULL)?$this->post->id:$id;
 		$orderModel = $this->model('orderlist');
 		$order = $orderModel->get($id);
 		
 		if(empty($order))
-			return json_encode(array('code'=>3,'result'=>'没有订单'));
+			return new json(json::PARAMETER_ERROR,'没有找到订单');
 		if($order['status'] != orderlistModel::STATUS_PAYED)
-			return json_encode(array('code'=>4,'result'=>'无法报关'));
+			return new json(json::PARAMETER_ERROR,'无法报关');
 		switch ($order['paytype'])
 		{
 			case 'alipay':
@@ -406,9 +490,9 @@ class orderControl extends control
 				$result = $alipay->customs($order);
 				$result = xmlToArray($result);
 				if($result['is_success'] == 'F')
-					return json_encode(array('code'=>5,'result'=>"请求失败或者接入数据错误"));
+					return new json(4,'支付宝报关接口错误');
 				if($result['response']['alipay']['result_code'] == 'FAIL')
-					return json_encode(array('code'=>6,'result'=>$result['response']['alipay']['detail_error_des']));
+					return new json(4,$result['response']['alipay']['detail_error_des']);
 				//获取到订单编号
 				$orderno = $result['request']['param'][7];
 				break;
@@ -416,18 +500,73 @@ class orderControl extends control
 				$weixin = new weixin_gateway(config('weixin'), $this->model('system'));
 				$result = $weixin->costums($order);
 				if($result['retcode'] != 0)
-					return json_encode(array('code'=>$result['retcode'],'result'=>$result['retmsg']));
+					return new json($result['retcode'],$result['retmsg']);
 				//获取订单编号
 				$orderno = $result['out_trade_no'];
 				break;
 			default:
-				return json_encode(array('code'=>7,'result'=>'报关方式错误'));
+				return new json(json::PARAMETER_ERROR,'通过支付方式报关失败');
 		}
 		if($orderModel->setShipping($orderno))
 		{
-			return json_encode(array('code'=>1,'result'=>'ok'));
+			return new json(json::OK);
 		}
-		return json_encode(array('code'=>0,'result'=>'订单不存在或者已经报关过了'));
+		return new json(json::PARAMETER_ERROR,'订单不存在或者已经发货');
+	}
+	
+	/**
+	 * 获取订单物流信息
+	 */
+	function shippment()
+	{
+		$id = filter::int($this->get->id);
+		
+		$orderModel = $this->model('orderlist');
+		$order = $orderModel->get($id);
+		if(empty($order))
+			return new json(json::PARAMETER_ERROR,'订单不存在');
+		
+		//检查缓存中的物流信息
+		$waybillsModel = $this->model('waybills');
+		$waybills = $waybillsModel->getByOrderno($order['orderno']);
+		if($waybills !== NULL)
+		{
+			if($_SERVER['REQUEST_TIME'] - $waybills['time'] < 12*3600)
+			{
+				$data = array(
+					'code' => 1,
+					'result' => 'ok',
+					'data' => json_decode($waybills['content']),
+					'waybills' => implode(',', unserialize($waybills['waybills']))
+				);
+				return new json($data);
+			}
+		}
+		//查询物流信息
+		$return = array();
+		$express = new express();
+			
+		$wbills = unserialize($order['waybills']);
+		
+		$response = $express->query($order['postmode'],$wbills[0]);
+		
+		$response = json_decode($response);
+		if($response->status == 200)
+		{
+			//查询到了官方的信息
+			$return = (array)$response->data;
+			foreach ($return as &$value)
+			{
+				unset($value->ftime);
+				$value = (array)$value;
+			}
+		}
+		
+			$response = $express->virtual($order['shiptime'],$order['outship']);
+			$return = array_merge($return,$response);
+			$waybillsModel->create($order['postmode'],$return,unserialize($order['waybills']),$order['orderno']);
+			return new json(json::OK,NULL,$return);
+		//return new json(json::PARAMETER_ERROR,'尚未发货');
 	}
 	
 	/**
@@ -724,16 +863,15 @@ class orderControl extends control
 			return new json(json::PARAMETER_ERROR,'没有商品评论');
 		
 		$commentModel = $this->model('comment');
+		
+		
+		
+		
 		foreach ($this->post->comment as $pid => $content)
 		{
-			$files = array();
-			if(isset($content['pic']) && !empty($content['pic']))
-			{
-				$files = array_map(function($file){
-					if(is_file($file))
-						return $file;
-				}, $content['pic']);
-			}
+			
+			$files = $content['pic'];
+			
 			$content['score'] = empty($content['score'])?0:$content['score'];
 			$content['score'] = $content['score']>5?5:$content['score'];
 			$content['content'] = empty($content['content'])?'':$content['content'];
@@ -744,12 +882,11 @@ class orderControl extends control
 		$ship_score = filter::int($this->post->ship_score);
 		$service_score = filter::int($this->post->service_score);
 		$goods_score = filter::int($this->post->goods_score);
-		$content = $this->post->content;
 		$orderModel = $this->model('orderlist');
 		$order = $orderModel->get($id);
 		if($order['status'] == orderlistModel::STATUS_SHIPPED)
 		{
-			if($orderModel->score($id,$this->session->id,$ship_score,$service_score,$goods_score,$content))
+			if($orderModel->score($id,$this->session->id,$ship_score,$service_score,$goods_score))
 			{
 				return json_encode(array('code'=>1,'result'=>'ok'));
 			}
@@ -788,7 +925,22 @@ class orderControl extends control
 	function shipalert()
 	{
 		if(!login::user())
+		{
+			if(login::admin())
+			{
+				if($this->post->ok === '1')
+				{
+					$id = $this->post->id;
+					$shipalertModel = $this->model('shipalert');
+					if($shipalertModel->ok($id))
+					{
+						return new json(json::OK);
+					}
+					return new json(json::PARAMETER_ERROR);
+				}
+			}
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+		}
 		$id = $this->post->id;
 		$orderModel = $this->model('orderlist');
 		$order = $orderModel->get($id);

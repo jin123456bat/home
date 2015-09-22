@@ -101,7 +101,7 @@ class seckillControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/seckill.html');
 			$seckillModel = $this->model('seckill');
-			$seckill = $seckillModel->fetchAll('seckill.sname,product.id as pid,product.name,seckill.starttime,seckill.endtime,seckill.price,seckill.orderby,seckill.id');
+			$seckill = $seckillModel->fetchAll('seckill.sname,product.id as pid,product.name,seckill.starttime,seckill.endtime,seckill.price,seckill.orderby,seckill.id,seckill.logo');
 			$this->view->assign('product',$seckill);
 			$this->response->setBody($this->view->display());
 		}
@@ -127,6 +127,7 @@ class seckillControl extends control
 			$endtime = $this->post->endtime;
 			$price = filter::number($this->post->price);
 			$orderby = filter::int($this->post->orderby);
+			$logo = $this->post->logo;
 			if(!empty($pid))
 			{
 				$productModel = $this->model('product');
@@ -142,7 +143,7 @@ class seckillControl extends control
 					return json_encode(array('code'=>4,'result'=>'商品已经参加了'.$result.',请先移除原活动在来添加'));
 				}
 				$seckillModel = $this->model('seckill');
-				if($seckillModel->create($sname,$pid,$starttime,$endtime,$price,$orderby))
+				if($seckillModel->create($sname,$pid,$starttime,$endtime,$price,$orderby,$logo))
 				{
 					$productModel->setActivity($pid,'seckill');
 					return json_encode(array('code'=>1,'result'=>'推送成功'));

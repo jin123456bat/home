@@ -26,15 +26,14 @@ class userControl extends control
 	 */
 	function message()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'user',roleModel::POWER_ALL))
 		{
 			$content = htmlspecialchars_decode($this->post->content);
 			if(mb_strlen($content,'utf8')>350)
-				return json_encode(array('code'=>2,'result'=>'短信长度不得超过350个字'));
+				return new json(4,'短信长度不得超过350个字');
 			if(mb_strlen($content,'utf-8')<10)
-				return json_encode(array('code'=>5,'result'=>'短信长度太短了，为了能通过接口还是多写几个字吧'));
+				return new json(5,'短信长度太短了，为了能通过接口还是多写几个字吧');
 			$userModel = $this->model('user');
 			if(!empty($this->post->data))
 			{
@@ -51,17 +50,17 @@ class userControl extends control
 				if((int)$result>0)
 				{
 					$this->model('log')->write($this->session->username,'给'.count($telephone).'个用户发送了短信:'.$content);
-					return json_encode(array('code'=>1,'result'=>'ok'));
+					return new json(json::OK);
 				}
 				else if((int)$result < 0)
 				{
-					return json_encode(array('code'=>5,'result'=>'短信接口异常'.$result));
+					return new json(6,'短信接口异常'.$result);
 				}
-				return json_encode(array('code'=>0,'result'=>'选择人数太多，请控制在100个以内'));
+				return new json(json::PARAMETER_ERROR);
 			}
-			return json_encode(array('code'=>4,'result'=>'参数错误'));
+			return new json(json::PARAMETER_ERROR);
 		}
-		return json_encode(array('code'=>3,'result'=>'没有权限'));
+		return new json(json::NO_POWER);
 	}
 	
 	/**
@@ -113,11 +112,11 @@ class userControl extends control
 			$info['gravatar'] = file::realpathToUrl($info['gravatar']);
 			if(!empty($info))
 			{
-				return json_encode(array('code'=>1,'result'=>'ok','body'=>$info));
+				return new json(json::OK,NULL,$info);
 			}
-			return json_encode(array('code'=>2,'result'=>'不存在该用户'));
+			return new json(json::PARAMETER_ERROR);
 		}
-		return json_encode(array('code'=>0,'result'=>'尚未登陆 '));
+		return new json(json::NOT_LOGIN);
 	}
 	
 	/**
@@ -333,12 +332,19 @@ class userControl extends control
 							return json_encode(array('code'=>6,'result'=>'推广员手机号错误'));
 						}
 					}
-					if ($userModel->register($telephone, $password,$o2o,$client))
+					$id = $userModel->register($telephone, $password,$o2o,$client);
+					if ($id)
 					{
 						if(!empty($o2o))
 						{
 							$o2oModel->where('uid=?',array($o2o))->increase('num',1);
 						}
+						
+						$this->session->id = $id;
+						$this->session->telephone = $telephone;
+						$this->session->username = '';
+						$this->model('user_login_log')->create($this->session->id,$client);
+						
 						return json_encode(array(
 							'code' => 1,
 							'result' => 'success'

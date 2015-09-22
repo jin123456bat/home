@@ -138,10 +138,19 @@ var EcommerceOrders = function () {
 				},{
 					targets:12,
 					render:function(data,type,full){
-						return '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a><a href="#note" data-toggle="modal" data-id="'+full.id+'" class="btn default btn-xs yellow-stripe noteBtn">备注</a>';
+						var content = '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a><a href="#note" data-toggle="modal" data-id="'+full.id+'" class="btn default btn-xs yellow-stripe noteBtn">备注</a>';
+						if(full.status == 1)
+						{
+							content = '<a data-id="'+full.id+'" class="btn default btn-xs red-stripe costums">发货</a>'+content;
+						}
+						if(full.status == 4 && full.outship == 0)
+						{
+							content = '<a data-id="'+full.id+'" class="btn default btn-xs red-stripe outship">出关</a>'+content;
+						}
+						return content;
 					}
 				},{
-					"targets":[13,14,15],
+					"targets":[13,14,15,16],
 					visible:false
 				}],
 				"columns":[{
@@ -187,6 +196,8 @@ var EcommerceOrders = function () {
 					"data":'consigneetel',
 				},{
 					"data":'consigneeaddress',
+				},{
+					"data":'outship'
 				}],
                 "order": [
                     [0, "asc"]

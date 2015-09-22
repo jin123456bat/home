@@ -8,152 +8,298 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="js/jquery.transit.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
   <script type="text/javascript" src="js/jquery.fly.js"></script>
+  <script type="text/javascript" src="js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"><i class="icon back"></i></a>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>订单列表</h1>
     </header>
   </div>
   <div id="content" style="padding-top:90px">
     <div class="fixtop">
       <ul class="orderTop clearfix">
-        <li class="active">
-          <a href="">全部</a>
+        <li onclick="tabb(this,100)" sid="100">
+          <a>全部</a>
         </li>
-        <li>
-          <a href="">待付款</a>
+        <li onclick="tabb(this,0)" sid="0">
+          <a>待付款</a>
         </li>
-        <li>
-          <a href="">待发货</a>
+        <li onclick="tabb(this,1)" sid="1">
+          <a>待发货</a>
         </li>
-        <li>
-          <a href="">待收货</a>
+        <li onclick="tabb(this,4)" sid="4">
+          <a>待收货</a>
         </li>
-        <li>
-          <a href="">待评价</a>
+        <li onclick="tabb(this,5)" sid="5">
+          <a>待评价</a>
+        </li>
+        <li onclick="tabb(this,7)" sid="7">
+          <a>退款</a>
         </li>
       </ul>
     </div>
     <div class="orderListCont">
-      <div class="item">
-        <div class="tit clearfix">
-          <div class="left">国际直邮</div>
-          <div class="right redtext">待付款</div>
-        </div>
-        <div class="under">
-          <div class="prodesc clearfix">
-            <div class="leftpic">
-              <img src="images/pro1.jpg">
-            </div>
-            <div class="desc">Puritan’s Pride 普丽普莱 维生素B-12 钴胺素 改善贫血 缓解压力  缓释型易吸收 1000mcg 100粒</div>
-            <div class="number">
-              ￥130.0
-              &nbsp;&nbsp;&nbsp;<small>x10</small>
-            </div>
-          </div>
-          <div class="priceall">
-            共1件商品 实付： <strong class="redtext">￥1300.0</strong>
-          </div>
-          <div class="clearfix">
-            <div class="btngroup">
-              <a class="bobtn">联系卖家</a>
-              <a class="bobtn">取消订单</a>
-              <a class="redbtn">付款</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="tit clearfix">
-          <div class="left">国际直邮</div>
-          <div class="right redtext">待发货</div>
-        </div>
-        <div class="under">
-          <div class="prodesc clearfix">
-            <div class="leftpic">
-              <img src="images/pro1.jpg">
-            </div>
-            <div class="desc">Puritan’s Pride 普丽普莱 维生素B-12 钴胺素 改善贫血 缓解压力  缓释型易吸收 1000mcg 100粒</div>
-            <div class="number">
-              ￥130.0
-              &nbsp;&nbsp;&nbsp;<small>x10</small>
-            </div>
-          </div>
-          <div class="priceall">
-            共1件商品 实付： <strong class="redtext">￥1300.0</strong>
-          </div>
-          <div class="clearfix">
-            <div class="btngroup">
-              <a class="bobtn">提醒发货</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="tit clearfix">
-          <div class="left">国际直邮</div>
-          <div class="right redtext">待收货</div>
-        </div>
-        <div class="under">
-          <div class="prodesc clearfix">
-            <div class="leftpic">
-              <img src="images/pro1.jpg">
-            </div>
-            <div class="desc">Puritan’s Pride 普丽普莱 维生素B-12 钴胺素 改善贫血 缓解压力  缓释型易吸收 1000mcg 100粒</div>
-            <div class="number">
-              ￥130.0
-              &nbsp;&nbsp;&nbsp;<small>x10</small>
-            </div>
-          </div>
-          <div class="priceall">
-            共1件商品 实付： <strong class="redtext">￥1300.0</strong>
-          </div>
-          <div class="clearfix">
-            <div class="btngroup">
-              <a class="bobtn">查看物流</a>
-              <a class="pinkbtn">确认收货</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="tit clearfix">
-          <div class="left">国际直邮</div>
-          <div class="right redtext">待评价</div>
-        </div>
-        <div class="under">
-          <div class="prodesc clearfix">
-            <div class="leftpic">
-              <img src="images/pro1.jpg">
-            </div>
-            <div class="desc">Puritan’s Pride 普丽普莱 维生素B-12 钴胺素 改善贫血 缓解压力  缓释型易吸收 1000mcg 100粒</div>
-            <div class="number">
-              ￥130.0
-              &nbsp;&nbsp;&nbsp;<small>x10</small>
-            </div>
-          </div>
-          <div class="priceall">
-            共1件商品 实付： <strong class="redtext">￥1300.0</strong>
-          </div>
-          <div class="clearfix">
-            <div class="btngroup">
-              <a class="bobtn">去评价</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="orderListCont_100 contitem"></div>
+      <div class="orderListCont_0 contitem hide"></div>
+      <div class="orderListCont_1 contitem hide"></div>
+      <div class="orderListCont_4 contitem hide"></div>
+      <div class="orderListCont_5 contitem hide"></div>
+      <div class="orderListCont_7 contitem hide"></div>
     </div>
   </div>
   <div id="footer">
 
   </div>
   <script type="text/javascript">
-    
+  var sid = 100;
+  $(function(){
+    sid = $.query.get('status')?$.query.get('status'):100;
+    orderList(0,QueLen,sid);
+    $('.orderTop li[sid='+sid+']').addClass('active');
+    $(window).scroll(function(){  
+      var $this =$(this); 
+      var viewH =$(window).height();//可见高度  
+      var contentH = document.body.scrollHeight,//内容高度  
+      scrollTop =$(this).scrollTop();//滚动高度  
+      if(scrollTop/(contentH -viewH)>=0.95){ 
+        if(HasEnd[statusCur]){
+          return;
+        }
+        orderList(QueLen*pageCurs[statusCur],QueLen,statusCur);
+      }  
+    });  
+  });
+  var QueLen = 10;
+  var statusCur = 100;
+  var pageCurs = {
+    '0':0,
+    '1':0,
+    '4':0,
+    '5':0,
+    '7':0,
+    '100':0,
+  };
+  var HasEnd = {
+    '0':false,
+    '1':false,
+    '4':false,
+    '5':false,
+    '7':false,
+    '100':false,
+  };
+  function tabb(obj,n){
+    $('.orderTop li').removeClass('active');
+    $(obj).addClass('active');
+    statusCur = n;
+    $('.contitem').hide();
+    $('.orderListCont_'+statusCur).show();
+    if(HasEnd[statusCur]){
+      return;
+    }
+    orderList(QueLen*pageCurs[statusCur],QueLen,statusCur);
+    // console.log(pageCurs[statusCur]);
+  }
+  function orderList(start,length,status){
+    var datas;
+    if(status==100){
+      datas = {    
+        start:start,
+        length:length,
+      };
+    }else{
+      datas = {    
+        start:start,
+        length:length,
+        status:status,
+      };
+    }
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=myorder',// 跳转到 action    
+      data:datas,    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        // console.log(data.body.length);
+        // console.log(QueLen);
+        // console.log(datas.status);
+        if(data.code == 1){
+          if(data.body.length<QueLen){
+            HasEnd[statusCur] = true;
+          }
+          // console.log(data.body);
+          fillOrder(data.body);
+          pageCurs[statusCur]++;
+        }else{
+          alert(data.result);
+          setTimeout(function(){
+            window.location.href="login.html";
+          },1000);
+        } 
+      } 
+    });
+  } 
+  var statusName = {
+    '0':'待付款',
+    '1':'待发货',
+    '2':'订单关闭',
+    '3':'取消支付',
+    '4':'待收货',
+    '5':'待评价',
+    '6':'完成评论',
+    '7':'退款中',
+  };
+  function fillOrder(body){
+    var html = "";
+    console.log(body.length);
+    for(var i=0;i<body.length;i++){
+      var rei = body[i];
+      console.log(rei);
+
+      var btns = {
+        '0':'<a class="bobtn">联系卖家</a><a class="bobtn" onclick="cancelOrder(this,'+rei.id+')">取消订单</a><a class="redbtn">付款</a>',
+        '1':'<a class="bobtn" onclick="remindOrder('+rei.id+')">提醒发货</a>',
+        '2':'',
+        '3':'',
+        '6':'',
+        '7':'<a class="bobtn" onclick="cancelTui('+rei.id+')">取消退款</a>',
+        '4':'<a class="bobtn">查看物流</a><a class="pinkbtn" onclick="remindEnOrder('+rei.id+')">确认收货</a>',
+        '5':'<a class="bobtn">去评价</a>',
+      };
+      // console.log(rei);
+      if(rei.orderdetail.length==0){
+
+      }else{
+        html+='<div class="item" dataid="'+rei.id+'" onclick="toOrderPage('+rei.id+')">'
+            +  '<div class="tit clearfix">'
+            +    '<div class="left">国际直邮'+rei.orderno+'</div>'
+            +    '<div class="right redtext">'+statusName[rei.status]+'</div>'
+            +  '</div>'
+            +  '<div class="under">'
+            +    '<div class="prodesc clearfix">'
+            +      '<div class="leftpic"><img src="'+rei.orderdetail[0]["img"]+'"></div>'
+            +      '<div class="desc">'+rei.orderdetail[0]["productname"]+' '+rei.orderdetail[0]["prototype"]+'</div>'
+            +      '<div class="number">'
+            +        '￥'+rei.orderdetail[0]["unitprice"]
+            +        '&nbsp;&nbsp;&nbsp;<small>x'+rei.orderdetail[0]["num"]+'</small>'
+            +      '</div></div>'
+            +    '<div class="priceall">'
+            +     ' 共1件商品 实付： <strong class="redtext">￥'+rei.ordertotalamount+'</strong>'
+            +    '</div>'
+            +    '<div class="clearfix">'
+            +      '<div class="btngroup">'
+            +        btns[rei.status]
+            +      '</div></div></div></div>';
+          }
+    }
+    $('.orderListCont_'+statusCur).append(html);
+    // console.log('.orderListCont_'+statusCur);
+  }
+  function toOrderPage(id){
+    window.location.href="orderDetail.html?id="+id;
+  }
+  function cancelOrder(obj,id){
+    event.stopPropagation();
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=quit',// 跳转到 action    
+      data:{
+        id:id,
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          alert('订单已取消');
+          $(obj).parents('.item').find('.tit').find('.right').text('取消支付');
+          $(obj).parents('.item').find('.btngroup').remove();
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function remindOrder(id){
+    event.stopPropagation();
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=shipalert',// 跳转到 action    
+      data:{
+        id:id,
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          alert('提醒成功！');
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function remindEnOrder(id){//提醒是否确认收货
+    event.stopPropagation();
+    swal({
+      title: "确认收货吗?",
+      text: "成功确认后，请对我们的服务进行评价",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FE5073",
+      confirmButtonText: "是的",
+      cancelButtonText: "取消",
+      closeOnConfirm: true
+    },function(){
+      ensureOrder(id);
+    });
+  }
+  function ensureOrder(id){
+    event.stopPropagation();
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=shipped',// 跳转到 action    
+      data:{
+        id:id,
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          //去评价页面
+          console.log(data);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function cancelTui(id){
+    event.stopPropagation();
+      $.ajax( {    
+        url:BASEURL+'?c=refund&a=remove',// 跳转到 action    
+        data:{
+          id:id,
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            window.location.href=window.location.href;
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+  }
 
   </script>
 </body>
