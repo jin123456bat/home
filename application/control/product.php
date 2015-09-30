@@ -438,6 +438,7 @@ class productControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'product',roleModel::POWER_SELECT))
 		{
 			$this->view = new view(config('view'), 'admin/product.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			
 			$categoryModel = $this->model('category');
 			$category = $categoryModel->select();
@@ -471,6 +472,7 @@ class productControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'product',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/product_edit.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$productModel = $this->model('product');
 			$result = $productModel->get($this->get->id);
 			

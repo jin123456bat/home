@@ -102,31 +102,41 @@ class orderControl extends control
 		$id = filter::int($this->get->id);
 		if(!empty($id))
 		{
-			$this->view = new view(config('view'), 'admin/order_information.html');
-			$orderModel = $this->model('orderlist');
-			$orderModel->table('user','left join','user.id=orderlist.uid');
-			$result = $orderModel->where('orderlist.id=?',array($id))->select();
-			$goods = $orderModel->getOrderDetail($id);
-			if($this->get->type === 'json')
+			$roleModel = $this->model('role');
+			if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_ALL))
 			{
-				$result['orderdetail'] = $goods;
-				return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
-			}
-			if(isset($result[0]))
-			{
-				$result[0]['gravatar'] = file::realpathToUrl($result[0]['gravatar']);
-				$this->view->assign('order',$result[0]);
-				$this->view->assign('goods',$goods);
-				if(!empty($_SERVER['HTTP_REFERER']))
+				$this->view = new view(config('view'), 'admin/order_information.html');
+				$this->view->assign('role',$roleModel->get($this->session->role));
+				$orderModel = $this->model('orderlist');
+				$orderModel->table('user','left join','user.id=orderlist.uid');
+				$result = $orderModel->where('orderlist.id=?',array($id))->select();
+				$goods = $orderModel->getOrderDetail($id);
+				if($this->get->type === 'json')
 				{
-					$this->view->assign('last_page',$_SERVER['HTTP_REFERER']);
+					$result['orderdetail'] = $goods;
+					return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 				}
-				return $this->view->display();
+				if(isset($result[0]))
+				{
+					$result[0]['gravatar'] = file::realpathToUrl($result[0]['gravatar']);
+					$this->view->assign('order',$result[0]);
+					$this->view->assign('goods',$goods);
+					if(!empty($_SERVER['HTTP_REFERER']))
+					{
+						$this->view->assign('last_page',$_SERVER['HTTP_REFERER']);
+					}
+					return $this->view->display();
+				}
+				else
+				{
+					$this->response->setCode(302);
+					$this->response->addHeader('Location',$this->http->url('admin','__404'));
+				}
 			}
 			else
 			{
 				$this->response->setCode(302);
-				$this->response->addHeader('Location',$this->http->url('admin','__404'));
+				$this->response->addHeader('Location',$this->http->url('admin','index'));
 			}
 		}
 		else
@@ -836,6 +846,7 @@ class orderControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/order_orderlist.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$this->response->setBody($this->view->display());
 		}
 		else

@@ -171,6 +171,12 @@
                                     <th>
                                     	配置
                                     </th>
+                                    <th>
+                                    	日志
+                                    </th>
+                                    <th>
+                                    	反馈
+                                    </th>
 									<th>
 										#
 									</th>
@@ -247,6 +253,12 @@
 									</td>
                                     <td>
 										<input type="checkbox" data-id="{%$role[role].id%}" name="system" {%if !empty($role[role].system)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="log" {%if !empty($role[role].log)%}checked="checked"{%/if%}>
+									</td>
+                                    <td>
+										<input type="checkbox" data-id="{%$role[role].id%}" name="message" {%if !empty($role[role].message)%}checked="checked"{%/if%}>
 									</td>
 									<td>
 										<button class="btn btn-xs red-stripe removeBtn" data-id="{%$role[role].id%}">删除</button>

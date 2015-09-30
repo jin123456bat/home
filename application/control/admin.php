@@ -71,6 +71,8 @@ class adminControl extends control
 			$this->view = new view(config('view'), 'admin/dashboard.html');
 			$this->model('log')->write($this->session->username,"登陆了系统");
 			
+			$roleModel = $this->model('role');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			//发货提醒
 			$shipalertModel = $this->model('shipalert');
 			$filter = array(

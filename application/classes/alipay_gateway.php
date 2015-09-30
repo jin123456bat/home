@@ -92,16 +92,17 @@ class alipay_gateway
 		$data = array(
 			'body' => $body,
 			'subject' => $subject,
+			'partner' => $this->_system->get('partner','alipay'),
 			'out_trade_no'=>$order['orderno'],
 			'currency' => $this->_system->get('currency','alipay'),//海外币种
 			'rmb_fee' => number_format($order['ordertotalamount'],2),
-			'supplier' => $this->_system->get('companyname','system'),
+			
 			'notify_url' => $notify_url,
 			'return_url' => $return_url,
 			'_input_charset'=>$this->_config['input_charset'],
-			'timeout_rule'=>(new time())->format($this->_system->get('timeout','payment'), true),
 		);
-		
+		//超时时间规则
+		$timeout = (new time())->format($this->_system->get('timeout','payment'), true);
 		//支付到海外账户还是国内账户
 		$outtrade = $this->_system->get('outtrade','alipay');
 		if(empty($outtrade))
@@ -114,9 +115,11 @@ class alipay_gateway
 				case 'wap':
 					$data['service'] = 'alipay.wap.create.direct.pay.by.user';
 					$data['payment_type'] = 1;
-					$data['seller_id'] = $this->_system->get('partner','alipay');
-					$data['it_b_pay'] = $data['timeout_rule'];
-					//$data['total_fee'] = $data['rmb_fee'];
+					//$data['seller_id'] = $this->_system->get('partner','alipay');
+					$data['it_b_pay'] = $timeout;
+					$data['total_fee'] = $data['rmb_fee'];
+					unset($data['rmb_fee']);
+					unset($data['currency']);
 					//$data['service'] = 'alipay.wap.auth.authAndExecute';
 					break;
 				default:return array('code'=>'error','content'=>'支付方式错误');
@@ -132,7 +135,11 @@ class alipay_gateway
 				$this->_config->createSeparator($this->_system->get('splitpartner','alipay'),$separatorAmount,$this->_system->get('splitcurrency','alipay'));
 				$data['split_fund_info'] = json_encode($this->_config->separator);
 			}
-			$data['partner'] = $this->_system->get('partner','alipay');
+			
+			//海外支付特殊参数
+			$data['timeout_rule'] = $timeout;
+			$data['supplier'] = $this->_system->get('companyname','system');
+			
 			switch ($this->_trade_type)
 			{
 				case 'web':
@@ -142,7 +149,6 @@ class alipay_gateway
 				case 'wap':
 					$data['product_code'] = 'NEW_WAP_OVERSEAS_SELLER';
 					$data['service'] = 'create_forex_trade_wap';
-					unset($data['return_url']);//没有return_url  不然不会异步通知的
 					break;
 				default:return array('code'=>'error','content'=>'不支持的支付方式');
 			}

@@ -37,6 +37,11 @@
 			{%/if%}
 			</a>
 		</li>
+        {%if
+        	(isset($role.product) && $role.product==15)||
+            (isset($role.category) && $role.category==15)||
+            (isset($role.brand) && $role.brand==15)
+        %}
 		<li class="{%if 
 			($smarty.get.c==category && $smarty.get.a==admin)
 			||($smarty.get.c==product && $smarty.get.a==index)
@@ -49,6 +54,7 @@
 			<span class="arrow "></span>
 			</a>
 			<ul class="sub-menu">
+            	{%if isset($role.product) && $role.product == 15%}
 				<li class="{%if $smarty.get.c==product && $smarty.get.a==index%}active{%/if%}">
 					<a href="{%url c=product a=index%}">
 					<i class="icon-handbag"></i>
@@ -59,19 +65,29 @@
 					<i class="icon-pencil"></i>
 					添加商品</a>
 				</li>
-				<li class="{%if $smarty.get.c==category && $smarty.get.a==admin%}active{%/if%}">
+                {%/if%}
+				{%if isset($role.category) && $role.category == 15%}
+                <li class="{%if $smarty.get.c==category && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=category a=admin%}">
 					<i class="icon-list"></i>
 					分类管理</a>
 				</li>
+                {%/if%}
+                {%if isset($role.brand) && $role.brand == 15%}
 				<li class="{%if $smarty.get.c==brand && $smarty.get.a==manager%}active{%/if%}">
 					<a href="{%url c=brand a=manager%}">
 					<i class="icon-diamond"></i>
 					品牌管理
 				   	</a>
 				</li>
+                {%/if%}
 			</ul>
 		</li>
+        {%/if%}
+        {%if
+        	(isset($role.orderlist) && $role.orderlist==15) ||
+            (isset($role.refund) && $role.refund==15)
+        %}
 		<li class="{%if ($smarty.get.c==order && $smarty.get.a==orderlist)
         				|| ($smarty.get.c==refund && $smarty.get.a==admin)
         			%}active open{%/if%}">
@@ -83,23 +99,27 @@
         			%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
+            	{%if isset($role.orderlist) && $role.orderlist==15%}
 				<li class="{%if $smarty.get.c==order && $smarty.get.a==orderlist%}active{%/if%}">
 					<a href="{%url c=order a=orderlist%}">
 					<i class="icon-tag"></i>
 					订单列表</a>
 				</li>
+                {%/if%}
+                {%if isset($role.refund) && $role.refund==15%}
                 <li class="{%if $smarty.get.c==refund && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=refund a=admin%}">
 					<i class="icon-tag"></i>
 					退款申请</a>
 				</li>
+                {%/if%}
 			</ul>
 		</li>
+        {%/if%}
 		<!-- BEGIN FRONTEND THEME LINKS -->
 		<li class="heading">
 			<h3 class="uppercase">运营</h3>
 		</li>
-		
 		<li>
 			<a href="javascript:;">
 			<i class="icon-briefcase"></i>
@@ -133,6 +153,10 @@
 				</li>
 			</ul>
 		</li>
+        {%if
+        	(isset($role.help) && $role.help == 15 )||
+            (isset($role.carousel) && $role.carousel==15)
+        %}
 		<li class="{%if ($smarty.get.c==help && ($smarty.get.a==admin ||$smarty.get.a==edit || $smarty.get.a==page))
 					||($smarty.get.c==help && $smarty.get.a==create)
 					||($smarty.get.c==carousel && $smarty.get.a==admin)
@@ -146,6 +170,7 @@
 								%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
+            	{%if isset($role.help) && $role.help==15%}
 				<li class="{%if $smarty.get.c==help && $smarty.get.a==create%}active{%/if%}">
 					<a href="{%url c=help a=create%}">
 					<i class="fa fa-plus"></i> 添加页面
@@ -156,13 +181,21 @@
 					<i class="fa fa-file-o"></i> 自定义页面
 					</a>
 				</li>
+                {%/if%}
+                {%if isset($role.carousel) && $role.carousel==15%}
 				<li class="{%if $smarty.get.c==carousel && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=carousel a=admin%}">
 					<i class="fa fa-desktop"></i> 滚动图
 					</a>
 				</li>
+                {%/if%}
 			</ul>
 		</li>
+        {%/if%}
+        {%if
+        	(isset($role.message) && $role.message == 15)||
+            (isset($role.o2ouser) && $role.o2ouser==15 )
+        %}
 		<li class="{%if ($smarty.get.c==o2o && $smarty.get.a==admin)
         				|| ($smarty.get.c==message && $smarty.get.a==admin)
         			%}active open{%/if%}">
@@ -174,19 +207,34 @@
                             %}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
+            	{%if isset($role.o2ouser) && $role.o2ouser==15%}
 				<li class="{%if $smarty.get.c==o2o && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=o2o a=admin%}">
 					<i class="icon-user"></i>
 					o2o会员</a>
 				</li>
+                {%/if%}
+                {%if isset($role.message) && $role.message==15%}
                 <li class="{%if $smarty.get.c==message && $smarty.get.a==admin%}active{%/if%}">
                 	<a href="{%url c=message a=admin%}">
                     <i class="fa fa-envelope-o"></i>
                     反馈
                     </a>
                 </li>
+                {%/if%}
 			</ul>
 		</li>
+        {%/if%}
+        {%if
+        	(isset($role.sale) && $role.sale == 15) ||
+            (isset($role.seckill) && $role.seckill==15) ||
+            (isset($role.fullcut) && $role.fullcut == 15)||
+            (isset($role.coupon) && $role.coupon == 15)||
+            (isset($role.combine) && $role.combine==15)||
+            (isset($role.theme) && $role.theme == 15)||
+            (isset($role.hotorder) && $role.hotorder ==15)||
+            (isset($role.register) && $role.register==15)
+        %}
 		<li class="{%if ($smarty.get.c==sale && $smarty.get.a==admin)
 						||($smarty.get.c==seckill && $smarty.get.a==admin)
 						||($smarty.get.c==fullcut && $smarty.get.a==admin)
@@ -208,43 +256,65 @@
 								%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
+            	{%if isset($role.sale) && $role.sale == 15%}
 				<li class="{%if $smarty.get.c==sale && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=sale a=admin%}">
 					限时折扣</a>
 				</li>
+                {%/if%}
+                {%if isset($role.seckill) && $role.seckill==15%}
 				<li class="{%if $smarty.get.c==seckill && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=seckill a=admin%}">
 					秒杀</a>
 				</li>
+                {%/if%}
+                {%if isset($role.fullcut) && $role.fullcut==15%}
 				<li class="{%if $smarty.get.c==fullcut && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=fullcut a=admin%}">
 					满减</a>
 				</li>
+                {%/if%}
 				<!--<li>
+                	{%if isset($role.combine) && $role.combine ==15%}
 					<a href="extra_invoice.html">
 					组合</a>
+                    {%/if%}
 				</li>-->
+                {%if isset($role.coupon) && $role.coupon == 15%}
 				<li class="{%if $smarty.get.c==coupon && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=coupon a=admin%}">
 					优惠券/打折码</a>
 				</li>
+                {%/if%}
+                {%if isset($role.theme) && $role.theme == 15%}
 				<li class="{%if $smarty.get.c==theme && $smarty.get.a==admin%}active{%/if%}">
 					<a href="{%url c=theme a=admin%}">
 					主题管理</a>
 				</li>
+                {%/if%}
+                {%if isset($role.hotorder) && $role.hotorder==15%}
                 <li class="{%if $smarty.get.c==hotorder && $smarty.get.a==admin%}active{%/if%}">
                 	<a href="{%url c=hotorder a=admin%}">
                     全球热销
                     </a>
                 </li>
+                {%/if%}
+                {%if isset($role.register) && $role.register==15%}
                 <li class="{%if $smarty.get.c==register && $smarty.get.a==admin%}active{%/if%}">
                 	<a href="{%url c=register a=admin%}">
                     新用户活动
                     </a>
                 </li>
+                {%/if%}
 			</ul>
 		</li>
-		
+		{%/if%}
+        {%if
+        	(isset($role.address) && $role.address==15)||
+            (isset($role.user) && $role.user==15)||
+            (isset($role.admin) && $role.admin==15)||
+            (isset($role.role) && $role.role == 15)
+        %}
 		<li{%if ($smarty.get.c==user && $smarty.get.a==userlist)
 				||($smarty.get.c==admin && $smarty.get.a==adminlist)
 				||($smarty.get.c==role && $smarty.get.a==admin)
@@ -260,28 +330,38 @@
 								%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
+            	{%if isset($role.address) && $role.address == 15%}
             	<li{%if $smarty.get.c==address && $smarty.get.a==admin%} class="active"{%/if%}>
 					<a href="{%url c=address a=admin%}">
 					收货地址</a>
 				</li>
+                {%/if%}
+                {%if isset($role.user) && $role.user==15%}
 				<li{%if $smarty.get.c==user && $smarty.get.a==userlist%} class="active"{%/if%}>
 					<a href="{%url c=user a=userlist%}">
 					会员列表</a>
 				</li>
+                {%/if%}
+                {%if isset($role.admin) && $role.admin==15%}
 				<li{%if $smarty.get.c==admin && $smarty.get.a==adminlist%} class="active"{%/if%}>
 					<a href="{%url c=admin a=adminlist%}">
 					管理员列表</a>
 				</li>
+                {%/if%}
+                {%if isset($role.role) && $role.role==15%}
 				<li{%if $smarty.get.c==role && $smarty.get.a==admin%} class="active"{%/if%}>
 					<a href="{%url c=role a=admin%}">
 					管理组
 					</a>
 				</li>
+                {%/if%}
 			</ul>
 		</li>
+        {%/if%}
 		<li class="heading">
 			<h3 class="uppercase">设定</h3>
 		</li>
+        {%if isset($role.system) && $role.system==15%}
 		<li {%if $smarty.get.c==ship && $smarty.get.a==admin
         		|| $smarty.get.c==system &&(
                 $smarty.get.a==base || $smarty.get.a==payment || $smarty.get.a==cache || $smarty.get.a==costums || $smarty.get.a==shippment
@@ -326,13 +406,15 @@
                 </li>
 			</ul>
 		</li>
+        {%/if%}
+        {%if isset($role.log) && $role.log==15%}
 		<li {%if $smarty.get.c==log && $smarty.get.a==index%}class="active"{%/if%}>
 			<a href="{%url c=log a=index%}">
 			<i class="icon-envelope-open"></i>
 			<span class="title">系统日志</span>
 			</a>
 		</li>
-		
+		{%/if%}
 		<li class="last ">
 			<a href="{%url c=admin a=logout%}">
 			<i class="icon-logout"></i>

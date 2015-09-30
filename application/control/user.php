@@ -429,7 +429,13 @@ class userControl extends control
 		$roleModel = $this->model('role');
 		if (login::admin() && $roleModel->checkPower($this->session->role, 'user', roleModel::POWER_SELECT)) {
 			$this->view = new view(config('view'), 'admin/userlist.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			return $this->view->display();
+		}
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
 

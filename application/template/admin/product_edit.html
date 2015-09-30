@@ -143,20 +143,24 @@
 											<a href="#tab_images" data-toggle="tab">
 											图像 </a>
 										</li>
+                                        {%if isset($role.comment)%}
 										<li>
 											<a href="#tab_reviews" data-toggle="tab">
 											评论
 											</a>
 										</li>
+                                        {%/if%}
 										<li>
 											<a href="#tab_history" data-toggle="tab">
 											历史 </a>
 										</li>
+                                        {%if isset($smarty.get.id)%}
                                         <li>
                                         	<a href="#tab_eqcode" data-toggle="tab">
                                             二维码
                                             </a>
                                         </li>
+                                        {%/if%}
 									</ul>
 									<div class="tab-content no-space">
 										<div class="tab-pane active" id="tab_general">
@@ -429,6 +433,7 @@
 											</tbody>
 											</table>
 										</div>
+                                        {%if isset($role.comment) && $role.comment==15%}
 										<div class="tab-pane" id="tab_reviews">
 											<div class="table-container">
 												<table class="table table-striped table-bordered table-hover" id="datatable_reviews">
@@ -493,6 +498,7 @@
 												</table>
 											</div>
 										</div>
+                                        {%/if%}
 										<div class="tab-pane" id="tab_history">
 											<div class="table-container">
 												<table class="table table-striped table-bordered table-hover" id="datatable_history">
@@ -561,11 +567,13 @@
 												</table>
 											</div>
 										</div>
+                                        {%if isset($smarty.get.id)%}
                                         <div class="tab-pane" id="tab_eqcode">
                                         	<div class="table-container">
                                             	<img src="{%url c=index a=eqcode content='http://'|cat:$smarty.server.SERVER_NAME|cat:'/index.php?c=mobile&a=proDetail&pid='|cat:$smarty.get.id%}">
                                             </div>
                                         </div>
+                                        {%/if%}
 									</div>
 								</div>
 							</div>

@@ -73,6 +73,7 @@ class themeControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'theme',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/theme_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$themeModel = $this->model('theme');
 			$theme = $themeModel->fetchAll();
 			foreach ($theme as &$a)

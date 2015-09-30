@@ -246,15 +246,17 @@
 <script src="{%$VIEW_ROOT%}/assets/admin/pages/scripts/table-managed-admin.js"></script>
 <script>
 jQuery(document).ready(function() {	
-Metronic.init(); // init metronic core components
-Layout.init(); // init current layout
-QuickSidebar.init(); // init quick sidebar
-Demo.init(); // init demo features
-TableManaged.init();
+	Metronic.init(); // init metronic core components
+	Layout.init(); // init current layout
+	QuickSidebar.init(); // init quick sidebar
+	Demo.init(); // init demo features
+	TableManaged.init();
+	
 	$.fn.urlencode = function(str){
 		str = (str + '').toString();
 		return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
 	}
+	
 	$('#add_user').on('submit',function(){
 		var username = $.trim($(this).find('input[name=username]').val()),
 			password = $.trim($(this).find('input[name=password]').val());

@@ -24,6 +24,7 @@ class o2oControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'o2ouser',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/o2ouser.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$this->view->assign('o2o',$this->model('o2ouser')->fetchAll());
 			$this->response->setBody($this->view->display());
 		}

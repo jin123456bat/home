@@ -131,6 +131,8 @@ class addressControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/address.html');
 			
+			$this->view->assign('role',$roleModel->get($this->session->role));
+			
 			$addressModel = $this->model('address');
 			$address = $addressModel->fetchAll();
 			$this->view->assign('address',$address);

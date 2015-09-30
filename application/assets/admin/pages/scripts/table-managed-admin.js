@@ -55,17 +55,17 @@ var TableManaged = function () {
 				"render":function(data,type,full){
 					$.ajaxSetup({async:false});
 					var tpl = '<select class="form-control input-sm roleSelector">';
-					$.get('?c=role&a=fetch',{},function(data){
-						data = $.parseJSON(data);
-						if(data.code == 1)
+					$.get('?c=role&a=fetch',{},function(response){
+						response = $.parseJSON(response);
+						if(response.code == 1)
 						{
-							for(var i=0;i<data.body.length;i++)
+							for(var i=0;i<response.body.length;i++)
 							{
-								if(data == data.body[i].id)
+								if(data == response.body[i].id)
 									var selected = 'selected="selected"';
 								else
 									var selected = '';
-								tpl += '<option value="'+data.body[i].id+'" '+selected+'>'+data.body[i].name+'</option>';
+								tpl += '<option value="'+response.body[i].id+'" '+selected+'>'+response.body[i].name+'</option>';
 							}
 						}
 					});

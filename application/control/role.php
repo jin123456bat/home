@@ -61,6 +61,7 @@ class roleControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'role',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/role_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$result = $roleModel->fetchAll();
 			$this->view->assign('role',$result);
 			$this->response->setBody($this->view->display());

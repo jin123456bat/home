@@ -49,6 +49,7 @@ class fullcutControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'fullcut',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/fullcut_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$fullcutModel = $this->model('fullcut');
 			$fullcut = $fullcutModel->fetchAll();
 			$fullcutdetailModel = $this->model('fullcutdetail');

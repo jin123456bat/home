@@ -22,6 +22,7 @@ class refundControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'refund',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/refund_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$refundModel = $this->model('refund');
 			$refund = $refundModel->fetchAll();
 			foreach ($refund as &$ref)

@@ -22,6 +22,7 @@ class registerControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'register',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/register_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			
 			$id = 1;
 			

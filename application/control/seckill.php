@@ -100,6 +100,7 @@ class seckillControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'seckill',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/seckill.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$seckillModel = $this->model('seckill');
 			$seckill = $seckillModel->fetchAll('seckill.sname,product.id as pid,product.name,seckill.starttime,seckill.endtime,seckill.price,seckill.orderby,seckill.id,seckill.logo');
 			$this->view->assign('product',$seckill);

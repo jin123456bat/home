@@ -29,6 +29,8 @@ class helpControl extends control
 			else
 			{
 				$this->view = new view(config('view'), 'admin/help_page.html');
+				$roleModel = $this->model('role');
+				$this->view->assign('role',$roleModel->get($this->session->role));
 				$this->view->assign('help',$result);
 				return $this->view->display();
 			}

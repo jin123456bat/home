@@ -4,6 +4,8 @@ use system\core\control;
 use system\core\view;
 use system\core\filter;
 use application\message\json;
+use application\classes\login;
+use application\model\roleModel;
 /**
  * 全球热销
  * @author jin12
@@ -13,21 +15,30 @@ class hotorderControl extends control
 {
 	function admin()
 	{
-		$this->view = new view(config('view'), 'admin/hot_admin.html');
-		
-		$hotorderModel = $this->model('hotorder');
-		$hotorder = $hotorderModel->fetchAll();
-		foreach ($hotorder as &$product)
+		$roleModel = $this->model('role');
+		if(login::admin() && $roleModel->checkPower($this->session->role,'hotorder',roleModel::POWER_ALL))
 		{
-			$img = $this->model('productimg')->getByPid($product['id']);
-			if(isset($img[0]['thumbnail_path']))
+			$this->view = new view(config('view'), 'admin/hot_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
+			$hotorderModel = $this->model('hotorder');
+			$hotorder = $hotorderModel->fetchAll();
+			foreach ($hotorder as &$product)
 			{
-				$product['img'] = $img[0]['thumbnail_path'];
+				$img = $this->model('productimg')->getByPid($product['id']);
+				if(isset($img[0]['thumbnail_path']))
+				{
+					$product['img'] = $img[0]['thumbnail_path'];
+				}
 			}
+			$this->view->assign('hotorder',$hotorder);
+			
+			return $this->view->display();
 		}
-		$this->view->assign('hotorder',$hotorder);
-		
-		return $this->view->display();
+		else
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}
 	}
 	
 	/**

@@ -133,6 +133,7 @@ class brandControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'brand',roleModel::POWER_SELECT))
 		{
 			$this->view = new view(config('view'), 'admin/brand_manager.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$brandModel = $this->model('brand');
 			$result = $brandModel->fetchByProduct($start,$length);
 			$this->view->assign('brand',$result);

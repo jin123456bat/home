@@ -16,6 +16,17 @@ class roleModel extends model
 	}
 	
 	/**
+	 * 获得用户所有权限
+	 * @param unknown $id
+	 * @return NULL
+	 */
+	function get($id)
+	{
+		$result = $this->where('id=?',array($id))->select();
+		return isset($result[0])?$result[0]:NULL;
+	}
+	
+	/**
 	 * 移除管理组
 	 * @param unknown $id
 	 */

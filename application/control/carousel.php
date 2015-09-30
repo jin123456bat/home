@@ -38,6 +38,7 @@ class carouselControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'carousel',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/carousel_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$themeModel = $this->model('theme');
 			$theme = $themeModel->select();
 			$this->view->assign('theme',$theme);

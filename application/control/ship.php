@@ -14,9 +14,10 @@ class shipControl extends control
 	function admin()
 	{
 		$roleModel = $this->model('role');
-		if(login::admin() && $roleModel->checkPower($this->session->role,'ship',roleModel::POWER_ALL))
+		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/ship.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$shipModel = $this->model('ship');
 			$this->view->assign('ship',$shipModel->select());
 			$this->response->setBody($this->view->display());
@@ -35,7 +36,7 @@ class shipControl extends control
 	{
 		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
-		if(login::admin()&&$roleModel->checkPower($this->session->role,'ship',roleModel::POWER_INSERT))
+		if(login::admin()&&$roleModel->checkPower($this->session->role,'system',roleModel::POWER_INSERT))
 		{
 			$name = $this->post->name;
 			$code = $this->post->code;

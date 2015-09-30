@@ -112,6 +112,7 @@ class couponControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'coupon',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/coupon_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$categoryModel = $this->model('category');
 			$category = $categoryModel->select();
 			$categoryHelper = new category();

@@ -77,7 +77,7 @@ class systemControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/system_costums.html');
-			
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$systemModel = $this->model('system');
 			$costums = $systemModel->fetch(array('costums'));
 			$system = array();
@@ -127,7 +127,7 @@ class systemControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/system_shippment.html');
-			
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$shippment = $this->model('system')->fetch(array('shippment'));
 			$system = array();
 			foreach ($shippment as $value)
@@ -241,6 +241,7 @@ class systemControl extends control
 			$systemModel = $this->model('system');
 			$payment = $systemModel->fetch(array('weixin','alipay','payment'));
 			$this->view = new view(config('view'), 'admin/system_payment.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$system = array();
 			foreach ($payment as $value)
 			{
@@ -265,7 +266,7 @@ class systemControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/system_base.html');
-			
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$systemModel = $this->model('system');
 			$config = $systemModel->fetch(array('system','image','app'));
 			$system = array();
@@ -301,6 +302,7 @@ class systemControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/cache.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			return $this->view->display();
 		}
 		else

@@ -77,6 +77,7 @@ class saleControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'sale',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/sale.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
 			$saleModel = $this->model('sale');
 			$result = $saleModel->fetchAll('sale.sname,product.id as pid,product.name,sale.starttime,sale.endtime,sale.price,sale.orderby,sale.id');
 			$this->view->assign('product',$result);
