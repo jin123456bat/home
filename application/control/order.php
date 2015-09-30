@@ -900,7 +900,7 @@ class orderControl extends control
 		foreach ($this->post->comment as $pid => $content)
 		{
 			
-			$files = $content['pic'];
+			$files = isset($content['pic']) && is_array($content['pic'])?$content['pic']:array();
 			
 			$content['score'] = empty($content['score'])?0:$content['score'];
 			$content['score'] = $content['score']>5?5:$content['score'];

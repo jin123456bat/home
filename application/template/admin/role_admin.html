@@ -147,9 +147,6 @@
 									<th>
 										 角色
 									</th>
-									<th>
-										 配送
-									</th>
                                     <th>
 										 O2O
 									</th>
@@ -183,85 +180,82 @@
 								</tr>
 								</thead>
 								<tbody>
-								{%section name=role loop=$role%}
+								{%section name=roleGroup loop=$roleGroup%}
 								<tr>
 									<td name="name">
-										 {%$role[role].name%}
+										 {%$roleGroup[roleGroup].name%}
 									</td>
 									<td>
-										 <input type="checkbox" data-id="{%$role[role].id%}" name="address" {%if !empty($role[role].address)%}checked="checked"{%/if%}>
+										 <input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="address" {%if !empty($roleGroup[roleGroup].address)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										 <input type="checkbox" data-id="{%$role[role].id%}" name="brand" {%if !empty($role[role].brand)%}checked="checked"{%/if%}>
+										 <input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="brand" {%if !empty($roleGroup[roleGroup].brand)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="category" {%if !empty($role[role].category)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="category" {%if !empty($roleGroup[roleGroup].category)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="combine" {%if !empty($role[role].combine)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="combine" {%if !empty($roleGroup[roleGroup].combine)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="comment" {%if !empty($role[role].comment)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="comment" {%if !empty($roleGroup[roleGroup].comment)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="coupon" {%if !empty($role[role].coupon)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="coupon" {%if !empty($roleGroup[roleGroup].coupon)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="fullcut" {%if !empty($role[role].fullcut)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="fullcut" {%if !empty($roleGroup[roleGroup].fullcut)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="product" {%if !empty($role[role].product)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="product" {%if !empty($roleGroup[roleGroup].product)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="user" {%if !empty($role[role].user)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="user" {%if !empty($roleGroup[roleGroup].user)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="admin" {%if !empty($role[role].admin)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="admin" {%if !empty($roleGroup[roleGroup].admin)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="orderlist" {%if !empty($role[role].orderlist)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="orderlist" {%if !empty($roleGroup[roleGroup].orderlist)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="sale" {%if !empty($role[role].sale)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="sale" {%if !empty($roleGroup[roleGroup].sale)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="seckill" {%if !empty($role[role].seckill)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="seckill" {%if !empty($roleGroup[roleGroup].seckill)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="role" {%if !empty($role[role].role)%}checked="checked"{%/if%}>
-									</td>
-									<td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="ship" {%if !empty($role[role].ship)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="role" {%if !empty($roleGroup[roleGroup].role)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="o2ouser" {%if !empty($role[role].o2ouser)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="o2ouser" {%if !empty($roleGroup[roleGroup].o2ouser)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="theme" {%if !empty($role[role].theme)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="theme" {%if !empty($roleGroup[roleGroup].theme)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="help" {%if !empty($role[role].help)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="help" {%if !empty($roleGroup[roleGroup].help)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="carousel" {%if !empty($role[role].carousel)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="carousel" {%if !empty($roleGroup[roleGroup].carousel)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="refund" {%if !empty($role[role].refund)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="refund" {%if !empty($roleGroup[roleGroup].refund)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="register" {%if !empty($role[role].register)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="register" {%if !empty($roleGroup[roleGroup].register)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="system" {%if !empty($role[role].system)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="system" {%if !empty($roleGroup[roleGroup].system)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="log" {%if !empty($role[role].log)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="log" {%if !empty($roleGroup[roleGroup].log)%}checked="checked"{%/if%}>
 									</td>
                                     <td>
-										<input type="checkbox" data-id="{%$role[role].id%}" name="message" {%if !empty($role[role].message)%}checked="checked"{%/if%}>
+										<input type="checkbox" data-id="{%$roleGroup[roleGroup].id%}" name="message" {%if !empty($roleGroup[roleGroup].message)%}checked="checked"{%/if%}>
 									</td>
 									<td>
-										<button class="btn btn-xs red-stripe removeBtn" data-id="{%$role[role].id%}">删除</button>
+										<button class="btn btn-xs red-stripe removeBtn" data-id="{%$roleGroup[roleGroup].id%}">删除</button>
 									</td>
 								</tr>
 								{%/section%}

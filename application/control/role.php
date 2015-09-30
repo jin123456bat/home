@@ -63,7 +63,7 @@ class roleControl extends control
 			$this->view = new view(config('view'), 'admin/role_admin.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
 			$result = $roleModel->fetchAll();
-			$this->view->assign('role',$result);
+			$this->view->assign('roleGroup',$result);
 			$this->response->setBody($this->view->display());
 		}
 		else

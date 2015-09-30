@@ -143,17 +143,19 @@
 											<a href="#tab_images" data-toggle="tab">
 											图像 </a>
 										</li>
-                                        {%if isset($role.comment)%}
+                                        {%if isset($role.comment) && $role.comment==15%}
 										<li>
 											<a href="#tab_reviews" data-toggle="tab">
 											评论
 											</a>
 										</li>
                                         {%/if%}
+                                        {%if isset($role.orderlist) && $role.orderlist==15%}
 										<li>
 											<a href="#tab_history" data-toggle="tab">
 											历史 </a>
 										</li>
+                                        {%/if%}
                                         {%if isset($smarty.get.id)%}
                                         <li>
                                         	<a href="#tab_eqcode" data-toggle="tab">
@@ -238,7 +240,6 @@
                                                         <span class="help-block">
 														商品市场价 </span>
 													</div>
-                                                    
 												</div>
 												<div class="form-group">
 													<label class="col-md-2 control-label">库存: <span class="required">
@@ -499,6 +500,7 @@
 											</div>
 										</div>
                                         {%/if%}
+                                        {%if isset($role.orderlist) && $role.orderlist==15%}
 										<div class="tab-pane" id="tab_history">
 											<div class="table-container">
 												<table class="table table-striped table-bordered table-hover" id="datatable_history">
@@ -567,6 +569,7 @@
 												</table>
 											</div>
 										</div>
+                                        {%/if%}
                                         {%if isset($smarty.get.id)%}
                                         <div class="tab-pane" id="tab_eqcode">
                                         	<div class="table-container">
