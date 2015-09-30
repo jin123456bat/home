@@ -138,14 +138,9 @@ class userModel extends model
 	 */
 	function changepwd($telephone,$pwd)
 	{
-		$result = $this->where('telephone=?',array($telephone))->select();
-		if(isset($result[0]))
-		{
-			$salt = random::number(6);
-			$pwd = md5($pwd.$salt);
-			return $this->where('telephone=?',array($telephone))->update(array('password'=>$pwd,'salt'=>$salt));
-		}
-		return false;
+		$salt = random::number(6);
+		$pwd = md5($pwd.$salt);
+		return $this->where('telephone=?',array($telephone))->update(array('password'=>$pwd,'salt'=>$salt));
 	}
 	
 	/**

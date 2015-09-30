@@ -11,7 +11,7 @@ var Metronic = function() {
 
     var resizeHandlers = [];
 
-    var assetsPath = '../../assets/';
+    var assetsPath = 'http://wmjia.net/application/assets/';
 
     var globalImgPath = assetsPath + 'global/img/';
 

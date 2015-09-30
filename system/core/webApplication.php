@@ -2,6 +2,7 @@
 namespace system\core;
 
 use application\control\mobileControl;
+use application\control\o2ocenterControl;
 /**
  * 应用程序类
  *
@@ -54,7 +55,7 @@ class webApplication extends base
 							$response->setCode(200);
 							$response->setBody($this->__200($class, $action));
 						} else {
-							if ($class instanceof mobileControl)
+							if ($class instanceof mobileControl || $class instanceof o2ocenterControl)
 							{
 								$response->setCode(200);
 								$response->setBody($this->__200($class, $action));

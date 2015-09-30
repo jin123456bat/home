@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>物流详情</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn"><i class="icon back"></i></a>
+      <h1>物流详情</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;padding-bottom:30px;">
+    <div class="wuliutop clearfix">
+      
+    </div>
+    <div class="orderItemForm">
+    </div>
+    <div class="wuliumain">
+      <div class="tit">物流跟踪</div>
+      <!-- <div class="item clearfix active">
+        <i></i>
+        <div class="righ">
+          <div class="status">浙江省杭州市西湖区文三西路公司签收 已签收 签收人：本人 </div>
+          <div class="date">2015-09-15  10:08:01</div>
+        </div>
+      </div>
+      <div class="item clearfix">
+        <i></i>
+        <div class="righ">
+          <div class="status">浙江省杭州市西湖区文三西路 </div>
+          <div class="date">2015-09-15  10:08:01</div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <script type="text/javascript">
+  var oid;
+  $(function(){
+    oid = $.query.get('id');
+    loader();
+  });    
+  function loader(){
+    wuliu();
+    pros();
+  }
+  function wuliu(){
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=shippment',// 跳转到 action    
+      data:{
+        id:oid,
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(re) { 
+        if(re.code == 1){
+          // console.log(data);
+          fillWuliu(re);
+        }else{
+          alert(re.result);
+        } 
+      } 
+    });
+  }
+  function fillWuliu(re){
+    var laiyuan = {
+      'sf':'顺丰快递',
+      'ems':'ems',
+    };
+    var html = '<div class="picleft">'
+               +'   <img src="{%$VIEW_ROOT%}/template/mobile/images/'+re.postmode+'.png">'
+               +' </div>'
+               +' <div class="right">'
+                 +' <div class="names">'
+                 +'   物流状态： <span class="pink">运输中</span>'
+                 +' </div>'
+                 +' <div class="othsta">'
+                    +'<p>信息来源：'+laiyuan[re.postmode]+'</p>'
+                    +'<p>物流编号：'+re.waybills+'</p>'
+                  +'</div>'
+                +'</div>';
+    $(".wuliutop").html(html);
+    html = '';
+    for(var i=0;i<re.body.length;i++){
+      html += '<div class="item clearfix '+(i==0?'active':'')+'">'
+          +    '<i></i>'
+          +    '<div class="righ">'
+          +      '<div class="status">'+re.body[i].context+'</div>'
+          +      '<div class="date">'+re.body[i].time+'</div>'
+          +    '</div>'
+          +  '</div>';
+    }
+    $(".wuliumain").html(html);
+    
+  }
+  function pros(){
+    $.ajax( {    
+      url:BASEURL+'?c=order&a=information',// 跳转到 action    
+      data:{
+        id:oid,
+        type:'json',
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          // console.log(data);
+          fillOrder(data.body.orderdetail);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function fillOrder(data){
+    // console.log(data.length);
+    var html = "";
+    for(var i = 0;i<data.length;i++){
+      // console.log(data[i]);
+      // html+='1,';
+      html+='<div class="item clearfix" proid="'+data[i]["pid"]+'" id="J_item'+data[i]["pid"]+'">'
+            +  '<div class="picleft">'
+            +    '<img src="'+data[i]["img"]+'">'
+            +  '</div>'  
+            +  '<div class="desc">'+data[i]["productname"]+' '+data[i]["prototype"]+'</div>'
+            +  '<div class="right prinum">'
+            +    '<span class="redtext">￥'+data[i]["unitprice"]+'</span>' 
+            +    '&nbsp;&nbsp;&nbsp;x'+data[i]["num"]
+            +  '</div>'
+            +'</div>';
+    }
+    $(".orderItemForm").html(html);
+  }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+<title>Insert title here</title>
+</head>
+
+<body>
+<form action="http://home.hzlianhai.com/index.php?c=index&a=image" enctype="multipart/form-data" method="post">
+<input type="file" name="file" data-url="http://home.hzlianhai.com/index.php?c=index&a=image">
+<input type="submit">
+</form>
+<script type="text/javascript">
+
+$(document).ready(function(e) {
+	
+    $('form').on('submit',function(){
+		upload($('input',$(this)),{
+			progress:function(){
+				console.log('progress');
+			},
+			complete:function(response,file,key){
+				console.log(response);
+				console.log('complete');
+			},
+			error:function(){
+				consle.log('error');
+			},
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

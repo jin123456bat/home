@@ -201,7 +201,7 @@ var Demo = function () {
         // set default theme options:
 
         if ($("body").hasClass("page-boxed")) {
-            $('.layout-option', panel).val("boxed");
+            $('.layout-option', panel).val("boxes");
         }
 
         if ($("body").hasClass("page-sidebar-fixed")) {

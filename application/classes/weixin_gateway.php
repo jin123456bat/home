@@ -101,7 +101,7 @@ class weixin_gateway
 	{
 		$this->_order = $order;
 		$this->_orderdetail = $orderdetail;
-		$http = new http();
+		$http = http::getInstance();
 		if(empty($this->_get->openid))
 		{
 			//没有openid则通过gateway获取openid

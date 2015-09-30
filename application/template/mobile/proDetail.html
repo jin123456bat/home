@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>产品详情</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>产品详情</h1>
+      <a class="btn right_btn" href="index.php?c=mobile&a=cart"><i class="icon cart"></i></a>
+      <a class="btn right_btn rbtn2" onclick="collect()"><i class="icon star"></i></a>
+      <span class="cartnum">0</span>
+    </header>
+  </div>
+  <div class="class_cont fix50">
+    <div class="classify clearfix">
+      <div class="item active" onclick="tab(0)">
+        <a>图文详情</a>
+      </div>
+      <div class="item" onclick="tab(1)">
+        <a>产品参数</a>
+      </div>
+      <div class="item" onclick="tab(2)">
+        <a>买家评价</a>
+      </div>
+    </div>  
+  </div>
+  <div id="content" style="padding-top:85px;padding-bottom:50px;">
+    <div class="pro_add_box hide">
+      <div class="picdetail clearfix">
+        <div class="leftpic">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/pro1.jpg">
+        </div>
+        <div class="desc" >日本OMI近江兄弟 新款蓝色 强力防水防汗防晒霜</div>
+      </div>
+      <div class="num clearfix"> 
+        <label>数量</label>
+        <div class="addbox clearfix">
+          <div class="minus" onclick="addBuyNum(-1)">-</div>
+          <div class="number" id="buynum">1</div>
+          <div class="add" onclick="addBuyNum(1)">+</div>
+        </div>
+      </div>
+      <div id="cho">
+        
+      </div>
+      <div class="danjia clearfix" id="danjia" collectionid="" protoid="" aiid="">
+        
+      </div>
+      <div class="clearfix">
+        <div class="suer" onclick="addtoCart()">确定</div>
+        <div class="suer" onclick="hideDiv('.pro_add_box')">关闭</div>
+      </div>
+    </div>
+    <div id="J_detail" class="tab cur">
+      <div class="banner_cont">
+        <div id="slider">
+          <ul class="clearfix slide1">
+          </ul>
+        </div>
+        <div id="pagi" class="clearfix">
+        </div>
+      </div>
+      <div class="de_infoline clearfix prode_name">
+        <div class="name"><!-- 卡姿兰(Carslan)光感花影腮红5g（三色可选）缔造完美妆容！清新淡雅的裸粉色 --></div>
+        <div class="share">
+          分享
+        </div>
+      </div>
+      <div class="de_infoline prode_se">
+        <div class="prices clearfix">
+          <div class="price" id="newprice"></div>
+          <div class="oldp">价格: <span class="cross" id="oldprice"></span></div>
+          <div class="discount" id="discount"></div>
+        </div>
+        <div class="cuxiao clearfix">
+          <div class="name">支付宝双十一促销</div>
+          <div class="time">距结束时间 <span class="count" id="timecount"></span></div>
+        </div>
+      </div>
+      <div class="de_infoline prode_thi clearfix">
+        <div class="clearfix">
+          <div class="from" id="countryfrom"></div>
+          <div class="labels clearfix">
+            <div class="item">包税</div>
+            <div class="item">包邮</div>
+            <div class="item">正品</div>
+          </div>
+        </div>
+        <div class="bz">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/bz.png">
+        </div>
+        <div class="article">
+        </div>
+      </div>
+    </div>
+    <div id="J_data" class="tab">
+      <div class="det_canshu">
+        
+      </div>
+    </div>
+    <div id="J_comment" class="tab">
+      <div class="comments">
+      </div>
+    </div>
+    <div class="statusbar clearfix pdefoot">
+      <a class="lbtn" href="index.php?c=mobile&a=index">
+        <img src="{%$VIEW_ROOT%}/template/mobile/images/homegray.png">
+        <br>
+        首页
+      </a>
+      <a class="lbtn">
+        <img src="{%$VIEW_ROOT%}/template/mobile/images/phonegray.png">
+        <br>
+        咨询
+      </a>
+      <a class="pinkbtn" onclick="showDiv('.pro_add_box');jiaru();">加入购物车</a>
+      <a class="redbtn" onclick="showDiv('.pro_add_box');buyliji();">立即购买</a>
+    </div>
+  </div>
+  <div id="mask" onclick="hidepic()"></div>
+  <div id="picshow" onclick="hidepic()"></div>
+  <script type="text/javascript">
+  function buyliji(){
+    curcot = 'liji';
+  }function jiaru(){
+    curcot = 'jiaru';
+  }
+  var curcot = '';
+  var pid;
+  $(function () {
+    pid = $.query.get('pid');
+    var clwth = $(window).width()/$('.classify .item').length;
+    $('.classify .item').css('width',clwth);
+    bindWScroll();
+    tuwen();
+    commentloader();
+    prototy();
+    cartnum();
+    
+  });
+  function buyNow(){
+    window.location.href="index.php?c=mobile&a=orderConfirmSingle&pid="+pid;
+  }
+  function showthipic(obj){
+      var src = $(obj).attr('relfsrc');
+      $('#mask').show();
+      $("#picshow").html('<img src="'+src+'">').show();
+  }
+  function bindWScroll(){
+    //页面滚动事件绑定加载数据
+    $(window).scroll(function(){  
+      var $this =$(this); 
+      var viewH =$(window).height();//可见高度  
+      var contentH = document.body.scrollHeight,//内容高度  
+      scrollTop =$(this).scrollTop();//滚动高度  
+      if(scrollTop/(contentH -viewH)>=0.95&&$('.classify .item').eq(2).hasClass('active')){ //到达底部100px时,加载新内容  
+        curPage++;
+        commentloader();
+      }  
+    });  
+  }
+  var curPage = 0;
+  var commLenth = 10;
+  var getAllComment = false;
+  function commentloader(){
+    if(getAllComment){
+      return;
+    }
+    $.ajax( {    
+      url:BASEURL+'?c=comment&a=getlist',// 跳转到 action    
+      data:{    
+          pid:pid,
+          start:curPage*commLenth,
+          length:commLenth,
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          console.log(curPage);
+          var re = data.body;
+          if(re.length<commLenth){
+            getAllComment = true;
+          }else{
+            curPage++;
+          }
+          var html = "";
+          // console.log(re);
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            var pics = "";
+            for(var j=0;j<rei.img.length;j++){
+              pics+='<div class="image">'
+                +  '<img src="'+rei.img[j]+'" relfsrc="'+rei.img[j]+'" onclick="showthipic(this)" class="J_pic">'
+                +  '</div>';
+            }
+            var photo = rei.gravatar?rei.gravatar:basePhoto;
+            var d = new Date(parseInt(rei.time)*1000);
+            var timestring = '201'+d.format('y-M-d h:m:s');
+            html+='<div class="item">'
+                +    '<div class="one clearfix">'
+                +      '<div class="pic">'
+                +        '<img src="'+photo+'">'
+                +      '</div>'
+                +      '<div class="name">'+rei.username+'</div>'
+                +    '</div>'
+                +    '<div class="desc">'+rei.content+'</div>'
+                 +   '<div class="pics clearfix">'
+                 + pics
+                +'</div>'
+                 +   '<div class="times">'+timestring+'</div>'
+                 + '</div>';
+          }
+          $('.comments').append(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function tab(n){
+    $('.classify .item').removeClass('active');
+    $('.classify .item').eq(n).addClass('active');
+    $('.tab').removeClass('cur');
+    $('.tab').eq(n).addClass('cur');
+  }
+  function hidepic(){
+    $("#mask").hide();
+    $("#picshow").hide();
+  }
+  function imgslide(){
+    $(".banner_cont").mslides({
+            slideContainer:'slider',
+            page:'pagi',
+            height:$(window).width()/2,
+          });
+  }
+  function html_decode(str){
+      var s = "";
+      if (str.length == 0) return "";
+      s = str.replace(/&amp;/g, "&");
+      s = s.replace(/&lt;/g, "<");
+      s = s.replace(/&gt;/g, ">");
+      s = s.replace(/&nbsp;/g, " ");
+      s = s.replace(/&#39;/g, "\'");
+      s = s.replace(/&quot;/g, "\"");
+      s = s.replace(/<br\/>/g, "\n");
+      return s;
+  } 
+  function addBuyNum(n){
+    var bn = parseInt($('#buynum').text());
+    if(bn+n<1||bn+n>100){
+      return false;
+    }
+    $('#buynum').text(bn+n);
+  }
+  function addtoCart(){
+    // var s = JSON.stringify(choiceProto);
+    if(collection.length>0){
+      if(choiceProto.length<collection[0].content.length){
+        alert('请选择规格');
+        console.log('no');
+        return false;
+      }
+    }
+    var s = '';
+    for(var key in choiceProto){  
+      s+=key+':'+choiceProto[key]+',';
+    }  
+    s = s.substring(0,s.length-1);
+    console.log(s);
+    if(curcot =='liji'){
+      var guige = "";
+      $('.chosin .right span.active').each(function(){
+        var label = $(this).parents('.chosin').find('label').text();
+        var va = $(this).text();
+        guige+=label+':'+va+' ';
+      });
+      // console.log(guige);
+      // console.log($("#buynum").text());
+      // console.log(s);
+      var num = $("#buynum").text();
+      var storage = window.localStorage;
+      singleBuy = {
+        'pid':pid,
+        's':s,
+        'num':num,
+        'guige':guige,
+        'name':$('.prode_name .name').text(),
+        'thumb':$('.pro_add_box .picdetail .leftpic img')[0].src,
+        'pricenow':$('#pricenows').text(),
+      };
+      storage.setItem('singleBuy',JSON.stringify(singleBuy));
+      // console.log(JSON.parse(storage.getItem('singleBuy')));
+      window.location.href="index.php?c=mobile&a=orderConfirmSingle";
+      return;
+    }
+    $.ajax( {    
+      url:BASEURL+'?c=cart&a=add',// 跳转到 action    
+      data:{    
+          pid:pid,
+          num:$("#buynum").text(),
+          content:s,
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          console.log('success');
+          $('.pro_add_box').hide();
+          cartnum();
+        }else if(data.code==2){
+          alert(data.result);
+          setTimeout(function(){
+            window.location.href="index.php?c=mobile&a=login";
+          },2000);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  var choiceProto = new Object();
+  function changeProto(obj){
+    var _this = $(obj);
+    _this.parent().find('span').removeClass('active');
+    _this.addClass('active');
+    var aiid = _this.attr('aiid');
+    var protoid = _this.attr('protoid');
+    choiceProto[protoid] = aiid;
+    for(var i=0;i<collection.length;i++){
+      var ci = collection[i];
+      var price;
+      if(activity_description.price){
+        price = activity_description.price;
+      }else if(ci&&ci.price){
+        price = ci.price;
+      }else{
+        price = pageprice;
+      }
+      if(isObjectValueEqual(ci.content,choiceProto)){
+        $('#danjia').html('剩余：'+ci.stock+'，单价：￥<span id="pricenows">'+price+'</span>');
+      }
+    }
+  }
+  function prototy(){
+    $.ajax( {    
+      url:BASEURL+'?c=prototype&a=product',// 跳转到 action    
+      data:{    
+          pid:pid
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          var re = data.body;
+          var html = "";
+          var choHtml = "";
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            if(rei.type=="text"){
+              html+='<div class="line clearfix"><label>'+rei.name+'</label><div class="val">'+rei.value+'</div></div>';
+            }else if(rei.type=="radio"){
+              var reivl = rei.value;
+              var ht = '';
+              var cht = "";
+              for(var j=0;j<reivl.length;j++){
+                ht+='【'+reivl[j]+'】';
+                cht+='<span aiId="'+j+'" protoId="'+rei.id+'" onclick="changeProto(this)">'+reivl[j]+'</span>';
+              }
+              html+='<div class="line clearfix"><label>'+rei.name+'</label><div class="val">'+ht+'</div></div>';
+              choHtml+='<div class="chosin clearfix">'
+                      +    '<label>'+rei.name+'</label>'
+                      +    '<div class="right clearfix">'
+                      +      cht
+                      +    '</div>'
+                      +  '</div>';
+            }
+            $('.det_canshu').html(html);
+            $("#cho").html(choHtml);
+          }
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  var collection,activity_description;
+  function tuwen(){
+    $.ajax( {    
+      url:BASEURL+'?c=product&a=information',// 跳转到 action    
+      data:{    
+          pid:pid
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          var re = data.body;
+          //轮播图
+          var imgs = re.img;
+          collection = re.collection;
+          activity_description = re.activity_description;
+          var imghtml="";
+          for(var i=0;i<imgs.length;i++){
+            var src = imgs[i].base_path?imgs[i].base_path:defaultProPic;
+            // console.log(src);
+            imghtml+='<li><img src="'+src+'"></li>';
+            // console.log(imghtml);
+          }
+          $("#slider .slide1").html(imghtml);
+          if(imgs.length>1){
+            imgslide();
+          }
+          //属性
+          $('.prode_name .name').text(re.name);
+          $('.pro_add_box .desc').text(re.name);
+          $('.pro_add_box .leftpic img')[0].src = imgs[0].thumbnail_path?imgs[0].thumbnail_path:defaultProPic;
+          var price = parseFloat(re.price).toFixed(1);
+          if(re.activity_description&&re.activity_description.price){
+            price = parseFloat(re.activity_description.price).toFixed(1);
+          }
+          pageprice = price;
+          var oldprice = (parseFloat(re.oldprice).toFixed(1)!=0)?parseFloat(re.oldprice).toFixed(1):price;
+          var discount = (price*10/oldprice).toFixed(1);
+          var hide=(discount==10.0)?'hide':'';
+          $("#newprice").text("￥"+price);
+          $("#oldprice").text("￥"+oldprice);
+          $("#discount").text(discount);
+          if(hide=='hide'){
+            $("#discount").hide();
+          }
+          if(re.shipchar){
+            $('#countryfrom').text(re.shipchar);
+          }else{
+          }
+          $('.article').html(html_decode(re.description));
+          //活动
+          var timestamp = Date.parse(new Date())/1000; 
+          var acti = re.activity[0];
+          if(acti&&acti.starttime<timestamp&&acti.endtime>timestamp){
+            $('.prode_se .cuxiao .name').text(acti.sname?acti.sname:'促销活动');
+            $('.prode_se .prices .price').text('￥'+acti.price);
+            var endtime = acti.endtime;
+            time_end = endtime*1000;
+            setTimeout("show_time()",1000);
+          }else{
+            $('.cuxiao').hide();
+          }
+          handlepic();
+          $('#danjia').html('剩余：'+re.stock+'，单价：￥<span id="pricenows">'+price+'</span>');
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  var pageprice;
+  var time_wrap = document.getElementById("timecount");
+  var time_end ;
+  function show_time(){
+      var time_now = new Date();  // 获取当前时间
+          time_now = time_now.getTime();
+      var time_distance = time_end - time_now;  // 结束时间减去当前时间
+      var int_day, int_hour, int_minute, int_second;
+      if(time_distance >= 0){
+          // 天时分秒换算
+          int_day = Math.floor(time_distance/86400000)
+          time_distance -= int_day * 86400000;
+          int_hour = Math.floor(time_distance/3600000)
+          time_distance -= int_hour * 3600000;
+          int_minute = Math.floor(time_distance/60000)
+          time_distance -= int_minute * 60000;
+          int_second = Math.floor(time_distance/1000)
+   
+          // 时分秒为单数时、前面加零站位
+          if(int_hour < 10)
+          int_hour = "0" + int_hour;
+          if(int_minute < 10)
+          int_minute = "0" + int_minute;
+          if(int_second < 10)
+          int_second = "0" + int_second;
+          
+          // 显示时间
+          time_wrap.innerHTML = int_day+'天'+int_hour+':'+int_minute+':'+int_second;
+          
+          setTimeout("show_time()",1000);
+      }else{
+          // time_wrap.innerHTML = time_wrap.innerHTML;
+          $('.prode_se .prices .price').text('￥'+pageprice);
+      }
+  }
+  function collect(){
+    $.ajax( {    
+      url:BASEURL+'?c=favourite&a=create',// 跳转到 action    
+      data:{    
+          pid:pid,
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          alert('添加成功');
+        }else if(data.code == 2){
+          alert(data.result);
+          setTimeout(function(){
+            window.location.href="index.php?c=mobile&a=login";
+          },2000);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function handlepic(){
+    $('.article img').attr('width','').attr('height','');
+    var ww = $(window).width();
+    $('.article img').each(function(){
+      var w = $(this)[0].style.width;
+      var h = $(this)[0].style.height;
+      var wn = $(this).width();
+      console.log(w+""+wn);
+      if(w&&h){
+        $(this)[0].style.height = wn*parseInt(h)/parseInt(w)+'px';
+      }
+    });
+  }
+  </script>
+</body>
+</html>

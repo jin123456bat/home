@@ -35,4 +35,13 @@ class cacheControl extends control
 		$this->thread->call('user_login');
 		echo "ok";
 	}
+	
+	/**
+	 * 清空缓存的物流信息
+	 */
+	function waybills()
+	{
+		$this->thread->call('waybills');
+		echo "ok";
+	}
 }

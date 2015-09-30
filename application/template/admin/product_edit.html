@@ -563,7 +563,7 @@
 										</div>
                                         <div class="tab-pane" id="tab_eqcode">
                                         	<div class="table-container">
-                                            	<img src="{%url c=index a=eqcode content='http://'+$smarty.server.SERVER_NAME%}">
+                                            	<img src="{%url c=index a=eqcode content='http://'|cat:$smarty.server.SERVER_NAME|cat:'/index.php?c=mobile&a=proDetail&pid='|cat:$smarty.get.id%}">
                                             </div>
                                         </div>
 									</div>

@@ -70,7 +70,13 @@ class indexControl extends control
 		$content = htmlspecialchars_decode($this->get->content);
 		$image = new image();
 		$file = $image->QRCode($content);
+		$this->response->addHeader('Cache-Control','cache-directive');
+		$this->response->addHeader('cache-directive','public');
 		$this->response->addHeader('Content-Type','image/png');
+		if($this->get->download == 'true')
+		{
+			$this->response->addHeader('Content-Disposition','attachment; filename="eqcode.png"');
+		}
 		echo file_get_contents($file);
 	}
 	
@@ -105,6 +111,14 @@ class indexControl extends control
 		{
 			return new json(json::PARAMETER_ERROR,'图片上传失败');
 		}
+	}
+	
+	/**
+	 * 手机app下载
+	 */
+	function app()
+	{
+		
 	}
 
 	/**

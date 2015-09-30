@@ -116,6 +116,11 @@ class response
 		if (is_object($this->_body))
 		{
 			$this->addHeader('Content-Type',$this->_body->getContentType());
+			if(!$this->_body->isCache())
+			{
+				$this->addHeader('Cache-Control','no-cache');
+				$this->addHeader('Pragma','no-cache');
+			}
 		}
 		$this->_header->sendAll();
 		echo $this->_body;

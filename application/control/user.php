@@ -201,9 +201,9 @@ class userControl extends control
 		if($smslogModel->check($telephone,$code))
 		{
 			$userModel = $this->model('user');
-			if($userModel->changepwd($telephone,$password));
+			if($userModel->changepwd($telephone,$password))
 				return json_encode(array('code'=>1,'result'=>'ok'));
-			return json_encode(array('code'=>0,'result'=>'failed'));
+			return json_encode(array('code'=>0,'result'=>'手机号码不存在'));
 		}
 		return json_encode(array('code'=>2,'result'=>'验证码错误'));
 	}
@@ -223,9 +223,9 @@ class userControl extends control
 			{
 				return json_encode(array('code'=>1,'result'=>'ok','body'=>$result[0]['telephone']));
 			}
-			return json_encode(array('code'=>0,'result'=>'failed'));
+			return json_encode(array('code'=>0,'result'=>'failed','body'=>'无法找到用户，可能已经被删除'));
 		}
-		return json_encode(array('code'=>2,'result'=>'没有权限'));
+		return json_encode(array('code'=>2,'result'=>'没有权限','body'=>'无法读取用户资料'));
 	}
 	
 	/**
@@ -290,10 +290,6 @@ class userControl extends control
 	function register()
 	{
 		$this->response->addHeader('Content-Type','application/json');
-		if($this->post->telephone == '18749626289' && $this->post->password == '18749626289')
-		{
-			return json_encode(array('code'=>1,'result'=>'ok'));
-		}
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
 		$o2o = empty(filter::telephone($this->post->o2o))?0:filter::telephone($this->post->o2o);
@@ -375,10 +371,6 @@ class userControl extends control
 	 */
 	function login()
 	{
-		if($this->post->telephone == '18749626289' && $this->post->password == '18749626289')
-		{
-			return json_encode(array('code'=>1,'result'=>'ok'));
-		}
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
 		$client = $this->post->client;

@@ -6,77 +6,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="Keywords" content="" />
   <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="css/reset.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
-  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
-  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="js/common.js"></script>
-  <script type="text/javascript" src="js/jquery.transit.js"></script>
-  <script type="text/javascript" src="js/jquery.fly.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.fly.js"></script>
 </head>
 <body>
   <div id="header">
     <header>
       <a class="btn left_btn"><i class="icon chat"></i></a>
       <h1>我的</h1>
-      <a class="btn right_btn" href="settings.html"><i class="icon setting"></i></a>
+      <a class="btn right_btn" href="index.php?c=mobile&a=settings"><i class="icon setting"></i></a>
     </header>
   </div>
   <div class="caidanCon">
     <div class="logo J_caidan" onclick="toggleCaidan()"></div>
     <div class="caidan small">
-      <a class="home"></a>
-      <a class="cart"></a>
-      <a class="prolist"></a>
-      <a class="user"></a>
+      <a class="home" href="index.php?c=mobile&a=index"></a>
+      <a class="cart" href="index.php?c=mobile&a=cart"></a>
+      <a class="prolist" href="index.php?c=mobile&a=category"></a>
+      <a class="user" href="index.php?c=mobile&a=ucenter"></a>
       <a class="kefu"></a>
     </div>
   </div>
   <div id="content" style="padding-top:50px">
     <div class="uCenter">
       <div class="topblock">
-        <div class="alreadylogin clearfix hide">
+        <div class="alreadylogin clearfix hide" onclick="window.location.href='index.php?c=mobile&a=userInfo'">
           <div class="thumb">
-            <img src="images/default.png">
+            <img src="{%$VIEW_ROOT%}/template/mobile/images/default.png">
           </div>
           <div class="name">
             未填写
           </div>
         </div>
         <div class="login clearfix">
-          <a class="item" href="login.html">登录</a>
-          <a class="item" href="register.html">注册</a>
+          <a class="item" href="index.php?c=mobile&a=login">登录</a>
+          <a class="item" href="index.php?c=mobile&a=register">注册</a>
         </div>
       </div>
       <div class="ordertypes clearfix">
-        <a class="item" href="orderList.html?status=0">
-          <img src="images/uicon1.png">
+        <a class="item" href="index.php?c=mobile&a=orderList&status=0">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/uicon1.png">
           <span>待付款</span>
         </a>
-        <a class="item" href="orderList.html?status=1">
-          <img src="images/uicon2.png">
+        <a class="item" href="index.php?c=mobile&a=orderList&status=1">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/uicon2.png">
           <span>待发货</span>
         </a>
-        <a class="item" href="orderList.html?status=4">
-          <img src="images/uicon3.png">
+        <a class="item" href="index.php?c=mobile&a=orderList&status=4">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/uicon3.png">
           <span>待收货</span>
         </a>
-        <a class="item" href="orderList.html?status=5">
-          <img src="images/uicon4.png">
+        <a class="item" href="index.php?c=mobile&a=orderList&status=5">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/uicon4.png">
           <span>待评价</span>
         </a>
       </div>
       <div class="setList">
         <ul>
-          <li onclick="window.location.href='orderList.html'">
+          <li onclick="window.location.href='index.php?c=mobile&a=orderList'">
             <a>
               <i class="icon uicon5 icon_l"></i>
               <label>我的订单</label>
               <i class="icon arr_r icon_r"></i>
             </a>
           </li>
-          <li onclick="window.location.href='voucher.html'">
+          <li onclick="window.location.href='index.php?c=mobile&a=voucher'">
             <a>
               <i class="icon uicon7 icon_l"></i>
               <label>我的优惠券</label>
@@ -86,14 +86,14 @@
           </li>
         </ul>
         <ul>
-          <li onclick="window.location.href='collection.html'">
+          <li onclick="window.location.href='index.php?c=mobile&a=collection'">
             <a>
               <i class="icon uicon9 icon_l"></i>
               <label>我的收藏</label>
               <i class="icon arr_r icon_r"></i>
             </a>
           </li>
-          <li onclick="window.location.href='address.html'">
+          <li onclick="window.location.href='index.php?c=mobile&a=address'">
             <a>
               <i class="icon uicon10 icon_l"></i>
               <label>我的收货地址</label>

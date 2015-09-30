@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="Keywords" content="" />
   <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="css/reset.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
-  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
-  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="js/jquery.transit.js"></script>
-  <script type="text/javascript" src="js/jquery.mslides.js"></script>
-  <script type="text/javascript" src="js/common.js"></script>
-  <script type="text/javascript" src="js/Jquery.Query.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
@@ -69,12 +69,12 @@
     var rei = body[0];
     var btns = {
       '0':'<a class="btnone_pink red">去支付</a>',
-      '1':'<div class="txfahuo clearfix"><a class="txfh nol" onclick="remindOrder('+oid+')">提醒发货</a><a class="tuikbtn" href="refundApplication.html?id='+oid+'">退款</a></div>',
+      '1':'<div class="txfahuo clearfix"><a class="txfh nol" onclick="remindOrder('+oid+')">提醒发货</a><a class="tuikbtn" href="index.php?c=mobile&a=refundApplication&id='+oid+'">退款</a></div>',
       '2':'',
       '3':'',
       '6':'<div class="txfahuo clearfix"><a class="txfh">追加评价</a></div>',
       '7':'<div class="txfahuo clearfix"><a class="txfh" onclick="cancelTui('+oid+')">取消退款</a></div>',
-      '4':'<div class="txfahuo clearfix"><a class="txfh nol">查看物流</a><a class="tuikbtn pinkbtn nol" onclick="remindEnOrder('+oid+')">确认收货</a><a class="tuikbtn" href="refundApplication.html?id='+oid+'">退款</a></div>',
+      '4':'<div class="txfahuo clearfix"><a class="txfh nol" href="index.php?c=order&a=wuliudetail&id='+oid+'">查看物流</a><a class="tuikbtn pinkbtn nol" onclick="remindEnOrder('+oid+')">确认收货</a><a class="tuikbtn" href="index.php?c=mobile&a=refundApplication&id='+oid+'">退款</a></div>',
       '5':'<div class="txfahuo clearfix"><a class="txfh">去评价</a></div>',
     };
     // console.log(rei);

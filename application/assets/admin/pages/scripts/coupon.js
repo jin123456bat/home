@@ -115,8 +115,9 @@ var Coupon = function () {
 								url:'?c=user&a=telephone',
 								data:{id:data},
 								method:'get',
-								success: function(data){
-									telephone = $.parseJSON(data).body;
+								success: function(response){
+									response = $.parseJSON(response);
+									telephone = response.body;
 								}
 							});
 							return telephone;

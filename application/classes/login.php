@@ -21,5 +21,15 @@ class login
 		$session = session::getInstance();
 		return $session->id !== NULL && $session->telephone !== NULL && $session->username !== NULL;
 	}
+	
+	/**
+	 * 判断o2o用户登录
+	 * @return boolean
+	 */
+	static function o2o()
+	{
+		$session = session::getInstance();
+		return $session->id !== NULL && $session->telephone !== NULL && $session->o2o !== NULL;
+	}
 
 }

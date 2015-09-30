@@ -67,11 +67,11 @@ class alipay_gateway
 		/**
 		 * 同步通知地址
 		 */
-		$return_url = $protocal.$http->host().$http->path().'/gateway/alipay/retu.php';
+		$return_url = $protocal.$http->host().'/gateway/alipay/retu.php';
 		/**
 		 * 异步通知地址
 		 */
-		$notify_url = $protocal.$http->host().$http->path().'/gateway/alipay/notify.php';
+		$notify_url = $protocal.$http->host().'/gateway/alipay/notify.php';
 		
 		
 		/**
@@ -88,40 +88,69 @@ class alipay_gateway
 		 */
 		$subject = $body;
 		
-		//分账金额50%  添加分账账户
-		$separatorAmount = $order['ordertotalamount'] * $this->_system->get('splitrate','alipay');
-		$this->_config->createSeparator($this->_system->get('splitpartner','alipay'),$separatorAmount,$this->_system->get('splitcurrency','alipay'));
 		
 		$data = array(
 			'body' => $body,
 			'subject' => $subject,
-			'sign_type' => $this->_config->sign_type,
 			'out_trade_no'=>$order['orderno'],
 			'currency' => $this->_system->get('currency','alipay'),//海外币种
-			'split_fund_info' => json_encode($this->_config->separator),
-			'rmb_fee' => $order['ordertotalamount'],
-			'partner' => $this->_system->get('partner','alipay'),
+			'rmb_fee' => number_format($order['ordertotalamount'],2),
 			'supplier' => $this->_system->get('companyname','system'),
 			'notify_url' => $notify_url,
 			'return_url' => $return_url,
 			'_input_charset'=>$this->_config['input_charset'],
 			'timeout_rule'=>(new time())->format($this->_system->get('timeout','payment'), true),
 		);
-	
-		switch ($this->_trade_type)
+		
+		//支付到海外账户还是国内账户
+		$outtrade = $this->_system->get('outtrade','alipay');
+		if(empty($outtrade))
 		{
-			case 'web':
-				$data['product_code'] = 'NEW_OVERSEAS_SELLER';
-				$data['service'] = 'create_forex_trade';
-				break;
-			case 'wap':
-				$data['product_code'] = 'NEW_WAP_OVERSEAS_SELLER';
-				$data['service'] = 'create_forex_trade_wap';
-				break;
-			default:return array('code'=>'error','content'=>'不支持的支付方式');
+			switch ($this->_trade_type)
+			{
+				case 'web':
+					$data['service'] = 'create_direct_pay_by_user';
+					break;
+				case 'wap':
+					$data['service'] = 'alipay.wap.create.direct.pay.by.user';
+					$data['payment_type'] = 1;
+					$data['seller_id'] = $this->_system->get('partner','alipay');
+					$data['it_b_pay'] = $data['timeout_rule'];
+					//$data['total_fee'] = $data['rmb_fee'];
+					//$data['service'] = 'alipay.wap.auth.authAndExecute';
+					break;
+				default:return array('code'=>'error','content'=>'支付方式错误');
+			}
+		}
+		else
+		{
+			//计算分账
+			$splitopen = $this->_system->get('splitopen','alipay');
+			if($splitopen)
+			{
+				$separatorAmount = $order['ordertotalamount'] * $this->_system->get('splitrate','alipay');
+				$this->_config->createSeparator($this->_system->get('splitpartner','alipay'),$separatorAmount,$this->_system->get('splitcurrency','alipay'));
+				$data['split_fund_info'] = json_encode($this->_config->separator);
+			}
+			$data['partner'] = $this->_system->get('partner','alipay');
+			switch ($this->_trade_type)
+			{
+				case 'web':
+					$data['product_code'] = 'NEW_OVERSEAS_SELLER';
+					$data['service'] = 'create_forex_trade';
+					break;
+				case 'wap':
+					$data['product_code'] = 'NEW_WAP_OVERSEAS_SELLER';
+					$data['service'] = 'create_forex_trade_wap';
+					unset($data['return_url']);//没有return_url  不然不会异步通知的
+					break;
+				default:return array('code'=>'error','content'=>'不支持的支付方式');
+			}
 		}
 		
 		$content = $this->trade($data);
+		//增加签名方式
+		$content['sign_type'] = $this->_config->sign_type;
 		$data = array(
 			'url' => $this->_config['gateway_url'],
 			'method' => 'get',

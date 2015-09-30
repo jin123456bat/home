@@ -1,0 +1,114 @@
+ href="javascript:history.go(-1);"<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>我的代金券</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>我的代金券</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;">
+    <div class="djqList">
+      
+    </div>
+  </div>
+  <script type="text/javascript">
+  var storage = window.localStorage;
+  $(function(){
+    pid = $.query.get('pid');
+    loader();
+  });
+  var pid = null;
+  function loader(){
+    var data = {};
+    if(pid){
+      var proObj = JSON.parse(storage.getItem('singleBuy'));
+      data = {
+        pid:proObj['pid'],
+        content:proObj['s'],
+      };
+    }
+    $.ajax( {    
+        url:BASEURL+'?c=coupon&a=getavaliable',// 跳转到 action    
+        data:data,    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            for(var i=0;i<re.length;i++){
+              var rei = re[i];
+              var nowtime = Date.parse(new Date())/1000;
+              var dis = states = max = type = value = "";
+              if(nowtime<rei.starttime){
+                dis = 'disable';
+                states = "未开始";
+              }else if(nowtime>rei.endtime){
+                dis = 'disable';
+                states = "已过期";
+              }else if(rei.times == 0){
+                dis = 'disable';
+                states = "已使用";
+              }else{
+                states = "可使用";
+              }
+              var types = {
+                'fixed':"满减",
+                'discount':"折扣"
+              };
+              if(parseInt(rei.max) != 0){
+                max = "满"+rei.max+"使用";
+              }
+              var timestamp = new Date(rei.endtime*1000);
+              var enddate = timestamp.getFullYear()+'-'+timestamp.getMonth()+'-'+timestamp.getDate();
+              // console.log();
+              if(rei.type=="fixed"){
+                value = '￥&nbsp;&nbsp;&nbsp;<strong class="">'+parseInt(rei.value)+'</strong>';
+              }else{
+                value = '&nbsp;&nbsp;&nbsp;<strong class="">'+parseInt(rei.value*10)+'折</strong>';
+              }
+              html+='<div class="item clearfix '+dis+'" onclick="usevou(\''+rei.id+'\',\''+rei.couponno+'\')">'
+                    +  '<div class="jine redtext">'
+                    +    value
+                    +  '</div>'
+                    +  '<div class="desc">'
+                    +    '<p>'+rei.couponno+' <span class="redtext">［'+types[rei.type]+'］</span></p>'
+                    +    '<p>'+max+'</p>'
+                    +    '<p>有效期至'+enddate+'</p>'
+                    +  '</div>  '
+                     + '<div class="states">'+states+'</div>'
+                    +'</div>';
+            }
+            $('.djqList').html(html);
+          }else if(data.code == 2){
+            window.location.href="index.php?c=mobile&a=login";
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+  }
+  var storage = window.localStorage;
+  function usevou(id,name){
+    storage.setItem('usevoucherId',id);
+    storage.setItem('usevoucherName',name);
+    history.go(-1);
+  }
+
+  </script>
+</body>
+</html>

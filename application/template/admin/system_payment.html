@@ -158,6 +158,17 @@
 							</div>
                             <div id="alipay" class="tab-pane">
                             	<form action="{%url c=system a=save%}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">支付方式</label>
+                                    <div class="col-md-10">
+                                    	<select name="system_alipay_outtrade" class="form-control">
+                                        	<option value="1" {%if isset($system.system_alipay_outtrade) && $system.system_alipay_outtrade == 1%}selected="true"{%/if%}>支付到海外账户</option>
+                                            <option value="0" {%if isset($system.system_alipay_outtrade) && $system.system_alipay_outtrade == 0%}selected="true"{%/if%}>支付到国内账户</option>
+                                        </select>
+                                        <span class="help-block">
+                                        支付宝账号类型. </span>
+                                    </div>
+                                </div>
 								<div class="form-group">
                                     <label class="col-md-2 control-label">Partner</label>
                                     <div class="col-md-10">
@@ -204,7 +215,17 @@
                                         货币代号，前提是需要在支付宝开通. </span>
                                     </div>
                                 </div>
-                                
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">开启海外分账</label>
+                                    <div class="col-md-10">
+                                    	<select name="system_alipay_splitopen" class="form-control">
+                                        	<option value="1" {%if isset($system.system_alipay_splitopen) && $system.system_alipay_splitopen == 1%}selected="true"{%/if%}>开启</option>
+                                            <option value="0" {%if isset($system.system_alipay_splitopen) && $system.system_alipay_splitopen == 0%}selected="true"{%/if%}>关闭</option>
+                                        </select>
+                                        <span class="help-block">
+                                        支付宝的商户编号以2088开头的. </span>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">分账Partner</label>
                                     <div class="col-md-10">

@@ -9,7 +9,9 @@
 {%foreach $data.parameter as $key=>$value%}
 <input type="hidden" name="{%$key%}" value='{%$value%}' />
 {%/foreach%}
+<div style="display:none;">
 <input type="submit" />
+</div>
 <script>document.forms['alipay_payment_form'].submit();</script>
 </form>
 </body>

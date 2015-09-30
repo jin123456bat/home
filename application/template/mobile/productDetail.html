@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>产品详情</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn"><i class="icon back"></i></a>
+      <h1>产品详情</h1>
+      <a class="btn right_btn"><i class="icon cart"></i></a>
+      <a class="btn right_btn rbtn2"><i class="icon star"></i></a>
+      <span class="cartnum">1</span>
+    </header>
+  </div>
+  <div class="class_cont fix50">
+    <div class="classify clearfix">
+      <div class="item active" onclick="tab(0)">
+        <a>图文详情</a>
+      </div>
+      <div class="item" onclick="tab(1)">
+        <a>产品参数</a>
+      </div>
+      <div class="item" onclick="tab(2)">
+        <a>买家评价</a>
+      </div>
+    </div>  
+  </div>
+  <div id="content" style="padding-top:85px">
+    <div class="pro_add_box">
+      <div class="picdetail clearfix">
+        <div class="leftpic">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/pro1.jpg">
+        </div>
+        <div class="desc">日本OMI近江兄弟 新款蓝色 强力防水防汗防晒霜</div>
+      </div>
+      <div class="num clearfix"> 
+        <label>数量：</label>
+        <div class="addbox clearfix">
+          <div class="minus">-</div>
+          <div class="number">10</div>
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="clearfix">
+        <div class="suer">确定</div>
+      </div>
+    </div>
+    <div id="J_detail" class="tab cur">
+      <div class="banner_cont">
+        <div id="slider">
+          <ul class="clearfix slide1">
+            <li>
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/slide1.jpg">
+            </li>
+            <li>
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/slide1.jpg">
+            </li>
+            <li>
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/slide1.jpg">
+            </li>
+            <li>
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/slide1.jpg">
+            </li>
+            <li>
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/slide1.jpg">
+            </li>
+            <li>
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/slide1.jpg">
+            </li>
+          </ul>
+        </div>
+        <div id="pagi" class="clearfix">
+          <!-- <span class="item"></span>
+          <span class="item active"></span> -->
+        </div>
+      </div>
+      <div class="de_infoline clearfix prode_name">
+        <div class="name">卡姿兰(Carslan)光感花影腮红5g（三色可选）缔造完美妆容！清新淡雅的裸粉色</div>
+        <div class="share">
+          分享
+        </div>
+      </div>
+      <div class="de_infoline prode_se">
+        <div class="prices clearfix">
+          <div class="price">￥288.0</div>
+          <div class="oldp">价格: <span class="cross">￥388.0</span></div>
+          <div class="discount">2.8</div>
+        </div>
+        <div class="cuxiao clearfix">
+          <div class="name">支付宝双十一促销</div>
+          <div class="time">距结束时间 <span class="count">01:30</span></div>
+        </div>
+      </div>
+      <div class="de_infoline prode_thi clearfix">
+        <div class="clearfix">
+          <div class="from">由意大利米兰直邮回国</div>
+          <div class="labels clearfix">
+            <div class="item">包税</div>
+            <div class="item">包邮</div>
+            <div class="item">正品</div>
+          </div>
+        </div>
+        <div class="bz">
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/bz.png">
+        </div>
+        <div class="article">
+          <div>
+            <img src="{%$VIEW_ROOT%}/template/mobile/images/art.jpg">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="J_data" class="tab">
+      <div class="det_canshu">
+        <div class="line clearfix">
+          <label>货号</label>
+          <div class="val">em22888640210</div>
+        </div>
+        <div class="line clearfix">
+          <label>品牌</label>
+          <div class="val">Puritan’s Pride普丽普莱</div>
+        </div>
+        <div class="line clearfix">
+          <label>适用</label>
+          <div class="val">成人</div>
+        </div>
+        <div class="line clearfix">
+          <label>商品中文</label>
+          <div class="val">Puritan’s Pride普丽普莱 维生素B-12 改善贫血  缓解压力   缓释型易吸收</div>
+        </div>
+        <div class="line clearfix">
+          <label>商品英文</label>
+          <div class="val">Vitamin B-12 1000 mcg Timed Release</div>
+        </div>
+        <div class="line clearfix">
+          <label>规格</label>
+          <div class="val">100粒</div>
+        </div>
+        <div class="line clearfix">
+          <label>发货地</label>
+          <div class="val">美国仓库</div>
+        </div>
+      </div>
+    </div>
+    <div id="J_comment" class="tab">
+      <div class="comments">
+        <div class="item">
+          <div class="one clearfix">
+            <div class="pic">
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/touxiang.png">
+            </div>
+            <div class="name">拉***次85</div>
+          </div>
+          <div class="desc">控油效果不好，也许是天气热的原因吧，气味吗个人感觉不人感觉喜欢，泡沫挺多，至于其效果用一段时间再说吧</div>
+          <div class="pics clearfix">
+            <div class="image">
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" relfsrc="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" class="J_pic">
+            </div>
+            <div class="image">
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" relfsrc="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" class="J_pic">
+            </div>
+          </div>
+          <div class="times">2015.03.13  17:16:35 颜色分类：红色  尺码：s</div>
+        </div>
+        <div class="item">
+          <div class="one clearfix">
+            <div class="pic">
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/touxiang.png">
+            </div>
+            <div class="name">拉***次85</div>
+          </div>
+          <div class="desc">控油效果不好，也许是天气热的原因吧，气味吗个人感觉不人感觉喜欢，泡沫挺多，至于其效果用一段时间再说吧</div>
+          <div class="pics clearfix">
+            <div class="image">
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" relfsrc="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" class="J_pic">
+            </div>
+            <div class="image">
+              <img src="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" relfsrc="{%$VIEW_ROOT%}/template/mobile/images/pro_thumb1.png" class="J_pic">
+            </div>
+          </div>
+          <div class="times">2015.03.13  17:16:35 颜色分类：红色  尺码：s</div>
+        </div>
+      </div>
+    </div>
+    <div class="statusbar clearfix pdefoot">
+      <a class="lbtn">
+        <img src="{%$VIEW_ROOT%}/template/mobile/images/homegray.png">
+        <br>
+        首页
+      </a>
+      <a class="lbtn">
+        <img src="{%$VIEW_ROOT%}/template/mobile/images/phonegray.png">
+        <br>
+        咨询
+      </a>
+      <a class="pinkbtn">加入购物车</a>
+      <a class="redbtn">立即购买</a>
+    </div>
+  </div>
+  <div id="mask" onclick="hidepic()"></div>
+  <div id="picshow" onclick="hidepic()"></div>
+  <script type="text/javascript">
+    $(function () {
+      var clwth = $(window).width()/$('.classify .item').length;
+      $('.classify .item').css('width',clwth);
+      
+      $(".banner_cont").mslides({
+        slideContainer:'slider',
+        page:'pagi',
+      });
+
+      $('.J_pic').click(function(){
+        var src = $(this).attr('relfsrc');
+        $('#mask').show();
+        $("#picshow").html('<img src="'+src+'">').show();
+      });
+    });
+    function tab(n){
+      $('.classify .item').removeClass('active');
+      $('.classify .item').eq(n).addClass('active');
+      $('.tab').removeClass('cur');
+      $('.tab').eq(n).addClass('cur');
+    }
+    function hidepic(){
+      $("#mask").hide();
+      $("#picshow").hide();
+    }
+  </script>
+</body>
+</html>

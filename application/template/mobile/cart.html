@@ -4,15 +4,15 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <title>购物车</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <meta name="Keywords" content="" />
-  <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="css/reset.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="js/common.js"></script>
-  <script type="text/javascript" src="js/jquery.transit.js"></script>
-  <script type="text/javascript" src="js/jquery.fly.js"></script>
-  <script type="text/javascript" src="js/jquery.flycart.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.fly.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.flycart.js"></script>
 </head>
 <body>
   <div id="header">
@@ -24,10 +24,10 @@
   <div class="caidanCon">
     <div class="logo J_caidan low" onclick="toggleCaidan()"></div>
     <div class="caidan small">
-      <a class="home"></a>
-      <a class="cart"></a>
-      <a class="prolist"></a>
-      <a class="user"></a>
+      <a class="home" href="index.php?c=mobile&a=index"></a>
+      <a class="cart" href="index.php?c=mobile&a=cart"></a>
+      <a class="prolist" href="index.php?c=mobile&a=category"></a>
+      <a class="user" href="index.php?c=mobile&a=ucenter"></a>
       <a class="kefu"></a>
     </div>
   </div>
@@ -35,8 +35,8 @@
     <div class="car_list">
     </div>
     <div class="emptyCart hide">
-      <img src="images/cartemp.png">
-      <a class="btn" href="category.html">去逛逛</a>
+      <img src="{%$VIEW_ROOT%}/template/mobile/images/cartemp.png">
+      <a class="btn" href="index.php?c=mobile&a=category">去逛逛</a>
     </div>
     <div class="statusbar clearfix hide">
       <div class="allselect" onclick="seleAll(this);showDiv('#dlt');" seleAll="no">
@@ -45,7 +45,7 @@
       <div class="right">
         <div class="allprice">合计:<span class="redtext" id="calsum"></span>元</div>
         <!-- <div class="youhui">已优惠:-20元</div> -->
-        <a class="gocount" href="orderConfirm.html">去结算</a>
+        <a class="gocount" href="index.php?c=mobile&a=orderConfirm">去结算</a>
         <div class="tips">我们家全场包税免邮</div>
       </div>
     </div>
@@ -68,7 +68,7 @@
         dataType:'json',    
         success:function(data) { 
           if(data.code != 1){
-            window.location.href="login.html";
+            window.location.href="index.php?c=mobile&a=login";
           }else{
           } 
         } 

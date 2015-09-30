@@ -29,6 +29,7 @@ var Layout = function () {
                 $(this).closest('.search-form').submit();
                 return false;
             }
+			
         });
 
         // handle header search button click

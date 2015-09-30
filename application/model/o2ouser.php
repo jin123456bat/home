@@ -79,9 +79,38 @@ class o2ouserModel extends model
 	 * 编译推广员所有信息
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function fetchAll()
+	function fetchAll(array $filter = array())
 	{
+		$parameter = isset($filter['parameter'])?$filter['parameter']:'*,o2ouser.money as o_money';
+		if(isset($filter['telephone']))
+		{
+			$this->where('user.telephone=?',array($filter['telephone']));
+		}
 		$this->table('user','left join','o2ouser.uid=user.id');
-		return $this->select('*,o2ouser.money as o_money');
+		return $this->select($parameter);
+	}
+	
+	
+	/**
+	 * o2o用户登录
+	 * @param unknown $telephone
+	 * @param unknown $password
+	 * @return boolean
+	 */
+	function login($telephone,$password)
+	{
+		$filter = array(
+			'parameter' => 'user.id,user.telephone,user.password,user.salt,o2ouser.name',
+			'telephone' => $telephone
+		);
+		$result = $this->fetchAll($filter);
+		if(!isset($result[0]) || empty($result))
+			return false;
+		$password = md5($password.$result[0]['salt']);
+		if($password == $result[0]['password'])
+		{
+			return $result[0];
+		}
+		return false;
 	}
 }

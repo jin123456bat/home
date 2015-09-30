@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>用户信息</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/ajaxfileupload.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>用户信息</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;padding-bottom:30px;">
+    <div class="person">
+      <input id="fileToUpload" type="file" name="file" style="display:none;">
+      <ul>
+        <li class="clearfix tx" onclick="uploadthumb()">
+          头像
+          <img src="{%$VIEW_ROOT%}/template/mobile/images/default.png" class="flr" id="thumb">
+        </li>
+        <li onclick="window.location.href='index.php?c=mobile&a=nameModify'">
+          昵称
+          <div class="flr" id="name">未填写</div>
+        </li>
+        <li>
+          <a href="index.php?c=mobile&a=address">
+            收货地址
+            <i class="icon r_icon arr_r"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <a class="btnone_pink red" onclick="logout()">退出登录</a>
+  </div>
+  <script type="text/javascript">
+  function uploadthumb(){
+    return $('#fileToUpload').click();  
+  }
+  $(function(){
+    info();
+    $('#fileToUpload').on('change', function() {  
+      $.ajaxFileUpload({  
+          url:BASEURL+'?c=user&a=setnamegravatar',  
+          secureuri:false,  
+          fileElementId:'fileToUpload',//file标签的id  
+          dataType: 'json',//返回数据的类型  
+          data:{},//一同上传的数据  
+          success: function (data,status) {  
+            console.log('s');  
+            window.location.href=window.location.href;
+          },  
+          error: function (data, status, e) {  
+            alert(e);  
+          }  
+      });  
+    }); 
+  });
+  function info(){
+    $.ajax({    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          // console.log(data);
+          var name = data.body.username;
+          var photo = data.body.gravatar;
+          if(photo){
+            $('#thumb')[0].src = photo;
+          }
+          if(name){
+            $('#name').text(name);
+          }
+        }else if(data.code == 2){
+            window.location.href="index.php?c=mobile&a=login";
+        }else{
+          // alert(data.result);
+        } 
+      } 
+    });
+  }
+  function logout(){
+    $.ajax({    
+      url:BASEURL+'?c=user&a=logout',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        window.location.href = "index.php?c=mobile&a=login";
+      } 
+    });
+  }
+  </script>
+</body>
+</html>

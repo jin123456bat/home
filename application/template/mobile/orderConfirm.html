@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="Keywords" content="" />
   <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="css/reset.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
-  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
-  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="js/jquery.transit.js"></script>
-  <script type="text/javascript" src="js/jquery.fly.js"></script>
-  <script type="text/javascript" src="js/common.js"></script>
-  <script type="text/javascript" src="js/jquery.flycart.js"></script>
-  <script type="text/javascript" src="js/Jquery.Query.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.fly.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.flycart.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
@@ -37,7 +37,7 @@
           <span>正品保障</span>
           <span>海外直销</span>
         </div>
-        <a class="yhq" href="validvoucher.html" vouId="">
+        <a class="yhq" href="index.php?c=mobile&a=validvoucher" vouId="">
           <span id="vouname">可用优惠券0张</span>
           <i class="icon r_icon arr_r"></i>
         </a>
@@ -46,10 +46,10 @@
         <div class="pay_d clearfix"><label>税费</label><div class="val">￥0</div></div>
         <div class="pay_d clearfix"><label>优惠</label><div class="val redtext" id="discountmoney">-￥0</div></div>
         <div class="pay_d clearfix"><label>实际支付</label><div class="val redtext" id="realpay">￥0</div></div>
-        <div class="method clearfix">
+        <!-- <div class="method clearfix">
           <div class="paymethod"><i class="icon wechat"></i>微信支付</div>
           <div class="paymethod"><i class="icon rest"></i>账户余额</div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="statusbar clearfix bgpink">
@@ -140,7 +140,7 @@
                      +     '<div class="line_group clearfix">'
                      +       '<label>电 话</label>'
                      +       '<div class="val">请添加</div>'
-                     +      ' <a class="chan" href="address.html?back=order">更换地址</a>'
+                     +      ' <a class="chan" href="index.php?c=mobile&a=address&back=order">更换地址</a>'
                      +     '</div>';
               $(".recieve").html(html);
             }else{
@@ -156,7 +156,7 @@
                      +     '<div class="line_group clearfix">'
                      +       '<label>电 话</label>'
                      +       '<div class="val">'+re.telephone+'</div>'
-                     +      ' <a class="chan" href="address.html?back=order">更换地址</a>'
+                     +      ' <a class="chan" href="index.php?c=mobile&a=address&back=order">更换地址</a>'
                      +     '</div>';
               $(".recieve").html(html).attr('addid',re.id);
             }
@@ -181,6 +181,10 @@
             var re = data.body;
             // console.log(re);
             var html = "";
+            if(re.length==0){
+              // alert('还没添加商品哦');
+              window.location.href="index.php?c=mobile&a=cart";
+            }
             for(var i=0;i<re.length;i++){
               var rei = re[i];
               var thumb = rei.img[0].thumbnail_path?rei.img[0].thumbnail_path:defaultProPic;
@@ -236,7 +240,7 @@
       $.ajax( {    
         url:BASEURL+'?c=cart&a=order',// 跳转到 action    
         data:{
-          paytype:'alipay',
+          paytype:config_base.paytype,
           addressid:$('.recieve').attr('addid'),
           shipid:'1',
           coupon:$('.yhq').attr('vouid')?$("#vouname").text():"",
@@ -253,7 +257,7 @@
               $('#discountmoney').text('-￥'+data.body.discount);
               $("#realpay").text('￥'+data.body.ordertotalamount);
             }else{
-              // window.location.href=BASEURL+'?c=order&a=payment&id='+data.body.id+'&trade_type='+config_base.pingtai;
+              window.location.href=BASEURL+'?c=order&a=payment&id='+data.body.id+'&trade_type='+config_base.trade;
             }
           }else{
             alert(data.result);

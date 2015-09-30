@@ -20,10 +20,10 @@ var Login = function () {
 
 	            messages: {
 	                username: {
-	                    required: "Username is required."
+	                    required: "必须填写手机号."
 	                },
 	                password: {
-	                    required: "Password is required."
+	                    required: "必须填写密码."
 	                }
 	            },
 
@@ -46,7 +46,20 @@ var Login = function () {
 	            },
 
 	            submitHandler: function (form) {
-	                form.submit(); // form validation success, call ajax form submit
+	                //form.submit(); // form validation success, call ajax form submit
+					var telephone = $(form).find('input[name=telephone]').val();
+					var password = $(form).find('input[name=password]').val();
+					$.post('index.php?c=o2o&a=login',{telephone:telephone,password:password},function(response){
+						if(response.code == 1)
+						{
+							window.location = 'index.php?c=o2ocenter&a=index';
+						}
+						else
+						{
+							alert(response.result);
+						}
+					});
+					return false;
 	            }
 	        });
 
@@ -98,7 +111,42 @@ var Login = function () {
 	            },
 
 	            submitHandler: function (form) {
-	                form.submit();
+					var code = $(form).data('code');
+					if(code == '1')
+					{
+						var telephone = $.trim($(form).find('input[name=telephone]').val());
+						$.post('index.php?c=index&a=code',{telephone:telephone},function(response){
+							response = $.parseJSON(response);
+							if(response.code == 1)
+							{
+								$(form).find('.display-none').removeClass('display-none');
+								$(form).find('button[type=submit]').html('更改密码 <i class="m-icon-swapright m-icon-white"></i>');
+								$(form).data('code',0);
+							}
+							else
+							{
+								alert(response.result);
+							}
+						});
+					}
+					else
+					{
+						var telephone = $.trim($(form).find('input[name=telephone]').val());
+						var code = $.trim($(form).find('input[name=code]').val());
+						var password = $.trim($(form).find('input[name=password]').val());
+						$.post('index.php?c=user&a=forgetpwd',{telephone:telephone,code:code,password:password},function(response){
+							response = $.parseJSON(response);
+							if(response.code == 1)
+							{
+								alert('密码修改成功');
+								$('#back-btn').trigger('click');
+							}
+							else
+							{
+								alert(response.result);
+							}
+						});
+					}
 	            }
 	        });
 
@@ -123,124 +171,6 @@ var Login = function () {
 
 	}
 
-	var handleRegister = function () {
-
-		function format(state) {
-            if (!state.id) return state.text; // optgroup
-            return "<img class='flag' src='../../assets/global/img/flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
-        }
-
-
-		$("#select2_sample4").select2({
-		  	placeholder: '<i class="fa fa-map-marker"></i>&nbsp;Select a Country',
-            allowClear: true,
-            formatResult: format,
-            formatSelection: format,
-            escapeMarkup: function (m) {
-                return m;
-            }
-        });
-
-
-			$('#select2_sample4').change(function () {
-                $('.register-form').validate().element($(this)); //revalidate the chosen dropdown value and show error or success message for the input
-            });
-
-
-
-         $('.register-form').validate({
-	            errorElement: 'span', //default input error message container
-	            errorClass: 'help-block', // default input error message class
-	            focusInvalid: false, // do not focus the last invalid input
-	            ignore: "",
-	            rules: {
-	                
-	                fullname: {
-	                    required: true
-	                },
-	                email: {
-	                    required: true,
-	                    email: true
-	                },
-	                address: {
-	                    required: true
-	                },
-	                city: {
-	                    required: true
-	                },
-	                country: {
-	                    required: true
-	                },
-
-	                username: {
-	                    required: true
-	                },
-	                password: {
-	                    required: true
-	                },
-	                rpassword: {
-	                    equalTo: "#register_password"
-	                },
-
-	                tnc: {
-	                    required: true
-	                }
-	            },
-
-	            messages: { // custom messages for radio buttons and checkboxes
-	                tnc: {
-	                    required: "Please accept TNC first."
-	                }
-	            },
-
-	            invalidHandler: function (event, validator) { //display error alert on form submit   
-
-	            },
-
-	            highlight: function (element) { // hightlight error inputs
-	                $(element)
-	                    .closest('.form-group').addClass('has-error'); // set error class to the control group
-	            },
-
-	            success: function (label) {
-	                label.closest('.form-group').removeClass('has-error');
-	                label.remove();
-	            },
-
-	            errorPlacement: function (error, element) {
-	                if (element.attr("name") == "tnc") { // insert checkbox errors after the container                  
-	                    error.insertAfter($('#register_tnc_error'));
-	                } else if (element.closest('.input-icon').size() === 1) {
-	                    error.insertAfter(element.closest('.input-icon'));
-	                } else {
-	                	error.insertAfter(element);
-	                }
-	            },
-
-	            submitHandler: function (form) {
-	                form.submit();
-	            }
-	        });
-
-			$('.register-form input').keypress(function (e) {
-	            if (e.which == 13) {
-	                if ($('.register-form').validate().form()) {
-	                    $('.register-form').submit();
-	                }
-	                return false;
-	            }
-	        });
-
-	        jQuery('#register-btn').click(function () {
-	            jQuery('.login-form').hide();
-	            jQuery('.register-form').show();
-	        });
-
-	        jQuery('#register-back-btn').click(function () {
-	            jQuery('.login-form').show();
-	            jQuery('.register-form').hide();
-	        });
-	}
     
     return {
         //main function to initiate the module
@@ -248,7 +178,7 @@ var Login = function () {
         	
             handleLogin();
             handleForgetPassword();
-            handleRegister();        
+                
 	       
         }
 

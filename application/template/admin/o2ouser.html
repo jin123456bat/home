@@ -114,6 +114,9 @@
 									<th>
 										 分佣金额
 									</th>
+                                    <th>
+                                    	二维码
+                                    </th>
 									<th>
 										操作
 									</th>
@@ -150,6 +153,9 @@
 									<td>
 										 {%$o2o[o2o].o_money%}
 									</td>
+                                    <td>
+                                    	<button class="btn popovers downloadeqcode" data-html="true" data-trigger="hover" data-container="body" data-placement="right" data-content="<img src='http://www.wmjia.net/index.php?c=index&a=eqcode&download=true&content={%url c=mobile a=register o2o=$o2o[o2o].telephone urlencode=1%}'>" data-original-title="推广二维码">推广码</button>
+                                    </td>
 									<td>
 										<a href="{%url c=o2o a=remove%}&id={%$o2o[o2o].uid%}" class="btn btn-sm red-stripe default">删除</a>
 									</td>
@@ -193,13 +199,19 @@
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="{%$VIEW_ROOT%}/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
 <script>
-	  jQuery(document).ready(function() {	
-		 Metronic.init(); // init metronic core components
-Layout.init(); // init current layout
-QuickSidebar.init(); // init quick sidebar
-Demo.init(); // init demo features
-	  });
-   </script>
+jQuery(document).ready(function() {	
+	Metronic.init(); // init metronic core components
+	Layout.init(); // init current layout
+	QuickSidebar.init(); // init quick sidebar
+	Demo.init(); // init demo features
+	
+	$('.downloadeqcode').on('click',function(){
+		var img = $(this).data('content');
+		var src = $(img).attr('src');
+		window.open(src,'');
+	});
+});
+</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->

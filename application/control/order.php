@@ -526,6 +526,11 @@ class orderControl extends control
 		if(empty($order))
 			return new json(json::PARAMETER_ERROR,'订单不存在');
 		
+		if(empty($order['shiptime']))
+			return new json(json::PARAMETER_ERROR,'尚未发货');
+		if (empty($order['waybills']))
+			return new json(json::PARAMETER_ERROR,'没有物流单号');
+		
 		//检查缓存中的物流信息
 		$waybillsModel = $this->model('waybills');
 		$waybills = $waybillsModel->getByOrderno($order['orderno']);
@@ -537,7 +542,8 @@ class orderControl extends control
 					'code' => 1,
 					'result' => 'ok',
 					'data' => json_decode($waybills['content']),
-					'waybills' => implode(',', unserialize($waybills['waybills']))
+					'waybills' => implode(',', unserialize($waybills['waybills'])),
+					'postmode'=>$waybills['postmode']
 				);
 				return new json($data);
 			}
@@ -545,7 +551,8 @@ class orderControl extends control
 		//查询物流信息
 		$return = array();
 		$express = new express();
-			
+		
+		
 		$wbills = unserialize($order['waybills']);
 		
 		$response = $express->query($order['postmode'],$wbills[0]);
@@ -561,11 +568,20 @@ class orderControl extends control
 				$value = (array)$value;
 			}
 		}
+	
+		//生成虚拟物流信息
+		$response = $express->virtual($order['shiptime'],$order['outship']);
+		$return = array_merge($return,$response);
+		$waybillsModel->create($order['postmode'],$return,$wbills,$order['orderno']);
 		
-			$response = $express->virtual($order['shiptime'],$order['outship']);
-			$return = array_merge($return,$response);
-			$waybillsModel->create($order['postmode'],$return,unserialize($order['waybills']),$order['orderno']);
-			return new json(json::OK,NULL,$return);
+		$data = array(
+			'code' => 1,
+			'result' => 'OK',
+			'body' => $return,
+			'waybills' => implode(',', unserialize($order['waybills'])),
+			'postmode' => $order['postmode']
+		);
+		return new json($data);
 		//return new json(json::PARAMETER_ERROR,'尚未发货');
 	}
 	
@@ -613,6 +629,9 @@ class orderControl extends control
 				}
 				break;
 			case 'alipay':
+				$log = json_encode($_POST);
+				file_put_contents('./alipay_notify.txt', $log);
+				
 				if($this->post->notify_type == 'trade_status_sync')
 				{
 					$time = strtotime($this->post->notify_time);//交易完成时间

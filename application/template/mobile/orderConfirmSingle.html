@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>确认订单</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.fly.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.flycart.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header class="clearfix">
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>确认订单</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;  padding-bottom: 60px;">
+    <div class="order_details">
+      <div class="recieve">
+        
+      </div>  
+      <div class="pro_De">
+        <div class="proscon">
+        </div>
+        <div class="labels clearfix">
+          <span>免税包邮</span>
+          <span>正品保障</span>
+          <span>海外直销</span>
+        </div>
+        <a class="yhq" href="index.php?c=mobile&a=validvoucher" vouId="">
+          <span id="vouname">可用优惠券2张</span>
+          <i class="icon r_icon arr_r"></i>
+        </a>
+      </div>
+      <div class="pay">
+        <div class="pay_d clearfix"><label>税费</label><div class="val">￥0</div></div>
+        <div class="pay_d clearfix"><label>优惠</label><div class="val redtext" id="discountmoney">-￥0</div></div>
+        <div class="pay_d clearfix"><label>实际支付</label><div class="val redtext" id="realpay">￥0</div></div>
+        <!-- <div class="method clearfix">
+          <div class="paymethod"><i class="icon wechat"></i>微信支付</div>
+          <div class="paymethod"><i class="icon rest"></i>账户余额</div>
+        </div> -->
+      </div>
+    </div>
+    <div class="statusbar clearfix bgpink">
+      <a class="paybtn" onclick="orderpay(0)">下单并支付</a>
+    </div>
+  </div>
+  <script type="text/javascript">
+    $(function () {
+      pid = $.query.get('pid');
+      proObj = JSON.parse(storage.getItem('singleBuy'));
+      // console.log(proObj href="javascript:history.go(-1);");
+      loader();
+    });
+    var proObj;
+    function loader(){
+      address();
+      pros();
+    }
+    function getvoucher(){
+      var data = {
+        pid:proObj['pid'],
+        content:proObj['s'],
+      };
+      $.ajax( {    
+        url:BASEURL+'?c=coupon&a=getavaliable',// 跳转到 action    
+        data:data,    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            var re = data.body;
+            if(!re||re.length==0){
+              $(".yhq").attr('href','javascript:;');
+              orderpay(1);
+              return;
+            }
+            $('#vouname').text(re[0].couponno);
+            $('.yhq').attr('vouId',re[0].id);
+            orderpay(1);//计算优惠的价格
+          }else if(data.code==2){
+            window.location.href="index.php?c=mobile&a=login";
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function voucher(){
+      var vid = storage.getItem('usevoucherId');
+      if(vid){
+        var name = storage.getItem('usevoucherName');
+        $('#vouname').text(name);
+        $('.yhq').attr('vouId',vid);
+        storage.setItem('usevoucherId','');
+        storage.setItem('usevoucherName','');
+        orderpay(1);
+      }else{
+        getvoucher();
+      }
+    }
+    var storage = window.localStorage;
+    // storage.clear();
+    // console.log(storage.getItem('addressId'));
+    function address(){
+      var url,data;
+      if(storage.getItem('addressId')){
+        url = BASEURL+'?c=address&a=information';
+        data = {id:storage.getItem('addressId')};
+      }else{
+        url = BASEURL+'?c=address&a=gethost';
+        data = {};
+      }
+      $.ajax( {    
+        url:url,// 跳转到 action    
+        data:data,    
+        type:'get',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          // console.log(data);
+          if(data.code == 1){
+            var re = data.body;
+            var html = "";
+            if(!re){
+              html = '<div class="tit">收货人信息</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>地 址</label>'
+                     +       '<div class="val">请添加</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>收货人</label>'
+                     +       '<div class="val">请添加</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>电 话</label>'
+                     +       '<div class="val">请添加</div>'
+                     +      ' <a class="chan" href="index.php?c=mobile&a=address&back=order">更换地址</a>'
+                     +     '</div>';
+              $(".recieve").html(html);
+            }else{
+              html = '<div class="tit">收货人信息</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>地 址</label>'
+                     +       '<div class="val">'+re.province+re.city+re.address+'</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>收货人</label>'
+                     +       '<div class="val">'+re.name+'</div>'
+                     +     '</div>'
+                     +     '<div class="line_group clearfix">'
+                     +       '<label>电 话</label>'
+                     +       '<div class="val">'+re.telephone+'</div>'
+                     +      ' <a class="chan" href="index.php?c=mobile&a=address&back=order">更换地址</a>'
+                     +     '</div>';
+              $(".recieve").html(html).attr('addid',re.id);
+            }
+            voucher();
+            // orderpay(1);
+          }else if(data.code==2){
+            window.location.href="index.php?c=mobile&a=login";
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+    function pros(){
+      var html ='<div class="pro_info clearfix">'
+            +  '<div class="pic">'
+            +    '<img src="'+proObj.thumb+'">'
+            +  '</div>'
+            +  '<div class="name">'+proObj.name+'</div>'
+            +  '<div class="oth">'
+             +   '<div class="othl clearfix">'
+             +     '<div class="price">￥'+proObj.pricenow+'</div>'
+             +     '<div class="num">x'+proObj.num+'</div>'
+             +  ' </div>'
+             +   '<div class="othr clearfix">'
+             +     '<div class="guige">规格:'+proObj.guige+'</div>'
+             // +     '<div class="weight">重量:300.0</div>'
+             +   '</div></div></div>';
+      $('.proscon').html(html);
+    }
+    function orderpay(pre){
+      // console.log($('.recieve').attr('addid'));
+      // console.log($('.yhq').attr('vouid')?$("#vouname").text():"");
+      $.ajax( {    
+        url:BASEURL+'?c=product&a=order',// 跳转到 action    
+        data:{
+          paytype:config_base.paytype,
+          addressid:$('.recieve').attr('addid'),
+          shipid:'1',
+          coupon:$('.yhq').attr('vouid')?$("#vouname").text():"",
+          client:config_base.pingtai,
+          preorder:pre,
+          pid:proObj['pid'],
+          num:proObj['num'],
+          content:proObj['s'],
+        },    
+        type:'post',    
+        cache:false,    
+        dataType:'json',    
+        success:function(data) { 
+          if(data.code == 1){
+            console.log(data);
+            if(pre==1){
+              $('#discountmoney').text('-￥'+data.body.discount);
+              $("#realpay").text('￥'+data.body.ordertotalamount);
+            }else{
+              window.location.href=BASEURL+'?c=order&a=payment&id='+data.body.id+'&trade_type='+config_base.trade;
+            }
+          }else if(data.code==2){
+            window.location.href="index.php?c=mobile&a=login";
+          }else{
+            alert(data.result);
+          } 
+        } 
+      });
+    }
+  </script>
+</body>
+</html>

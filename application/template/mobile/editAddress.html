@@ -4,18 +4,16 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <title>编辑收货地址</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <meta name="Keywords" content="" />
-  <meta name="description" content="" />
-  <link rel="stylesheet" type="text/css" href="css/reset.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="sweetalert/sweet-alert.css">
-  <script type="text/javascript" src="sweetalert/sweet-alert.js"></script>
-  <script type="text/javascript" src="js/jquery.transit.js"></script>
-  <script type="text/javascript" src="js/jquery.mslides.js"></script>
-  <script type="text/javascript" src="js/common.js"></script>
-  <script type="text/javascript" src="js/city.js"></script>
-  <script type="text/javascript" src="js/Jquery.Query.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/city.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
 </head>
 <body>
   <div id="header">
@@ -94,7 +92,7 @@
       dataType:'json',    
       success:function(data) { 
         if(data.code != 1){
-          window.location.href="login.html";
+          window.location.href="index.php?c=mobile&a=login";
         }else{
         } 
       } 

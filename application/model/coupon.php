@@ -37,7 +37,7 @@ class couponModel extends model
 	function publicCoupon($price = NULL)
 	{
 		$this->where('display=? and (starttime<? or starttime=0)',array(1,$_SERVER['REQUEST_TIME']));
-		$this->where('endtime=0 or endtime>?',array($_SERVER['REQUEST_TIME']));
+		$this->where('(endtime=0 or endtime>?)',array($_SERVER['REQUEST_TIME']));
 		if($price !== NULL)
 		{
 			$this->where('max<=?',array($price));
@@ -53,6 +53,7 @@ class couponModel extends model
 	 */
 	function mycoupon($uid,$past = true,$filter = array())
 	{
+		$this->where('display=?',array(0));
 		if(!empty($filter))
 		{
 			if(isset($filter['max']))

@@ -115,6 +115,38 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-md-2 control-label">管理员电话</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_system_phone" class="form-control" placeholder="800 123 3456" value="{%$system.system_system_phone|default:''%}">
+                                        <span class="help-block">
+                                        footer中显示给别人看的 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">管理员邮箱</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_system_email" class="form-control" placeholder="info@metronic.com" value="{%$system.system_system_email|default:''%}">
+                                        <span class="help-block">
+                                        footer中显示给别人看的 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">网站FOOTER</label>
+                                    <div class="col-md-10">
+                                        <textarea name="system_system_reserved" class="form-control" placeholder="2014 © Metronic. All Rights Reserved.">{%$system.system_system_reserved|default:''%}</textarea>
+                                        <span class="help-block">
+                                        footer中显示给别人看的 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">网站关于我们</label>
+                                    <div class="col-md-10">
+                                        <textarea name="system_system_about" class="form-control" placeholder="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam dolore.">{%$system.system_system_about|default:''%}</textarea>
+                                        <span class="help-block">
+                                        footer中显示给别人看的 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-md-2 control-label">商品库存警报</label>
                                     <div class="col-md-10">
                                         <input type="text" name="system_system_stockalert" class="form-control" placeholder="10" value="{%$system.system_system_stockalert|default:''%}">

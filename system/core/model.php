@@ -19,7 +19,7 @@ class model
 
 	private $_table;
 
-	private $_temp;
+	public $_temp;
 
 	function __construct($table)
 	{

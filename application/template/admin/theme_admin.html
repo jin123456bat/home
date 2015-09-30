@@ -194,6 +194,9 @@
                         <th width="10%">
                         	排序
                         </th>
+                        <th>
+                        	二维码
+                        </th>
 						<th width="10%">
 							 操作
 						</th>
@@ -217,6 +220,9 @@
 						<td name=name>{%$theme[theme].name%}</td>
 						<td name=description>{%$theme[theme].description%}</td>
                         <td name=orderby>{%$theme[theme].orderby%}</td>
+                        <td>
+                        <button class="btn popovers downloadeqcode" data-html="true" data-trigger="hover" data-container="body" data-placement="right" data-content="<img src='http://www.wmjia.net/index.php?c=index&a=eqcode&download=true&content={%url c=mobile a=themeDetail id=$theme[theme].id urlencode=1%}'>" data-original-title="推广二维码">推广码</button>
+                        </td>
 						<td>
 							<div class="btn-group btn-group-circle btn-group-justified">
 								<a data-id="{%$theme[theme].id%}" class="btn btn-sm red removeBtn">
@@ -452,6 +458,11 @@ jQuery(document).ready(function() {
 		});
 	});
 
+	$('.downloadeqcode').on('click',function(){
+		var img = $(this).data('content');
+		var src = $(img).attr('src');
+		window.open(src,'');
+	});
 });
 </script>
 <!-- END JAVASCRIPTS -->

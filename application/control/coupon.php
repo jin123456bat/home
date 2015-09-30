@@ -85,7 +85,7 @@ class couponControl extends control
 				}
 			}
 		}
-		$result = $coupondetailModel->where('categoryid in (?) or categoryid=0',$product_category_array)->select();
+		$result = $coupondetailModel->where('(categoryid in (?) or categoryid=0)',$product_category_array)->select();
 		$coupon_id_array = array();
 		foreach($result as $coupon)
 		{

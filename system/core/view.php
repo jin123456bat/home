@@ -61,7 +61,9 @@ class view extends base
 		$this->_smarty->right_delimiter = $this->_viewConfig->right_delimiter;
 		
 		$http = $this->http->isHttps()?'https://':'http://';
-		$baseUrl = rtrim($http.$this->http->host().$this->http->path().'/application','/');
+		$path = str_replace('\\', '/', $this->http->path());
+		$path = rtrim($path,'/');
+		$baseUrl = rtrim($http.$this->http->host().$path.'/application','/');
 		$this->_smarty->assign("VIEW_ROOT",$baseUrl);
 		$this->_smarty->registerPlugin('function',"url", array($this,'url'));
 		$this->_smarty->registerPlugin('function','resource',array($this,'resource'));
@@ -124,10 +126,23 @@ class view extends base
 		$http = http::getInstance();
 		$c = $parameter['c'];
 		$a = $parameter['a'];
+		$urlencode = false;
+		if(isset($parameter['urlencode']))
+		{
+			$urlencode = $parameter['urlencode'];
+			unset($parameter['urlencode']);
+		}
 		unset($parameter['c']);
 		unset($parameter['a']);
 		$array = array('c'=>$c,'a'=>$a,'array'=>$parameter);
-		return call_user_func_array(array($http,'url'), $array);
+		if(!$urlencode)
+		{
+			return call_user_func_array(array($http,'url'), $array);
+		}
+		else
+		{
+			return urlencode(call_user_func_array(array($http,'url'), $array));
+		}
 	}
 	
 	/**
