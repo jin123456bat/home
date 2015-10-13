@@ -48,10 +48,13 @@ class themeControl extends control
 		$length = filter::int($this->get->length);
 		$length = empty($length)?3:$length;
 		$themeModel = $this->model('theme');
+		$systemModel = $this->model('system');
 		
 		$filter=array(
 			'length' => $length,
 			'orderby' => 'orderby',
+			'lock' => $systemModel->get('lock','theme'),
+			'lock_user' => $this->session->id
 		);
 		
 		$result = $themeModel->fetchAll($filter);

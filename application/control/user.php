@@ -341,6 +341,11 @@ class userControl extends control
 						$this->session->username = '';
 						$this->model('user_login_log')->create($this->session->id,$client);
 						
+						if(!empty($this->session->theme_lock))
+						{
+							$this->model('theme_lock')->create($id,$this->session->theme_lock);
+						}
+						
 						return json_encode(array(
 							'code' => 1,
 							'result' => 'success'

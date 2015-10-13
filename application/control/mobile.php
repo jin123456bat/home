@@ -3,11 +3,14 @@ namespace application\control;
 use system\core\control;
 use system\core\view;
 use system\core\http;
+
 class mobileControl extends control
 {
 	private $_config;
 	
 	private $_template_dir;
+	
+	private $_system;
 	
 	function __construct()
 	{
@@ -16,12 +19,26 @@ class mobileControl extends control
 		$this->_template_dir = 'mobile/';
 		
 		$this->_config = config('view');
+		
+		$this->_system = $this->model('system');
 	}
 	
 	function __call($name,$args)
 	{
 		if(!empty($args))
 			return $this->call('index', '__404');
+		
+		switch (strtolower($name))
+		{
+			case 'themedetail':
+				if($this->_system->get('lock','theme'))
+				{
+					$this->session->theme_lock = $this->get->id;
+				}
+				break;
+			default:
+		}
+		
 		$template = $this->_template_dir.$name.'.html';
 		$http = http::getInstance();
 		$base_template = ROOT . '/application/template/'.$template;

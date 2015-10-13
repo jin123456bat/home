@@ -102,9 +102,9 @@ class model
 			$sql = str_replace('?', $replace, $sql);
 		}
 		if (isset($this->_temp['where'])) {
-			$this->_temp['where'] = $this->_temp['where'] .' '. $combine.' ' . $sql;
+			$this->_temp['where'] = $this->_temp['where'] .' '. $combine.' ' .'('. $sql.')';
 		} else {
-			$this->_temp['where'] = 'where' . ' ' . $sql;
+			$this->_temp['where'] = 'where' . ' (' . $sql.')';
 		}
 		if (isset($this->_temp['array'])) {
 			$this->_temp['array'] = array_merge($this->_temp['array'], $array);

@@ -268,7 +268,7 @@ class systemControl extends control
 			$this->view = new view(config('view'), 'admin/system_base.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
 			$systemModel = $this->model('system');
-			$config = $systemModel->fetch(array('system','image','app'));
+			$config = $systemModel->fetch(array('system','image','app','theme'));
 			$system = array();
 			foreach ($config as $value)
 			{

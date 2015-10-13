@@ -87,14 +87,35 @@ class themeModel extends model
 	 */
 	function fetchAll(array $filter = array())
 	{
-		if(isset($filter['length']))
+		if($filter['lock'])
 		{
-			$this->limit($filter['length']);
+			if(!empty($filter['lock_user']))
+			{
+				$this->table('theme_lock','right join','theme_lock.tid=theme.id');
+				$this->where('theme_lock.uid=?',array($filter['lock_user']));
+				if(isset($filter['length']))
+				{
+					$this->limit($filter['length']);
+				}
+				if(isset($filter['orderby']))
+				{
+					$this->orderby($filter['orderby'],'asc');
+				}
+				return $this->select();
+			}
+			return array();
 		}
-		if(isset($filter['orderby']))
+		else
 		{
-			$this->orderby($filter['orderby'],'asc');
+			if(isset($filter['length']))
+			{
+				$this->limit($filter['length']);
+			}
+			if(isset($filter['orderby']))
+			{
+				$this->orderby($filter['orderby'],'asc');
+			}
+			return $this->select();
 		}
-		return $this->select();
 	}
 }
