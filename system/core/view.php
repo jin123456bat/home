@@ -109,6 +109,8 @@ class view extends base
 	 */
 	function resource($parameter)
 	{
+		if(filter_var($parameter,FILTER_SANITIZE_URL))
+			return $parameter;
 		$path = $parameter['path'];
 		$http = $this->http->isHttps()?'https://':'http://';
 		$url = $http.$this->http->host().$this->http->path().str_replace(ROOT, '', $path);

@@ -3,6 +3,7 @@ namespace application\control;
 use system\core\control;
 use system\core\view;
 use system\core\http;
+use application\classes\login;
 
 class mobileControl extends control
 {
@@ -27,6 +28,18 @@ class mobileControl extends control
 	{
 		if(!empty($args))
 			return $this->call('index', '__404');
+			
+		//-----------felixchen----------
+		if(!login::user()){
+			$type=$this->get->type;
+			if(isset($type)){
+				$util=$this->call("util","addUser");//调用控制器方法,获取授权注册
+			}else{//已经注册不需要授权登陆
+				$util=$this->call("util","userFind");
+			}
+		}
+			
+		//-----------felixchen----------	
 		
 		switch (strtolower($name))
 		{

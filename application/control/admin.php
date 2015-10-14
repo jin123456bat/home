@@ -17,6 +17,12 @@ class adminControl extends control
 	function index()
 	{
 		$this->view = new view(config('view'), 'admin/login.html');
+		
+		$systemModel = $this->model('system');
+		$system = $systemModel->fetch('system');
+		$system = $systemModel->toArray($system,'system');
+		$this->view->assign('system',$system);
+		
 		return $this->view->display();
 	}
 	
@@ -73,6 +79,11 @@ class adminControl extends control
 			
 			$roleModel = $this->model('role');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
 			//发货提醒
 			$shipalertModel = $this->model('shipalert');
 			$filter = array(
@@ -160,6 +171,14 @@ class adminControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'admin',roleModel::POWER_SELECT))
 		{
 			$this->view = new view(config('view'), 'admin/adminlist.html');
+			
+			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$this->response->setBody($this->view->display());
 		}
 		else
@@ -200,6 +219,8 @@ class adminControl extends control
 		unset($this->session->id);
 		unset($this->session->role);
 		unset($this->session->username);
+		$this->response->setCode(302);
+		$this->response->addHeader('Location',$this->http->url('admin','index'));
 	}
 	
 	/**

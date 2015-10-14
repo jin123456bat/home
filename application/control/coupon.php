@@ -104,6 +104,21 @@ class couponControl extends control
 	}
 	
 	/**
+	 * 获取一个可以使用的优惠券信息
+	 */
+	function information()
+	{
+		$couponno = $this->get->couponno;
+		$couponModel = $this->model('coupon');
+		$coupon = $couponModel->get($couponno);
+		if(empty($coupon))
+			return new json(json::PARAMETER_ERROR,'优惠券不存在');
+		if($coupon['display'] == 1 && $coupon['times'] >0 && $coupon['starttime']<$_SERVER['REQUEST_TIME'] && ($coupon['endtime'] == 0 || $coupon['endtime']>$_SERVER['REQUEST_TIME']) && $coupon['uid']== 0)
+			return new json(json::OK,NULL,$coupon);
+		return new json(json::PARAMETER_ERROR,'优惠券不可用');
+	}
+	
+	/**
 	 * 优惠券打折码管理页面
 	 */
 	function admin()
@@ -113,6 +128,12 @@ class couponControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/coupon_admin.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$categoryModel = $this->model('category');
 			$category = $categoryModel->select();
 			$categoryHelper = new category();

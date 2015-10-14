@@ -24,6 +24,11 @@ class registerControl extends control
 			$this->view = new view(config('view'), 'admin/register_admin.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
 			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$id = 1;
 			
 			$registerModel = $this->model('register');

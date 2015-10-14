@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Metronic | Page Layouts - Blank Page</title>
+<title>结算设定 | {%$systemConfig.companyname|default:""%}后台管理系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -101,9 +101,17 @@
                                 	<div class="form-group">
                                         <label class="col-md-2 control-label">支付超时</label>
                                         <div class="col-md-10">
-                                            <input type="text" name="system_payment_timeout" value="{%$system.system_payment_timeout|default:"30"%}" class="form-control" placeholder="30">
+                                            <input type="text" name="system_payment_timeout" value="{%$systemConfig.system_payment_timeout|default:"30"%}" class="form-control" placeholder="30">
                                             <span class="help-block">
                                             当订单在规定时间内没有支付，则按照取消订单处理. 单位分钟</span>
+                                        </div>
+                                    </div>
+									<div class="form-group">
+                                        <label class="col-md-2 control-label">支付阈值</label>
+                                        <div class="col-md-10">
+                                            <input type="text" name="system_payment_maxvalue" value="{%$systemConfig.system_payment_maxvalue|default:"0"%}" class="form-control" placeholder="单位元">
+                                            <span class="help-block">
+                                            当订单金额超过阈值的时候不允许支付，0为关闭</span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -119,7 +127,7 @@
                                     <div class="form-group">
                                         <label class="col-md-2 control-label">MCHID</label>
                                         <div class="col-md-10">
-                                            <input type="text" name="system_weixin_mchid" value="{%$system.system_weixin_mchid|default:""%}" class="form-control" placeholder="1226923702">
+                                            <input type="text" name="system_weixin_mchid" value="{%$systemConfig.system_weixin_mchid|default:""%}" class="form-control" placeholder="1226923702">
                                             <span class="help-block">
                                             微信商户编码. </span>
                                         </div>
@@ -127,7 +135,7 @@
                                     <div class="form-group">
                                         <label class="col-md-2 control-label">APPID</label>
                                         <div class="col-md-10">
-                                            <input type="text" name="system_weixin_appid" value="{%$system.system_weixin_appid|default:""%}" class="form-control" placeholder="wxacf21161e3c578f1">
+                                            <input type="text" name="system_weixin_appid" value="{%$systemConfig.system_weixin_appid|default:""%}" class="form-control" placeholder="wxacf21161e3c578f1">
                                             <span class="help-block">
                                             微信公众平台上的APPID. </span>
                                         </div>
@@ -135,7 +143,7 @@
                                     <div class="form-group">
                                         <label class="col-md-2 control-label">Key</label>
                                         <div class="col-md-10">
-                                            <input type="text" name="system_weixin_key" value="{%$system.system_weixin_key|default:""%}" class="form-control" placeholder="Zhy781525073AsDfGh12ZgdZxCvBnMlK">
+                                            <input type="text" name="system_weixin_key" value="{%$systemConfig.system_weixin_key|default:""%}" class="form-control" placeholder="Zhy781525073AsDfGh12ZgdZxCvBnMlK">
                                             <span class="help-block">
                                             加密密钥. </span>
                                         </div>
@@ -143,9 +151,25 @@
                                     <div class="form-group">
                                         <label class="col-md-2 control-label">APPSECRET</label>
                                         <div class="col-md-10">
-                                            <input type="text" name="system_weixin_appsecret" value="{%$system.system_weixin_appsecret|default:""%}" class="form-control" placeholder="a9edccfb3018342657334dabd8873357">
+                                            <input type="text" name="system_weixin_appsecret" value="{%$systemConfig.system_weixin_appsecret|default:""%}" class="form-control" placeholder="a9edccfb3018342657334dabd8873357">
                                             <span class="help-block">
                                             微信公众平台上的appsecret. </span>
+                                        </div>
+                                    </div>
+									<div class="form-group">
+                                        <label class="col-md-2 control-label">TOKEN</label>
+                                        <div class="col-md-10">
+                                            <input type="text" name="system_weixin_token" value="{%$systemConfig.system_weixin_token|default:""%}" class="form-control" placeholder="微信公众平台的TOKEN">
+                                            <span class="help-block">
+                                            接入微信公众平台的TOKEN（3-32位）. </span>
+                                        </div>
+                                    </div>
+									<div class="form-group">
+                                        <label class="col-md-2 control-label">接入地址</label>
+                                        <div class="col-md-10">
+                                            <input disabled type="text" value="http://{%$smarty.server.HTTP_HOST%}{%$smarty.server.PHP_SELF|substr:0:-10%}/index.php?c=wechat&a=router" class="form-control">
+                                            <span class="help-block">
+                                            微信公众平台接入地址. </span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -162,8 +186,8 @@
                                     <label class="col-md-2 control-label">支付方式</label>
                                     <div class="col-md-10">
                                     	<select name="system_alipay_outtrade" class="form-control">
-                                        	<option value="1" {%if isset($system.system_alipay_outtrade) && $system.system_alipay_outtrade == 1%}selected="true"{%/if%}>支付到海外账户</option>
-                                            <option value="0" {%if isset($system.system_alipay_outtrade) && $system.system_alipay_outtrade == 0%}selected="true"{%/if%}>支付到国内账户</option>
+                                        	<option value="1" {%if isset($systemConfig.system_alipay_outtrade) && $systemConfig.system_alipay_outtrade == 1%}selected="true"{%/if%}>支付到海外账户</option>
+                                            <option value="0" {%if isset($systemConfig.system_alipay_outtrade) && $systemConfig.system_alipay_outtrade == 0%}selected="true"{%/if%}>支付到国内账户</option>
                                         </select>
                                         <span class="help-block">
                                         支付宝账号类型. </span>
@@ -172,7 +196,7 @@
 								<div class="form-group">
                                     <label class="col-md-2 control-label">Partner</label>
                                     <div class="col-md-10">
-                                        <input type="text" name="system_alipay_partner" value="{%$system.system_alipay_partner|default:""%}" class="form-control" placeholder="2088021017666931">
+                                        <input type="text" name="system_alipay_partner" value="{%$systemConfig.system_alipay_partner|default:""%}" class="form-control" placeholder="2088021017666931">
                                         <span class="help-block">
                                         支付宝的商户编号以2088开头的. </span>
                                     </div>
@@ -180,7 +204,7 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Key</label>
                                     <div class="col-md-10">
-                                        <input type="text" name="system_alipay_key" value="{%$system.system_alipay_key|default:""%}" class="form-control" placeholder="4508mayei5zbmsmopp6tlobdf83d2kz6">
+                                        <input type="text" name="system_alipay_key" value="{%$systemConfig.system_alipay_key|default:""%}" class="form-control" placeholder="4508mayei5zbmsmopp6tlobdf83d2kz6">
                                         <span class="help-block">
                                         MD5加密密钥. </span>
                                     </div>
@@ -192,8 +216,8 @@
                                         <span class="help-block">
                                         rsa加密的私钥. 公钥放在支付宝</span>
                                     </div>
-                                    {%if isset($system.system_alipay_rsaprivatekey) && !empty($system.system_alipay_rsaprivatekey)%}
-                                    <label class="col-md-2 control-label"><a href="{%resource path=$system.system_alipay_rsaprivatekey%}">RSA私钥查看</a></label>
+                                    {%if isset($systemConfig.system_alipay_rsaprivatekey) && !empty($systemConfig.system_alipay_rsaprivatekey)%}
+                                    <label class="col-md-2 control-label"><a href="{%resource path=$systemConfig.system_alipay_rsaprivatekey%}">RSA私钥查看</a></label>
                                     {%/if%}
                                 </div>
                                 <div class="form-group">
@@ -203,14 +227,14 @@
                                         <span class="help-block">
                                         支付宝的RSA公钥</span>
                                     </div>
-                                    {%if isset($system.system_alipay_rsapublickey) && !empty($system.system_alipay_rsapublickey)%}
-                                    <label class="col-md-2 control-label"><a href="{%resource path=$system.system_alipay_rsapublickey%}">RSA公钥查看</a></label>
+                                    {%if isset($systemConfig.system_alipay_rsapublickey) && !empty($systemConfig.system_alipay_rsapublickey)%}
+                                    <label class="col-md-2 control-label"><a href="{%resource path=$systemConfig.system_alipay_rsapublickey%}">RSA公钥查看</a></label>
                                     {%/if%}
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">货币代码</label>
                                     <div class="col-md-10">
-                                        <input type="text" name="system_alipay_currency" class="form-control" placeholder="EUR" value="{%$system.system_alipay_currency|default:""%}">
+                                        <input type="text" name="system_alipay_currency" class="form-control" placeholder="EUR" value="{%$systemConfig.system_alipay_currency|default:""%}">
                                         <span class="help-block">
                                         货币代号，前提是需要在支付宝开通. </span>
                                     </div>
@@ -219,8 +243,8 @@
                                     <label class="col-md-2 control-label">开启海外分账</label>
                                     <div class="col-md-10">
                                     	<select name="system_alipay_splitopen" class="form-control">
-                                        	<option value="1" {%if isset($system.system_alipay_splitopen) && $system.system_alipay_splitopen == 1%}selected="true"{%/if%}>开启</option>
-                                            <option value="0" {%if isset($system.system_alipay_splitopen) && $system.system_alipay_splitopen == 0%}selected="true"{%/if%}>关闭</option>
+                                        	<option value="1" {%if isset($systemConfig.system_alipay_splitopen) && $systemConfig.system_alipay_splitopen == 1%}selected="true"{%/if%}>开启</option>
+                                            <option value="0" {%if isset($systemConfig.system_alipay_splitopen) && $systemConfig.system_alipay_splitopen == 0%}selected="true"{%/if%}>关闭</option>
                                         </select>
                                         <span class="help-block">
                                         支付宝的商户编号以2088开头的. </span>
@@ -229,7 +253,7 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">分账Partner</label>
                                     <div class="col-md-10">
-                                        <input type="text" name="system_alipay_splitpartner" value="{%$system.system_alipay_splitpartner|default:""%}" class="form-control" placeholder="2088801766902304">
+                                        <input type="text" name="system_alipay_splitpartner" value="{%$systemConfig.system_alipay_splitpartner|default:""%}" class="form-control" placeholder="2088801766902304">
                                         <span class="help-block">
                                         支付宝的商户编号以2088开头的. </span>
                                     </div>
@@ -237,7 +261,7 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">分账比例</label>
                                     <div class="col-md-10">
-                                        <input type="text" name="system_alipay_splitrate" value="{%$system.system_alipay_splitrate|default:""%}" class="form-control" placeholder="0.5">
+                                        <input type="text" name="system_alipay_splitrate" value="{%$systemConfig.system_alipay_splitrate|default:""%}" class="form-control" placeholder="0.5">
                                         <span class="help-block">
                                         小于1并且大于0的数字，不能等于1或等于0. </span>
                                     </div>
@@ -245,7 +269,7 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">分账货币</label>
                                     <div class="col-md-10">
-                                        <input type="text" name="system_alipay_splitcurrency" class="form-control" placeholder="CNY" value="{%$system.system_alipay_splitcurrency|default:""%}">
+                                        <input type="text" name="system_alipay_splitcurrency" class="form-control" placeholder="CNY" value="{%$systemConfig.system_alipay_splitcurrency|default:""%}">
                                         <span class="help-block">
                                         分账账号的货币. </span>
                                     </div>

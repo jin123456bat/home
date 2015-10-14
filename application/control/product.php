@@ -15,6 +15,7 @@ use application\classes\prototype;
 use application\classes\product;
 use application\classes\order;
 use system\core\filesystem;
+use application\message\json;
 /**
  * 商品控制器
  * @author jin12
@@ -174,7 +175,21 @@ class productControl extends control
 		$address = $this->model('address')->get($this->post->addressid);
 		if(empty($address))
 		{
-			return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
+			if(empty($preorder))
+			{
+				return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
+			}
+			else
+			{
+				$address = array(
+					'name' => '',
+					'telephone' => '',
+					'address' => '',
+					'province' => '',
+					'city' => '',
+					'zcode' => ''
+				);
+			}
 		}
 		$consignee = $address['name'];
 		$consigneetel = $address['telephone'];
@@ -229,6 +244,13 @@ class productControl extends control
 			$action_type
 		);
 		
+		$systemModel = $this->model('system');
+		$maxvalue = $systemModel->get('maxvalue','payment');
+		if(!empty($maxvalue))
+		{
+			if($maxvalue>$ordertotalamount)
+				return new json(5,'订单总金额超过付款限制('.$maxvalue.'元)');
+		}
 		
 		if($preorder)
 		{
@@ -439,6 +461,11 @@ class productControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/product.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
 			
 			$categoryModel = $this->model('category');
 			$category = $categoryModel->select();

@@ -393,12 +393,24 @@ class cartControl extends control
 		$totalamount = 0;
 		//收件人
 		$addressid = filter::int($this->post->addressid);
-		if(empty($addressid))
-			return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
 		$address = $this->model('address')->get($addressid);
 		if(empty($address))
 		{
-			return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
+			if(empty($preorder))
+			{
+				return json_encode(array('code'=>6,'result'=>'错误的配送地址'));
+			}
+			else
+			{
+				$address = array(
+					'name' => '',
+					'telephone' => '',
+					'address' => '',
+					'province' => '',
+					'city' => '',
+					'zcode' => ''
+				);
+			}
 		}
 		$consignee = $address['name'];
 		$consigneetel = $address['telephone'];
@@ -424,6 +436,16 @@ class cartControl extends control
 		 * 财付通专用，标注是否已经报过报过接口  1没有 2已经报过
 		 */
 		$action_type = '1';
+		
+		$systemModel = $this->model('system');
+		$maxvalue = $systemModel->get('maxvalue','payment');
+		if(!empty($maxvalue))
+		{
+			if($maxvalue<$ordertotalamount)
+			{
+				return new json(4,'订单总金额超过限制('.$maxvalue.'元)，请手动拆单后支付');
+			}
+		}
 		
 		
 		$data = array(
@@ -473,7 +495,6 @@ class cartControl extends control
 			$oid = $orderModel->create($data,$orderdetail);
 			if($oid)
 			{
-				//清空购物车
 				$cartModel->clear($uid);
 				//用户订单数量+1
 				$this->model('user')->where('id=?',array($uid))->increase('ordernum',1);

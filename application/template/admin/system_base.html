@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Metronic | Page Layouts - Blank Page</title>
+<title>基础设定 | {%$systemConfig.companyname|default:""%}后台管理系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -43,7 +43,30 @@
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content">
-{%include file='admin/public/header.html'%}
+<!-- BEGIN HEADER -->
+<!--单独处理配置页的header-->
+<div class="page-header navbar navbar-fixed-top">
+	<!-- BEGIN HEADER INNER -->
+	<div class="page-header-inner">
+		<!-- BEGIN LOGO -->
+		<div class="page-logo">
+			<a href="index.html">
+			<img src="{%resource path=$systemConfig.logo|default:""%}" alt="logo" class="logo-default" style="margin-top:10px; margin-left:10px;" width="30px" height="30px"/>
+			</a>
+			<div class="menu-toggler sidebar-toggler hide">
+			</div>
+		</div>
+		<!-- END LOGO -->
+		<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+		<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+		</a>
+		<!-- END RESPONSIVE MENU TOGGLER -->
+	</div>
+	<!-- END HEADER INNER -->
+</div>
+<!-- END HEADER -->
+<div class="clearfix">
+</div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 	{%include file='admin/public/sidebar.html'%}
@@ -104,19 +127,32 @@
                                 	<i class="fa fa-flag"></i> 主题设定
                                 </a>
                             </li>
+							<li>
+                            	<a data-toggle="tab" href="#jpush">
+                                	<i class="fa fa-flag"></i> 极光APP推送设定
+                                </a>
+                            </li>
                         </ul>
                    	</div>
 					<div class="col-md-9">
 						<div class="tab-content">
                         	
                         	<div id="base" class="tab-pane active">
-                            <form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
+                            <form action="{%url c=system a=save%}" class="form-horizontal" method="post" enctype="multipart/form-data" role="form">
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">公司名称</label>
                                     <div class="col-md-10">
                                         <input type="text" name="system_system_companyname" class="form-control" placeholder="我们家" value="{%$system.system_system_companyname|default:''%}">
                                         <span class="help-block">
                                         公司名称 </span>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">LOGO</label>
+                                    <div class="col-md-10">
+                                        <input type="file" name="system_system_logo" class="form-control">
+                                        <span class="help-block">
+                                        LOGO图片，背景透明 </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -179,12 +215,12 @@
                                     <label class="col-md-2 control-label">申报海关</label>
                                     <div class="col-md-10">
                                         <select name="system_system_customs" class="form-control">
-                                        	<option value="HANGZHOU" {%if $system.system_system_customs == HANGZHOU%}selected="true"{%/if%}>杭州海关</option>
-                                            <option value="ZHENGZHOU" {%if $system.system_system_customs == ZHENGZHOU%}selected="true"{%/if%}>郑州海关</option>
-                                            <option value="GUANGZHOU" {%if $system.system_system_customs == GUANGZHOU%}selected="true"{%/if%}>广州海关</option>
-                                            <option value="CHONGQING" {%if $system.system_system_customs == CHONGQING%}selected="true"{%/if%}>重庆海关</option>
-                                            <option value="NINGBO" {%if $system.system_system_customs == NINGBO%}selected="true"{%/if%}>宁波海关</option>
-                                            <option value="SHENZHEN" {%if $system.system_system_customs == SHENZHEN%}selected="true"{%/if%}>深圳海关</option>
+                                        	<option value="HANGZHOU" {%if $system.system_system_customs == hangzhou%}selected="true"{%/if%}>杭州海关</option>
+                                            <option value="ZHENGZHOU" {%if $system.system_system_customs == zhengzhou%}selected="true"{%/if%}>郑州海关</option>
+                                            <option value="GUANGZHOU" {%if $system.system_system_customs == guangzhou%}selected="true"{%/if%}>广州海关</option>
+                                            <option value="CHONGQING" {%if $system.system_system_customs == chongqing%}selected="true"{%/if%}>重庆海关</option>
+                                            <option value="NINGBO" {%if $system.system_system_customs == ningbo%}selected="true"{%/if%}>宁波海关</option>
+                                            <option value="SHENZHEN" {%if $system.system_system_customs == shenzhen%}selected="true"{%/if%}>深圳海关</option>
                                         </select>
                                         <span class="help-block">
                                         报关使用 </span>
@@ -337,6 +373,29 @@
                                         <input type="submit" value="保存" class="form-control btn green">
                                     </div>
                                 </div>
+								</form>
+                            </div>
+							<div id="jpush" class="tab-pane">
+                            	<form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
+                            	<div class="form-group">
+                                    <label class="col-md-2 control-label">AppKey</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_jpush_appkey" value="{%$system.system_jpush_appkey|default:""%}" placeholder="推广推送的AppKey" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">Master Secret</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_jpush_mastersecret" value="{%$system.system_jpush_mastersecret|default:""%}" placeholder="推广推送的Master Secret" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input type="submit" value="保存" class="form-control btn green">
+                                    </div>
+                                </div>
+								</form>
                             </div>
                         </div>
                     </div>
@@ -349,7 +408,14 @@
 	{%include file='admin/public/quickslider.html'%}
 </div>
 <!-- END CONTAINER -->
-{%include file='admin/public/footer.html'%}
+<div class="page-footer">
+	<div class="page-footer-inner">
+		 {%$systemConfig.reserved|default:""%}
+	</div>
+	<div class="scroll-to-top">
+		<i class="icon-arrow-up"></i>
+	</div>
+</div>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>

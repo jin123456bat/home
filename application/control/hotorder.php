@@ -20,6 +20,12 @@ class hotorderControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/hot_admin.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$hotorderModel = $this->model('hotorder');
 			$hotorder = $hotorderModel->fetchAll();
 			foreach ($hotorder as &$product)

@@ -133,6 +133,11 @@ class addressControl extends control
 			
 			$this->view->assign('role',$roleModel->get($this->session->role));
 			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$addressModel = $this->model('address');
 			$address = $addressModel->fetchAll();
 			$this->view->assign('address',$address);

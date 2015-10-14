@@ -22,6 +22,12 @@ class logControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/log.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$logModel = $this->model('log');
 			$this->view->assign('log',$logModel->select());
 			$this->response->setBody($this->view->display());

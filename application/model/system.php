@@ -39,6 +39,25 @@ class systemModel extends model
 	}
 	
 	/**
+	 * 将系统配置转化为数组
+	 * @param array $array
+	 * @param string $key
+	 * @return multitype:unknown 
+	 */
+	function toArray(array $array,$key = '')
+	{
+		$temp = array();
+		foreach($array as $item)
+		{
+			if ($item['type'] == $key)
+			{
+				$temp[$item['name']] = $item['value'];
+			}
+		}
+		return $temp;
+	}
+	
+	/**
 	 * 修改添加并保存系统配置
 	 */
 	function set($name,$type,$value)

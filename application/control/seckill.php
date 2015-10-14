@@ -101,6 +101,12 @@ class seckillControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/seckill.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$seckillModel = $this->model('seckill');
 			$seckill = $seckillModel->fetchAll('seckill.sname,product.id as pid,product.name,seckill.starttime,seckill.endtime,seckill.price,seckill.orderby,seckill.id,seckill.logo');
 			$this->view->assign('product',$seckill);

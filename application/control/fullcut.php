@@ -50,6 +50,12 @@ class fullcutControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/fullcut_admin.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$fullcutModel = $this->model('fullcut');
 			$fullcut = $fullcutModel->fetchAll();
 			$fullcutdetailModel = $this->model('fullcutdetail');

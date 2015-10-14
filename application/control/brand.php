@@ -134,6 +134,12 @@ class brandControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/brand_manager.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$brandModel = $this->model('brand');
 			$result = $brandModel->fetchByProduct($start,$length);
 			$this->view->assign('brand',$result);

@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Metronic | Page Layouts - Blank Page</title>
+<title>新用户注册活动 | {%$system.companyname|default:""%}后台管理系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -118,10 +118,10 @@
                             <label class="control-label col-md-2">活动时间</label>
                             <div class="col-md-10">
                                 <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd">
-                                    <input type="text" class="form-control" name="starttime" value="{%$register.starttime|date_format:"Y-m-d"%}">
+                                    <input type="text" class="form-control" name="starttime" value="{%$register.starttime|date_format:"y-m-d"%}">
                                     <span class="input-group-addon">
                                     到 </span>
-                                    <input type="text" class="form-control" name="endtime" value="{%$register.endtime|date_format:"Y-m-d"%}">
+                                    <input type="text" class="form-control" name="endtime" value="{%$register.endtime|date_format:"y-m-d"%}">
                                 </div>
                                 <!-- /input-group -->
                                 <span class="help-block">

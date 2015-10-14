@@ -78,6 +78,12 @@ class saleControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/sale.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$saleModel = $this->model('sale');
 			$result = $saleModel->fetchAll('sale.sname,product.id as pid,product.name,sale.starttime,sale.endtime,sale.price,sale.orderby,sale.id');
 			$this->view->assign('product',$result);

@@ -19,6 +19,12 @@ class messageControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/message.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$messageModel = $this->model('message');
 			
 			$start = filter::int($this->get->start);

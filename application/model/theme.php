@@ -87,7 +87,7 @@ class themeModel extends model
 	 */
 	function fetchAll(array $filter = array())
 	{
-		if($filter['lock'])
+		if(isset($filter['lock']) && $filter['lock'])
 		{
 			if(!empty($filter['lock_user']))
 			{

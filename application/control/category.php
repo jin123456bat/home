@@ -33,6 +33,12 @@ class categoryControl extends control
 		if (login::admin() && $roleModel->checkPower($this->session->role, 'category', roleModel::POWER_SELECT)) {
 			$this->view = new view(config('view'), 'admin/category.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$this->response->setBody($this->view->display());
 		}
 		else

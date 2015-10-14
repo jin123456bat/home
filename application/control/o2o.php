@@ -25,6 +25,12 @@ class o2oControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/o2ouser.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$this->view->assign('o2o',$this->model('o2ouser')->fetchAll());
 			$this->response->setBody($this->view->display());
 		}
@@ -45,6 +51,13 @@ class o2oControl extends control
 			if(!empty($id))
 			{
 				$this->view = new view(config('view'), 'admin/o2oclient.html');
+				$this->view->assign('role',$roleModel->get($this->session->role));
+					
+				$systemModel = $this->model('system');
+				$system = $systemModel->fetch('system');
+				$system = $systemModel->toArray($system,'system');
+				$this->view->assign('system',$system);
+				
 				//$this->view->assign('')
 				$o2oModel = $this->model('o2ouser');
 				$o2o = $o2oModel->get($id);

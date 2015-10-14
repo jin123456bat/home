@@ -78,14 +78,19 @@ class systemControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/system_costums.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
 			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$costums = $systemModel->fetch(array('costums'));
-			$system = array();
+			$systemConfig = array();
 			foreach ($costums as $value)
 			{
-				$system['system_'.$value['type'].'_'.$value['name']] = $value['value'];
+				$systemConfig['system_'.$value['type'].'_'.$value['name']] = $value['value'];
 			}
-			$this->view->assign('system',$system);
+			$this->view->assign('systemConfig',$systemConfig);
 			
 			return $this->view->display();
 		}
@@ -242,12 +247,18 @@ class systemControl extends control
 			$payment = $systemModel->fetch(array('weixin','alipay','payment'));
 			$this->view = new view(config('view'), 'admin/system_payment.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
-			$system = array();
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
+			$systemConfig = array();
 			foreach ($payment as $value)
 			{
-				$system['system_'.$value['type'].'_'.$value['name']] = $value['value'];
+				$systemConfig['system_'.$value['type'].'_'.$value['name']] = $value['value'];
 			}
-			$this->view->assign('system',$system);
+			$this->view->assign('systemConfig',$systemConfig);
 			return $this->view->display();
 		}
 		else
@@ -267,8 +278,13 @@ class systemControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/system_base.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
 			$systemModel = $this->model('system');
-			$config = $systemModel->fetch(array('system','image','app','theme'));
+			$systemConfig = $systemModel->fetch('system');
+			$systemConfig = $systemModel->toArray($systemConfig,'system');
+			$this->view->assign('systemConfig',$systemConfig);
+			
+			$config = $systemModel->fetch(array('system','image','app','theme','jpush'));
 			$system = array();
 			foreach ($config as $value)
 			{
@@ -303,6 +319,12 @@ class systemControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/cache.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			return $this->view->display();
 		}
 		else

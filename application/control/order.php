@@ -107,6 +107,12 @@ class orderControl extends control
 			{
 				$this->view = new view(config('view'), 'admin/order_information.html');
 				$this->view->assign('role',$roleModel->get($this->session->role));
+				
+				$systemModel = $this->model('system');
+				$system = $systemModel->fetch('system');
+				$system = $systemModel->toArray($system,'system');
+				$this->view->assign('system',$system);
+				
 				$orderModel = $this->model('orderlist');
 				$orderModel->table('user','left join','user.id=orderlist.uid');
 				$result = $orderModel->where('orderlist.id=?',array($id))->select();
@@ -179,13 +185,12 @@ class orderControl extends control
 		{
 			if(!empty($this->get->id))
 			{
-				$id = json_decode(htmlspecialchars_decode($this->get->id));
+				$id = json_decode($this->get->id);
 			}
 			else
 			{
 				$id = array();
 			}
-			
 			$filter = array(
 				'status' => $this->get->status
 			);
@@ -202,6 +207,8 @@ class orderControl extends control
 			
 			$orderModel = $this->model('orderlist');
 			$order = $orderModel->export($select_field,$id,$filter);
+			var_dump($order);
+			exit();
 			$excel = new excel();
 			$excel->xls($order,$select_name,$filename);
 		}
@@ -847,6 +854,12 @@ class orderControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/order_orderlist.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$this->response->setBody($this->view->display());
 		}
 		else

@@ -77,6 +77,12 @@ class themeControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/theme_admin.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$themeModel = $this->model('theme');
 			$theme = $themeModel->fetchAll();
 			foreach ($theme as &$a)

@@ -87,6 +87,7 @@ class userModel extends model
 			return false;
 		$salt = random::word(6);
 		$password = md5($password.$salt);
+		$openid = '';
 		$regtime = $_SERVER['REQUEST_TIME'];
 		$logtime = $regtime;
 		$email = '';
@@ -97,7 +98,7 @@ class userModel extends model
 		$cost = 0;
 		$gravatar = 'D:\wamp\www\application\assets\gravatar.jpg';
 		$username = '';
-		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o,$client);
+		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$openid,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o,$client);
 		if($this->insert($array))
 		{
 			return $this->lastInsertId();
@@ -177,5 +178,61 @@ class userModel extends model
 		$length = empty($length)?10:$length;
 		$this->limit(0,$length);
 		return $this->where('telephone like ? or username like ?',array('%'.$search.'%','%'.$search.'%'))->select();
+	}
+	
+	/**
+	 * 微信用户注册数据模型
+	 * @auth felixchen
+	 */
+	function registerWeiXin($openid,$oid=0,$client = 'web',$usernam,$img)
+	{
+		//$result = $this->where('openid=?',array($openid))->select();
+		//if(isset($result[0]))
+		//	return false;
+		$salt = random::word(6);
+		$password = md5("654321".$salt);
+		$regtime = $_SERVER['REQUEST_TIME'];
+		$logtime = $regtime;
+		$email = '';
+		$money = 0;
+		$score = 0;
+		$close = 0;
+		$ordernum = 0;
+		$cost = 0;
+		$gravatar = $img;
+		$username = $usernam;
+		$telephone="";
+		
+		
+		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$openid,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$oid,$client);	
+		
+		if($this->insert($array))
+		{
+			
+			return $this->lastInsertId();
+		}
+		return false;
+	}
+	
+	/**
+	 * 微信用户登录
+	 *
+	 * @param unknown $telephone
+	 * @param unknown $password
+	 * @auth felixchen
+	 */
+	function loginWeiXin($openid)
+	{
+		$result = $this->where('openid=?',array($openid))->select();
+		if(isset($result[0]))
+		{
+			return $result[0];
+		}
+		return false;
+	}
+	
+	function getById($id)
+	{
+		return $this->where('id=?',array($id))->select();
 	}
 }

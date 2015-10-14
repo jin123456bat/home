@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Metronic | Page Layouts - Blank Page</title>
+<title>o2o会员 | {%$system.companyname|default:""%}后台管理系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -118,6 +118,9 @@
                                     	二维码
                                     </th>
 									<th>
+										公众号二维码
+									</th>
+									<th>
 										操作
 									</th>
 								</tr>
@@ -154,7 +157,10 @@
 										 {%$o2o[o2o].o_money%}
 									</td>
                                     <td>
-                                    	<button class="btn popovers downloadeqcode" data-html="true" data-trigger="hover" data-container="body" data-placement="right" data-content="<img src='http://www.wmjia.net/index.php?c=index&a=eqcode&download=true&content={%url c=mobile a=register o2o=$o2o[o2o].telephone urlencode=1%}'>" data-original-title="推广二维码">推广码</button>
+                                    	<button class="btn popovers downloadeqcode" data-html="true" data-trigger="hover" data-container="body" data-placement="right" data-content="<img src='http://{%$smarty.server.HTTP_HOST%}{%$smarty.server.PHP_SELF|substr:0:-10%}/index.php?c=index&a=eqcode&download=true&content={%url c=mobile a=register o2o=$o2o[o2o].telephone urlencode=1%}'>" data-original-title="推广二维码">推广码</button>
+                                    </td>
+									<td>
+                                    	<button class="btn popovers downloadeqcode" data-html="true" data-trigger="hover" data-container="body" data-placement="right" data-content="<img width='150' height='150' src='http://{%$smarty.server.HTTP_HOST%}{%$smarty.server.PHP_SELF|substr:0:-10%}/index.php?c=wechat&a=eqcode&id={%$o2o[o2o].uid%}&download=true'>" data-original-title="公众号二维码">公众号二维码</button>
                                     </td>
 									<td>
 										<a href="{%url c=o2o a=remove%}&id={%$o2o[o2o].uid%}" class="btn btn-sm red-stripe default">删除</a>

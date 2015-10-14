@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Metronic | eCommerce - Orders</title>
+<title>订单管理 | {%$system.companyname|default:""%}后台管理系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -153,7 +153,6 @@
 									</span>
 									<select class="table-group-action-input form-control input-inline input-small input-sm">
 										<option value="">请选择</option>
-										<option value="remove">删除</option>
                                         <option value="costums">发货</option>
 									</select>
 									<button class="btn btn-sm yellow table-group-action-submit"><i class="fa fa-check"></i> 提交</button>
@@ -353,7 +352,7 @@ EcommerceOrders.init();
 				data.push($(value).val());
 			});
 			data = JSON.stringify(data);
-			window.open(url+'&data='+data,'');
+			window.open(url+'&id='+data,'');
 		}
 		return false;
 	});

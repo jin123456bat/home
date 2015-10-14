@@ -59,6 +59,13 @@ class helpControl extends control
 				$id = filter::int($this->get->id);
 				$help = $helpModel->get($id);
 				$this->view = new view(config('view'), 'admin/help_create.html');
+				$this->view->assign('role',$roleModel->get($this->session->role));
+					
+				$systemModel = $this->model('system');
+				$system = $systemModel->fetch('system');
+				$system = $systemModel->toArray($system,'system');
+				$this->view->assign('system',$system);
+				
 				$this->view->assign('help',$help);
 				$this->response->setBody($this->view->display());
 			}
@@ -88,6 +95,13 @@ class helpControl extends control
 		if(login::admin() && $roleModel->checkPower($this->session->role,'help',roleModel::POWER_ALL))
 		{
 			$this->view = new view(config('view'), 'admin/help_admin.html');
+			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$helpModel = $this->model('help');
 			$help = $helpModel->select();
 			foreach($help as &$article)
@@ -132,6 +146,13 @@ class helpControl extends control
 			if($this->post->submit === NULL)
 			{
 				$this->view = new view(config('view'), 'admin/help_create.html');
+				$this->view->assign('role',$roleModel->get($this->session->role));
+				
+				$systemModel = $this->model('system');
+				$system = $systemModel->fetch('system');
+				$system = $systemModel->toArray($system,'system');
+				$this->view->assign('system',$system);
+				
 				$this->response->setBody($this->view->display());
 			}
 			else
