@@ -225,12 +225,17 @@ var Datatable = function() {
                 the.setAjaxParam($(this).attr("name"), $(this).val());
             });
 
-            dataTable.ajax.reload();
+            dataTable.ajax.reload(function(data){
+				if(tableOptions.dataTable.initComplete)
+				{
+					tableOptions.dataTable.initComplete(null,data);
+				}
+			});
         },
 
         resetFilter: function() {
             $('textarea.form-filter, select.form-filter, input.form-filter', table).each(function() {
-                $(this).val("0");
+                $(this).val("");
             });
             $('input.form-filter[type="checkbox"]', table).each(function() {
                 $(this).attr("checked", false);

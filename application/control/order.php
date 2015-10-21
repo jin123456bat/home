@@ -15,8 +15,9 @@ use application\model\orderlistModel;
 use application\model\refundModel;
 use application\classes\time;
 use application\message\json;
-use application\classes\cbti;
 use application\classes\express;
+use system\core\filesystem;
+use application\model\swiftModel;
 /**
  * 订单控制器
  * @author jin12
@@ -102,6 +103,21 @@ class orderControl extends control
 		$id = filter::int($this->get->id);
 		if(!empty($id))
 		{
+			
+			$orderModel = $this->model('orderlist');
+			$orderModel->table('user','left join','user.id=orderlist.uid');
+			$result = $orderModel->where('orderlist.id=?',array($id))->select();
+			$goods = $orderModel->getOrderDetail($id);
+			foreach ($goods as &$product)
+			{
+				$product['img'] = $this->model('productimg')->getByPid($product['pid']);
+			}
+			if($this->get->type === 'json')
+			{
+				$result['orderdetail'] = $goods;
+				return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+			}
+			
 			$roleModel = $this->model('role');
 			if(login::admin() && $roleModel->checkPower($this->session->role,'orderlist',roleModel::POWER_ALL))
 			{
@@ -113,15 +129,6 @@ class orderControl extends control
 				$system = $systemModel->toArray($system,'system');
 				$this->view->assign('system',$system);
 				
-				$orderModel = $this->model('orderlist');
-				$orderModel->table('user','left join','user.id=orderlist.uid');
-				$result = $orderModel->where('orderlist.id=?',array($id))->select();
-				$goods = $orderModel->getOrderDetail($id);
-				if($this->get->type === 'json')
-				{
-					$result['orderdetail'] = $goods;
-					return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
-				}
 				if(isset($result[0]))
 				{
 					$result[0]['gravatar'] = file::realpathToUrl($result[0]['gravatar']);
@@ -195,22 +202,49 @@ class orderControl extends control
 				'status' => $this->get->status
 			);
 			
-			$select_field = 'orderno,paytype,paynumber,ordertotalamount,ordertaxamount,ordergoodsamount,feeamount,tradetime,totalamount,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneeaddress,postmode,username,sku,productname,unitprice,num';
-			$select_name = array('订单号','支付方式','支付编号','订单总金额','订单税额','订单货款','运费','成交时间','成交总价','收件人联系方式','收件人姓名','收件人邮编','收件人省','收件人市','收件人地址','物流公司编码','购买人ID','商品编码','商品名称','申报单价','申报数量');
+			$select_field = 'orderno,paytype,paynumber,ordertotalamount,ordertaxamount,ordergoodsamount,feeamount,tradetime,totalamount,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneecounty,consigneeaddress,postmode,username,pid,sku,productname,unitprice,num';
 			$filename = '订单报表 '.date('Y-m-d H:i:s');
-			if($filter['status'] === '1')
+			if($filter['status'] == 1)
 			{
-				$filename = '待报关订单 '.date('Y-m-d H:i:s');
-				$select_field = 'orderno,paytype,paynumber,ordertotalamount,tradetime,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneeaddress,postmode,username,sku,unitprice,num';
-				$select_name = array('订单号','支付方式','支付单号','订单总金额','成交时间','收件人联系方式','收件人姓名','收件人邮编','收件人省','收件人市','收件人地址','物流公司编码','购买人ID','商品编码','商品名称','商品单价','申报数量');
+				$filename = '报关报表 '.date('Y-m-d H:i:s');
+				$select_field = 'orderno,paytype,paynumber,ordertotalamount,tradetime,consigneetel,consignee,zipcode,consigneeprovince,consigneecity,consigneecounty,consigneeaddress,postmode,username,pid,sku,productname,unitprice,num';
 			}
 			
 			$orderModel = $this->model('orderlist');
 			$order = $orderModel->export($select_field,$id,$filter);
-			var_dump($order);
-			exit();
+			foreach ($order as &$item)
+			{
+				$item['img'] = $this->model('productimg')->getByPid($item['pid'],'*','path');
+				$item['tradetime'] = date("Y-m-d H:i:s",$item['tradetime']);
+				switch ($item['paytype'])
+				{
+					case 'alipay':
+						$item['paytype'] = 2;
+						break;
+					default:
+				}
+			}
+			//生成excel文件
 			$excel = new excel();
-			$excel->xls($order,$select_name,$filename);
+			if($this->get->status == 1)
+			{
+				$filepath = $excel->phpexcel($order);
+			}
+			else
+			{
+				$title = array(
+					'订单号','支付方式','支付单号','订单总金额','订单税费','订单货款','运费','交易时间','已支付','收件人手机号','收件人','邮编','省份','城市','地区','地址','配送方式','购买人id','商品编码','商品名称','单价','购买数量'
+				);
+				$filepath = $excel->orderexcel($order,$title);
+			}
+			//excel文件下载
+			header("Accept-Ranges:bytes");
+			header("Content-type:application/vnd.ms-excel");
+			header("Content-Disposition:attachment;filename=".$filename.".xls");
+			header("Pragma: no-cache");
+			readfile($filepath);
+			(new filesystem())->unlink($filepath);
+			//$excel->xls($order,$select_name,$filename);
 		}
 		else
 		{
@@ -234,7 +268,9 @@ class orderControl extends control
 				$file = file($_FILES['file']['tmp_name']);
 				foreach ($file as $line)
 				{
-					$pattern = '$\d+$';
+					list($postmode,$orderno,$waybills) = explode(' ', $line);
+					$orderModel->updateWaybill($orderno,$postmode,array($waybills),$cover);
+					/* $pattern = '$\d+$';
 					if(preg_match_all($pattern, $line,$match));
 					{
 						if(count($match[0]) == 2)
@@ -243,7 +279,7 @@ class orderControl extends control
 							$waybills = array_slice($match[0], 1);
 							$orderModel->updateWaybill($orderno,$waybills,$cover);
 						}
-					}
+					} */
 				}
 				return new json(json::OK);
 			}
@@ -472,6 +508,8 @@ class orderControl extends control
 			$order = $orderModel->get($id);
 			if(empty($order))
 				return new json(json::PARAMETER_ERROR,'订单不存在');
+			if(empty($order['waybills']) || empty(unserialize($order['waybills'])))
+				return new json(json::PARAMETER_ERROR,'运单号不存在');
 			if($order['status'] == orderlistModel::STATUS_SHIPPING)
 			{
 				if($orderModel->where('id=?',array($id))->update('outship',1))
@@ -500,7 +538,8 @@ class orderControl extends control
 			return new json(json::PARAMETER_ERROR,'没有找到订单');
 		if($order['status'] != orderlistModel::STATUS_PAYED)
 			return new json(json::PARAMETER_ERROR,'无法报关');
-		switch ($order['paytype'])
+		$orderno = $order['orderno'];
+		/* switch ($order['paytype'])
 		{
 			case 'alipay':
 				$alipay = new alipay_gateway(config('alipay'), $this->model('system'), $this->get->trade_type);
@@ -523,10 +562,10 @@ class orderControl extends control
 				break;
 			default:
 				return new json(json::PARAMETER_ERROR,'通过支付方式报关失败');
-		}
+		} */
 		if($orderModel->setShipping($orderno))
 		{
-			return new json(json::OK);
+			return new json(json::OK,NULL,$order);
 		}
 		return new json(json::PARAMETER_ERROR,'订单不存在或者已经发货');
 	}
@@ -545,15 +584,13 @@ class orderControl extends control
 		
 		if(empty($order['shiptime']))
 			return new json(json::PARAMETER_ERROR,'尚未发货');
-		if (empty($order['waybills']))
-			return new json(json::PARAMETER_ERROR,'没有物流单号');
 		
 		//检查缓存中的物流信息
-		$waybillsModel = $this->model('waybills');
+		/*$waybillsModel = $this->model('waybills');
 		$waybills = $waybillsModel->getByOrderno($order['orderno']);
 		if($waybills !== NULL)
 		{
-			if($_SERVER['REQUEST_TIME'] - $waybills['time'] < 12*3600)
+			if($_SERVER['REQUEST_TIME'] - $waybills['time'] < 3600)
 			{
 				$data = array(
 					'code' => 1,
@@ -564,42 +601,52 @@ class orderControl extends control
 				);
 				return new json($data);
 			}
-		}
+		}*/
+		
 		//查询物流信息
 		$return = array();
 		$express = new express();
 		
+		//生成虚拟物流信息
+		$virtual = $express->virtual($order['shiptime'],$order['outship']);
 		
-		$wbills = unserialize($order['waybills']);
-		
-		$response = $express->query($order['postmode'],$wbills[0]);
-		
-		$response = json_decode($response);
-		if($response->status == 200)
+		if(!empty($order['waybills']))
 		{
-			//查询到了官方的信息
-			$return = (array)$response->data;
-			foreach ($return as &$value)
+			$wbills = unserialize($order['waybills']);
+			if (!empty($wbills))
 			{
-				unset($value->ftime);
-				$value = (array)$value;
+				$response = $express->query($order['postmode'],$wbills[0]);
+				$response = json_decode($response);
+				if($response->status == 200)
+				{
+					//查询到了官方的信息
+					$return = (array)$response->data;
+					foreach ($return as &$value)
+					{
+						unset($value->ftime);
+						$value = (array)$value;
+					}
+				}
+			}
+			else
+			{
+				$wbills = array();
 			}
 		}
-	
-		//生成虚拟物流信息
-		$response = $express->virtual($order['shiptime'],$order['outship']);
-		$return = array_merge($return,$response);
-		$waybillsModel->create($order['postmode'],$return,$wbills,$order['orderno']);
+		else
+		{
+			$return = array();
+		}
 		
+		$return = array_merge($return,$virtual);		
 		$data = array(
 			'code' => 1,
 			'result' => 'OK',
 			'body' => $return,
-			'waybills' => implode(',', unserialize($order['waybills'])),
+			'waybills' => implode(',', empty(unserialize($order['waybills']))?array():unserialize($order['waybills'])),
 			'postmode' => $order['postmode']
 		);
 		return new json($data);
-		//return new json(json::PARAMETER_ERROR,'尚未发货');
 	}
 	
 	/**
@@ -615,7 +662,7 @@ class orderControl extends control
 		$paynumber = '';//支付单号
 		$tradetotal = 0;//交易金额
 		
-		
+		$swiftModel = $this->model('swift');
 		$result = false;//订单是否交易成功状态
 		$orderModel = $this->model('orderlist');
 		//从微信或者支付宝的响应信息中获得需要的参数
@@ -729,8 +776,38 @@ class orderControl extends control
 					{
 						$money = $o2o['rate'] * $tradetotal;
 						$o2oModel->where('uid=?',array($o2o['uid']))->increase('money',$money);
+						$swiftModel->create($o2o['uid'],swiftModel::SWIFT_IN,$money,'推广费');
+					}
+					//给上级分销商增加资金
+					$systemModel = $this->model('system');
+					$dist = $systemModel->fetch('dist');
+					$dist = $systemModel->toArray($dist,'dist');
+					if(isset($dist['open']) && $dist['open'] == 1)
+					{
+						//一级分销商
+						$user1 = $userModel->get($oid);
+						if(!empty($user1) && !empty($dist['rate1']))
+						{
+							$userModel->where('id=?',array($user1['id']))->increase('money',$tradetotal*$dist['rate1']);
+							$swiftModel->create($user1['id'],swiftModel::SWIFT_IN,$tradetotal*$dist['rate1'],'一级分销费用');
+							//二级分销商
+							$user2 = $userModel->get($user1['oid']);
+							if(!empty($user2) && !empty($dist['rate2']))
+							{
+								$userModel->where('id=?',array($user2['id']))->increase('money'.$tradetotal*$dist['rate2']);
+								$swiftModel->create($user2['id'],swiftModel::SWIFT_IN,$tradetotal*$dist['rate2'],'二级分销费用');
+								$user3 = $userModel->get($user2['oid']);
+								if(!empty($user3) && !empty($dist['rate3']))
+								{
+									$userModel->where('id=?',array($user3['id']))->increase('money',$tradetotal * $dist['rate3']);
+									$swiftModel->create($user3['id'],swiftModel::SWIFT_IN,$tradetotal*$dist['rate3'],'三级分销费用');
+								}
+							}
+						}
 					}
 				}
+				//记录用户流水
+				
 				//给用户一定的积分
 				$orderdetail = $orderModel->getOrderDetail($order['id']);
 				foreach ($orderdetail as $ordergoods)
@@ -748,6 +825,7 @@ class orderControl extends control
 				}
 				else if($this->get->type == 'alipay')
 				{
+					$swiftModel->create($order['uid'],swiftModel::SWIFT_OUT,$tradetotal,'购物');
 					return 'success';
 				}
 			}
@@ -1089,6 +1167,7 @@ class orderControl extends control
 			foreach ($result as &$order)
 			{
 				$order['refund'] = $this->model('refund')->getByOid($order['id']);
+				$order['waybills'] = empty($order['waybills'])?array():unserialize($order['waybills']);
 			}
 			$resultObj->recordsFiltered = count($result);
 			$resultObj->recordsTotal = $orderModel->count();

@@ -293,6 +293,8 @@ jQuery(document).ready(function() {
 	});
 	
 	$('.removeBtn').on('click',function(event){
+		if(!window.confirm('确定删除?'))
+			return false;
 		var id = $(this).data('id');
 		var ths = $(this);
 		$.post('{%url c=theme a=remove%}',{id:id},function(data){

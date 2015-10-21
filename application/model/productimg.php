@@ -36,7 +36,7 @@ class productimgModel extends model
 	 * @param string $name
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function getByPid($pid,$name = '*')
+	function getByPid($pid,$name = '*',$pathmode = 'url')
 	{
 		$this->orderby('orderby','desc');
 		$result = $this->where('pid=?', array(
@@ -44,10 +44,13 @@ class productimgModel extends model
 		))->select($name);
 		foreach ($result as &$img)
 		{
-			$img['oldimage'] = empty($img['oldimage'])?'':file::realpathToUrl($img['oldimage']);
-			$img['base_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
-			$img['small_path'] = empty($img['small_path'])?'':file::realpathToUrl($img['small_path']);
-			$img['thumbnail_path'] = empty($img['thumbnail_path'])?'':file::realpathToUrl($img['thumbnail_path']);
+			if($pathmode == 'url')
+			{
+				$img['oldimage'] = empty($img['oldimage'])?'':file::realpathToUrl($img['oldimage']);
+				$img['base_path'] = empty($img['base_path'])?'':file::realpathToUrl($img['base_path']);
+				$img['small_path'] = empty($img['small_path'])?'':file::realpathToUrl($img['small_path']);
+				$img['thumbnail_path'] = empty($img['thumbnail_path'])?'':file::realpathToUrl($img['thumbnail_path']);
+			}
 		}
 		return $result;
 	}

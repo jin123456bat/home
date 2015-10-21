@@ -13,6 +13,19 @@ use system\core\view;
  */
 class fullcutControl extends control
 {
+	function crontab()
+	{
+		$fullcut = $this->model('fullcut')->where('endtime<?',array($_SERVER['REQUEST_TIME']))->select();
+		foreach($fullcut as $activity)
+		{
+			$pid = $this->model('fullcutdetail')->where('fid=?',array($activity['id']))->select();
+			foreach ($pid as $value)
+			{
+				$this->model('product')->setActivity($value['pid'],'');
+			}
+		}
+		$this->model('fullcut')->where('endtime<?',array($_SERVER['REQUEST_TIME']))->delete();
+	}
 	
 	/**
 	 * 满减活动商品信息

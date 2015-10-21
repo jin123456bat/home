@@ -14,7 +14,7 @@ class order
 	 */
 	function swift($uid)
 	{
-		return date('YmdHis').$uid.random::number(4);
+		return date('mdHis').$uid.random::number(3);
 	}
 	
 	/**

@@ -15,22 +15,10 @@ class addressModel extends model
 	
 	function get($id,$name = '*')
 	{
-		$result = $this->where('id=?',array($id))->select($name);
-		if($name == '*')
-			return isset($result[0])?$result[0]:NULL;
-		return isset($result[0][$name])?$result[0][$name]:NULL;
-	}
-	
-	/**
-	 * 获取用户的地址
-	 * @param unknown $uid
-	 * @return Ambigous <boolean, multitype:>
-	 */
-	function myAddress($uid)
-	{
-		$this->orderby('id','desc');
-		$this->where('uid=?',array($uid));
-		return $this->select();
+		$this->table('province','left join','province.id=address.province');
+		$this->table('city','left join','city.id=address.city');
+		$result = $this->where('address.id=?',array($id))->select($name);
+		return isset($result[0])?$result[0]:NULL;
 	}
 	
 	/**
@@ -39,12 +27,35 @@ class addressModel extends model
 	 * @param unknown $length
 	 * @return Ambigous <boolean, multitype:>
 	 */
-	function fetchAll($start = 0,$length =10)
+	function fetchAll(array $filter = array())
 	{
-		$this->limit($start,$length);
-		$this->orderby('address.id','desc');
+		if (isset($filter['id']))
+		{
+			$this->where('address.id=?',array($filter['id']));
+		}
+		if(isset($filter['uid']))
+		{
+			$this->where('address.uid=?',array($filter['uid']));
+		}
+		if (isset($filter['start']) && isset($filter['length']))
+		{
+			$this->limit($filter['start'],$filter['length']);		
+		}
+		if(isset($filter['order']))
+		{
+			if(is_array($filter['order']))
+			{
+				$this->orderby($filter['order'][0],$filter['order'][1]);
+			}
+			else
+			{
+				$this->orderby($filter['order']);
+			}
+		}
 		$this->table('user','left join','address.uid=user.id');
-		return $this->select('address.id,user.gravatar,user.username,user.telephone as u_telephone,address.province,address.city,address.address,address.name,address.telephone,address.zcode,address.host');
+		$this->table('province','left join','province.id=address.province');
+		$this->table('city','left join','address.city=city.id');
+		return $this->select('city.name as city,province.name as province,province.id as provinceid,city.id as cityid,address.id,user.gravatar,user.username,user.telephone as u_telephone,address.address,address.name,address.telephone,address.zcode,address.host,address.county');
 	}
 	
 	/**
@@ -59,7 +70,7 @@ class addressModel extends model
 	 * @param unknown $zcode
 	 * @param unknown $host
 	 */
-	function save($id,$uid,$province,$city,$address,$name,$telephone,$zcode,$host = 0)
+	function save($id,$uid,$province,$city,$county,$address,$name,$telephone,$zcode,$host = 0)
 	{
 		$host = empty($host)?0:1;
 		if(!empty($host))
@@ -67,7 +78,8 @@ class addressModel extends model
 			//取消其他的默认地址
 			$this->where('uid=?',array($uid))->update('host',0);
 		}
-		$this->where('id=? and uid=?',array($id,$uid))->update(array('province'=>$province,'city'=>$city,'address'=>$address,'name'=>$name,'telephone'=>$telephone,'zcode'=>$zcode,'host'=>$host));
+		$data = array('province'=>$province,'city'=>$city,'county'=>$county,'address'=>$address,'name'=>$name,'telephone'=>$telephone,'zcode'=>$zcode,'host'=>$host);
+		return $this->where('id=? and uid=?',array($id,$uid))->update($data);
 	}
 	
 	/**
@@ -79,7 +91,7 @@ class addressModel extends model
 	 * @param unknown $telephone 收货人电话
 	 * @param unknown $host 是否为默认地址
 	 */
-	function create($uid,$province,$city,$address,$name,$telephone,$zcode,$host = 0)
+	function create($uid,$province,$city,$county,$address,$name,$telephone,$zcode,$host = 0)
 	{
 		$host = empty($host)?0:1;
 		if($host)
@@ -87,7 +99,7 @@ class addressModel extends model
 			//取消其他的默认地址
 			$this->where('uid=?',array($uid))->update('host',0);
 		}
-		$array = array(NULL,$uid,$province,$city,$address,$name,$telephone,$zcode,$host);
+		$array = array(NULL,$uid,$province,$city,$county,$address,$name,$telephone,$zcode,$host);
 		if($this->insert($array))
 		{
 			return $this->lastInsertId();

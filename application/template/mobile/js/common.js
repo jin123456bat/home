@@ -176,8 +176,8 @@ function isObjectValueEqual(a, b) {
     // are considered equivalent
     return true;
 }
-var BASEURL = 'http://home.hzlianhai.com/index.php';
-var BASER = 'http://home.hzlianhai.com';
+var BASEURL = './index.php';
+var BASER = '/';
 var loadNum = 4;
 var defaultProPic = 'images/pro1.jpg';
 var baseThemeUrl = 'index.php?c=mobile&a=themeDetail';

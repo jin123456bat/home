@@ -85,6 +85,7 @@ class couponControl extends control
 				}
 			}
 		}
+		
 		$result = $coupondetailModel->where('(categoryid in (?) or categoryid=0)',$product_category_array)->select();
 		$coupon_id_array = array();
 		foreach($result as $coupon)
@@ -101,6 +102,33 @@ class couponControl extends control
 		$body2 = $couponModel->mycoupon($this->session->id,false,$filter);
 		$body = array_unique(array_merge($body1,$body2),SORT_REGULAR);
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
+	}
+	
+	/**
+	 * 将优惠券分发给所有用户
+	 */
+	function copy()
+	{
+		if (login::admin())
+		{
+			set_time_limit(0);
+			$code = json_decode($this->randomcode(),true);
+			$code = $code['body'];
+			$id = $this->post->id;
+			$couponModel = $this->model('coupon');
+			$coupon = $couponModel->get($id);
+			if (empty($coupon))
+				return new json(json::PARAMETER_ERROR,'没有找到优惠券');
+			$userModel = $this->model('user');
+			$user = $userModel->select();
+			foreach ($user as $item)
+			{
+				$couponModel->copyForUser($item['id'],$code,$coupon);
+				$code = json_decode($this->randomcode(),true);
+				$code = $code['body'];
+			}
+			return new json(json::OK);
+		}
 	}
 	
 	/**
@@ -148,6 +176,7 @@ class couponControl extends control
 		}
 	}
 	
+	
 	/**
 	 * 随机生成一个优惠代码
 	 */
@@ -155,10 +184,10 @@ class couponControl extends control
 	{
 		$this->response->addHeader('Content-Type','application/json');
 		$couponModel = $this->model('coupon');
-		$code = strtoupper(date('ymdHis',$_SERVER['REQUEST_TIME']).random::word(4,'',random::RANDOM_WORD_NUMBER));
+		$code = strtoupper(date('ymdHis',$_SERVER['REQUEST_TIME']).random::word(6,'',random::RANDOM_WORD_NUMBER));
 		while ($couponModel->exist($code))
 		{
-			$code = strtoupper(date('ymdHis',$_SERVER['REQUEST_TIME']).random::word(4,'',random::RANDOM_WORD_NUMBER));
+			$code = strtoupper(date('ymdHis',$_SERVER['REQUEST_TIME']).random::word(6,'',random::RANDOM_WORD_NUMBER));
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$code));
 	}

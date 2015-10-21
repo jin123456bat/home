@@ -86,16 +86,19 @@
         {%/if%}
         {%if
         	(isset($role.orderlist) && $role.orderlist==15) ||
-            (isset($role.refund) && $role.refund==15)
+            (isset($role.refund) && $role.refund==15) ||
+			(isset($role.drawal) && $role.drawal==15)
         %}
 		<li class="{%if ($smarty.get.c==order && $smarty.get.a==orderlist)
         				|| ($smarty.get.c==refund && $smarty.get.a==admin)
+						|| ($smarty.get.a==drawal)
         			%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-tag"></i>
 			<span class="title">订单管理</span>
 			<span class="arrow {%if ($smarty.get.c==order && $smarty.get.a==orderlist)
         				|| ($smarty.get.c==refund && $smarty.get.a==admin)
+						|| ($smarty.get.a==drawal)
         			%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
@@ -107,12 +110,18 @@
 				</li>
                 {%/if%}
                 {%if isset($role.refund) && $role.refund==15%}
-                <li class="{%if $smarty.get.c==refund && $smarty.get.a==admin%}active{%/if%}">
+                <li class="">
 					<a href="{%url c=refund a=admin%}">
 					<i class="icon-tag"></i>
 					退款申请</a>
 				</li>
                 {%/if%}
+				<li class="{%if $smarty.get.a==drawal%}active{%/if%}">
+					<a href="{%url c=admin a=drawal%}">
+					<i class="icon-tag"></i>
+					提现申请
+					</a>
+				</li>
 			</ul>
 		</li>
         {%/if%}
@@ -194,16 +203,19 @@
         {%/if%}
         {%if
         	(isset($role.message) && $role.message == 15)||
-            (isset($role.o2ouser) && $role.o2ouser==15 )
+            (isset($role.o2ouser) && $role.o2ouser==15 ) ||
+			(isset($role.jpush) && $role.jpush==15)
         %}
 		<li class="{%if ($smarty.get.c==o2o && $smarty.get.a==admin)
         				|| ($smarty.get.c==message && $smarty.get.a==admin)
+						|| ($smarty.get.c==jpush && $smarty.get.a==admin)
         			%}active open{%/if%}">
 			<a href="javascript:;">
 			<i class="icon-docs"></i>
 			<span class="title">推广</span>
 			<span class="arrow {%if ($smarty.get.c==o2o && $smarty.get.a==admin)
                             || ($smarty.get.c==message && $smarty.get.a==admin)
+							|| ($smarty.get.c==jpush && $smarty.get.a==admin)
                             %}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
@@ -214,6 +226,14 @@
 					o2o会员</a>
 				</li>
                 {%/if%}
+				{%if isset($role.jpush) && $role.jpush==15%}
+				<li class="{%if $smarty.get.c==jpush && $smarty.get.a==admin%}active{%/if%}">
+					<a href="{%url c=jpush a=admin%}">
+					<i class="fa fa-send-o"></i>
+					app推送
+					</a>
+				</li>
+				{%/if%}
                 {%if isset($role.message) && $role.message==15%}
                 <li class="{%if $smarty.get.c==message && $smarty.get.a==admin%}active{%/if%}">
                 	<a href="{%url c=message a=admin%}">

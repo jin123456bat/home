@@ -176,7 +176,6 @@ class alipay_gateway
 			'service'=>'alipay.acquire.customs',
 			'partner' => $this->_system->get('partner','alipay'),
 			'_input_charset' => $this->_config['input_charset'],
-			'sign_type'=>$this->_config['sign_type'],
 			'out_request_no' => $this->_order['orderno'],
 			'trade_no'=> $this->_order['paynumber'],
 			'merchant_customs_code'=> $this->_system->get('customsno','system'),
@@ -185,7 +184,6 @@ class alipay_gateway
 			'customs_place' => $this->_system->get('customs','system'),
 		);
 		$url = $this->_config['gateway_url'];
-		
 		$data = $this->trade($data);
 		$result = file_get_contents($url.'?'.http_build_query($data));
 		return $result;

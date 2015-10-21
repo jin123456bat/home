@@ -17,8 +17,9 @@ class helpControl extends control
 	function page()
 	{
 		$id = filter::int($this->get->id);
+		$name = $this->get->name;
 		$helpModel = $this->model('help');
-		$result = $helpModel->get($id);
+		$result = $helpModel->where('id=? or title = ?',array($id,$name))->select();
 		if($this->get->admin == 1)
 		{
 			if(empty($result))
@@ -37,12 +38,23 @@ class helpControl extends control
 		}
 		else
 		{
-			if(isset($result['content']))
+			if(!empty($result))
 			{
-				return new json(json::OK,NULL,$result);
+				return new json(json::OK,NULL,$result[0]);
 			}
 			return new json(json::PARAMETER_ERROR);
 		}
+	}
+	
+	/**
+	 * 帮助文档列表
+	 * @return \application\message\json
+	 */
+	function lists()
+	{
+		$helpModel = $this->model('help');
+		$result = $helpModel->select();
+		return new json(json::OK,NULL,$result);
 	}
 	
 	/**
@@ -171,6 +183,8 @@ class helpControl extends control
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
+	
+	
 	
 	function __404()
 	{

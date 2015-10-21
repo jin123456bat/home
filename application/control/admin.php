@@ -268,6 +268,47 @@ class adminControl extends control
 	}
 	
 	/**
+	 * 模板映射
+	 * @param unknown $name
+	 * @param unknown $args
+	 */
+	function __call($name,$args)
+	{
+		$this->view = new view(config('view'), 'admin/'.$name.'.html');
+		$this->init($name);
+		return $this->view->display();
+	}
+	
+	private function init($name)
+	{
+		$roleModel = $this->model('role');
+		if (!(login::admin() && $roleModel->checkPower($this->session->role,$name,roleModel::POWER_ALL)))
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('admin','index'));
+		}	
+		$this->view->assign('role',$roleModel->get($this->session->role));	
+		$systemModel = $this->model('system');
+		$system = $systemModel->fetch('system');
+		$system = $systemModel->toArray($system,'system');
+		$this->view->assign('system',$system);
+		switch ($name)
+		{
+			case 'drawal':
+				$filter = array(
+					'order' => array('time','desc'),
+					'parameter' => 'bankcard.bank,bankcard.name,bankcard.number,user.username,drawal.id,drawal.money,drawal.time,drawal.handle,drawal.handletime,drawal.note'
+				);
+				$drawal = $this->model('drawal')->fetch($filter);
+				$this->view->assign('drawal',$drawal);
+				break;
+			default:
+		}
+		
+		
+	}
+	
+	/**
 	 * __404
 	 * optional
 	 */

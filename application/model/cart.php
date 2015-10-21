@@ -24,6 +24,16 @@ class cartModel extends model
 	}
 	
 	/**
+	 * 计算购物车中商品总数
+	 * @param unknown $uid
+	 */
+	function count($uid)
+	{
+		$result = $this->where('uid=?',array($uid))->select('sum(num)');
+		return $result[0]['sum(num)'];
+	}
+	
+	/**
 	 * 获取用户购物车中的所有商品
 	 */
 	function getByUid($uid)

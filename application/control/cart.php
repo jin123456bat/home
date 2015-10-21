@@ -9,6 +9,8 @@ use application\classes\prototype;
 use application\classes\product;
 use application\classes\order;
 use application\message\json;
+use application\classes\fullcut;
+use application\classes\coupon;
 class cartControl extends control
 {
 	/**
@@ -61,8 +63,9 @@ class cartControl extends control
 					$content = array();
 					if($cartModel->create($uid,$pid,$content,$num))
 					{
-						$cal = json_decode($this->calculation($uid));
-						return new json(json::OK,NULL,$cal->body);
+						//$cal = json_decode($this->calculation($uid));
+						$num = $cartModel->count($uid);
+						return new json(json::OK,NULL,$num);
 					}
 					else
 					{
@@ -82,8 +85,9 @@ class cartControl extends control
 				{
 					if($cartModel->create($uid,$pid,$content,$num))
 					{
-						$cal = json_decode($this->calculation($uid));
-						return new json(json::OK,NULL,$cal->body);
+						$num = $cartModel->count($uid);
+						//$cal = json_decode($this->calculation($uid));
+						return new json(json::OK,NULL,$num);
 					}
 					else
 					{
@@ -129,10 +133,20 @@ class cartControl extends control
 				//存在可选属性
 				$collection->increaseStock($pid,$content,$num);
 			}
-			$cal = json_decode($this->calculation($uid));
-			return json_encode(array('code'=>1,'result'=>'ok','body'=>$cal->body));
+			$num = $cartModel->count($uid);
+			return json_encode(array('code'=>1,'result'=>'ok','body'=>$num));
 		}
 		return json_encode(array('code'=>0,'result'=>'购物车中不存在该物品'));
+	}
+	
+	/**
+	 * 计算购物车中商品数量
+	 * @return \application\message\json
+	 */
+	function count()
+	{
+		$num = $this->model('cart')->count($this->session->id);
+		return new json(json::OK,NULL,$num);
 	}
 	
 	/**
@@ -152,11 +166,12 @@ class cartControl extends control
 		{
 			unset($product['bid']);
 			$product['content'] = unserialize($product['content']);
+			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			if(!empty($product['content']))
 			{
 				$product['collection'] = $this->model('collection')->find($product['pid'],$product['content']);
+				$product['collection_string'] = (new prototype())->format($product['prototype'], $product['content']);
 			}
-			$product['prototype'] = $prototypeModel->getByPid($product['id']);
 			$product['img'] = $productimgModel->getByPid($product['id']);
 			switch ($product['activity']) {
 				case 'seckill':
@@ -173,8 +188,8 @@ class cartControl extends control
 					break;
 			}
 		}
-		$cal = json_decode($this->calculation($this->session->id));
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result,'calculation'=>$cal->body));
+		//$cal = json_decode($this->calculation($this->session->id));
+		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
 	
 	/**
@@ -254,21 +269,16 @@ class cartControl extends control
 	 */
 	function order()
 	{
-		//$this->session->id = 3;
 		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>3,'result'=>'尚未登陆'));
-		//$response = json_decode($this->calculation($this->session->id));
 		
 		$preorder = $this->post->preorder;
-		//总金额 优惠前的价格
-		//$totalMoney = $response->body;
+		//优惠前的价格
 		//订单货款
-		//$ordergoodsamount = $totalMoney;
 		$ordergoodsamount = 0;
 		//购物车中的商品
 		$cartModel = $this->model('cart');
-		//计算折扣
 		$uid = $this->session->id;
 		$cart = $cartModel->getByUid($uid);
 		//订单详情
@@ -280,70 +290,84 @@ class cartControl extends control
 		$couponModel = $this->model('coupon');
 		//要使用的优惠卷信息
 		$coupon = empty($this->post->coupon)?'':$this->post->coupon;
-		//要被打折商品的总价
-		$tobeCouponamount = 0;
+		
+		//存储满减商品
+		$fullcut_temp = array();
+		//存储没有参加活动商品信息
+		$coupon_temp = array();
+		
 		foreach ($cart as $product)
 		{
-			//var_dump($product);
 			$pricestocksku = $collectionModel->find($product['pid'],unserialize($product['content']));
 			$prototype = $prototypeModel->getByPid($product['pid']);
 			$prototype = (new prototype())->format($prototype,$product['content']);
-			//商品实际价格  实际上的单价
-			$goodstruthprice = $product['price'];
+			
 			if(!empty($pricestocksku))
 			{
-				$goodstruthprice = $pricestocksku['price'];
+				$product['price'] = $pricestocksku['price'];
+				$product['sku'] = $pricestocksku['sku'];
 			}
+			
+			$t_orderdetail = array('sku'=>$product['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'brand'=>$this->model('brand')->get($product['bid'],'name'),'unitprice'=>$product['price'],'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
+			//商品详情加入到数组
+			$orderdetail[] = $t_orderdetail;
 			
 			switch ($product['activity'])
 			{
 				case 'seckill':
 					$seckillModel = $this->model('seckill');
 					$price = $seckillModel->getPrice($product['pid']);
-					if($price != NULL)
+					if($price !== NULL)
 					{
-						$goodstruthprice = $price;
+						$discount += (($product['price'] - $price) * $product['num']);
+						$ordergoodsamount += ($price*$product['num']);
+					}
+					else
+					{
+						$ordergoodsamount += ($product['price']*$product['num']);
 					}
 					break;
 				case 'sale':
 					$saleModel = $this->model('sale');
 					$price = $saleModel->getPrice($product['pid']);
-					if($price != NULL)
+					if($price !== NULL)
 					{
-						$goodstruthprice = $price;
+						$discount += (($product['price'] - $price) * $product['num']);
+						$ordergoodsamount += ($price*$product['num']);
+					}
+					else
+					{
+						$ordergoodsamount += ($product['price']*$product['num']);
 					}
 					break;
 				case 'fullcut':
-					$fullcutdetailModel = $this->model('fullcutdetail');
-					$fullcut = $fullcutdetailModel->getPrice($product['pid'],$goodstruthprice*$product['num']);
-					if($fullcut != NULL)
-					{
-						$goodstruthprice = ($goodstruthprice*$product['num'] - $fullcut['minus'])/$product['num'];
-					}
+					//取出所有满减规则的商品
+					$fullcut_temp[] = $product;
 					break;
 				default:
-					if(is_string($coupon) && !empty($coupon))
-					{
-						$used = $couponModel->check($coupon,$product);
-						if(!empty($used))
-						{
-							$tobeCouponamount += ($goodstruthprice*$product['num']);
-							$coupon = $used[0];
-						}
-					}
+					$coupon_temp[] = $product;
 			}
 			
-			$t_orderdetail = array('sku'=>$product['sku'],'pid'=>$product['pid'],'productname'=>$product['name'],'brand'=>$this->model('brand')->get($product['bid'],'name'),'unitprice'=>$goodstruthprice,'content'=>$product['content'],'prototype'=>$prototype,'origin'=>$product['origin'],'score'=>$product['score'],'num'=>$product['num']);
-			if(!empty($pricestocksku))
-			{
-				$t_orderdetail['sku'] = $pricestocksku['sku'];
-			}
-			//商品详情加入到数组
-			$orderdetail[] = $t_orderdetail;
-			$ordergoodsamount += ($goodstruthprice*$product['num']);
+			
+			
+			
 		}
+		//单独计算不同的满减规则
+		$fullcutHelper = new fullcut($this->model('fullcutdetail'),$fullcut_temp);
+		//最终价格
+		$ordergoodsamount += $fullcutHelper->getPrice();
+		//免去价格
+		$discount += $fullcutHelper->getMinus();
 		
-		
+		//计算优惠
+		$couponHelper = new coupon($coupon, $uid, $this->model('coupon'), $coupon_temp);
+		$ordergoodsamount += $couponHelper->getPrice();
+		$discount += $couponHelper->getMinus();
+		//是否减少优惠券使用次数
+		if($couponHelper->getMinus() > 0 && !$preorder)
+		{
+			$couponModel->increaseTimes($coupon,-1);
+		}
 		
 		//支付方式
 		$paytype = $this->post->paytype;
@@ -351,6 +375,8 @@ class cartControl extends control
 		{
 			return json_encode(array('code'=>4,'result'=>'没有支付方式'));
 		}
+		
+		//支付单号
 		$paynumber = '';
 		//运费  根据订单金额计算运费
 		$shipid = filter::int($this->post->shipid);
@@ -363,8 +389,11 @@ class cartControl extends control
 			return json_encode(array('code'=>5,'result'=>'错误的配送方案'));
 		}
 		$feeamount = $shipModel->getPrice($shipid,$ordergoodsamount);
+		
+		
 		//订单编号
 		$orderno = (new order())->swift($this->session->id);
+		
 		//订单税款 免税
 		$ordertaxamount = 0;
 		
@@ -374,26 +403,15 @@ class cartControl extends control
 		$tradetime = 0;
 		//订单总金额
 		$ordertotalamount = $feeamount+$ordertaxamount+$ordergoodsamount;
-		//计算优惠价格
-		if(!empty($coupon) && is_array($coupon))
-		{
-			if($tobeCouponamount >= $coupon['max'])
-			{
-				$minus = ($coupon['type'] == 'fixed')?$coupon['value']:$tobeCouponamount*(1-$coupon['value']);
-				$ordertotalamount -= $minus;
-				$discount = $minus;
-				if(!$preorder)
-				{
-					$couponModel->increaseTimes($coupon['couponno'],-1);
-				}
-			}
-		}
+		
 		
 		//成交总价  已经支付的价格
 		$totalamount = 0;
 		//收件人
 		$addressid = filter::int($this->post->addressid);
-		$address = $this->model('address')->get($addressid);
+		$address_parameter = 'city.name as city,province.name as province,address.county,address.address,address.zcode,address.name,address.telephone';	
+		$address = $this->model('address')->get($addressid,$address_parameter);
+		
 		if(empty($address))
 		{
 			if(empty($preorder))
@@ -408,15 +426,18 @@ class cartControl extends control
 					'address' => '',
 					'province' => '',
 					'city' => '',
+					'county' => '',
 					'zcode' => ''
 				);
 			}
 		}
+		
 		$consignee = $address['name'];
 		$consigneetel = $address['telephone'];
 		$consigneeaddress = $address['address'];
 		$consigneeprovince = $address['province'];
 		$consigneecity = $address['city'];
+		$consigneecounty = $address['county'];
 		$zipcode = $address['zcode'];
 		//物流方式
 		$postmode = $ship['code'];
@@ -437,17 +458,6 @@ class cartControl extends control
 		 */
 		$action_type = '1';
 		
-		$systemModel = $this->model('system');
-		$maxvalue = $systemModel->get('maxvalue','payment');
-		if(!empty($maxvalue))
-		{
-			if($maxvalue<$ordertotalamount)
-			{
-				return new json(4,'订单总金额超过限制('.$maxvalue.'元)，请手动拆单后支付');
-			}
-		}
-		
-		
 		$data = array(
 			NULL,
 			$uid,
@@ -466,6 +476,7 @@ class cartControl extends control
 			$consigneeaddress,
 			$consigneeprovince,
 			$consigneecity,
+			$consigneecounty,
 			$postmode,
 			$waybills,
 			$sendername,
@@ -483,7 +494,7 @@ class cartControl extends control
 			$order = array(
 				'id'=>NULL,'uid'=>$uid,'paytype'=>$paytype,'paynumber'=>$paynumber,'ordertotalamount'=>$ordertotalamount,'orderno'=>$orderno,'ordertaxamount'=>$ordertaxamount,'ordergoodsamount'=>$ordergoodsamount
 				,'feeamount'=>$feeamount,'tradetime'=>$tradetime,'createtime'=>$createtime,'totalamount'=>$totalamount,'consignee'=>$consignee,'consigneetel'=>$consigneetel,'consigneeaddress'=>$consigneeaddress
-				,'consigneeprovince'=>$consigneeprovince,'consigneecity'=>$consigneecity,'postmode'=>$postmode,'waybills'=>$waybills,'sendername'=>$sendername,'companyname'=>$companyname,'zipcode'=>$zipcode
+				,'consigneeprovince'=>$consigneeprovince,'consigneecity'=>$consigneecity,'consigneecounty'=>$consigneecounty,'postmode'=>$postmode,'waybills'=>$waybills,'sendername'=>$sendername,'companyname'=>$companyname,'zipcode'=>$zipcode
 				,'note'=>$note,'status'=>$status,'discount'=>$discount,'client'=>$client,'action_type'=>$action_type
 			);
 			$order['orderdetail'] = $orderdetail;

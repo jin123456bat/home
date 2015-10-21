@@ -75,7 +75,7 @@ class express
 		
 		for($i=0;$i<$step;$i++)
 		{
-			$time = $shiptime + ($step-1)*24*3600 - rand(0, 3600);
+			$time = $shiptime + ($i-1)*24*3567;
 			$return[] = array(
 				'time' => date("Y-m-d H:i:s",$time),
 				'context' => $data[$i]

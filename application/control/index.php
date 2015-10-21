@@ -120,6 +120,26 @@ class indexControl extends control
 	{
 		
 	}
+	
+	/**
+	 * 
+	 */
+	function address()
+	{
+		$type = empty($this->get->type)?'province':$this->get->type;
+		switch ($type)
+		{
+			case 'province':
+				$result = $this->model('province')->select();
+				break;
+			case 'city':
+				$result = $this->model('city')->where('pid=?',array($this->get->pid))->select();
+				break;
+			default:
+				return new json(json::PARAMETER_ERROR,'类型错误');
+		}
+		return new json(json::OK,NULL,$result);
+	}
 
 	/**
 	 * optional

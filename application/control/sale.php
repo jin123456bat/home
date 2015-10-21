@@ -13,6 +13,20 @@ use application\classes\login;
  */
 class saleControl extends control
 {
+	
+	/**
+	 * 计划任务
+	 */
+	function crontab()
+	{
+		$sale = $this->model('sale')->where('endtime<?',array($_SERVER['REQUEST_TIME']))->select();
+		foreach ($sale as $activity)
+		{
+			$this->model('product')->setActivity($activity['pid'],'');
+		}
+		$this->model('sale')->where('endtime<?',array($_SERVER['REQUEST_TIME']))->delete();
+	}
+	
 	/**
 	 * 活动详情
 	 */
@@ -43,6 +57,7 @@ class saleControl extends control
 			$product['img'] = $productimgModel->getByPid($product['id']);
 			$product['category'] = $categoryModel->get($product['category'],'name');
 			$product['origin'] = $this->model('flag')->getOrigin($product['origin']);
+			$product['activity_description'] = $this->model('sale')->getByPid($product['id']);
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}

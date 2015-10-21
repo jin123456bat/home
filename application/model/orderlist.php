@@ -85,17 +85,21 @@ class orderlistModel extends model
 	 * @param array $waybills
 	 * @param string $cover
 	 */
-	function updateWaybill($orderno,array $waybills,$cover = false)
+	function updateWaybill($orderno,$postmode,array $waybills,$cover = false)
 	{
+		$data = array(
+			'postmode'=>$postmode,
+			'waybills'=>serialize($waybills),
+		);
 		if(!$cover)
 		{
 			$result = $this->where('orderno=?',array($orderno))->select('waybills');
 			if(isset($result['0']['waybills']) && empty($result[0]['waybills']))
 			{
-				$this->where('orderno=?',array($orderno))->update('waybills',serialize($waybills));
+				$this->where('orderno=?',array($orderno))->update($data);
 			}
 		}
-		$this->where('orderno=?',array($orderno))->update('waybills',serialize($waybills));
+		$this->where('orderno=?',array($orderno))->update($data);
 	}
 
 	/**
@@ -185,10 +189,10 @@ class orderlistModel extends model
 	{
 		if(isset($filter['status']) && $filter['status']!==NULL)
 		{
-			$this->where('status=?',array($filter['status']));
+			$this->where('orderlist.status=?',array($filter['status']));
 		}
 		if (! empty($id)) {
-			$this->where('id in (?)', $id);
+			$this->where('orderlist.id in (?)', $id);
 		}
 		$this->table('user', 'left join', 'user.id=orderlist.uid');
 		$this->table('orderdetail', 'left join', 'orderdetail.oid=orderlist.id');

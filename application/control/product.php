@@ -16,6 +16,7 @@ use application\classes\product;
 use application\classes\order;
 use system\core\filesystem;
 use application\message\json;
+use application\model\productModel;
 /**
  * 商品控制器
  * @author jin12
@@ -31,9 +32,9 @@ class productControl extends control
 		$productModel = $this->model('product');
 		$time = $_SERVER['REQUEST_TIME'];
 		//更改商品自动上架
-		$productModel->where('(starttime < ? or starttime = 0) and (endtime > ? or endtime=0) and status!=1',array($time,$time))->update('status',self::ONSALE);
+		$productModel->where('(starttime < ? or starttime = 0) and (endtime > ? or endtime=0) and status!=1',array($time,$time))->update('status',productModel::ONSALE);
 		//商品自动下架
-		$productModel->where('starttime > ? or (endtime < ? and endtime!=0) and status != 2',array($time,$time))->update('status',self::NOSALE);
+		$productModel->where('starttime > ? or (endtime < ? and endtime!=0) and status != 2',array($time,$time))->update('status',productModel::NOSALE);
 	}
 	
 	/**
@@ -87,8 +88,7 @@ class productControl extends control
 		}
 		//收货地址id
 		$addressid = $this->post->addressid;
-		if(empty($addressid))
-			return json_encode(array('code'=>8,'result'=>'收货地址不能为空'));
+
 		//优惠代码
 		$coupon = $this->post->coupon;
 		//优惠金额
@@ -101,25 +101,24 @@ class productControl extends control
 				$fullcut = $this->model('fullcutdetail')->getPrice($pid,$ordergoodsamount);
 				if($fullcut !== NULL)
 				{
+					$discount = $fullcut['minus'] * $num;
 					$ordergoodsamount -= $fullcut['minus'];
-					//计算满减的单价
-					$orderdetail[0]['unitprice'] = $ordergoodsamount/$num;
 				}
 				break;
 			case 'sale':
 				$sale = $this->model('sale')->getPrice($pid);
 				if($sale !== NULL)
 				{
+					$discount = $ordergoodsamount - $sale*$num;
 					$ordergoodsamount = $sale*$num;
-					$orderdetail[0]['unitprice'] = $sale;
 				}
 				break;
 			case 'seckill':
 				$seckill = $this->model('seckill')->getPrice($pid);
 				if($seckill !== NULL)
 				{
+					$discount = $ordergoodsamount - $seckill*$num;
 					$ordergoodsamount = $seckill*$num;
-					$orderdetail[0]['unitprice'] = $seckill;
 				}
 				break;
 			default:
@@ -172,7 +171,8 @@ class productControl extends control
 		//成交总价
 		$totalamount = 0;
 		//收件人
-		$address = $this->model('address')->get($this->post->addressid);
+		$address_parameter = 'city.name as city,province.name as province,address.county,address.address,address.zcode,address.name,address.telephone';
+		$address = $this->model('address')->get($this->post->addressid,$address_parameter);
 		if(empty($address))
 		{
 			if(empty($preorder))
@@ -187,7 +187,8 @@ class productControl extends control
 					'address' => '',
 					'province' => '',
 					'city' => '',
-					'zcode' => ''
+					'zcode' => '',
+					'county'=>''
 				);
 			}
 		}
@@ -196,6 +197,7 @@ class productControl extends control
 		$consigneeaddress = $address['address'];
 		$consigneeprovince = $address['province'];
 		$consigneecity = $address['city'];
+		$consigneecounty = $address['county'];
 		$zipcode = $address['zcode'];
 		//运单号
 		$waybills = '';
@@ -232,6 +234,7 @@ class productControl extends control
 			$consigneeaddress,
 			$consigneeprovince,
 			$consigneecity,
+			$consigneecounty,
 			$postmode,
 			$waybills,
 			$sendername,
@@ -244,20 +247,12 @@ class productControl extends control
 			$action_type
 		);
 		
-		$systemModel = $this->model('system');
-		$maxvalue = $systemModel->get('maxvalue','payment');
-		if(!empty($maxvalue))
-		{
-			if($maxvalue>$ordertotalamount)
-				return new json(5,'订单总金额超过付款限制('.$maxvalue.'元)');
-		}
-		
 		if($preorder)
 		{
 			$order = array(
 				'id'=>NULL,'uid'=>$uid,'paytype'=>$paytype,'paynumber'=>$paynumber,'ordertotalamount'=>$ordertotalamount,'orderno'=>$orderno,'ordertaxamount'=>$ordertaxamount,'ordergoodsamount'=>$ordergoodsamount
 				,'feeamount'=>$feeamount,'tradetime'=>$tradetime,'createtime'=>$createtime,'totalamount'=>$totalamount,'consignee'=>$consignee,'consigneetel'=>$consigneetel,'consigneeaddress'=>$consigneeaddress
-				,'consigneeprovince'=>$consigneeprovince,'consigneecity'=>$consigneecity,'postmode'=>$postmode,'waybills'=>$waybills,'sendername'=>$sendername,'companyname'=>$companyname,'zipcode'=>$zipcode
+				,'consigneeprovince'=>$consigneeprovince,'consigneecity'=>$consigneecity,'consigneecounty'=>$consigneecounty,'postmode'=>$postmode,'waybills'=>$waybills,'sendername'=>$sendername,'companyname'=>$companyname,'zipcode'=>$zipcode
 				,'note'=>$note,'status'=>$status,'discount'=>$discount,'client'=>$client,'action_type'=>$action_type
 			);
 			$order['orderdetail'] = $orderdetail;
@@ -500,6 +495,12 @@ class productControl extends control
 		{
 			$this->view = new view(config('view'), 'admin/product_edit.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
+			
+			$systemModel = $this->model('system');
+			$system = $systemModel->fetch('system');
+			$system = $systemModel->toArray($system,'system');
+			$this->view->assign('system',$system);
+			
 			$productModel = $this->model('product');
 			$result = $productModel->get($this->get->id);
 			

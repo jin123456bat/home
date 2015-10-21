@@ -93,6 +93,15 @@ class commentControl extends control
 		$result = array_slice($result, $this->post->start,$this->post->length);
 		$count = $commentModel->select('count(*)');
 		$resultObj->recordsTotal = isset($count[0]['count(*)'])?$count[0]['count(*)']:0;
+		foreach ($result as &$comment)
+		{
+			$img = $this->model('comment_pic')->getByCid($comment['id'],'url');
+			foreach ($img as &$pic)
+			{
+				$pic = file::realpathToUrl($pic);
+			}
+			$comment['img'] = $img;
+		}
 		$resultObj->data = $result;
 		return json_encode($resultObj);
 	}

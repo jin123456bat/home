@@ -132,6 +132,11 @@
                                 	<i class="fa fa-flag"></i> 极光APP推送设定
                                 </a>
                             </li>
+							<li>
+                            	<a data-toggle="tab" href="#dist">
+                                	<i class="fa fa-flag"></i> 分销
+                                </a>
+                            </li>
                         </ul>
                    	</div>
 					<div class="col-md-9">
@@ -185,6 +190,14 @@
                                         <textarea name="system_system_about" class="form-control" placeholder="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam dolore.">{%$system.system_system_about|default:''%}</textarea>
                                         <span class="help-block">
                                         footer中显示给别人看的 </span>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">客服电话</label>
+                                    <div class="col-md-10">
+                                        <textarea name="system_system_servicetelephone" class="form-control" placeholder="客户电话">{%$system.system_system_servicetelephone|default:''%}</textarea>
+                                        <span class="help-block">
+                                        客服电话 </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -352,7 +365,7 @@
                                 </form>
                                 <table class="table" id="flag_container">
                                 	{%section name=flag loop=$flag%}
-                                	<tr><td align="center" width="40%">{%$flag[flag].name%}</td><td align="center" width="40%"><img src="{%$flag[flag].file%}" /></td><td width="20%"><button data-id="{%$flag[flag].id%}" class="btn btn-xs red-stripe removeFlagBtn">删除</button></td></tr>
+                                	<tr><td align="center" width="40%">{%$flag[flag].name%}</td><td align="center" width="40%"><img width="50" height="30" src="{%$flag[flag].file%}" /></td><td width="20%"><button data-id="{%$flag[flag].id%}" class="btn btn-xs red-stripe removeFlagBtn">删除</button></td></tr>
                                     {%/section%}
                                 </table>
                             </div>
@@ -387,6 +400,49 @@
                                     <label class="col-md-2 control-label">Master Secret</label>
                                     <div class="col-md-10">
                                         <input type="text" name="system_jpush_mastersecret" value="{%$system.system_jpush_mastersecret|default:""%}" placeholder="推广推送的Master Secret" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input type="submit" value="保存" class="form-control btn green">
+                                    </div>
+                                </div>
+								</form>
+                            </div>
+							<div id="dist" class="tab-pane">
+                            	<form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
+                            	<div class="form-group">
+                                    <label class="col-md-2 control-label">是否开启</label>
+                                    <div class="col-md-10">
+                                        <select class="form-control" name="system_dist_open">
+											<option value="1" {%if isset($system.system_dist_open) && $system.system_dist_open==1%}selected{%/if%}>开启</option>
+											<option value="0" {%if isset($system.system_dist_open) && $system.system_dist_open==0%}selected{%/if%}>关闭</option>
+										</select>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">分销用户额度</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_dist_money" value="{%$system.system_dist_money|default:""%}" placeholder="当用户消费值超过该值才可以成为分销商" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">一级分销商比例</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_dist_rate1" value="{%$system.system_dist_rate1|default:""%}" placeholder="一级分销商佣金比" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">二级分销商比例</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_dist_rate2" value="{%$system.system_dist_rate2|default:""%}" placeholder="二级分销商佣金比" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">三级分销商比例</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_dist_rate3" value="{%$system.system_dist_rate3|default:""%}" placeholder="三级分销商佣金比" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -541,7 +597,7 @@ jQuery(document).ready(function() {
 				{
 					var response = xhr.response;
 					response = $.parseJSON(response);
-					$('#flag_container').append('<tr><td align="center" width="50%">'+name+'</td><td align="center" width="50%"><img src="'+response.body+'" /></td></tr>');
+					$('#flag_container').append('<tr><td align="center" width="50%">'+name+'</td><td align="center" width="50%"><img src="'+response.body+'" width="50" height="30"/></td><td><button data-id="" class="btn btn-xs red-stripe removeFlagBtn">删除</button></td></tr>');
 					$('input[name=name]').val('');
 					$('input[name=flag]').val('');
 				}

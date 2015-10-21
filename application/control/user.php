@@ -346,9 +346,12 @@ class userControl extends control
 							$this->model('theme_lock')->create($id,$this->session->theme_lock);
 						}
 						
+						$draw = $this->post->draw;
+						$draw = empty($draw)?'success':$draw;
+						
 						return json_encode(array(
 							'code' => 1,
-							'result' => 'success'
+							'result' => $draw
 						));
 					}
 					else
@@ -385,15 +388,18 @@ class userControl extends control
 			if (isset($uinfo['id']) && ! empty($uinfo['id'])) {
 				if(empty($uinfo['close']))
 				{
+					$draw = $this->post->draw;
+					$draw = empty($draw)?'ok':$draw;
+					
 					$this->session->id = $uinfo['id'];
 					$this->session->telephone = $uinfo['telephone'];
 					$this->session->username = $uinfo['username'];
 					//更新用户登陆时间
 					$userModel->updateLoginTime($uinfo['id']);
 					$this->model('user_login_log')->create($this->session->id,$client);
-					return new json(json::OK);
+					return new json(json::OK,$draw);
 				}
-				return new json(json::NO_POWER,'魔封波。。。。');
+				return new json(json::NO_POWER,'魔封波。。。。'); 
 			}
 			return new json(json::PARAMETER_ERROR,'手机号或密码错误');
 		}

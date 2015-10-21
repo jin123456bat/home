@@ -157,7 +157,7 @@
 									</select>
 									<button class="btn btn-sm yellow table-group-action-submit"><i class="fa fa-check"></i> 提交</button>
 								</div>
-								<table class="table table-striped table-bordered table-hover" id="datatable_orders">
+								<table class="table table-striped table-bordered table-hover" cellspacing="0" id="datatable_orders">
 								<thead>
 								<tr role="row" class="heading">
 									<th width="2%">
@@ -169,22 +169,22 @@
 									<th width="10%">
 										 生成时间
 									</th>
-									<th width="10%">
+									<th width="5%">
 										 下单账号
 									</th>
-									<th width="10%">
+									<th width="3%">
 										 配送方案
 									</th>
-                                    <th width="10%">
+                                    <th width="3%">
 										 支付方式
 									</th>
-                                    <th width="10%">
+                                    <th width="3%">
 										 订单来源
 									</th>
-									<th width="10%">
+									<th width="5%">
 										 订单价
 									</th>
-									<th width="10%">
+									<th width="5%">
 										 已支付
 									</th>
 									<th width="10%">
@@ -193,7 +193,7 @@
                                     <th width="10%">
                                     	备注
                                     </th>
-                                    <th>
+                                    <th width="5%">
                                     	优惠
                                     </th>
 									<th width="10%">
@@ -274,6 +274,23 @@
 								</thead>
 								<tbody>
 								</tbody>
+								<tfoot>
+									<tr>
+										<th>#</th>
+										<th>#</th>
+										<th>#</th>
+										<th>#</th>
+										<th>#</th>
+										<th>#</th>
+										<th>#</th>
+										<th id="ordertotalamount">0</th>
+										<th id="totalamount">0</th>
+										<th>#</th>
+										<th>#</th>
+										<th>#</th>
+										<th>#</th>
+									</tr>
+								</tfoot>
 								</table>
 							</div>
 						</div>
@@ -374,7 +391,7 @@ EcommerceOrders.init();
 			if(data.code == 1)
 			{
 				$('#note').modal('hide');
-				$('a.noteBtn[data-id='+id+']').parent().prev().html(note);
+				$('a.noteBtn[data-id='+id+']').parent().prev().prev().html(note);
 			}
 		});
 		return false;
@@ -409,6 +426,8 @@ EcommerceOrders.init();
 			{
 				var response = xhr.response;
 				response = $.parseJSON(response);
+				alert(response.result);
+				window.location.reload();
 			}
 			else
 			{
@@ -421,10 +440,15 @@ EcommerceOrders.init();
 	
 	$('.costums').live('click',function(event){
 		var id = $(this).data('id');
+		var ths = $(this);
 		$.post('{%url c=order a=costums%}',{id:id},function(response){
 			if(response.code == 1)
 			{
-				window.location.reload();
+				ths.addClass('display-none');
+				if(response.body.length>0)
+				{
+					ths.parent().find('.outship').removeClass('display-none');
+				}
 			}
 			else
 			{
@@ -436,10 +460,11 @@ EcommerceOrders.init();
 	
 	$('.outship').live('click',function(){
 		var id = $(this).data('id');
+		var ths = $(this);
 		$.post('{%url c=order a=outship%}',{id:id},function(response){
 			if(response.code == 1)
 			{
-				window.location.reload();
+				ths.addClass('display-none');
 			}
 			else
 			{
@@ -448,7 +473,6 @@ EcommerceOrders.init();
 		});
 		return false;
 	});
-	
 });
 </script>
 <!-- END JAVASCRIPTS -->

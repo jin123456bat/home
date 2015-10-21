@@ -68,6 +68,8 @@
 							<h4 class="modal-title">推送</h4>
 						</div>
 						<div class="modal-body">
+							<div class="alert alert-msg">
+							</div>
 							<div class="form-body">
 								<div class="form-group">
 									<label class="col-md-2 control-label">活动类型</label>
@@ -617,7 +619,6 @@ jQuery(document).ready(function() {
 			if(data.code == 1)
 			{
 				$('#sale-config').modal('hide');
-				window.location.reload();
 			}
 			else
 			{
@@ -625,7 +626,7 @@ jQuery(document).ready(function() {
 					type: 'danger',
 					icon: 'warning',
 					message: data.result,
-					container: $('#alert-msg'),
+					container: $('#sale-config .alert-msg'),
 					place: 'prepend',
 					closeInSeconds: 5,
 				});

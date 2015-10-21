@@ -237,6 +237,7 @@
 													</label>
 													<div class="col-md-10">
 														<input type="text" class="form-control" name="oldprice" value="{%$product.oldprice|default:""%}" placeholder="">
+														<span id="price-error" class="help-block help-block-error display-none">市场价必须高于标价</span>
                                                         <span class="help-block">
 														商品市场价 </span>
 													</div>
@@ -443,19 +444,22 @@
 													<th width="5%">
 														 ID
 													</th>
-													<th width="10%">
+													<th width="5%">
 														 时间
 													</th>
-													<th width="10%">
+													<th width="5%">
 														 用户名
 													</th>
 													<th width="20%">
 														 内容
 													</th>
 													<th width="10%">
+														图像
+													</th>
+													<th width="5%">
 														 评分
 													</th>
-													<th width="10%">
+													<th width="5%">
 														 操作
 													</th>
 												</tr>
@@ -484,6 +488,9 @@
 														<input type="text" class="form-control form-filter input-sm" name="content">
 													</td>
 													<td>
+														#
+													</td>
+													<td>
 														<input type="text" class="form-control form-filter input-sm" name="score">
 													</td>
 													<td>
@@ -506,14 +513,20 @@
 												<table class="table table-striped table-bordered table-hover" id="datatable_history">
 												<thead>
 												<tr role="row" class="heading">
-													<th width="30%">
+													<th width="10%">
 														流水号
 													</th>
-													<th width="25%">
+													<th width="10%">
 														 时间
 													</th>
-													<th width="25%">
+													<th width="10%">
 														 用户
+													</th>
+													<th width="10%">
+														订单金额
+													</th>
+													<th width="10%">
+														支付金额
 													</th>
 													<th width="10%">
 														 状态
@@ -542,6 +555,22 @@
 													</td>
 													<td>
 														<input type="text" class="form-control form-filter input-sm" name="telephone" placeholder="用户手机号"/>
+													</td>
+													<td>
+														<div class="input-group margin-bottom-5">
+															<input type="text" class="form-control form-filter input-sm" name="ordertotalamount_from" placeholder="从">
+														</div>
+														<div class="input-group margin-bottom-5">
+															<input type="text" class="form-control form-filter input-sm" name="ordertotalamount_to" placeholder="到">
+														</div>
+													</td>
+													<td>
+														<div class="input-group margin-bottom-5">
+															<input type="text" class="form-control form-filter input-sm" name="totalamount_from" placeholder="从">
+														</div>
+														<div class="input-group margin-bottom-5">
+															<input type="text" class="form-control form-filter input-sm" name="totalamount_to" placeholder="到">
+														</div>
 													</td>
 													<td>
 														<select name="status" class="form-control form-filter input-sm">
@@ -680,6 +709,21 @@ jQuery(document).ready(function() {
 		formatSelection: format,
 		escapeMarkup: function (m) {
 			return m;
+		}
+	});
+	
+	$('input[name=oldprice]').on('blur',function(){
+		var price = parseFloat($('input[name=price]').val());
+		var oldprice = parseFloat($(this).val());
+		if(price>oldprice)
+		{
+			$('#price-error').removeClass('display-none');
+			$(this).parents('.form-group').addClass('has-error');
+		}
+		else
+		{
+			$('#price-error').addClass('display-none');
+			$(this).parents('.form-group').removeClass('has-error');
 		}
 	});
 });

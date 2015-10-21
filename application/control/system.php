@@ -119,7 +119,8 @@ class systemControl extends control
 		}
 		$return['startpage'] = $startpage;
 		$return['splitrate'] = $systemModel->get('splitrate','alipay');
-		$return['servicetelephone'] = '400-400-400';
+		$return['servicetelephone'] = $systemModel->get('servicetelephone','system');
+		$return['maxvalue'] = $systemModel->get('maxvalue','payment');
 		return new json(json::OK,NULL,$return);
 	}
 	
@@ -284,7 +285,7 @@ class systemControl extends control
 			$systemConfig = $systemModel->toArray($systemConfig,'system');
 			$this->view->assign('systemConfig',$systemConfig);
 			
-			$config = $systemModel->fetch(array('system','image','app','theme','jpush'));
+			$config = $systemModel->fetch(array('system','image','app','theme','jpush','dist'));
 			$system = array();
 			foreach ($config as $value)
 			{

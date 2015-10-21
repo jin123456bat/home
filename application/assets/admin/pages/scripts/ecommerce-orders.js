@@ -57,9 +57,6 @@ var EcommerceOrders = function () {
                     [10, 20, 50, 100, 150, "All"] // change per page values here
                 ],
 				createdRow: function ( row, data, index ) {
-		            /*if ( data[5].replace(/[\$,]/g, '') * 1 > 4000 ) {
-		                $('td', row).eq(5).css('font-weight',"bold").css("color","red");
-		            }*/
 					switch(data.status)
 					{
 						case '0':
@@ -73,14 +70,15 @@ var EcommerceOrders = function () {
 						case '7':return '退款';break;
 						//default:return '未知状态';break;
 					}
-		        },
+				},
                 "pageLength": 10, // default record count per page
                 "ajax": {
                     //"url": "demo/ecommerce_orders.php", // ajax source
-					"url":"?c=order&a=ajaxorderlist"
+					"url":"?c=order&a=ajaxorderlist",
+					"deferRender": true
                 },
 				"processing": true,
-				autofill:true,
+				//autofill:true,
 				"columnDefs":[{
 					"targets":[0],
 					"data":"id",
@@ -119,12 +117,12 @@ var EcommerceOrders = function () {
 							case '0':
 								return '等待付款';
 								break;
-							case '1':return '支付完毕,等待发货';break;
+							case '1':return '等待发货';break;
 							case '2':return '支付失败';break;
 							case '3':return '客户取消';break;
-							case '4':return '已经发货,等待收货';break;
-							case '5':return '已经收货,待评论';break;
-							case '6':return '订单完成,评论完毕';break;
+							case '4':return '已经发货';break;
+							case '5':return '已经收货';break;
+							case '6':return '订单完成';break;
 							case '7':return '退款';break;
 							default:return '未知状态';break;
 						}
@@ -139,18 +137,14 @@ var EcommerceOrders = function () {
 					targets:12,
 					render:function(data,type,full){
 						var content = '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a><a href="#note" data-toggle="modal" data-id="'+full.id+'" class="btn default btn-xs yellow-stripe noteBtn">备注</a>';
-						if(full.status == 1)
-						{
-							content = '<a data-id="'+full.id+'" class="btn default btn-xs red-stripe costums">发货</a>'+content;
-						}
-						if(full.status == 4 && full.outship == 0)
-						{
-							content = '<a data-id="'+full.id+'" class="btn default btn-xs red-stripe outship">出关</a>'+content;
-						}
+						var costums = (full.status == 1)?'':'display-none';
+						var outship = (full.status == 4 && full.outship == 0 && full.waybills.length>0)?'':'display-none';
+						content = '<a data-id="'+full.id+'" class="btn default btn-xs red-stripe outship '+outship+'">出关</a>'+content;
+						content = '<a data-id="'+full.id+'" class="btn default btn-xs red-stripe costums '+costums+'">发货</a>'+content;
 						return content;
 					}
 				},{
-					"targets":[13,14,15,16],
+					"targets":[13,14,15,16,17],
 					visible:false
 				}],
 				"columns":[{
@@ -198,13 +192,30 @@ var EcommerceOrders = function () {
 					"data":'consigneeaddress',
 				},{
 					"data":'outship'
+				},{
+					"data":'waybills'
 				}],
                 "order": [
-                    [0, "asc"]
-                ] // set first column as a default sort by asc
-            }			
+                    [0, "desc"]
+                ], // set first column as a default sort by asc
+				initComplete:initComplete
+            }	
         });
-
+		
+		function initComplete(row,data)
+		{
+			var content = data.data;
+			var ordertotalamount = 0;
+			var totalamount = 0;
+			for(var i=0;i<content.length;i++)
+			{
+				ordertotalamount += parseFloat(content[i].ordertotalamount);
+				totalamount += parseFloat(content[i].totalamount);
+			}
+			$('#ordertotalamount').html(ordertotalamount);
+			$('#totalamount').html(totalamount);
+		}
+		
         // handle group actionsubmit button click
         grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
             e.preventDefault();

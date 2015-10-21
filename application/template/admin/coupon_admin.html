@@ -207,31 +207,6 @@
 								<i class="fa fa-plus"></i>
 								创建一个优惠代码
 								</button>
-								<div class="btn-group">
-									<a class="btn default yellow-stripe" href="#" data-toggle="dropdown">
-									<i class="fa fa-share"></i> 工具 <i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="dropdown-menu pull-right">
-										<li>
-											<a href="#">
-											Export to Excel </a>
-										</li>
-										<li>
-											<a href="#">
-											Export to CSV </a>
-										</li>
-										<li>
-											<a href="#">
-											Export to XML </a>
-										</li>
-										<li class="divider">
-										</li>
-										<li>
-											<a href="#">
-											Print Invoices </a>
-										</li>
-									</ul>
-								</div>
 							</div>
 						</div>
 						<div class="portlet-body">
@@ -554,6 +529,25 @@ jQuery(document).ready(function() {
 			return m;
 		} // we do not want to escape markup since we are displaying html in results
 		
+	});
+	
+	$('.copy').live('click',function(event){
+		if(window.confirm('您确定把这张优惠券分发给所有用户?这个过程会非常消耗系统资源'))
+		{
+			var ths = $(this);
+			ths.html('正在发送').attr('disabled',true);
+			var id = $(this).data('id');
+			$.post('{%url c=coupon a=copy%}',{id:id},function(response){
+				if(response.code == 1)
+				{
+					ths.html('分发完毕');
+				}
+				else
+				{
+					alert(response.result);
+				}
+			});
+		}
 	});
 });
    </script>

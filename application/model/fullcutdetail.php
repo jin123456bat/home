@@ -56,7 +56,7 @@ class fullcutdetailModel extends model
 	function getPrice($pid,$totalprice)
 	{
 		$this->where('fullcutdetail.pid=?',array($pid));
-		$this->where('fullcut.max<?',array($totalprice));
+		$this->where('fullcut.max<=?',array($totalprice));
 		$this->where('(starttime=0 or starttime<?) and (endtime=0 or endtime>?)',array($_SERVER['REQUEST_TIME'],$_SERVER['REQUEST_TIME']));
 		$this->table('fullcut','right join','fullcut.id=fullcutdetail.fid');
 		$this->orderby('fullcut.max','desc');

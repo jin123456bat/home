@@ -161,7 +161,7 @@ var Coupon = function () {
 					"targets":[11],
 					"data":"id",
 					"render":function(data,type,full){
-						return '<a data-id='+data+' class="btn btn-xs default red-stripen removeBtn">删除</a>';
+						return '<a data-id='+data+' class="btn btn-xs default red-stripen removeBtn">删除</a><a data-id="'+data+'" class="btn btn-xs default green-stripe copy">分发</a>';
 					}
 				}],
 				"processing": true,

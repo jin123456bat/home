@@ -1,6 +1,5 @@
 <?php
 namespace system\core;
-
 /**
  * 控制器
  *
@@ -39,6 +38,8 @@ class control extends base
 
 	/**
 	 * 载入数据模型
+	 * @param string $name 模块名
+	 * @return model
 	 */
 	function model($name)
 	{

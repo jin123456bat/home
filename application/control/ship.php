@@ -4,6 +4,7 @@ use system\core\control;
 use system\core\view;
 use application\model\roleModel;
 use application\classes\login;
+use application\message\json;
 /**
  * 配送方案控制器
  * @author jin12
@@ -58,5 +59,12 @@ class shipControl extends control
 		return json_encode(array('code'=>3,'result'=>'没有权限'));
 	}
 	
-	
+	/**
+	 * 配送方式列表
+	 */
+	function lists()
+	{
+		$result = $this->model('ship')->select();
+		return new json(json::OK,NULL,$result);
+	}
 }

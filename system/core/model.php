@@ -20,6 +20,8 @@ class model
 	private $_table;
 
 	public $_temp;
+	
+	private $_sql;
 
 	function __construct($table)
 	{
@@ -81,6 +83,19 @@ class model
 		unset($this->_temp);
 		return $result;
 	}
+	
+	function getSql()
+	{
+		return $this->_sql;
+	}
+	
+	/**
+	 * 保存执行的sql
+	 */
+	protected function initSql($sql)
+	{
+		$this->_sql = $sql;
+	}
 
 	/**
 	 * 增加条件
@@ -113,6 +128,8 @@ class model
 		}
 		return $this;
 	}
+	
+	
 
 	/**
 	 * 插入
@@ -262,6 +279,7 @@ class model
 	
 	public function query($sql,array $array = array())
 	{
+		$this->initSql($sql);
 		return $this->_db->query($sql,$array);
 	}
 	

@@ -125,6 +125,8 @@ var EcommerceProductsEdit = function () {
 				},{
 					data:'content',
 				},{
+					data:'img',
+				},{
 					data:'score',
 				},{
 					data:'id',
@@ -141,7 +143,7 @@ var EcommerceProductsEdit = function () {
 					'orderable':true,
 					'targets':[1],
 					'render':function(data,type,full){
-						return unixtotime(data);
+						return unixtotime(data,true,8);
 					}
 				},{
 					'orderable':true,
@@ -159,8 +161,19 @@ var EcommerceProductsEdit = function () {
 						return res;
 					}
 				},{
+					'orderable':false,
+					targets:4,
+					render:function(data,type,full){
+						var content = '';
+						for(var i=0;i<data.length;i++)
+						{
+							content += '<img src="'+data[i]+'" width="80" height="80">';
+						}
+						return content;
+					}
+				},{
 					'orderable':true,
-					'targets':[5],
+					'targets':[6],
 					'render':function(data,type,full){
 						return '<button class="btn btn-xs btn-danger btn-circle removeComment" data-id="'+data+'">删除</button>';
 					}
@@ -198,6 +211,10 @@ var EcommerceProductsEdit = function () {
 				},{
 					data:'uid'
 				},{
+					data:'ordertotalamount'
+				},{
+					data:'totalamount'
+				},{
 					data:'status'
 				},{
 					data:'id'
@@ -231,7 +248,7 @@ var EcommerceProductsEdit = function () {
 						return telephone;
 					}
 				},{
-					targets:3,
+					targets:5,
 					render:function(data,type,full){
 						switch(data)
 						{
@@ -243,7 +260,7 @@ var EcommerceProductsEdit = function () {
 						}
 					}
 				},{
-					targets:4,
+					targets:6,
 					render:function(data,type,full){
 						return '<a class="btn default btn-xs green-stripe" href="index.php?c=order&a=information&id='+data+'">查看详情</a>';
 					}

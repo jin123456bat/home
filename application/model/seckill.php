@@ -20,7 +20,10 @@ class seckillModel extends model
 	function getIndex($length)
 	{
 		$a = $_SERVER['REQUEST_TIME'];
-		$this->where('(seckill.starttime<? or seckill.starttime=0) and (seckill.endtime>? or seckill.endtime=0) and (product.starttime<? or product.endtime=0) and (product.endtime>? or product.endtime=0)',array($a,$a,$a,$a));
+		
+		$this->where('seckill.endtime>? or seckill.endtime=0',array($a));
+		$this->where('product.starttime<? or product.starttime=0',array($a));
+		$this->where('product.endtime>? or product.endtime=0',array($a));
 		$this->table('product','left join','product.id=seckill.pid');
 		$this->limit($length);
 		$this->where('product.status=?',array(1));

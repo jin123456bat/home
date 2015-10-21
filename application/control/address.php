@@ -33,7 +33,10 @@ class addressControl extends control
 		if(login::user())
 		{
 			$addressModel = $this->model('address');
-			$result = $addressModel->myAddress($this->session->id);
+			$filter = array(
+				'uid'=>$this->session->id
+			);
+			$result = $addressModel->fetchAll($filter);
 			return new json(json::OK,NULL,$result);
 		}
 		return new json(json::NOT_LOGIN);
@@ -45,17 +48,18 @@ class addressControl extends control
 	function save()
 	{
 		$id = filter::int($this->post->id);
-		$province = htmlspecialchars_decode($this->post->province);
-		$city = htmlspecialchars_decode($this->post->city);
-		$address = htmlspecialchars_decode($this->post->address);
-		$name = htmlspecialchars_decode($this->post->name);
+		$province = intval($this->post->province);
+		$city = intval($this->post->city);
+		$county = $this->post->county;
+		$address = $this->post->address;
+		$name = $this->post->name;
 		$telephone = filter::telephone($this->post->telephone);
 		$zcode = filter::int($this->post->zcode);
 		$host = filter::int($this->post->host);
 		if(login::user())
 		{
 			$addressModel = $this->model('address');
-			$result = $addressModel->save($id,$this->session->id,$province,$city,$address,$name,$telephone,$zcode,$host);
+			$result = $addressModel->save($id,$this->session->id,$province,$city,$county,$address,$name,$telephone,$zcode,$host);
 			return new json(json::OK);
 		}
 		return new json(json::NOT_LOGIN);
@@ -67,8 +71,9 @@ class addressControl extends control
 	 */
 	function create()
 	{
-		$province = $this->post->province;
-		$city = $this->post->city;
+		$province = intval($this->post->province);
+		$city = intval($this->post->city);
+		$county = $this->post->county;
 		$address = $this->post->address;
 		$name = $this->post->name;
 		$telephone = filter::telephone($this->post->telephone);
@@ -76,14 +81,14 @@ class addressControl extends control
 		$host = empty(filter::int($this->post->host))?0:filter::int($this->post->host);
 		if(empty($telephone))
 			return new json(json::PARAMETER_ERROR,'手机号码错误');
-		if(empty($address) || empty($city) || empty($province))
+		if(empty($address) || empty($city) || empty($province) || empty($county))
 			return new json(json::PARAMETER_ERROR,'收货地址不完整');
 		if(empty($name))
 			return new json(json::PARAMETER_ERROR,'收货人姓名不能为空');
 		if(login::user())
 		{
 			$addressModel = $this->model('address');
-			$result = $addressModel->create($this->session->id,$province,$city,$address,$name,$telephone,$zcode,$host);
+			$result = $addressModel->create($this->session->id,$province,$city,$county,$address,$name,$telephone,$zcode,$host);
 			return new json(json::OK);
 		}
 		return new json(json::NOT_LOGIN);
@@ -98,8 +103,15 @@ class addressControl extends control
 			return new json(json::NOT_LOGIN);
 		$id = filter::int($this->get->id);
 		$addressModel = $this->model('address');
-		$address = $addressModel->get($id);
-		return new json(json::OK,NULL,$address);
+		$filter = array(
+			'parameter' => 'city.name as city,province.name as province,province.id as provinceid,city.id as cityid,address.id,address.uid,address.county,address.address,address.zcode,adddress.host,address.name,address.telephone',
+			'id' => $id,
+			'uid'=>$this->session->id
+		);
+		$address = $addressModel->fetchAll($filter);
+		if (isset($address[0]))
+			return new json(json::OK,NULL,$address[0]);
+		return new json(json::OK,NULL,array());
 	}
 	
 	/**
@@ -138,8 +150,12 @@ class addressControl extends control
 			$system = $systemModel->toArray($system,'system');
 			$this->view->assign('system',$system);
 			
+			$filter = array(
+				'order' => array('address.id','desc'),
+			);
+			
 			$addressModel = $this->model('address');
-			$address = $addressModel->fetchAll();
+			$address = $addressModel->fetchAll($filter);
 			$this->view->assign('address',$address);
 		
 			return $this->view->display();

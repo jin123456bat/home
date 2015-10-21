@@ -28,6 +28,10 @@ class commentModel extends model
 					$this->orderby($value['data'],$orderby['dir']);
 				}
 			}
+			if($value['data'] == 'img')
+			{
+				continue;
+			}
 			$parameter[] = $value['data'];
 		}
 		if(!empty($post->action) && $post->action == 'filter')

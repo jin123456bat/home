@@ -15,6 +15,20 @@ class seckillControl extends control
 {
 	
 	/**
+	 * 计划任务
+	 */
+	function crontab()
+	{
+		$seckillModel = $this->model('seckill');
+		$seckill = $seckillModel->where('endtime<?',array($_SERVER['REQUEST_TIME']))->select();
+		foreach($seckill as $activity)
+		{
+			$this->model('product')->setActivity($activity['pid'],'');
+		}
+		$seckillModel->where('endtime<?',array($_SERVER['REQUEST_TIME']))->delete();
+	}
+	
+	/**
 	 * app首页的秒杀活动
 	 */
 	function product()

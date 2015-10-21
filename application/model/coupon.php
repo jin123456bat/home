@@ -82,7 +82,8 @@ class couponModel extends model
 		$this->where('coupondetail.categoryid=? or coupondetail.categoryid=?',array($product['category'],0));
 		$this->table('coupondetail','left join','coupondetail.couponid=coupon.id');
 		$this->where('couponno=?',array($couponno));
-		return $this->select();
+		$result = $this->select();
+		return isset($result[0])?$result[0]:NULL;
 	}
 	
 	/**
@@ -111,6 +112,10 @@ class couponModel extends model
 			if(!empty($post->couponno))
 			{
 				$this->where('couponno like ?',array('%'.$post->couponno.'%'));
+			}
+			if($post->uid != '')
+			{
+				$this->where('uid = ?',array($post->uid));
 			}
 			if(!empty($post->starttime_from))
 			{
@@ -153,6 +158,10 @@ class couponModel extends model
 					$this->where('type=? and value>?',array('discount',$post->value));
 				}
 			}
+		}
+		if(isset($post->start) && isset($post->length))
+		{
+			$this->limit($post->start,$post->length);
 		}
 		return $this->select(implode(',', $parameter));
 	}
@@ -202,6 +211,7 @@ class couponModel extends model
 		$times = $total;
 		$max = empty($max)?0:$max;
 		$display = empty($display)?0:1;
+		$uid = empty($uid)?0:$uid;
 		$data = array(NULL,$couponno,$uid,$total,$starttime,$endtime,$times,$max,$display,$type,$value);
 		if($this->insert($data))
 		{

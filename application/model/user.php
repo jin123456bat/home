@@ -83,7 +83,7 @@ class userModel extends model
 	function register($telephone, $password,$o2o = 0,$client = 'web')
 	{
 		$result = $this->where('telephone=?',array($telephone))->select();
-		if(isset($result[0]))
+		if(!empty($result))
 			return false;
 		$salt = random::word(6);
 		$password = md5($password.$salt);
@@ -114,7 +114,7 @@ class userModel extends model
 	 */
 	function login($telephone, $password)
 	{
-		$result = $this->where('telephone=?',array($telephone))->select();
+		$result = $this->where('telephone=? or username=?',array($telephone,$telephone))->select();
 		if(isset($result[0]))
 		{
 			$password = md5($password.$result[0]['salt']);

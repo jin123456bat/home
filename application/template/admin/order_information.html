@@ -141,6 +141,9 @@
                             	SKU
                             </th>
 							<th>
+								预览
+							</th>
+							<th>
 								 商品名称
 							</th>
 							<th class="hidden-480">
@@ -169,6 +172,9 @@
                         	<td>
                             	{%$goods[goods].sku%}
                             </td>
+							<td>
+								<img src="{%$goods[goods].img[0].thumbnail_path%}" width="50" height="50">
+							</td>
 							<td>
 								 {%$goods[goods].productname%}
 							</td>
@@ -202,6 +208,7 @@
 							<address>
 							<strong>{%$order.consigneeprovince%}</strong><br/>
 							{%$order.consigneecity%}<br/>
+							{%$order.consigneecounty%}<br/>
 							{%$order.consigneeaddress%}<br/>
                             {%$order.zipcode%}<br/>
 							<abbr title="Phone">Tel:</abbr> {%$order.consigneetel%} </address>
