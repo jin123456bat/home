@@ -59,22 +59,43 @@
       //分类请求
       category();
       //商品请求
-      products(curcid,0);
+      // products(curcid,0);
       //页面滚动事件绑定加载数据
       $(window).scroll(function(){  
         var $this =$(this); 
         var viewH =$(window).height();//可见高度  
         var contentH = document.body.scrollHeight,//内容高度  
         scrollTop =$(this).scrollTop();//滚动高度  
-        if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容  
+        if(scrollTop/(contentH -viewH)>=0.5){ //到达底部100px时,加载新内容  
           curPage++;
           products(curcid,curPage);
         }  
       });  
+      getKF1();
 
     });
+  function getKF1(){
+    $.ajax( {    
+      url:BASEURL+'?c=system&a=app&type=wap',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+        config_base.tel = data.body.servicetelephone;
+        setKF();
+        }else{
+          // alert(data.result);
+          console.log(data.code);
+        } 
+      } 
+    });
+  }
     var curPage = 0;
     function products(cid,p){
+      $(".nonepro").text('正在加载..').show();
       var page =p ? p:0;
       var start = loadNum*page;
       // console.log("page:"+page+"s:"+start+"lo:"+loadNum);
@@ -133,8 +154,9 @@
                       +    '</div></div></a>';
               }
             }
+            $(".nonepro").hide();
             if(re.length<loadNum){
-              $('.nonepro').show();
+              $('.nonepro').text('没有了').show();
               // console.log('end');
             }
             if(page==0){
@@ -200,6 +222,7 @@
             }
             $('.class_cont .classify').html(html);
             catefly();
+            $(".classify .item").eq(0).click();
           }else{
             alert(data.result);
           } 

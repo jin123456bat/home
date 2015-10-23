@@ -314,6 +314,9 @@
 									 手机号
 								</th>
 								<th>
+									openid
+								</th>
+								<th>
 									 Email
 								</th>
 								<th>
@@ -336,6 +339,9 @@
 								</th>
                           		<th>
 									推荐人
+								</th>
+								<th>
+									推广二维码
 								</th>
 								<th>
 									封号
@@ -641,6 +647,11 @@ TableManaged.init();
 		table.addClass('display-none');
 		loading.removeClass('display-none');
 		table.find('tbody').empty();
+	});
+	
+	$('.downloadeqcode').live('hover',function(){
+		var id = $(this).data('id');
+		$(this).popover({html:true,title:'公众号二维码',placement:'left',trigger:'hover',container:'body',content:'<img width=150 height=150 src="{%url c=wechat a=eqcode%}&id='+id+'"/>'});
 	});
 });
 </script>

@@ -292,7 +292,7 @@ class userControl extends control
 		$this->response->addHeader('Content-Type','application/json');
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
-		$o2o = empty(filter::telephone($this->post->o2o))?0:filter::telephone($this->post->o2o);
+		$o2o = empty(filter::telephone($this->post->o2o))?NULL:filter::telephone($this->post->o2o);
 		$code = $this->post->code;
 		$client = $this->post->client;
 		$userModel = $this->model('user');
@@ -323,7 +323,7 @@ class userControl extends control
 					{
 						$o2oModel = $this->model('o2ouser');
 						$o2o = $o2oModel->check($o2o);
-						if(empty($oid))
+						if(empty($o2o))
 						{
 							return json_encode(array('code'=>6,'result'=>'推广员手机号错误'));
 						}
@@ -382,7 +382,7 @@ class userControl extends control
 		$telephone = filter::telephone($this->post->telephone);
 		$password = $this->post->password;
 		$client = $this->post->client;
-		if ($telephone != NULL && $password != NULL) {
+		if (!empty($telephone) && !empty($password)) {
 			$userModel = $this->model('user');
 			$uinfo = $userModel->login($telephone, $password);
 			if (isset($uinfo['id']) && ! empty($uinfo['id'])) {

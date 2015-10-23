@@ -80,14 +80,14 @@ class userModel extends model
 	/**
 	 * 普通用户注册数据模型
 	 */
-	function register($telephone, $password,$o2o = 0,$client = 'web')
+	function register($telephone, $password,$o2o = NULL,$client = 'web')
 	{
 		$result = $this->where('telephone=?',array($telephone))->select();
 		if(!empty($result))
 			return false;
 		$salt = random::word(6);
 		$password = md5($password.$salt);
-		$openid = '';
+		$openid = NULL;
 		$regtime = $_SERVER['REQUEST_TIME'];
 		$logtime = $regtime;
 		$email = '';
@@ -96,9 +96,10 @@ class userModel extends model
 		$close = 0;
 		$ordernum = 0;
 		$cost = 0;
-		$gravatar = 'D:\wamp\www\application\assets\gravatar.jpg';
+		$gravatar = realpath('.\application\assets\gravatar.jpg');
 		$username = '';
 		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$openid,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o,$client);
+		var_dump($array);
 		if($this->insert($array))
 		{
 			return $this->lastInsertId();
@@ -170,7 +171,7 @@ class userModel extends model
 	
 	function clearOid($oid)
 	{
-		$this->where('oid=?',array($oid))->update('oid',0);
+		$this->where('oid=?',array($oid))->update('oid',NULL);
 	}
 	
 	function search($search,$length = 10)
@@ -184,7 +185,7 @@ class userModel extends model
 	 * 微信用户注册数据模型
 	 * @auth felixchen
 	 */
-	function registerWeiXin($openid,$oid=0,$client = 'web',$usernam,$img)
+	function registerWeiXin($openid,$oid=NULL,$client = 'web',$usernam,$img)
 	{
 		//$result = $this->where('openid=?',array($openid))->select();
 		//if(isset($result[0]))
@@ -201,7 +202,7 @@ class userModel extends model
 		$cost = 0;
 		$gravatar = $img;
 		$username = $usernam;
-		$telephone="";
+		$telephone=NULL;
 		
 		
 		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$openid,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$oid,$client);	

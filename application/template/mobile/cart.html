@@ -45,19 +45,48 @@
       <div class="right">
         <div class="allprice">合计:<span class="redtext" id="calsum"></span>元</div>
         <!-- <div class="youhui">已优惠:-20元</div> -->
-        <a class="gocount" href="index.php?c=mobile&a=orderConfirm">去结算</a>
+        <a class="gocount" href="javascript:;" onclick="calcul()">去结算</a>
         <div class="tips">我们家全场包税免邮</div>
       </div>
     </div>
   </div>
+  <input type="hidden" id="maxvalue">
   <div id="footer">
   </div>
   <script type="text/javascript">
+  function calcul(){
+    if(parseInt($("#calsum").text())>parseInt($("#maxvalue").val())){
+      swal('超过了单次最高金额，请拆单！');
+      return;
+    }
+    window.location.href="index.php?c=mobile&a=orderConfirm";
+  }
     $(function () {
       checklogin();
       loadCart();
       calSum('calsum');
+      getKF1();
     });
+  function getKF1(){
+    $.ajax( {    
+      url:BASEURL+'?c=system&a=app&type=wap',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+        config_base.tel = data.body.servicetelephone;
+        $("#maxvalue").val(data.body.maxvalue);
+        setKF();
+        }else{
+          // alert(data.result);
+          console.log(data.code);
+        } 
+      } 
+    });
+  }
     function checklogin(){
       $.ajax( {    
         url:BASEURL+'?c=user&a=information',// 跳转到 action    

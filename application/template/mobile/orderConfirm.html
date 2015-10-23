@@ -44,7 +44,7 @@
       </div>
       <div class="pay">
         <div class="pay_d clearfix"><label>税费</label><div class="val">￥0</div></div>
-        <div class="pay_d clearfix"><label>优惠</label><div class="val redtext" id="discountmoney">-￥0</div></div>
+        <div class="pay_d clearfix"><label>优惠</label><div class="val redtext" id="discountmoney">￥0</div></div>
         <div class="pay_d clearfix"><label>实际支付</label><div class="val redtext" id="realpay">￥0</div></div>
         <!-- <div class="method clearfix">
           <div class="paymethod"><i class="icon wechat"></i>微信支付</div>
@@ -131,15 +131,15 @@
               html = '<div class="tit">收货人信息</div>'
                      +     '<div class="line_group clearfix">'
                      +       '<label>地 址</label>'
-                     +       '<div class="val">请添加</div>'
+                     +       '<div class="val"></div>'
                      +     '</div>'
                      +     '<div class="line_group clearfix">'
                      +       '<label>收货人</label>'
-                     +       '<div class="val">请添加</div>'
+                     +       '<div class="val"></div>'
                      +     '</div>'
                      +     '<div class="line_group clearfix">'
                      +       '<label>电 话</label>'
-                     +       '<div class="val">请添加</div>'
+                     +       '<div class="val"></div>'
                      +      ' <a class="chan" href="index.php?c=mobile&a=address&back=order">更换地址</a>'
                      +     '</div>';
               $(".recieve").html(html);
@@ -254,7 +254,7 @@
           if(data.code == 1){
             console.log(data);
             if(pre==1){
-              $('#discountmoney').text('-￥'+data.body.discount);
+              $('#discountmoney').text('￥'+data.body.discount);
               $("#realpay").text('￥'+data.body.ordertotalamount);
             }else{
               window.location.href=BASEURL+'?c=order&a=payment&id='+data.body.id+'&trade_type='+config_base.trade;

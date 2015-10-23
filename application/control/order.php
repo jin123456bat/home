@@ -698,7 +698,7 @@ class orderControl extends control
 				
 				if($this->post->notify_type == 'trade_status_sync')
 				{
-					$time = strtotime($this->post->notify_time);//交易完成时间
+					$time = $_SERVER['REQUEST_TIME'];//交易完成时间
 					$notify_id = $this->post->notify_id;//通知id
 					$sign_type = $this->post->sign_type;//签名方式
 					$sign = $this->post->sign;//签名

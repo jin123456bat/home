@@ -21,7 +21,6 @@
     <header>
       <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>主题详情</h1>
-      <a class="btn right_btn"><i class="icon share2"></i></a>
     </header>
   </div>
   <div id="content" style="padding-top:50px">
@@ -54,39 +53,75 @@
         cache:false,    
         dataType:'json',    
         success:function(data) { 
+          console.log(data);
           if(data.code == 1){
-            var re = data.body;
+            var res = data.body;
             var html = "";
-            $('.themeTopImg img')[0].src = re.bigpic;
-            $('.zhutitop .name').text(re.name);
-            $('.zhutitop .desc').text(re.description);
-            $('#header h1').text(re.name);
+            $('.themeTopImg img')[0].src = res.bigpic;
+            $('.zhutitop .name').text(res.name);
+            $('.zhutitop .desc').text(res.description);
+            $('#header h1').text(res.name);
+            var re = res.product;
             for(var i=0;i<re.length;i++){
+              // var rei = re[i];
+              // var discount = (rei.price*10/rei.oldprice).toFixed(1);
+              // discount = discount>=10?'无':discount;
+              // html+='<a class="item clearfix">'
+              //     +    '<div class="pic">'
+              //     +      '<img src="'+rei.img[0].thumbnail_path+'">'
+              //     +      '<div class="label miaosha"></div>'
+              //     +    '</div>'
+              //      +   '<div class="right">'
+              //      +     '<div class="name">'+rei.name+'</div>'
+              //      +     '<div class="desc">'+rei.short_description+'</div>'
+              //      +     '<div class="prices clearfix">'
+              //      +       '<div class="price">￥'+rei.price+'</div>'
+              //      +       '<div class="oldp"><span class="cross">￥'+rei.oldprice+'</span></div>'
+              //      +       '<div class="discount">'+discount+'</div>'
+              //      +     '</div>'
+              //      +     '<div class="from clearfix">'
+              //      +       '<div class="coutryflag"><img src="{%$VIEW_ROOT%}/template/mobile/images/flag-'+rei.origin+'.jpg"/></div>'
+              //      +       '<div class="icon plane"></div>'
+              //      +       '<div class="text">'+rei.origin+'发货直邮邮回国内</div>'
+              //      +     '</div>'
+              //      +     '<div class="cuxiao">'
+              //      +       '<div class="cuxiaoname">activityname</div>'
+              //      +       '<div class="time">距结束时间  </a>'
+              //      +     '</div></div></div>';
               var rei = re[i];
-              var discount = (rei.price*10/rei.oldprice).toFixed(1);
-              discount = discount>=10?'无':discount;
-              html+='<a class="item clearfix">'
-                  +    '<div class="pic">'
-                  +      '<img src="'+rei.img[0].thumbnail_path+'">'
-                  +      '<div class="label miaosha"></div>'
-                  +    '</div>'
-                   +   '<div class="right">'
-                   +     '<div class="name">'+rei.name+'</div>'
-                   +     '<div class="desc">'+rei.short_description+'</div>'
-                   +     '<div class="prices clearfix">'
-                   +       '<div class="price">￥'+rei.price+'</div>'
-                   +       '<div class="oldp"><span class="cross">￥'+rei.oldprice+'</span></div>'
-                   +       '<div class="discount">'+discount+'</div>'
-                   +     '</div>'
-                   +     '<div class="from clearfix">'
-                   +       '<div class="coutryflag"><img src="{%$VIEW_ROOT%}/template/mobile/images/flag-'+rei.origin+'.jpg"/></div>'
-                   +       '<div class="icon plane"></div>'
-                   +       '<div class="text">'+rei.origin+'发货直邮邮回国内</div>'
-                   +     '</div>'
-                   +     '<div class="cuxiao">'
-                   +       '<div class="cuxiaoname">activityname</div>'
-                   +       '<div class="time">距结束时间  </a>'
-                   +     '</div></div></div>';
+                var price = parseFloat(rei.price).toFixed(1);
+                var oldprice = (parseFloat(rei.oldprice).toFixed(1)!=0)?parseFloat(rei.oldprice).toFixed(1):price;
+                var discount = (price*10/oldprice).toFixed(1);
+                var hide=(discount==10)?'hide':'';
+                var activi = {
+                  'sale':'temai',
+                  'seckill':'miaosha',
+                  'fullcut':'manjian',
+                };
+                // price = price.toFixed(1);
+                if(i%2==0){
+                  html+='<hr>';
+                }
+                // console.log(rei.img[0]);
+                imgobj = rei.img[0];
+                if(imgobj){
+                  var src = imgobj.small_path;
+                }else{
+                  var src = defaultProPic;
+                }
+                html+='<a class="pro" proId="'+rei.id+'" href="index.php?c=mobile&a=proDetail&pid='+rei.id+'">'
+                     +   '<div class="pic">'
+                     +     '<img src="'+src+'" onerror="imgerror(this)">'
+                     +     '<div class="label '+activi[rei.activity]+'"></div>'
+                     +     '<div class="country">'+rei.origin.name+'</div>'
+                     +   '</div>'
+                     +   '<div class="downth">'
+                     +     '<div class="desc">'+rei.name+'</div>'
+                     +     '<div class="prices clearfix">'
+                     +       '<div class="price">￥'+price+'</div>'
+                      +      '<div class="oldp '+hide+'"><span class="cross">￥'+oldprice+'</span></div>'
+                      +      '<div class="discount '+hide+'">'+discount+'</div>'
+                      +    '</div></div></a>';
             }
             $('#proList').html(html);
           }else{

@@ -1,9 +1,5 @@
 <?php
 namespace system\core;
-
-use application\control\mobileControl;
-use application\control\o2ocenterControl;
-use application\control\adminControl;
 /**
  * 应用程序类
  *
@@ -52,20 +48,12 @@ class webApplication extends base
 						//$class = new \ReflectionClass($class);
 						$class = new $class();
 						$class->response = &$response;
-						if (method_exists($class, $action)) {
+						if ((method_exists($class, $action) && is_callable(array($class,$action))) || method_exists($class, '__call')) {
 							$response->setCode(200);
 							$response->setBody($this->__200($class, $action));
 						} else {
-							if ($class instanceof adminControl || $class instanceof mobileControl || $class instanceof o2ocenterControl)
-							{
-								$response->setCode(200);
-								$response->setBody($this->__200($class, $action));
-							}
-							else
-							{
-								$response->setCode(404);
-								$response->setBody($this->__404($control, $action));
-							}
+							$response->setCode(404);
+							$response->setBody($this->__404($control, $action));
 						}
 					} else {
 						$response->setCode(404);

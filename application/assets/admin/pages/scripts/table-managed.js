@@ -37,10 +37,13 @@ var TableManaged = function () {
 				"orderable":false
 			}, {
 				"data":"telephone",
-                "orderable": false
+                "orderable": true
             }, {
+				data:"openid",
+				orderable:true
+			},{
 				"data":"email",
-                "orderable": false
+                "orderable": true
             }, {
 				"data":"regtime",
                 "orderable": true
@@ -63,6 +66,9 @@ var TableManaged = function () {
 				"data":"oid",
 				"orderable":true
 			}, {
+				data:'id',
+				orderable:false
+			},{
 				"data":"close",
 				"orderable": false
 			}],
@@ -95,7 +101,7 @@ var TableManaged = function () {
 					return "<div class=checker><span><input type=checkbox class=checkboxes value="+data+"></span></div>";
 				}
 			}, {
-				"targets":10,
+				"targets":11,
 				"data":'ordernum',
 				render:function(data,type,full){
 					if(data =='0')
@@ -109,7 +115,7 @@ var TableManaged = function () {
 					}
 				}
 			}, {
-				"targets":[11],
+				"targets":[12],
 				"data":"oid",
 				"render":function(data,type,full){
 					$.ajaxSetup({async:false});
@@ -124,7 +130,13 @@ var TableManaged = function () {
 					return telephone;
 				}
 			}, {
-				"targets":[12],
+				targets:13,
+				data:'id',
+				render:function(data,type,full){
+					return "<button class='btn popovers downloadeqcode' data-id="+data+">公众号二维码</button>";
+				}
+			},{
+				"targets":[14],
 				"data":"close",
 				"render":function(data,type,full){
 					if(data == 0)
@@ -143,13 +155,13 @@ var TableManaged = function () {
 					return '<img src="'+data+'" width="50" height="50" onerror="this.src=\'./application/assets/gravatar.jpg\'"/>';
 				}
 			}, {
-				"targets":[5],
+				"targets":[6],
 				"data":"regtime",
 				"render":function(data,type,full){
 					return unixtotime(data,true,8);
 				}
 			}, {
-				"targets":[6],
+				"targets":[7],
 				data:"logtime",
 				"render":function(data,type,full){
 					return unixtotime(data,true,8);

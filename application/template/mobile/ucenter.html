@@ -18,9 +18,9 @@
 <body>
   <div id="header">
     <header>
-      <a class="btn left_btn"><i class="icon chat"></i></a>
+      <!-- <a class="btn left_btn"><i class="icon chat"></i></a> -->
       <h1>我的</h1>
-      <a class="btn right_btn" href="index.php?c=mobile&a=settings"><i class="icon setting"></i></a>
+      <a class="btn right_btn" href="index.php?c=mobile&a=userInfo"><i class="icon setting"></i></a>
     </header>
   </div>
   <div class="caidanCon">
@@ -44,7 +44,7 @@
             未填写
           </div>
         </div>
-        <div class="login clearfix">
+        <div class="login clearfix hide">
           <a class="item" href="index.php?c=mobile&a=login">登录</a>
           <a class="item" href="index.php?c=mobile&a=register">注册</a>
         </div>
@@ -81,7 +81,7 @@
               <i class="icon uicon7 icon_l"></i>
               <label>我的优惠券</label>
               <i class="icon arr_r icon_r"></i>
-              <div class="addon" id="cou_num">4张</div>
+              <!-- <div class="addon" id="cou_num">4张</div> -->
             </a>
           </li>
         </ul>
@@ -101,24 +101,24 @@
             </a>
           </li>
           <li>
-            <a href="">
+            <a href="" id="kfrx">
               <i class="icon uicon12 icon_l"></i>
               <label>客服热线</label>
               <i class="icon arr_r icon_r"></i>
-              <div class="addon">客服热线：<span class="bluetext">010－1212083</span></div>
+              <div class="addon">客服热线：<span class="bluetext" id="kftext"></span></div>
             </a>
           </li>
-          <li>
+          <!-- <li>
             <a href="">
               <i class="icon uicon13 icon_l"></i>
               <label>大奖抢不停</label>
               <i class="icon arr_r icon_r"></i>
             </a>
-          </li>
+          </li> -->
         </ul>
         <ul>
           <li>
-            <a href="">
+            <a href="index.php?c=mobile&a=helper">
               <i class="icon uicon14 icon_l"></i>
               <label>帮助与反馈</label>
               <i class="icon arr_r icon_r"></i>
@@ -135,7 +135,32 @@
   $(function(){
     info();
     coupon();
+    getKF1();
+    // setKF();
+    // setKF('#kfrx');
+    // setKF('#kftext',true);
   });
+  function getKF1(){
+    $.ajax( {    
+      url:BASEURL+'?c=system&a=app&type=wap',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+        config_base.tel = data.body.servicetelephone;
+        setKF();
+        setKF('#kfrx');
+        setKF('#kftext',true);
+        }else{
+          // alert(data.result);
+          console.log(data.code);
+        } 
+      } 
+    });
+  }
   function info(){
     $.ajax( {    
       url:BASEURL+'?c=user&a=information',// 跳转到 action    
@@ -147,7 +172,9 @@
       success:function(data) { 
         if(data.code == 1){
           $('.alreadylogin').show();
-          $('.login').hide();
+
+          
+
           var name = data.body.username;
           var photo = data.body.gravatar;
           var money = data.body.money;
@@ -160,6 +187,7 @@
           $('#money').text('￥'+money);
         }else{
           // alert(data.result);
+          $('.login').show();
         } 
       } 
     });
@@ -175,7 +203,7 @@
       success:function(data) { 
         if(data.code == 1){
           var number = data.body.length;
-          $('#cou_num').text(number+'张');
+          // $('#cou_num').text(number+'张');
         }else{
           alert(data.result);
         } 

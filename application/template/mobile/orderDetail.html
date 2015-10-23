@@ -86,7 +86,7 @@
       for(var i=0;i<body.orderdetail.length;i++){
         proshtml+='<div class="item clearfix">'
                +     '<div class="picleft">'
-               +       '<img src="'+body.orderdetail[i]["img"]+'">'
+               +       '<img src="'+body.orderdetail[i]["img"][0]['thumbnail_path']+'">'
                 +    '</div>'  
                +     '<div class="desc">'
                +    body.orderdetail[i]["productname"]+' '+body.orderdetail[i]["prototype"]

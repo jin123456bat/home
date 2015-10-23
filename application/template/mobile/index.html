@@ -61,7 +61,7 @@
           </div>
           <div class="next">
             <span>下一场</span>
-            <a href="" id="nextms">11:00</a>
+            <a id="nextms">暂无下一场</a>
           </div>
         </div>
       </div>
@@ -84,7 +84,27 @@
       miaosha();
       temai();
       changxiao();
+      getKF1();
     });
+  function getKF1(){
+    $.ajax( {    
+      url:BASEURL+'?c=system&a=app&type=wap',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+        config_base.tel = data.body.servicetelephone;
+        setKF();
+        }else{
+          // alert(data.result);
+          console.log(data.code);
+        } 
+      } 
+    });
+  }
     var time_end;
     function countDown(tm,s_endtime){
       var time_now = new Date();  // 获取当前时间
@@ -160,6 +180,7 @@
         cache:false,    
         dataType:'json',    
         success:function(data) { 
+          console.log(data);
           if(data.code == 1){
             var re = data.body;
             for(var i=0;i<re.length;i++){
@@ -266,7 +287,7 @@
       $.ajax( {    
         url:BASEURL+'?c=theme&a=getlist',// 跳转到 action    
         data:{    
-          length:3
+          length:6
         },    
         type:'get',    
         cache:false,    
@@ -274,7 +295,7 @@
         success:function(data) { 
           if(data.code == 1){
             var re = data.body;
-            if(re.length>=3){
+            if(re.length>=3&&re.length<6){
               var re0 = re[0];
               var re1 = re[1];
               var re2 = re[2];
@@ -287,6 +308,32 @@
                     +  '<a class="rightpic" onclick="showtheme('+re2.id+')">'
                     +    '<img src="'+re2.smallpic+'">'
                     +  '</a>';
+              $('#themes').html(html);
+            }else if(re.length>=6){
+              var re0 = re[0];
+              var re1 = re[1];
+              var re2 = re[2];
+              var re3 = re[3];
+              var re4 = re[4];
+              var re5 = re[5];
+              var html = '<div class="clearfix oneb"><a class="leftpic" onclick="showtheme('+re0.id+')">'
+                    +    '<img src="'+re0.middlepic+'">'
+                    + '</a>'
+                    +  '<a class="rightpic" onclick="showtheme('+re1.id+')">'
+                    +    '<img src="'+re1.smallpic+'">'
+                    +  '</a>'
+                    +  '<a class="rightpic" onclick="showtheme('+re2.id+')">'
+                    +    '<img src="'+re2.smallpic+'">'
+                    +  '</a></div>';
+              html += '<div class="clearfix oneb"><a class="leftpic" onclick="showtheme('+re3.id+')">'
+                    +    '<img src="'+re3.middlepic+'">'
+                    + '</a>'
+                    +  '<a class="rightpic" onclick="showtheme('+re4.id+')">'
+                    +    '<img src="'+re4.smallpic+'">'
+                    +  '</a>'
+                    +  '<a class="rightpic" onclick="showtheme('+re5.id+')">'
+                    +    '<img src="'+re5.smallpic+'">'
+                    +  '</a></div>';
               $('#themes').html(html);
             }
           }else{
@@ -322,7 +369,7 @@
       $.ajax( {    
         url:BASEURL+'?c=hotorder&a=product',// 跳转到 action    
         data:{    
-          length:6
+          length:1000
         },    
         type:'get',    
         cache:false,    
@@ -352,12 +399,24 @@
       for(var i=0;i<re.length;i++){
         var rei = re[i];
         var discount = (rei.price*10/rei.oldprice).toFixed(1);
-        var shipchar = re.shipchar?re.shipchar:'';
+        var shipchar = rei.shipchar?rei.shipchar:'';
         discount = discount>=10?'无':discount;
         var jieshutm = '';
-        if(rei.s_endtime){
-          jieshutm = '<div class="cuxiaoname">'+rei.sname+'</div>'
-             +       '<div class="time">距结束时间  '+countDown(1,rei.s_endtime)+'</div>';
+        // if(rei.s_endtime){
+        //   jieshutm = '<div class="cuxiaoname">'+rei.sname+'</div>'
+        //      +       '<div class="time">距结束时间  '+countDown(1,rei.s_endtime)+'</div>';
+        // }
+        var acti = rei.activity_description;
+        if(acti){
+          var activi2 = {
+                'sale':'特卖',
+                'seckill':'秒杀',
+                'fullcut':'满减',
+              };
+          var anameneo = acti.sname?activi2[rei.activity]+' '+acti.sname:'促销';
+          jieshutm = '<div class="cuxiaoname">'+anameneo+'</div>'
+             +       '<div class="time">距结束时间  '+countDown(1,acti.endtime)+'</div>';
+
         }
         html+='<div class="item clearfix" onclick="showpro('+rei.id+')">'
             +    '<div class="pic">'
@@ -373,7 +432,7 @@
              +       '<div class="discount">'+discount+'</div>'
              +     '</div>'
              +     '<div class="from clearfix">'
-             +       '<div class="coutryflag"><img src="'+BASER+'/application/assets/flag/'+rei.origin['name']+'.jpg"/></div>'
+             +       '<div class="coutryflag"><img src="'+BASER+'application/assets/flag/'+rei.origin['name']+'.jpg"/></div>'
              +       '<div class="icon plane"></div>'
              +       '<div class="text">'+shipchar+'</div>'
              +     '</div>'

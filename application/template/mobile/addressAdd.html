@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <title>编辑收货地址</title>
+  <title>添加收货地址</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="Keywords" content="" />
   <meta name="description" content="" />
@@ -14,13 +14,13 @@
   <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
   <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
   <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/city.js"></script>
+  <!-- <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/city.js"></script> -->
 </head>
 <body>
   <div id="header">
     <header>
       <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
-      <h1>编辑收货地址</h1>
+      <h1>添加收货地址</h1>
     </header>
   </div>
   <div id="content" style="padding-top:50px;padding-bottom:20px;">
@@ -41,16 +41,22 @@
         <label>所在城市</label>
         <div class="right">
           <section class="field-bd select-box J_Select">
-            <select  name="ddlProvince" id="ddlProvince" onchange="selectMoreCity(this)" class="selectstyle">
+            <select  name="ddlProvince" id="ddlProvince" onchange="selectMoreCity()" class="selectstyle">
             </select>
             <span class="icon-select"></span>
           </section>
           <section class="field-bd select-box J_Select" style="margin-top:10px;">
             <select name="ddlCity" id="ddlCity" class="selectstyle">
-              <option selected value="">城市</option>
+              <option selected value="">先选择省份</option>
             </select>
             <span class="icon-select"></span>
           </section>
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>县(区)</label>
+        <div class="right">
+          <input type="text" id="county">
         </div>
       </div>
       <div class="item clearfix">
@@ -76,10 +82,68 @@
     <a class="btnone_pink" onclick="save()">确认</a>
   </div>
   <script type="text/javascript">
-  BindCity("杭州");
+  // BindCity("杭州");
   $(function(){
     checklogin();
+    loader();
   });
+  function loader(){
+    loadprovince();
+  }
+  function loadprovince(){
+    $.ajax( {    
+      url:BASEURL+'?c=index&a=address',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        // data = JSON.parse(data);
+        console.log(data);
+        if(data.code == 1){
+          var re = data.body;
+          var html = '<option>选择省份</option>';
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            html+='<option value="'+rei.id+'">'+rei.name+'</option>';
+          }
+          $("#ddlProvince").html(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function selectMoreCity(){
+    var id = $("#ddlProvince").val();
+    loadcity(id);
+  }
+  function loadcity(pid){
+    $.ajax( {    
+      url:BASEURL+'?c=index&a=address',// 跳转到 action    
+      data:{    
+        type:'city',
+        pid:pid,
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          var re = data.body;
+          var html = '<option>选择城市</option>';
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            html+='<option value="'+rei.id+'">'+rei.name+'</option>';
+          }
+          $("#ddlCity").html(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
   function checklogin(){
     $.ajax( {    
       url:BASEURL+'?c=user&a=information',// 跳转到 action    
@@ -107,7 +171,7 @@
   }
   function valid(){
     // console.log();
-    if(!$('#name').val()||!$('#telephone').val()||!$('#ddlProvince').val()||!$('#ddlCity').val()||!$('#ddlCity').val()||!$('#address').val()){
+    if(!$('#name').val()||!$('#telephone').val()||!$('#ddlProvince').val()||!$('#ddlCity').val()||!$('#ddlCity').val()||!$('#address').val()||!$('#county').val()){
       alert('请填写完整');
       return false;
     }
@@ -126,6 +190,7 @@
       data:{  
         province:$('#ddlProvince').val(),
         city:$('#ddlCity').val(),
+        county:$('#county').val(),
         address:$('#address').val(),
         name:$('#name').val(),
         telephone:$('#telephone').val(),

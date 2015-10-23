@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <title>产品详情</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,  minimum-scale=1.0, maximum-scale=2.0">
   <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
   <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
   <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
@@ -20,7 +20,7 @@
       <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
       <h1>产品详情</h1>
       <a class="btn right_btn" href="index.php?c=mobile&a=cart"><i class="icon cart"></i></a>
-      <a class="btn right_btn rbtn2" onclick="collect()"><i class="icon star"></i></a>
+      <a class="btn right_btn rbtn2" id="fav" onclick="collect()"><i class="icon star"></i></a>
       <span class="cartnum">0</span>
     </header>
   </div>
@@ -75,9 +75,9 @@
       </div>
       <div class="de_infoline clearfix prode_name">
         <div class="name"><!-- 卡姿兰(Carslan)光感花影腮红5g（三色可选）缔造完美妆容！清新淡雅的裸粉色 --></div>
-        <div class="share">
+       <!--  <div class="share">
           分享
-        </div>
+        </div> -->
       </div>
       <div class="de_infoline prode_se">
         <div class="prices clearfix">
@@ -108,6 +108,8 @@
     </div>
     <div id="J_data" class="tab">
       <div class="det_canshu">
+        <div class="top"></div>
+        <div class="low"></div>
         
       </div>
     </div>
@@ -121,7 +123,7 @@
         <br>
         首页
       </a>
-      <a class="lbtn">
+      <a class="lbtn" id="zixun">
         <img src="{%$VIEW_ROOT%}/template/mobile/images/phonegray.png">
         <br>
         咨询
@@ -138,6 +140,25 @@
   }function jiaru(){
     curcot = 'jiaru';
   }
+  function getKF1(){
+    $.ajax( {    
+      url:BASEURL+'?c=system&a=app&type=wap',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+        config_base.tel = data.body.servicetelephone;
+        setKF('#zixun');
+        }else{
+          // alert(data.result);
+          console.log(data.code);
+        } 
+      } 
+    });
+  }
   var curcot = '';
   var pid;
   $(function () {
@@ -149,7 +170,7 @@
     commentloader();
     prototy();
     cartnum();
-    
+    getKF1();
   });
   function buyNow(){
     window.location.href="index.php?c=mobile&a=orderConfirmSingle&pid="+pid;
@@ -384,7 +405,7 @@
                 ht+='【'+reivl[j]+'】';
                 cht+='<span aiId="'+j+'" protoId="'+rei.id+'" onclick="changeProto(this)">'+reivl[j]+'</span>';
               }
-              html+='<div class="line clearfix"><label>'+rei.name+'</label><div class="val">'+ht+'</div></div>';
+              // html+='<div class="line clearfix"><label>'+rei.name+'</label><div class="val">'+ht+'</div></div>';
               choHtml+='<div class="chosin clearfix">'
                       +    '<label>'+rei.name+'</label>'
                       +    '<div class="right clearfix">'
@@ -392,7 +413,7 @@
                       +    '</div>'
                       +  '</div>';
             }
-            $('.det_canshu').html(html);
+            $('.det_canshu .low').html(html);
             $("#cho").html(choHtml);
           }
         }else{
@@ -412,15 +433,19 @@
       cache:false,    
       dataType:'json',    
       success:function(data) { 
+        console.log(data);
         if(data.code == 1){
           var re = data.body;
           //轮播图
           var imgs = re.img;
           collection = re.collection;
           activity_description = re.activity_description;
+          if(re.favourite==true){
+            $("#fav").addClass('active');
+          }
           var imghtml="";
           for(var i=0;i<imgs.length;i++){
-            var src = imgs[i].base_path?imgs[i].base_path:defaultProPic;
+            var src = imgs[i].oldimage?imgs[i].oldimage:defaultProPic;
             // console.log(src);
             imghtml+='<li><img src="'+src+'"></li>';
             // console.log(imghtml);
@@ -452,15 +477,23 @@
           }else{
           }
           $('.article').html(html_decode(re.description));
+          var cpcanshu = '<div class="line clearfix"><label>名称</label><div class="val">'+re.name+'</div></div>'+'<div class="line clearfix"><label>分类</label><div class="val">'+re.category+'</div></div>'+'<div class="line clearfix"><label>描述</label><div class="val">'+re.short_description+'</div></div>';
+          $('.det_canshu .top').html(cpcanshu);
           //活动
           var timestamp = Date.parse(new Date())/1000; 
-          var acti = re.activity[0];
+          var acti = re.activity_description;
           if(acti&&acti.starttime<timestamp&&acti.endtime>timestamp){
-            $('.prode_se .cuxiao .name').text(acti.sname?acti.sname:'促销活动');
-            $('.prode_se .prices .price').text('￥'+acti.price);
+            var activi = {
+                  'sale':'特卖',
+                  'seckill':'秒杀',
+                  'fullcut':'满减',
+                };
+            $('.prode_se .cuxiao .name').text(acti.sname?activi[re.activity]+' '+acti.sname:'促销');
+            if(acti.price) $('.prode_se .prices .price').text('￥'+acti.price);
             var endtime = acti.endtime;
             time_end = endtime*1000;
             setTimeout("show_time()",1000);
+
           }else{
             $('.cuxiao').hide();
           }
@@ -518,14 +551,15 @@
       dataType:'json',    
       success:function(data) { 
         if(data.code == 1){
-          alert('添加成功');
+          // alert('添加成功');
+          $("#fav").addClass('active');
         }else if(data.code == 2){
-          alert(data.result);
+          // alert(data.result);
           setTimeout(function(){
             window.location.href="index.php?c=mobile&a=login";
           },2000);
         }else{
-          alert(data.result);
+          // alert(data.result);
         } 
       } 
     });

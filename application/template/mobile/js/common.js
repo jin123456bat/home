@@ -176,9 +176,9 @@ function isObjectValueEqual(a, b) {
     // are considered equivalent
     return true;
 }
-var BASEURL = './index.php';
-var BASER = '/';
-var loadNum = 4;
+var BASEURL = 'index.php';
+var BASER = '';
+var loadNum = 10;
 var defaultProPic = 'images/pro1.jpg';
 var baseThemeUrl = 'index.php?c=mobile&a=themeDetail';
 var baseProUrl = 'index.php?c=mobile&a=proDetail';
@@ -316,6 +316,36 @@ function html_decode(str){
     s = s.replace(/<br\/>/g, "\n");
     return s;
 } 
+// var tel = '';
+function getKF(){
+  $.ajax( {    
+    url:BASEURL+'?c=system&a=app&type=wap',// 跳转到 action    
+    data:{    
+    },    
+    type:'get',    
+    cache:false,    
+    dataType:'json',    
+    success:function(data) { 
+      if(data.code == 1){
+      config_base.tel = data.body.servicetelephone;
+      }else{
+        // alert(data.result);
+        console.log(data.code);
+      } 
+    } 
+  });
+}
+function setKF(divstr,istext){
+  var _this = $(".caidan .kefu");
+  if(divstr){
+    _this = $(''+divstr);
+  }
+  if(istext){
+    _this.text(config_base.tel);
+  }else{
+    _this.attr('href',"tel:"+config_base.tel);
+  }
+}
 
 
 

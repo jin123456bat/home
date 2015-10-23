@@ -12,7 +12,7 @@
   <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
   <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
   <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
-  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/city.js"></script>
+  <!-- <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/city.js"></script> -->
   <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
 </head>
 <body>
@@ -40,7 +40,7 @@
         <label>所在城市</label>
         <div class="right">
           <section class="field-bd select-box J_Select">
-            <select  name="ddlProvince" id="ddlProvince" onchange="selectMoreCity(this)" class="selectstyle">
+            <select  name="ddlProvince" id="ddlProvince" onchange="selectMoreCity()" class="selectstyle">
             </select>
             <span class="icon-select"></span>
           </section>
@@ -50,6 +50,12 @@
             </select>
             <span class="icon-select"></span>
           </section>
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>县(区)</label>
+        <div class="right">
+          <input type="text" id="county">
         </div>
       </div>
       <div class="item clearfix">
@@ -82,6 +88,66 @@
   });
   var id;
   
+  function loadprovince(lpid){
+    $.ajax( {    
+      url:BASEURL+'?c=index&a=address',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',  
+      async:false,  
+      success:function(data) { 
+        console.log(data);
+        if(data.code == 1){
+          var re = data.body;
+          var html = '<option>选择省份</option>';
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            html+='<option value="'+rei.id+'">'+rei.name+'</option>';
+          }
+          $("#ddlProvince").html(html);
+          if(lpid){
+            $("#ddlProvince option[value='"+lpid+"']").prop('selected',true);
+          }
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function selectMoreCity(){
+    var id = $("#ddlProvince").val();
+    loadcity(id);
+  }
+  function loadcity(pid,lcid){
+    $.ajax( {    
+      url:BASEURL+'?c=index&a=address',// 跳转到 action    
+      data:{    
+        type:'city',
+        pid:pid,
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          var re = data.body;
+          var html = '<option>选择城市</option>';
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            html+='<option value="'+rei.id+'">'+rei.name+'</option>';
+          }
+          $("#ddlCity").html(html);
+          if(lcid){
+            $("#ddlCity option[value='"+lcid+"']").prop('selected',true);
+          }
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
   function checklogin(){
     $.ajax( {    
       url:BASEURL+'?c=user&a=information',// 跳转到 action    
@@ -112,14 +178,18 @@
           var re = data.body;
           // $('#ddlProvince').val(re.province);
           // $('#ddlCity').val(re.city);
-          BindCity(re.city);
+          // BindCity(re.city);
           $('#address').val(re.address);
+          $('#county').val(re.county);
           $('#name').val(re.name);
           $('#telephone').val(re.telephone);
           $('#zcode').val(re.zcode);
           if(re.host==1){
             $('#host').prop('checked','checked');
           }
+          loadprovince(re.provinceid);
+          loadcity(re.provinceid,re.cityid);
+          console.log(re.cityid);
         }else{
           alert(data.result);
         } 
@@ -137,7 +207,7 @@
   }
   function valid(){
     // console.log();
-    if(!$('#name').val()||!$('#telephone').val()||!$('#ddlProvince').val()||!$('#ddlCity').val()||!$('#ddlCity').val()||!$('#address').val()){
+    if(!$('#name').val()||!$('#telephone').val()||!$('#ddlProvince').val()||!$('#ddlCity').val()||!$('#ddlCity').val()||!$('#address').val()||!$('#county').val()){
       alert('请填写完整');
       return false;
     }
@@ -157,6 +227,7 @@
         id:id,
         province:$('#ddlProvince').val(),
         city:$('#ddlCity').val(),
+        county:$('#county').val(),
         address:$('#address').val(),
         name:$('#name').val(),
         telephone:$('#telephone').val(),
