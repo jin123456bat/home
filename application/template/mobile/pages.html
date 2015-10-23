@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>关于</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1></h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px">
+    <div class="para">
+      
+    </div>
+  </div>
+  <script type="text/javascript">
+  function loader () {
+    $.ajax({
+      url:BASEURL+'?c=help&a=page&id='+$.query.get('id'),
+      data:{},
+      type:'get',
+      cache:false,
+      dataType:'json',
+      success:function(data){
+        console.log(data);
+        if(data.code==1){
+          $('.para').html(html_decode(data.body.content));
+          $('header h1').text(data.body.title);
+        }
+      },
+    });
+  }
+  $(function(){
+    loader();
+  });
+  function html_decode(str){
+      var s = "";
+      if (str.length == 0) return "";
+      s = str.replace(/&amp;/g, "&");
+      s = s.replace(/&lt;/g, "<");
+      s = s.replace(/&gt;/g, ">");
+      s = s.replace(/&nbsp;/g, " ");
+      s = s.replace(/&#39;/g, "\'");
+      s = s.replace(/&quot;/g, "\"");
+      s = s.replace(/<br\/>/g, "\n");
+      return s;
+  } 
+
+  </script>
+</body>
+</html>

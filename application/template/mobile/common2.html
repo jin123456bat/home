@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>关于我们</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>关于我们</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px">
+    <div class="para">
+      <!-- <div>
+        <h2>一、服务内容</h2>
+        <p>
+          1、乙方同意向甲方提供附于本合同并作为本合同一部分的附件A所列的特定服务。服务的内容、时限、衡量成果的标准见附件A。
+        </p>
+        <p>
+          2、如果乙方在工作中因自身过错而发生任何错误或遗漏，乙方应无条件更正，而不另外收费，  并对因此而对甲方造成的损失承担赔偿责任，赔偿以附件A所载明的该项服务内容对应之服务费为限。因甲方原因造成工作的延误，将由甲方承担相应的损失。
+        </p>
+        <p>
+          3、如果乙方在工作中因自身过错而发生任何错误或遗漏，乙方应无条件更正，而不另外收费，  并对因此而对甲方造成的损失承担赔偿责任，赔偿以附件A所载明的该项服务内容对应之服务费为限。因甲方原因造成工作的延误，将由甲方承担相应的损失。
+        </p>
+        <h2>一、服务内容</h2>
+        <p>
+          1、乙方同意向甲方提供附于本合同并作为本合同一部分的附件A所列的特定服务。服务的内容、时限、衡量成果的标准见附件A。
+        </p>
+        <p>
+          2、如果乙方在工作中因自身过错而发生任何错误或遗漏，乙方应无条件更正，而不另外收费，  并对因此而对甲方造成的损失承担赔偿责任，赔偿以附件A所载明的该项服务内容对应之服务费为限。因甲方原因造成工作的延误，将由甲方承担相应的损失。
+        </p>
+        <p>
+          3、如果乙方在工作中因自身过错而发生任何错误或遗漏，乙方应无条件更正，而不另外收费，  并对因此而对甲方造成的损失承担赔偿责任，赔偿以附件A所载明的该项服务内容对应之服务费为限。因甲方原因造成工作的延误，将由甲方承担相应的损失。
+        </p>
+      </div> -->
+    </div>
+  </div>
+  <script type="text/javascript">
+  function loader () {
+    $.ajax({
+      url:BASEURL+'?c=help&a=page&id=6',
+      data:{},
+      type:'post',
+      cache:false,
+      dataType:'json',
+      success:function(data){
+        console.log(data);
+        if(data.code==1){
+          $('.para').html(html_decode(data.body.content));
+        }
+      },
+    });
+  }
+  $(function(){
+    loader();
+  });
+  function html_decode(str){
+      var s = "";
+      if (str.length == 0) return "";
+      s = str.replace(/&amp;/g, "&");
+      s = s.replace(/&lt;/g, "<");
+      s = s.replace(/&gt;/g, ">");
+      s = s.replace(/&nbsp;/g, " ");
+      s = s.replace(/&#39;/g, "\'");
+      s = s.replace(/&quot;/g, "\"");
+      s = s.replace(/<br\/>/g, "\n");
+      return s;
+  } 
+
+  </script>
+</body>
+</html>

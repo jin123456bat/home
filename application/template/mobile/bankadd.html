@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>添加银行卡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>添加银行卡</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;padding-bottom:20px;">
+    <div class="address_form">
+      <div class="item clearfix">
+        <label>账户类型</label>
+        <div class="right">
+          <section class="field-bd select-box J_Select">
+            <select  name="type" id="type" class="selectstyle">
+              <option value="0" selected="true">个人账户</option>
+              <option value="1" >公司账户</option>
+            </select>
+            <span class="icon-select"></span>
+          </section>
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>开户银行</label>
+        <div class="right">
+          <input type="text" id="bank">
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>所在城市</label>
+        <div class="right">
+          <section class="field-bd select-box J_Select">
+            <select  name="ddlProvince" id="ddlProvince" onchange="selectMoreCity()" class="selectstyle">
+            </select>
+            <span class="icon-select"></span>
+          </section>
+          <section class="field-bd select-box J_Select" style="margin-top:10px;">
+            <select name="ddlCity" id="ddlCity" class="selectstyle">
+              <option selected value="">城市</option>
+            </select>
+            <span class="icon-select"></span>
+          </section>
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>支行名称</label>
+        <div class="right">
+          <input type="text" id="subbank">
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>银行卡号</label>
+        <div class="right">
+          <input type="text" id="number">
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>开户人</label>
+        <div class="right">
+          <input type="text" id="name">
+        </div>
+      </div>
+    </div>
+    <a class="btnone_pink" onclick="save()">确认</a>
+  </div>
+  <script type="text/javascript">
+  $(function(){
+    checklogin();
+    loader();
+  });
+  function loader(){
+    loadprovince();
+  }
+  function loadprovince(){
+    $.ajax( {    
+      url:BASEURL+'?c=index&a=address',// 跳转到 action    
+      data:{    
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        console.log(data);
+        if(data.code == 1){
+          var re = data.body;
+          var html = '<option>选择省份</option>';
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            html+='<option value="'+rei.id+'">'+rei.name+'</option>';
+          }
+          $("#ddlProvince").html(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function selectMoreCity(){
+    var id = $("#ddlProvince").val();
+    loadcity(id);
+  }
+  function loadcity(pid){
+    $.ajax( {    
+      url:BASEURL+'?c=index&a=address',// 跳转到 action    
+      data:{    
+        type:'city',
+        pid:pid,
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          var re = data.body;
+          var html = '<option>选择城市</option>';
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            html+='<option value="'+rei.id+'">'+rei.name+'</option>';
+          }
+          $("#ddlCity").html(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function checklogin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code != 1){
+          window.location.href="index.php?c=mobile&a=login";
+        }else{
+        } 
+      } 
+    });
+  }
+  function checkMobile(text){
+    // alert(text);
+    var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+      if(!myreg.test(text)){
+        return false;
+      }else{
+        return true;
+      }
+  }
+  function valid(){
+    // console.log();
+    if(!$('#name').val()){
+      alert('请填写开户人姓名');
+      return false;
+    }
+    if(!$('#bank').val()){
+      alert('请填写开户银行');
+      return false;
+    }
+    if(!$('#number').val()){
+      alert('请填写银行账号');
+      return false;
+    }
+    if($('#number').val().length<15||isNaN($('#number').val())){
+      alert('银行账号格式错误');
+      return false;
+    }
+    return true;
+  }
+  function save(){
+    if(!valid()){
+      return false;
+    }
+    $.ajax( {    
+      url:BASEURL+'?c=bankcard&a=create',// 跳转到 action    
+      data:{  
+        province:$('#ddlProvince').val(),
+        city:$('#ddlCity').val(),
+        bank:$('#bank').val(),
+        name:$('#name').val(),
+        subbank:$('#subbank').val(),
+        number:$('#number').val(),
+        type:$('#type').val(),
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          sweetAlert({
+            title: "提交成功",
+            text: "",
+            type: "success",
+            showCancelButton: false,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "好的!",
+            closeOnConfirm: true
+          }, function(){
+            history.go(-1);
+          });
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  </script>
+</body>
+</html>

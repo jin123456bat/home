@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>提现</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="Keywords" content="" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/city.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>提现</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;padding-bottom:20px;">
+    <div class="address_form">
+      <div class="item clearfix">
+        <label>总金额</label>
+        <div class="right">
+          <input type="text" id="allsum" value="100.0" disabled="disabled">
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>选择银行卡</label>
+        <div class="right">
+          <section class="field-bd select-box J_Select" style="margin-top:10px;">
+            <select name="bid" id="bid" class="selectstyle">
+              <option selected value="">工商银行尾号：1111</option>
+            </select>
+            <span class="icon-select"></span>
+          </section>
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>提现金额</label>
+        <div class="right">
+          <input type="text" id="money">
+        </div>
+      </div>
+      <div class="item clearfix">
+        <label>备注</label>
+        <div class="right">
+          <textarea type="text" id="note"></textarea>
+        </div>
+      </div>
+    </div>
+    <a class="btnone_pink" onclick="save()">确认</a>
+  </div>
+  <script type="text/javascript">
+ 
+  $(function(){
+    checklogin();
+    loader();
+  });
+  function loader(){
+    $.ajax( {    
+      url:BASEURL+'?c=bankcard&a=lists',// 跳转到 action    
+      data:{    
+
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          var html = '';
+          var re = data.body;
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            var sele = '';
+            if(i==0){
+              sele = 'selected';
+            }
+            var number = rei.number;
+            number = number.substr(number.length-4);
+            html+='<option '+sele+' value="'+rei.id+'">'+rei.bank+' 尾号：'+number+'</option>';
+          }
+          $("#bid").html(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function checklogin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code != 1){
+          window.location.href="index.php?c=mobile&a=login";
+        }else{
+          $("#allsum").val(data.body.money);
+        } 
+      } 
+    });
+  }
+  function checkMobile(text){
+    // alert(text);
+    var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+      if(!myreg.test(text)){
+        return false;
+      }else{
+        return true;
+      }
+  }
+  function valid(){
+    // console.log();
+    if(!$('#money').val()){
+      alert('请输入提现金额');
+      return false;
+    }
+    if(isNaN($("#money").val())){
+      alert('金额格式不正确');
+      return false;
+    }
+    var max = parseFloat($("#allsum").val());
+    var money = parseFloat($("#money").val());
+    if(money>max){
+      alert('金额不能大于'+max+'元');
+      return false;
+    }
+    return true;
+  }
+  function save(){
+    if(!valid()){
+      return false;
+    }
+    $.ajax( {    
+      url:BASEURL+'?c=drawal&a=create',// 跳转到 action    
+      data:{  
+        money:$('#money').val(),
+        note:$('#note').val(),
+        bid:$('#bid').val(),
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          sweetAlert({
+            title: "提交成功",
+            text: "我们会尽快处理您的提现请求!",
+            type: "success",
+            showCancelButton: false,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "好的!",
+            closeOnConfirm: true
+          }, function(){
+            history.go(-1);
+          });
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  </script>
+</body>
+</html>

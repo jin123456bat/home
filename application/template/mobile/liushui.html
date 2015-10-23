@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>现金收支明细</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.flycart.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>现金收支明细</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;padding-bottom:40px;">
+    <div class="moneyall">账户总余额：1000元</div>
+    <div class="addrList">
+      
+    </div>
+  </div>
+  <script type="text/javascript">
+  $(function(){
+    checklogin();
+    loader();
+  });
+  function checklogin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code != 1){
+          window.location.href="index.php?c=mobile&a=login";
+        }else{
+          $('.moneyall').text('账户总余额：'+data.body.money+'元');
+        } 
+      } 
+    });
+  }
+  function loader(){
+    $.ajax( {    
+      url:BASEURL+'?c=swift&a=lists',// 跳转到 action    
+      data:{  
+        start:0,
+        length:1000,
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        // console.log(data);
+        if(data.code == 1){
+          var re = data.body;
+          // console.log(re);
+          var html = "";
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            var zf = {
+              '0':['+','red'],
+              '1':['-','green'],
+            };
+
+            html+='<div class="item clearfix">'
+                  +'  <div class="onup clearfix">'
+                  +'    <div class="one clearfix '+zf[rei.type][1]+'">'
+                  +'      <a class="right">'+getLocalTime(rei.time)+'</a>'
+                  +zf[rei.type][0]+'￥'+rei.money
+                  +'    </div>'
+                  +'    <div class="addr">'+rei.note+'</div>'
+                  +'  </div>'
+                  +'</div>';
+                  console.log(html);
+          }
+          $(".addrList").append(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function getLocalTime(nS) {     
+   return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');     
+  } 
+  function dltaddr(obj,id){
+    $.ajax( {    
+      url:BASEURL+'?c=address&a=remove',// 跳转到 action    
+      data:{  
+        id:id
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          $(obj).parents('.item').remove();
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function showAddr(id){
+    if($.query.get('back')=='order'){
+      console.log('dododododo');
+      var storage = window.localStorage;
+      storage.setItem('addressId',id);
+      history.go(-1);
+    }else{
+      window.location.href="index.php?c=mobile&a=editAddress&id="+id;
+    }
+    
+  }
+  </script>
+</body>
+</html>

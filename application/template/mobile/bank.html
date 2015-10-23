@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>银行卡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.flycart.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>银行卡</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;padding-bottom:40px;">
+    <div class="addrList">
+      <!-- <div class="item clearfix">
+        <div class="onup clearfix" onclick="showAddr(27)">
+          <div class="one clearfix">
+            <a class="right">浙大支行</a>
+            工商银行
+          </div>
+          <div class="addr">尾号：0000</div>
+        </div>
+        <div class="ondown">
+          <a class="dlt" onclick="dltaddr(this,27)">删除</a>
+        </div>
+      </div> -->
+    </div>
+    <a class="addaddrbtn" href="index.php?c=mobile&a=bankadd">
+      <div class="icon addaddr"></div>
+      添加银行卡
+    </a>
+  </div>
+  <script type="text/javascript">
+  $(function(){
+    checklogin();
+    loader();
+  });
+  function checklogin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code != 1){
+          window.location.href="index.php?c=mobile&a=login";
+        }else{
+        } 
+      } 
+    });
+  }
+  function loader(){
+    $.ajax( {    
+      url:BASEURL+'?c=bankcard&a=lists',// 跳转到 action    
+      data:{  
+        start:0,
+        length:100,
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        // console.log(data);
+        if(data.code == 1){
+          var re = data.body;
+          // console.log(re);
+          var html = "";
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            var number = rei.number;
+            number = number.substr(number.length-4);
+            
+            var ht = '<div class="item clearfix">'
+                    +    '<div class="onup clearfix" onclick="showAddr('+rei.id+')">'
+                    +    '<div class="one clearfix">'
+                    +      '<a class="right">'+rei.name+'</a>'
+                    +      rei.bank+' '+rei.subbank
+                    +    '</div>'
+                    +    '<div class="addr">&nbsp;&nbsp; 卡号:*********'+number+'</div>'
+                    +  '</div><div class="ondown"><a class="dlt" onclick="dltaddr(this,'+rei.id+')">删除</a></div></div>';
+              $('.addrList').append(ht);
+          }
+          $(".addrList .item .onup").flyCart({
+              woh:$('.addrList .item .onup').width()+140,
+            });
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function dltaddr(obj,id){
+    $.ajax( {    
+      url:BASEURL+'?c=bankcard&a=remove',// 跳转到 action    
+      data:{  
+        id:id
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          $(obj).parents('.item').remove();
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function showAddr(id){
+      window.location.href="index.php?c=mobile&a=bankedit&id="+id;
+  }
+  </script>
+</body>
+</html>

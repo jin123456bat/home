@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>提现记录</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.css">
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/sweetalert/sweet-alert.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.transit.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.flycart.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/common.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/jquery.mslides.js"></script>
+  <script type="text/javascript" src="{%$VIEW_ROOT%}/template/mobile/js/Jquery.Query.js"></script>
+</head>
+<body>
+  <div id="header">
+    <header>
+      <a class="btn left_btn" href="javascript:history.go(-1);"><i class="icon back"></i></a>
+      <h1>提现记录</h1>
+    </header>
+  </div>
+  <div id="content" style="padding-top:50px;padding-bottom:40px;">
+    <div class="addrList">
+      <!-- <div class="item clearfix">
+        <div class="onup clearfix" onclick="showAddr(27)">
+          <div class="one clearfix green">
+            <a class="right">取消</a>
+            ￥1000.0
+          </div>
+          <div class="addr">2015-10-10 20:00:00</div>
+          <div class="moren">【 处理中 】</div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <script type="text/javascript">
+  $(function(){
+    checklogin();
+    loader();
+  });
+  function checklogin(){
+    $.ajax( {    
+      url:BASEURL+'?c=user&a=information',// 跳转到 action    
+      data:{    
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code != 1){
+          window.location.href="index.php?c=mobile&a=login";
+        }else{
+        } 
+      } 
+    });
+  }
+  function loader(){
+    $.ajax( {    
+      url:BASEURL+'?c=drawal&a=lists',// 跳转到 action    
+      data:{  
+
+      },    
+      type:'get',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        // console.log(data);
+        if(data.code == 1){
+          var re = data.body;
+          console.log(re);
+          var html = '';
+          var statusname = ['处理中','已处理','已取消'];
+          for(var i=0;i<re.length;i++){
+            var rei = re[i];
+            var ch = '';
+            var clclass = '';
+            if(rei.handle==0){
+              ch = '       <a class="right" onclick="cancel(this,'+rei.id+')">取消</a>';
+            }
+            if(rei.handle==1){
+              clclass = 'redtext';
+            }
+            html+='<div class="item clearfix">'
+                       +'   <div class="onup clearfix">'
+                       +'     <div class="one clearfix green">'
+                       +ch
+                       +rei.money
+                       +'     </div>'
+                       +'     <div class="addr">'+getLocalTime(rei.time)+'</div>'
+                       +'     <div class="moren '+clclass+'">【 '+statusname[rei.handle]+' 】</div>'
+                       +'   </div>'
+                       +' </div>';
+
+          }
+          $('.addrList').html(html);
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  function getLocalTime(nS) {     
+   return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');     
+  } 
+  function cancel(obj,id){
+    $.ajax( {    
+      url:BASEURL+'?c=drawal&a=quit',// 跳转到 action    
+      data:{  
+        id:id
+      },    
+      type:'post',    
+      cache:false,    
+      dataType:'json',    
+      success:function(data) { 
+        if(data.code == 1){
+          alert('取消成功');
+          $(obj).parents('.item').find('.moren').text('【已取消】');
+          $(obj).parents('.item').find('a.right').remove();
+        }else{
+          alert(data.result);
+        } 
+      } 
+    });
+  }
+  </script>
+</body>
+</html>
