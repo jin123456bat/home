@@ -28,38 +28,52 @@ class indexControl extends control
 	{
 		return time();
 	}
+	
 
 	/**
 	 * 发送手机验证码
 	 */
 	function code()
 	{
+		$system = $this->model('system')->fetch('sms');
+		$system = $this->model('system')->toArray($system,'sms');
+		$sms = new sms($system['uid'],$system['key'],$system['sign']);
+		
 		$telephone = $this->post->telephone;
-		if(validate::telephone($telephone))
+		if ($telephone === NULL)
 		{
-			$smslogModel = $this->model('smslog');
-			if($smslogModel->check($telephone))
-			{
-				$code = random::number(6);
-				$template = $this->model('system')->get('smstemplate','system');
-				$template = sprintf($template,$code);
-				$sms = new sms();
-				$result = $sms->send($telephone, $template);
-				if($result > 0)
-				{
-					$smslogModel->create($telephone,$code);
-					return json_encode(array('code'=>1,'result'=>'ok','body'=>$code));
-				}
-			}
-			return json_encode(array('code'=>2,'result'=>'短信发送失败'));
+			return $sms->getNum();
 		}
 		else
 		{
-			return json_encode(array(
-				'code' => 0,
-				'result' => '手机号码不合法'
-			));
+			if(validate::telephone($telephone))
+			{
+				$smslogModel = $this->model('smslog');
+				if($smslogModel->check($telephone))
+				{
+					
+					$code = random::number(6);
+					$template = $system['template'];
+					$template = sprintf($template,$code);
+					
+					$result = $sms->send($telephone, $template);
+					if($result > 0)
+					{
+						$smslogModel->create($telephone,$code);
+						return json_encode(array('code'=>1,'result'=>'ok','body'=>$code));
+					}
+				}
+				return json_encode(array('code'=>2,'result'=>'短信发送失败'));
+			}
+			else
+			{
+				return json_encode(array(
+					'code' => 0,
+					'result' => '手机号码不合法'
+				));
+			}
 		}
+		
 	}
 	
 	/**

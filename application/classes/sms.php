@@ -15,12 +15,24 @@ use application;
  */
 class sms
 {
-
-	private $_config;
+	private $uid;
+	private $key;
+	private $sign;
 	
-	function __construct()
+	/*
+	 * 发送短信接口url
+	 */
+	private $_url = "http://utf8.sms.webchinese.cn/";
+	/*
+	 * 获取短信数量url
+	 */
+	private $_getUrl = 'http://sms.webchinese.cn/web_api/SMS/';
+	
+	function __construct($uid,$key,$sign)
 	{
-		$this->_config = config('sms');
+		$this->_uid = $uid;
+		$this->_key = $key;
+		$this->_sign = $sign;
 	}
 
 	/**
@@ -32,7 +44,7 @@ class sms
 	 */
 	function send($telephone, $content)
 	{
-		$sign = empty($this->_config->sign)?'':('【'.$this->_config->sign.'】');
+		$sign = empty($this->_sign)?'':('【'.$this->_sign.'】');
 		$content .= $sign;
 		if(mb_strlen($content)>400)
 			return false;
@@ -42,7 +54,7 @@ class sms
 		if(count($telephone)>100)
 			return false;
 		$telephone = urlencode(implode(',', $telephone));
-		$url=$this->_config->url.'?Uid='.$this->_config->uid.'&KeyMD5='.strtoupper(md5($this->_config->key)).'&smsMob='.$telephone.'&smsText='.urlencode($content);
+		$url=$this->_url.'?Uid='.$this->_uid.'&KeyMD5='.strtoupper(md5($this->_key)).'&smsMob='.$telephone.'&smsText='.urlencode($content);
 		return $this->get($url);
 	}
 	
@@ -51,7 +63,7 @@ class sms
 	 */
 	function getNum()
 	{
-		$url = $this->_config->getUrl.'?Action=SMS_Num&Uid='.$this->_config->uid.'&KeyMD5='.$this->_config->key;
+		$url = $this->_getUrl.'?Action=SMS_Num&Uid='.$this->_uid.'&KeyMD5='.strtoupper(md5($this->_key));
 		return $this->get($url);
 	}
 	

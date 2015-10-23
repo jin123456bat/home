@@ -137,6 +137,11 @@
                                 	<i class="fa fa-flag"></i> 分销
                                 </a>
                             </li>
+							<li>
+                            	<a data-toggle="tab" href="#sms">
+                                	<i class="fa fa-flag"></i> 短信
+                                </a>
+                            </li>
                         </ul>
                    	</div>
 					<div class="col-md-9">
@@ -453,6 +458,46 @@
                                 </div>
 								</form>
                             </div>
+							<div id="sms" class="tab-pane">
+                            	<form action="{%url c=system a=save%}" class="form-horizontal" method="post" role="form">
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">用户名</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_sms_uid" value="{%$system.system_sms_uid|default:""%}" placeholder="中国网建账号" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">md5密钥</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_sms_key" value="{%$system.system_sms_key|default:""%}" placeholder="中国网建密码" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">短信签名</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_sms_sign" value="{%$system.system_sms_sign|default:""%}" placeholder="短信签名，也可以在网建中配置" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">短信模板</label>
+                                    <div class="col-md-10">
+                                        <input type="text" name="system_sms_template" value="{%$system.system_sms_template|default:""%}" placeholder="验证码短信模板" class="form-control">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">剩余短信数量</label>
+                                    <div class="col-md-10">
+                                        <input type="text" id="sms_num" disabled value="" placeholder="剩余短信数量" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input type="submit" value="保存" class="form-control btn green">
+                                    </div>
+                                </div>
+								</form>
+                            </div>
                         </div>
                     </div>
 				</div>
@@ -624,6 +669,10 @@ jQuery(document).ready(function() {
 				ths.parents('tr').remove();
 			}
 		});
+	});
+	
+	$.get('{%url c=index a=code%}',{},function(response){
+		$('#sms_num').val(response);
 	});
 });
 </script>
