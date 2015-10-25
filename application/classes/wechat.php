@@ -34,7 +34,7 @@ class wechat
 	 *
 	 * @param unknown $signature        	
 	 * @param unknown $timestamp        	
-	 * @param unknown $nonce        	
+	 * @param unknown $nonce
 	 * @return boolean
 	 */
 	function checkSignature($signature, $timestamp, $nonce, $token)
@@ -336,7 +336,7 @@ class jssdk
 		// jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
 		if (file_exists('jsapi_tocket.json'))
 			$data = json_decode(file_get_contents("jsapi_ticket.json"));
-		if (!empty($data) && $data->expire_time < time()) {
+		if (empty($data) || $data->expire_time > time()) {
 			$accessToken = $this->getAccessToken();
 			// 如果是企业号用以下 URL 获取 ticket
 			// $url = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=$accessToken";
@@ -344,6 +344,7 @@ class jssdk
 			$res = json_decode($this->httpGet($url));
 			$ticket = $res->ticket;
 			if ($ticket) {
+				$data = new \stdClass();
 				$data->expire_time = time() + 7000;
 				$data->jsapi_ticket = $ticket;
 				$fp = fopen("jsapi_ticket.json", "w");

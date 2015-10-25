@@ -42,6 +42,7 @@ class mobileControl extends control
 		//微信的自动登陆和注册
 		if (isWechat())
 		{
+			
 			if (!login::wechat())
 			{
 				$userModel = $this->model('user');
@@ -73,10 +74,22 @@ class mobileControl extends control
 					$this->session->openid = $user['openid'];
 				}
 			}
+			
+			//对于点击分享链接过来的用户
+			if ($this->get->wechat_share_id !== NULL)
+			{
+				$wechat_share_id = intval($this->get->wechat_share_id);
+				$userModel=$this->model('user');
+				$user = $userModel->get($this->session->id);
+				if (!empty($user) && empty($user['oid']))
+				{
+					$userModel->where('id=?',array($user['id']))->update('oid',$wechat_share_id);
+				}
+			}
+			
 		}
 		
 		//主题锁
-		
 		switch (strtolower($name))
 		{
 			case 'themedetail':
@@ -101,7 +114,8 @@ class mobileControl extends control
 				$jssdk->setAccessToken($this->call('wechat', 'access_token'));
 				$signPackage = $jssdk->getSignPackage();
 				$signPackage['wechat_share_id'] = $this->session->id;
-				$this->_view->assign('signPackage',$signPackage);
+				
+				$this->view->assign('signPackage',$signPackage);
 			}
 			
 			return $this->view->display();

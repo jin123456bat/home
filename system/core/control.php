@@ -47,7 +47,7 @@ class control extends base
 		if(!isset($instance[$name]))
 		{
 			$path = ROOT.'/application/model/'.$name.'.php';
-			include $path;
+			include_once $path;
 			$model = "application\\model\\" . $name . 'Model';
 			$instance[$name] = new $model($name);
 		}
@@ -66,7 +66,7 @@ class control extends base
 		else
 		{
 			static $class = array();
-			$key = md5($c);
+			$key = $c;
 			if (!isset($class[$key]))
 			{
 				$path = ROOT.'/application/control/'.$c.'.php';

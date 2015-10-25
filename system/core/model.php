@@ -77,17 +77,6 @@ class model
 	{
 		
 	}
-	
-	/**
-	 * 查询一条记录
-	 * @param string $field
-	 * @return Ambigous <boolean, multitype:>
-	 */
-	public function find($field = '*')
-	{
-		$result = $this->limit(1)->select($field);
-		return isset($result[0])?$result[0]:NULL;
-	}
 
 	/**
 	 * 查询多条记录

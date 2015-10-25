@@ -206,7 +206,7 @@ class wechatControl extends control
 	
 	/**
 	 * 获取access_token
-	 * @return \application\message\json
+	 * @return string
 	 */
 	public function access_token()
 	{
@@ -277,7 +277,7 @@ class wechatControl extends control
 	}
 	
 	/**
-	 * 设置微信自定义菜单 未完成
+	 * 设置微信自定义菜单
 	 */
 	function menu()
 	{
