@@ -61,8 +61,9 @@ class mobileControl extends control
 						}
 					}
 					$this->session->id = $user['id'];
+					//telephone默认为NULL  判断登陆时候可能导致错误
 					$this->session->telephone = empty($user['telephone'])?'':$user['telephone'];
-					$this->session->username = empty($user['username'])?'':$user['username'];
+					$this->session->username = $user['username'];
 					$this->session->openid = $user['openid'];
 				}
 			}

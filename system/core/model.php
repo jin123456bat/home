@@ -85,7 +85,8 @@ class model
 	 */
 	public function find($field = '*')
 	{
-		return $this->limit(1)->select($field);
+		$result = $this->limit(1)->select($field);
+		return isset($result[0])?$result[0]:NULL;
 	}
 
 	/**

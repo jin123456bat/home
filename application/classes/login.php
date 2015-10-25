@@ -38,6 +38,7 @@ class login
 	 */
 	static function wechat()
 	{
+		$session = session::getInstance();
 		return self::user() && $session->openid !== NULL;
 	}
 
