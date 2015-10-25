@@ -98,6 +98,7 @@ class mobileControl extends control
 			if (isWechat())
 			{
 				$jssdk = $this->_wechat->getJSSDK();
+				$jssdk->setAccessToken($this->call('wechat', 'access_token'));
 				$signPackage = $jssdk->getSignPackage();
 				$signPackage['wechat_share_id'] = $this->session->id;
 				$this->_view->assign('signPackage',$signPackage);

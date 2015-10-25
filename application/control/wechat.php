@@ -208,7 +208,7 @@ class wechatControl extends control
 	 * 获取access_token
 	 * @return \application\message\json
 	 */
-	private function access_token()
+	public function access_token()
 	{
 		$resultFlag = false;
 		$access_token = $this->model('system')->get('access_token','weixin');

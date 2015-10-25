@@ -65,10 +65,16 @@ class control extends base
 		}
 		else
 		{
-			$path = ROOT.'/application/control/'.$c.'.php';
-			include $path;
-			$control = 'application\\control\\'.$c.'Control';
-			$content = (new $control)->$a();
+			static $class = array();
+			$key = md5($c);
+			if (!isset($class[$key]))
+			{
+				$path = ROOT.'/application/control/'.$c.'.php';
+				include_once $path;
+				$control = 'application\\control\\'.$c.'Control';
+				$class[md5($c)] = (new $control());
+			}
+			$content = $class[$key]->$a();
 			return $content;
 		}
 	}
