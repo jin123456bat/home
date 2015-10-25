@@ -14,6 +14,8 @@ class mobileControl extends control
 	
 	private $_system;
 	
+	private $_wechat;
+	
 	function __construct()
 	{
 		parent::__construct();
@@ -23,6 +25,13 @@ class mobileControl extends control
 		$this->_config = config('view');
 		
 		$this->_system = $this->model('system');
+		
+		if (isWechat())
+		{
+			$appid = $this->_system->get('appid','weixin');
+			$appsecret = $this->_system->get('appsecret','weixin');
+			$this->_wechat = new wechat($appid, $appsecret);
+		}
 	}
 	
 	function __call($name,$args)
@@ -30,28 +39,25 @@ class mobileControl extends control
 		if(!empty($args))
 			return $this->call('index', '__404');
 			
-		//-----------felixchen----------
+		//微信的自动登陆和注册
 		if (isWechat())
 		{
 			if (!login::wechat())
 			{
-				$appid = $this->_system->get('appid','weixin');
-				$appsecret = $this->_system->get('appsecret','weixin');
-				$wechat = new wechat($appid, $appsecret);
 				$userModel = $this->model('user');
 				if ($this->get->code === NULL)
 				{
-					$location = $wechat->getCode($this->http->url(), 'snsapi_base');
+					$location = $this->_wechat->getCode($this->http->url(), 'snsapi_base');
 					$this->response->setCode(302);
 					$this->response->addHeader('Location',$location);
 				}
 				else
 				{
-					$openid = $wechat->getOpenid($this->get->code);
+					$openid = $this->_wechat->getOpenid($this->get->code);
 					$user = $userModel->getByOpenid($openid);
 					if (empty($user))
 					{
-						if($userModel->registerWeiXin($openid))
+						if($userModel->registerWeiXin($openid,$this->get->wechat_share_id))
 						{
 							$user = $userModel->loginWeiXin($openid);
 						}
@@ -69,7 +75,7 @@ class mobileControl extends control
 			}
 		}
 		
-		//-----------felixchen----------	
+		//主题锁
 		
 		switch (strtolower($name))
 		{
@@ -88,6 +94,15 @@ class mobileControl extends control
 		if(file_exists($base_template))
 		{
 			$this->view = new view($this->_config, $template);
+			
+			if (isWechat())
+			{
+				$jssdk = $this->_wechat->getJSSDK();
+				$signPackage = $jssdk->getSignPackage();
+				$signPackage['wechat_share_id'] = $this->session->id;
+				$this->_view->assign('signPackage',$signPackage);
+			}
+			
 			return $this->view->display();
 		}
 		else

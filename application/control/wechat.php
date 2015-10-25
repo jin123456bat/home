@@ -327,4 +327,5 @@ class wechatControl extends control
 				return new json(json::PARAMETER_ERROR,'aciton error');
 		}
 	}
+	
 }
