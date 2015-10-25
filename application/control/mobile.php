@@ -4,6 +4,7 @@ use system\core\control;
 use system\core\view;
 use system\core\http;
 use application\classes\login;
+use application\classes\wechat;
 
 class mobileControl extends control
 {
@@ -17,7 +18,7 @@ class mobileControl extends control
 	{
 		parent::__construct();
 		
-		$this->_template_dir = 'mobile/';
+		$this->_template_dir = 'mobile1/';
 		
 		$this->_config = config('view');
 		
@@ -30,18 +31,43 @@ class mobileControl extends control
 			return $this->call('index', '__404');
 			
 		//-----------felixchen----------
-		$system = $this->model('system');
-		$dist = $system->get('open','dist');
-		if($dist)
+		if (isWechat())
 		{
-			if(!login::user()){
-				if(login::user()){
-					$util=$this->call("util","addUser");//调用控制器方法,获取授权注册
-				}else{//已经注册不需要授权登陆
-					$util=$this->call("util","userFind");
+			if (!login::wechat())
+			{
+				$appid = $this->_system->get('appid','weixin');
+				$appsecret = $this->_system->get('appsecret','weixin');
+				$wechat = new wechat($appid, $appsecret);
+				$userModel = $this->model('user');
+				if ($this->get->code === NULL)
+				{
+					$location = $wechat->getCode($this->http->url(), 'snsapi_base');
+					$this->response->setCode(302);
+					$this->response->addHeader('Location',$location);
+				}
+				else
+				{
+					$openid = $wechat->getOpenid($this->get->code);
+					$user = $userModel->getByOpenid($openid);
+					if (empty($user))
+					{
+						if($userModel->registerWeiXin($openid))
+						{
+							$user = $userModel->loginWeiXin($openid);
+						}
+						else
+						{
+							echo "微信注册失败";
+						}
+					}
+					$this->session->id = $user['id'];
+					$this->session->telephone = empty($user['telephone'])?'':$user['telephone'];
+					$this->session->username = empty($user['username'])?'':$user['username'];
+					$this->session->openid = $user['openid'];
 				}
 			}
 		}
+		
 		//-----------felixchen----------	
 		
 		switch (strtolower($name))

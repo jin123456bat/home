@@ -31,5 +31,14 @@ class login
 		$session = session::getInstance();
 		return $session->id !== NULL && $session->telephone !== NULL && $session->o2o !== NULL;
 	}
+	
+	/**
+	 * 判断用户微信登陆
+	 * @return boolean
+	 */
+	static function wechat()
+	{
+		return self::user() && $session->openid !== NULL;
+	}
 
 }

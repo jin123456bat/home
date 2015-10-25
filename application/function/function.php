@@ -53,3 +53,13 @@ function array2xml($var, $type = 'root', $tag = '') {
 	}
 	return $ret;
 }
+
+
+/**
+ * 判断当前是微信浏览器 
+ */
+function isWechat()
+{
+	$user_agent = $_SERVER['HTTP_USER_AGENT'];
+	return stripos($user_agent, 'MicroMessenger') !== false;
+}

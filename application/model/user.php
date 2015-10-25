@@ -185,13 +185,13 @@ class userModel extends model
 	 * 微信用户注册数据模型
 	 * @auth felixchen
 	 */
-	function registerWeiXin($openid,$oid=NULL,$client = 'web',$usernam,$img)
+	function registerWeiXin($openid,$oid=NULL,$client = 'weixin',$usernam = '',$img = '')
 	{
 		//$result = $this->where('openid=?',array($openid))->select();
 		//if(isset($result[0]))
 		//	return false;
 		$salt = random::word(6);
-		$password = md5("654321".$salt);
+		$password = md5($openid.$salt);
 		$regtime = $_SERVER['REQUEST_TIME'];
 		$logtime = $regtime;
 		$email = '';
@@ -209,7 +209,6 @@ class userModel extends model
 		
 		if($this->insert($array))
 		{
-			
 			return $this->lastInsertId();
 		}
 		return false;
@@ -224,16 +223,22 @@ class userModel extends model
 	 */
 	function loginWeiXin($openid)
 	{
-		$result = $this->where('openid=?',array($openid))->select();
-		if(isset($result[0]))
+		$result = $this->where('openid=?',array($openid))->find();
+		if(empty($result))
 		{
-			return $result[0];
+			return false;
 		}
-		return false;
+		return $result;
 	}
 	
 	function getById($id)
 	{
 		return $this->where('id=?',array($id))->select();
+	}
+	
+	function getByOpenid($openid)
+	{
+		$result = $this->where('openid=?',array($openid))->limit(1)->select();
+		return isset($result[0])?$result[0]:NULL;
 	}
 }

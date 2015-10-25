@@ -45,6 +45,7 @@ class wechat
 	function getData()
 	{
 		$postStr = file_get_contents('php://input');
+		file_put_contents('./wechat.txt', $postStr);
 		libxml_disable_entity_loader(true);
 		$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
 		return json_decode(json_encode($postObj),false);
@@ -116,9 +117,41 @@ class wechat
 	}
 	
 	/**
+	 * 文件上传
+	 * @param unknown $access_token
+	 * @param unknown $action upload|delete|fetch
+	 * @param unknown $file 文件完整路径
+	 * @param unknown $type 文件类型 voice|image|video|thumb
+	 * @return boolean
+	 */
+	function file($access_token,$action,$file,$type,$debug = false)
+	{
+		switch($action)
+		{
+			case 'upload':
+				$url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token=%s&type=%s';
+				$url = sprintf($url,$access_token,$type);
+				$data = array('media'=>'@'.$file);
+				$result = $this->post($url, $data,true);
+				break;
+			case 'delete':
+				break;
+			case 'fetch':
+				break;
+			default:
+				return false;
+		}
+		if($debug)
+		{
+			var_dump($result);
+		}
+		return $result;
+	}
+	
+	/**
 	 * 设置自定义菜单
 	 */
-	function menu($access_token,$data = array(),$action = 'fetch')
+	function menu($access_token,$data = array(),$action = 'fetch',$debug = false)
 	{
 		switch ($action)
 		{
@@ -129,7 +162,6 @@ class wechat
 			case 'create':
 				$url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access_token;
 				$result = $this->post($url, $data);
-				
 			break;
 			case 'fetch':
 				$url = 'https://api.weixin.qq.com/cgi-bin/menu/get?access_token='.$access_token;
@@ -139,10 +171,42 @@ class wechat
 			break;
 			default:return false;
 		}
+		if ($debug)
+		{
+			var_dump($result);
+		}
 		$result = json_decode($result,true);
 		if($result['errcode'] === 0)
 			return true;
 		return false;
+	}
+	
+	/**
+	 * 获取用户授权的code 返回一个url 必须跳转到这个url
+	 * @param url $redict 获取到code之后跳转的url
+	 * @param string $scope snsapi_base |snsapi_userinfo
+	 * @param string $state 默认值为空
+	 */
+	function getCode($redict,$scope,$state = '')
+	{
+		$redict = urlencode($redict);
+		$url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect';
+		$url = sprintf($url,$this->_appid,$redict,$scope,$state);
+		return $url;
+	}
+	
+	
+	/**
+	 * 获取用户的openid
+	 * @param string $code 通过getCode获取到的code
+	 */
+	function getOpenid($code)
+	{
+		$url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code';
+		$url = sprintf($url,$this->_appid,$this->_appsecret,$code);
+		$result = $this->get($url);
+		$result = json_decode($result,true);
+		return $result['openid'];
 	}
 	
 	/**
@@ -162,9 +226,9 @@ class wechat
 	 * @param unknown $data
 	 * @return string
 	 */
-	private function post($url,$data)
+	private function post($url,$data,$curl = false)
 	{
-		if(function_exists('file_get_contents'))
+		if(!$curl && function_exists('file_get_contents'))
 		{
 			if (is_array($data))
 			{
@@ -173,7 +237,9 @@ class wechat
 			else if (is_object($data))
 			{
 				$data = json_encode($data,JSON_UNESCAPED_UNICODE);
+				
 			}
+			
 			$context = array(
 				'http'=>array(
 					'method'=>"POST",
@@ -184,6 +250,23 @@ class wechat
 			);
 			$context = stream_context_create($context);
 			return file_get_contents($url,NULL,$context);
+		}
+		else
+		{
+			foreach ($data as $index => &$file)
+			{
+				if ($file[0] == '@')
+				{
+					$file = new \CURLFile(substr($file, 1));
+				}
+			}
+			$curl = curl_init($url);
+			curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
+			curl_setopt($curl,CURLOPT_POST,true);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($curl,CURLOPT_POSTFIELDS,$data);
+			$result = curl_exec($curl);
+			return $result;
 		}
 	}
 }

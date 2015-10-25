@@ -410,6 +410,7 @@ class productControl extends control
 				case 'fullcut':$goods['activity_description'] = $this->model('fullcutdetail')->getByPid($goods['id']);break;
 				default:break;
 			}
+			$goods['favourite'] = $this->model('favourite')->checkProduct($this->session->id,$goods['id']);
 			$goods['origin'] = $this->model('flag')->getOrigin($goods['origin']);
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$product));

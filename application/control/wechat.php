@@ -40,7 +40,8 @@ class wechatControl extends control
 		else
 		{
 			$data = $this->_wechat->getData();
-			file_put_contents('./wechat.txt', json_encode($data),FILE_APPEND);
+			if (empty($data))
+				return new json(json::PARAMETER_ERROR,'错误的访问');
 			switch (strtolower($data->MsgType))
 			{
 				case 'event':
@@ -61,22 +62,100 @@ class wechatControl extends control
 						case 'scan':
 							$eventKey = ltrim($data->EventKey,0);
 							break;
+						case 'click':
+							switch ($data->EventKey)
+							{
+								case 'myeqcode':
+									$openid = $data->FromUserName;
+									$userModel = $this->model('user');
+									$user = $userModel->getByOpenid($openid);
+									if(empty($user))
+									{
+										$uid = $userModel->registerWeiXin($openid);
+									}
+									else
+									{
+										$uid = $user['id'];
+									}
+									$access_token = $this->access_token();
+									$action = 'upload';
+									$type = 'image';
+										
+									$file = ROOT.'/application/upload/'.md5($data->FromUserName).'.jpg';
+									file_put_contents($file, $this->eqcode($uid));
+				
+									$result = $this->_wechat->file($access_token, $action, $file, $type);
+									$result = json_decode($result,true);
+									if (isset($result['media_id']))
+									{
+										return new xml(array(
+											'ToUserName' => $data->FromUserName,
+											'FromUserName' => $data->ToUserName,
+											'CreateTime' => $_SERVER['REQUEST_TIME'],
+											'MsgType' => 'image',
+											'Image' => array(
+												'MediaId' => $result['media_id']
+											)
+										),true,false);
+									}
+									else
+									{
+										return new xml(array(
+											'ToUserName' => $data->FromUserName,
+											'FromUserName' => $data->ToUserName,
+											'CreateTime' => $_SERVER['REQUEST_TIME'],
+											'MsgType' => 'text',
+											'Content' => '无法获取二维码'
+										));
+									}
+									break;
+								default:return new xml(array(
+									'ToUserName' => $data->FromUserName,
+									'FromUserName' => $data->ToUserName,
+									'CreateTime' => $_SERVER['REQUEST_TIME'],
+									'MsgType' => 'text',
+									'Content' => '尚未定义消息事件'
+								),true,false);
+							}
+							break;
 						default:
 							return;
 					}
 					//扫码之后绑定oid和openid  只允许第一次
 					$openid = $data->FromUserName;
-					$user = $this->model('user')->where('openid=?',array($openid))->select();
-					if (!empty($user) && empty($user[0]['oid']))
+					
+					$user = $this->model('user')->getByOpenid($openid);
+					if (!empty($user))
 					{
-						$this->model('user')->where('openid=?',array($openid))->update('oid',$eventKey);
-						return new xml(array(
-							'ToUserName' => $data->FromUserName,
-							'FromUserName' => $data->ToUserName,
-							'CreateTime' => $_SERVER['REQUEST_TIME'],
-							'MsgType' => 'text',
-							'Content' => '恭喜，您已经成功入住,成为'.$user[0]['username'].'旗下的一份子了'
-						),true,false);	
+						if (empty($user['oid']))
+						{
+							if ($eventKey === $user['id'])
+								return new xml(array(
+									'ToUserName' => $data->FromUserName,
+									'FromUserName' => $data->ToUserName,
+									'CreateTime' => $_SERVER['REQUEST_TIME'],
+									'MsgType' => 'text',
+									'Content' => 'Sorry,您不能把自己做为自己的分销商哦'
+								));
+							$this->model('user')->where('openid=?',array($openid))->update('oid',$eventKey);
+							return new xml(array(
+								'ToUserName' => $data->FromUserName,
+								'FromUserName' => $data->ToUserName,
+								'CreateTime' => $_SERVER['REQUEST_TIME'],
+								'MsgType' => 'text',
+								'Content' => '恭喜，您已经成功入住,成为TA旗下的一份子了'
+							),true,false);
+						}
+						else
+						{
+							return new xml(array(
+								'ToUserName' => $data->FromUserName,
+								'FromUserName' => $data->ToUserName,
+								'CreateTime' => $_SERVER['REQUEST_TIME'],
+								'MsgType' => 'text',
+								'Content' => '您已经有了上级分销商了'
+							),true,false);
+						}
 					}
 					else
 					{
@@ -85,6 +164,7 @@ class wechatControl extends control
 							'FromUserName' => $data->ToUserName,
 							'CreateTime' => $_SERVER['REQUEST_TIME'],
 							'MsgType' => 'text',
+							//'Content'=>$openid
 							'Content' => '尚未注册或绑定账号，请点此注册或登陆'.$this->http->url('mobile','login')
 						),true,false);
 					}
@@ -156,14 +236,22 @@ class wechatControl extends control
 		return $access_token['access_token'];
 	}
 	
+	function test()
+	{
+		$access_token = $this->access_token();
+		print_r($this->_wechat->menu($access_token,NULL,'fetch'));
+	}
+	
 	
 	/**
 	 * @param int $id get
 	 * 根据传入的参数 生成微信二维码
 	 */
-	function eqcode()
+	function eqcode($sid = NULL)
 	{
 		$scene_id = $this->get->id;
+		$scene_id = ($scene_id === NULL)?$sid:$scene_id;
+		
 		
 		$access_token = $this->access_token();
 		
@@ -193,33 +281,50 @@ class wechatControl extends control
 	 */
 	function menu()
 	{
-		$menu = new \stdClass();
-		$menu->button = array(
-		);
-		
-		$access_token = $this->access_token();
-		
-		$action = $this->get->action;
-		switch ($action)
+		$menuModel = $this->model('menu');
+		switch ($this->get->action)
 		{
 			case 'create':
-				$button = new \stdClass();
-				$button->name = $this->post->name;
-				$button->key = $this->post->key;
-				$button->type = $this->post->type;
-				$menu->button[] = $button;
-				if($this->_wechat->menu($access_token, $menu,'create'))
+				$id = $this->post->id;
+				if (empty($id) && $menuModel->checkMenuLength()==3)
+					return new json(json::PARAMETER_ERROR,'菜单栏长度太长了');
+				if (!empty($id) && $menuModel->checkMenuLength($id) == 7)
+					return new json(json::PARAMETER_ERROR,'菜单栏长度太长了');
+				$result = $menuModel->create($this->post->name,$this->post->type,$this->post->key,$this->post->id);
+				if($result)
 				{
-					return new json(json::OK,NULL);
+					return new json(json::OK,NULL,$result);
 				}
-				return new json(json::PARAMETER_ERROR,'配置失败');
+				return new json(json::PARAMETER_ERROR);
+				break;
+			case 'delete':
+				$id = $this->post->id;
+				if($menuModel->remove($id))
+				{
+					return new json(json::OK);
+				}
+				return new json(json::PARAMETER_ERROR);
 				break;
 			case 'fetch':
-				$result = $this->_wechat->menu($access_token);
+				$result = $menuModel->fetchAll();
 				return new json(json::OK,NULL,$result);
+				break;
+			case 'save':
+				$weixin = $menuModel->toWeiXin();
+				$access_token = $this->access_token();
+				if (empty($weixin))
+				{
+					$result = $this->_wechat->menu($access_token,NULL,'delete');
+				}
+				else
+				{
+					$menu = new \stdClass();
+					$menu->button = $weixin;
+					$result = $this->_wechat->menu($access_token,$menu,'create',false);
+				}
+				return new json(json::OK);
 			default:
-				return new json(json::PARAMETER_ERROR,'type错误');
-		} 
-		
+				return new json(json::PARAMETER_ERROR,'aciton error');
+		}
 	}
 }

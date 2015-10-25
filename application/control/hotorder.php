@@ -70,9 +70,6 @@ class hotorderControl extends control
 		
 		foreach($hotorder as &$product)
 		{
-			//$goods['category'] = $this-->get($goods['category'],'name');
-			//$goods['brand'] = $brandModel->get($goods['bid'],'name');
-			//unset($product['bid']);
 			$product['prototype'] = $this->model('prototype')->getByPid($product['id']);
 			$product['img'] = $this->model('productimg')->getByPid($product['id']);
 			switch ($product['activity'])
@@ -82,6 +79,7 @@ class hotorderControl extends control
 				case 'fullcut':$product['activity_description'] = $this->model('fullcutdetail')->getByPid($product['id']);break;
 				default:break;
 			}
+			$product['favourite'] = $this->model('favourite')->checkProduct($this->session->id,$product['id']);
 			$product['origin'] = $this->model('flag')->getOrigin($product['origin']);
 		}
 		return new json(json::OK,NULL,$hotorder);

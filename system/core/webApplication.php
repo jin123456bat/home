@@ -49,6 +49,7 @@ class webApplication extends base
 						$class = new $class();
 						$class->response = &$response;
 						if ((method_exists($class, $action) && is_callable(array($class,$action))) || method_exists($class, '__call')) {
+							
 							$response->setCode(200);
 							$response->setBody($this->__200($class, $action));
 						} else {

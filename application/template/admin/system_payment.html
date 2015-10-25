@@ -109,9 +109,10 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<form class="form-horizontal" role="form" id="create_submenu_form">
+							<input type="hidden" name="id">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-								<h4 class="modal-title">添加新菜单</h4>
+								<h4 class="modal-title">添加子菜单</h4>
 							</div>
 							<div class="modal-body">
 								<div class="form-group">
@@ -282,42 +283,31 @@
                                             微信公众平台接入地址. </span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                    	<label class="col-md-2 control-label"></label>
-                                        <div class="col-md-10">
-                                            <button type="submit" class="btn green col-md-12">保存</button>
-                                        </div>
-                                    </div>
-                                </form>
-								<div class="col-md-offset-2 col-md-10">
-									<div class="portlet box blue">
-										<div class="portlet-title">
-											<div class="caption">
-												<i class="fa fa-gift"></i>自定义菜单(需要配置好微信公众平台)
+									<div class="col-md-offset-2 col-md-10">
+										<div class="portlet box blue">
+											<div class="portlet-title">
+												<div class="caption">
+													<i class="fa fa-gift"></i>自定义菜单(需要配置好微信公众平台)
+												</div>
+												
 											</div>
-											
-										</div>
-										<div class="portlet-body">
-											<div class="tab-content" id="menu_container">
-													<div class="btn-group display-none" id="menu_template">
+											<div class="portlet-body">
+												<div class="tab-content" id="menu_container">
+													<div class="btn-group menu display-none" id="menu_template">
 														<a class="btn purple name" href="#" data-toggle="dropdown">
 														Settings <i class="fa fa-angle-down"></i>
 														</a>
 														<ul class="dropdown-menu bottom-up">
 															<li>
-																<a href="#create_submenu" data-toggle="modal">
+																<a href="#create_submenu" class="create_submenu" data-id="" data-toggle="modal">
 																<i class="fa fa-plus"></i> 添加子菜单 </a>
 															</li>
 															<li>
-																<a href="#">
-																<i class="fa fa-times"></i> 删除 </a>
+																<a href="#" class="menu_remove_btn" data-id="">
+																<i class="fa fa-times"></i> 删除一级菜单 </a>
 															</li>
 															<li class="divider">
 															</li>
-															<!--<li>
-																<a href="#">
-																<i class="i"></i> Full Settings </a>
-															</li>-->
 														</ul>
 													</div>
 													<div class="btn-group" id="create_menu_btn">
@@ -325,11 +315,17 @@
 														<i class="fa fa-plus"></i> 添加菜单
 														</a>
 													</div>
-													
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
+                                    <div class="form-group">
+                                    	<label class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <button type="submit" class="btn green col-md-12">保存</button>
+                                        </div>
+                                    </div>
+                                </form>
 							</div>
                             <div id="alipay" class="tab-pane">
                             	<form action="{%url c=system a=save%}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
@@ -475,15 +471,49 @@ jQuery(document).ready(function() {
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
 	
-	$.get('{%url c=wechat a=menu action=fetch%}',{},function(response){
-		var menu = response.body.menu.button;
-		for(var i=0;i<menu.length;i++)
-		{
-			var tpl = $('#menu_template').clone();
-			tpl.removeClass('display-none').find('.name').html(menu[i].name+' <i class="fa fa-angle-down"></i>');
-			tpl.insertBefore($('#create_menu_btn'));
-		}
-		console.log(response);
+	
+	function drwa_menu()
+	{
+		var menu = $('#menu_container').find('.menu');
+		$.each(menu,function(index,value){
+			if($(value).hasClass('display-none'))
+			return;
+			$(value).remove();
+		});
+		$.get('{%url c=wechat a=menu action=fetch%}',{},function(response){
+			var menu = response.body;
+			for(var i=0;i<menu.length;i++)
+			{
+				var tpl = $('#menu_template').clone();
+				tpl.removeClass('display-none').find('.name').html(menu[i].name+' <i class="fa fa-angle-down"></i>');
+				tpl.find('.menu_remove_btn').attr('data-id',menu[i].id);
+				tpl.find('.create_submenu').attr('data-id',menu[i].id);
+				tpl.insertBefore($('#create_menu_btn'));
+				if(menu[i].sub_button)
+				{
+					
+					var submenu = menu[i].sub_button;
+					for(var j=0;j<submenu.length;j++)
+					{
+						var subtpl = '<li><a href="#" data-id="'+submenu[j].id+'" class="remove_submenu_btn"><i class="i"></i> '+submenu[j].name+'(点击删除子菜单) </a></li>';
+						tpl.find('.dropdown-menu').append(subtpl);
+					}
+				}
+			}
+		});
+	}
+	drwa_menu();
+	
+	$('.menu_remove_btn').live('click',function(event){
+		var id = $(this).data('id');
+		var ths = $(this);
+		$.post('{%url c=wechat a=menu action=delete%}',{id:id},function(response){
+			if(response.code == 1)
+			{
+				ths.parents('.btn-group').remove();
+			}
+		});
+		return false;
 	});
 	
 	$('#create_menu_form').on('submit',function(){
@@ -493,6 +523,11 @@ jQuery(document).ready(function() {
 		$.post('{%url c=wechat a=menu action=create%}',{name:name,type:type,key:key},function(response){
 			if(response.code == 1)
 			{
+				var tpl = $('#menu_template').clone();
+				tpl.removeClass('display-none').find('.name').html(name+' <i class="fa fa-angle-down"></i>');
+				tpl.find('.menu_remove_btn').attr('data-id',response.body);
+				tpl.find('.create_submenu').attr('data-id',response.body);
+				tpl.insertBefore($('#create_menu_btn'));
 				$('#create_menu').modal('hide');
 			}
 			else
@@ -501,6 +536,62 @@ jQuery(document).ready(function() {
 			}
 		});
 		return false;
+	});
+	
+	$('#create_submenu').bind('show.bs.modal',function(event){
+		var id = $(event.relatedTarget).data('id');
+		$(this).find('input[name=id]').val(id);
+	});
+	
+	$('#create_submenu_form').on('submit',function(){
+		var id = $('#create_submenu_form').find('[name=id]').val();
+		var name = $('#create_submenu_form').find('[name=name]').val();
+		var type = $('#create_submenu_form').find('[name=type]').val();
+		var key = $('#create_submenu_form').find('[name=key]').val();
+		$.post('{%url c=wechat a=menu action=create%}',{id:id,name:name,type:type,key:key},function(response){
+			if(response.code == 1)
+			{
+				$('#create_submenu').modal('hide');
+				var tpl = '<li><a href="#" data-id="'+response.body+'" class="remove_submenu_btn"><i class="i"></i> '+name+'(点击删除子菜单) </a></li>';
+				$('.menu_remove_btn[data-id='+id+']').parents('.dropdown-menu').append(tpl);
+			}
+			else
+			{
+				alert(response.result);
+			}
+		});
+		return false;
+	});
+	
+	$('.remove_submenu_btn').live('click',function(){
+		var id = $(this).data('id');
+		var ths = $(this);
+		$.post('{%url c=wechat a=menu action=delete%}',{id:id},function(response){
+			if(response.code == 1)
+			{
+				//ths.parents('li').remove();
+				ths.remove();
+			}
+			else
+			{
+				alert(response.result);
+			}
+		});
+		return false;
+	});
+	
+	$('#weixin').find('button').on('click',function(event){
+		$.ajax({
+			async:false,
+			type:'get',
+			url:"{%url c=wechat a=menu action=save%}",
+			success: function(response){
+				if(response.code != 1)
+				{
+					alert(response.result);
+				}
+			}
+		});
 	});
 });
    </script>

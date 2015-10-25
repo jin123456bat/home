@@ -67,6 +67,8 @@ class model
 			$this->_memcache = new memcached(config('memcached'));
 		}
 	}
+	
+	
 
 	/**
 	 * 载入redis
@@ -75,11 +77,26 @@ class model
 	{
 		
 	}
+	
+	/**
+	 * 查询一条记录
+	 * @param string $field
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	public function find($field = '*')
+	{
+		return $this->limit(1)->select($field);
+	}
 
+	/**
+	 * 查询多条记录
+	 * @param string $field
+	 * @return Ambigous <boolean, multitype:>
+	 */
 	public function select($field = '*')
 	{
 		$sql = 'select ' . $field . ' from ' . $this->_table.(isset($this->_temp['table'])?$this->_temp['table']:'') . ' ' . (isset($this->_temp['where'])?$this->_temp['where']:'') .(isset($this->_temp['groupby'])?$this->_temp['groupby']:'').' '.(isset($this->_temp['orderby'])?$this->_temp['orderby']:'').' '.(isset($this->_temp['limit'])?$this->_temp['limit']:'');
-		$result = $this->_db->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
+		$result = $this->query($sql, empty($this->_temp['where']) ? array() : $this->_temp['array']);
 		unset($this->_temp);
 		return $result;
 	}
@@ -92,9 +109,11 @@ class model
 	/**
 	 * 保存执行的sql
 	 */
-	protected function initSql($sql)
+	protected function initSql($sql,$parameter = array())
 	{
-		$this->_sql = $sql;
+		$this->_sql = new \stdClass();
+		$this->_sql->sql = $sql;
+		$this->_sql->parameter = $parameter;
 	}
 
 	/**
@@ -149,7 +168,7 @@ class model
 		}
 		$parameter = rtrim($parameter, ',');
 		$sql = 'insert into ' . $this->_table.(isset($this->_temp['table'])?$this->_temp['table']:'') . ' values (' . $parameter . ')';
-		$result = $this->_db->query($sql, $array);
+		$result = $this->query($sql, $array);
 		unset($this->_temp);
 		return $result;
 	}
@@ -181,7 +200,7 @@ class model
 			$value = array($value);
 		}
 		$value = isset($this->_temp['array'])?array_merge($value,$this->_temp['array']):$value;
-		$result = $this->_db->query($sql, $value);
+		$result = $this->query($sql, $value);
 		unset($this->_temp);
 		return $result;
 	}
@@ -211,7 +230,7 @@ class model
 	public function delete($table = '')
 	{
 		$sql = 'delete '.$table.(isset($this->_temp['table'])?$this->_temp['table']:'').' from ' . $this->_table . ' ' . $this->_temp['where'];
-		$result = $this->_db->query($sql, $this->_temp['array']);
+		$result = $this->query($sql, $this->_temp['array']);
 		unset($this->_temp);
 		return $result;
 	}
@@ -279,7 +298,7 @@ class model
 	
 	public function query($sql,array $array = array())
 	{
-		$this->initSql($sql);
+		$this->initSql($sql,$array);
 		return $this->_db->query($sql,$array);
 	}
 	
