@@ -5,6 +5,7 @@ use system\core\view;
 use system\core\http;
 use application\classes\login;
 use application\classes\wechat;
+use application\message\json;
 
 class mobileControl extends control
 {
@@ -45,7 +46,6 @@ class mobileControl extends control
 			
 			if (!login::wechat())
 			{
-				$userModel = $this->model('user');
 				if ($this->get->code === NULL)
 				{
 					$location = $this->_wechat->getCode($this->http->url(), 'snsapi_base');
@@ -54,24 +54,7 @@ class mobileControl extends control
 				}
 				else
 				{
-					$openid = $this->_wechat->getOpenid($this->get->code);
-					$user = $userModel->getByOpenid($openid);
-					if (empty($user))
-					{
-						if($userModel->registerWeiXin($openid,$this->get->wechat_share_id))
-						{
-							$user = $userModel->loginWeiXin($openid);
-						}
-						else
-						{
-							echo "微信注册失败";
-						}
-					}
-					$this->session->id = $user['id'];
-					//telephone默认为NULL  判断登陆时候可能导致错误
-					$this->session->telephone = empty($user['telephone'])?'':$user['telephone'];
-					$this->session->username = $user['username'];
-					$this->session->openid = $user['openid'];
+					$this->session->code = $this->get->code;
 				}
 			}
 			

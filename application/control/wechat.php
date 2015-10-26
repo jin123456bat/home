@@ -25,6 +25,36 @@ class wechatControl extends control
 	}
 	
 	/**
+	 * 微信的自动注册或登陆
+	 * @return boolean|\application\message\json
+	 */
+	function registerorlogin()
+	{
+		if (empty($this->session->code))
+			return new json(json::PARAMETER_ERROR,'no code');
+		$openid = $this->_wechat->getOpenid($this->session->code);
+		$userModel = $this->model('user');
+		$user = $userModel->getByOpenid($openid);
+		if (empty($user))
+		{
+			if($userModel->registerWeiXin($openid,$this->get->wechat_share_id))
+			{
+				$user = $userModel->loginWeiXin($openid);
+			}
+			else
+			{
+				return new json(json::PARAMETER_ERROR,'注册失败');
+			}
+		}
+		$this->session->id = $user['id'];
+		//telephone默认为NULL  判断登陆时候可能导致错误
+		$this->session->telephone = empty($user['telephone'])?'':$user['telephone'];
+		$this->session->username = $user['username'];
+		$this->session->openid = $user['openid'];
+		return new json(json::OK);
+	}
+	
+	/**
 	 * 接收微信消息
 	 */
 	function router()
