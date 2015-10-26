@@ -22,9 +22,9 @@ class themeModel extends model
 	 * @param unknown $small
 	 * @return \system\core\Ambigous
 	 */
-	function create($name,$description,$big,$middle,$small)
+	function create($name,$description,$big,$middle,$small,$tid = NULL)
 	{
-		return $this->insert(array(NULL,$name,$description,$big,$middle,$small,0));
+		return $this->insert(array(NULL,$name,$description,$big,$middle,$small,0,$tid));
 	}
 	
 	/**
@@ -76,6 +76,12 @@ class themeModel extends model
 		return false;
 	}
 	
+	/**
+	 * 删除主题中的商品
+	 * @param unknown $tid
+	 * @param unknown $pid
+	 * @return \system\core\Ambigous
+	 */
 	function removeProduct($tid,$pid)
 	{
 		$theme_productModel = $this->model('theme_product');
@@ -87,35 +93,42 @@ class themeModel extends model
 	 */
 	function fetchAll(array $filter = array())
 	{
-		if(isset($filter['lock']) && $filter['lock'])
+		if (isset($filter['tid']))
 		{
-			if(!empty($filter['lock_user']))
+			if ($filter['tid'] === NULL)
 			{
+				$this->where('theme.tid is null');
+			}
+			else
+			{
+				$this->where('theme.tid = ?',array($filter['tid']));
+			}
+		}
+		if(isset($filter['length']))
+		{
+			$this->limit($filter['length']);
+		}
+		if(isset($filter['orderby']))
+		{
+			if (is_string($filter['orderby']))
+			{
+				$this->orderby($filter['orderby']);
+			}
+			else if (is_array($filter['orderby']))
+			{
+				$this->orderby($filter['orderby'][0],$filter['orderby'][1]);
+			}
+		}
+		$parameter = isset($filter['parameter'])?$filter['parameter']:'*';
+		if(isset($filter['lock_user']))
+		{
 				$this->table('theme_lock','right join','theme_lock.tid=theme.id');
 				$this->where('theme_lock.uid=?',array($filter['lock_user']));
-				if(isset($filter['length']))
-				{
-					$this->limit($filter['length']);
-				}
-				if(isset($filter['orderby']))
-				{
-					$this->orderby($filter['orderby'],'asc');
-				}
-				return $this->select();
-			}
-			return array();
+				return $this->select($parameter);
 		}
 		else
 		{
-			if(isset($filter['length']))
-			{
-				$this->limit($filter['length']);
-			}
-			if(isset($filter['orderby']))
-			{
-				$this->orderby($filter['orderby'],'asc');
-			}
-			return $this->select();
+			return $this->select($parameter);
 		}
 	}
 }

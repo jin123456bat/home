@@ -137,6 +137,15 @@ class orderlistModel extends model
 			return isset($result[0]) ? $result[0] : NULL;
 		return isset($result[0][$name]) ? $result[0][$name] : NULL;
 	}
+	
+	/**
+	 * 根据订单号获取订单信息
+	 */
+	function getByOrderno($orderno)
+	{
+		$result = $this->where('orderno=?',array($orderno))->select();
+		return isset($result[0])?$result[0]:NULL;
+	}
 
 	/**
 	 * 更改订单状态

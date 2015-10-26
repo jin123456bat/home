@@ -7,6 +7,7 @@ use application\classes\login;
 use application\model\roleModel;
 use system\core\view;
 use system\core\image;
+use application\message\json;
 class themeControl extends control
 {
 	/**
@@ -22,6 +23,17 @@ class themeControl extends control
 		$result['middlepic'] = empty($result['middlepic'])?'':file::realpathToUrl($result['middlepic']);
 		$result['smallpic'] = empty($result['smallpic'])?'':file::realpathToUrl($result['smallpic']);
 		$result['product'] = $themeModel->product($id);
+		$filter = array(
+			'tid' => $id
+		);
+		$filter['parameter'] = 'theme.id,theme.name,theme.description,theme.bigpic,theme.middlepic,theme.smallpic';
+		$result['theme'] = $this->model('theme')->fetchAll($filter);
+		foreach ($result['theme'] as &$theme)
+		{
+			$theme['smallpic'] = file::realpathToUrl($theme['smallpic']);
+			$theme['middlepic'] = file::realpathToUrl($theme['middlepic']);
+			$theme['bigpic'] = file::realpathToUrl($theme['bigpic']);
+		}
 		foreach($result['product'] as &$product)
 		{
 			switch ($product['activity'])
@@ -36,6 +48,11 @@ class themeControl extends control
 			$product['collection'] = $this->model('collection')->getByPid($product['id']);
 			$product['origin'] = $this->model('flag')->getOrigin($product['origin']);
 		}
+		//主题锁
+		if ($this->model('system')->get('lock','theme') && login::user())
+		{
+			$this->session->theme_lock = $id;
+		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
 	
@@ -44,7 +61,6 @@ class themeControl extends control
 	 */
 	function getlist()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$length = filter::int($this->get->length);
 		$length = empty($length)?3:$length;
 		$themeModel = $this->model('theme');
@@ -53,10 +69,13 @@ class themeControl extends control
 		$filter=array(
 			'length' => $length,
 			'orderby' => 'orderby',
-			'lock' => $systemModel->get('lock','theme'),
-			'lock_user' => $this->session->id
 		);
 		
+		if ($this->model('system')->get('lock','theme'))
+		{
+			$filter['lock_user'] = $this->session->id;
+		}
+		$filter['parameter'] = 'theme.id,theme.name,theme.description,theme.bigpic,theme.middlepic,theme.smallpic';
 		$result = $themeModel->fetchAll($filter);
 		foreach ($result as &$value)
 		{
@@ -64,7 +83,7 @@ class themeControl extends control
 			$value['middlepic'] = file::realpathToUrl($value['middlepic']);
 			$value['bigpic'] = file::realpathToUrl($value['bigpic']);
 		}
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+		return new json(json::OK,NULL,$result);
 	}
 	
 	/**
@@ -116,6 +135,8 @@ class themeControl extends control
 			$bigpic = $this->file->bigpic;
 			$middlepic = $this->file->middlepic;
 			$smallpic = $this->file->smallpic;
+			$tid = intval($this->post->tid);
+			$tid = empty($tid)?NULL:$tid;
 			$image = new image();
 			if (!empty($bigpic))
 			{
@@ -142,7 +163,7 @@ class themeControl extends control
 				$smallpic = '';
 			}
 			$themeModel = $this->model('theme');
-			if($themeModel->create($name,$description,$bigpic,$middlepic,$smallpic))
+			if($themeModel->create($name,$description,$bigpic,$middlepic,$smallpic,$tid))
 			{
 				$this->response->addHeader('Location',$this->http->url('theme','admin'));
 			}

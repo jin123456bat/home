@@ -72,7 +72,7 @@ class control extends base
 				$path = ROOT.'/application/control/'.$c.'.php';
 				include_once $path;
 				$control = 'application\\control\\'.$c.'Control';
-				$class[md5($c)] = (new $control());
+				$class[$key] = (new $control());
 			}
 			$content = $class[$key]->$a();
 			return $content;

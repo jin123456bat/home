@@ -124,6 +124,19 @@
 										首页小图 320x130</span>
 									</div>
 								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">父主题</label>
+									<div class="col-md-9">
+										<select name="tid" class="form-control">
+											<option value="">无父主题</option>
+											{%section name=theme loop=$theme%}
+											<option value="{%$theme[theme].id%}">{%$theme[theme].name%}</option>
+											{%/section%}
+										</select>
+										<span class="help-block">
+										首页小图 320x130</span>
+									</div>
+								</div>
 							</div>
 							<div class="modal-footer">
 								<button type="submit" class="btn blue btn-circle">创建</button>
@@ -194,6 +207,9 @@
                         <th width="10%">
                         	排序
                         </th>
+						<th>
+							父主题
+						</th>
                         <th>
                         	二维码
                         </th>
@@ -220,9 +236,17 @@
 						<td name=name>{%$theme[theme].name%}</td>
 						<td name=description>{%$theme[theme].description%}</td>
                         <td name=orderby>{%$theme[theme].orderby%}</td>
-                        <td>
+                        <td name=tid>
+						{%section name=temp loop=$theme%}
+							{%if $theme[temp].id == $theme[theme].tid%}
+								{%$theme[temp].name%}
+							{%/if%}
+						{%/section%}
+						</td>
+						<td>
                         <button class="btn popovers downloadeqcode" data-html="true" data-trigger="hover" data-container="body" data-placement="right" data-content="<img src='http://www.wmjia.net/index.php?c=index&a=eqcode&download=true&content={%url c=mobile a=themeDetail id=$theme[theme].id urlencode=1%}'>" data-original-title="推广二维码">推广码</button>
                         </td>
+						
 						<td>
 							<div class="btn-group btn-group-circle btn-group-justified">
 								<a data-id="{%$theme[theme].id%}" class="btn btn-sm red removeBtn">
@@ -324,6 +348,7 @@ jQuery(document).ready(function() {
 			var input = $('<input type="text">');
 			var textarea = $('<textarea></textarea>');
 			var orderbyinput = $('<input type="text">');
+			var tidselect = $('<select><option value="">无父主题</option>{%section name=theme loop=$theme%}<option value={%$theme[theme].id%}>{%$theme[theme].name%}</option>{%/section%}</select>');
 			var old = $.trim(td.html());
 			var oldtextarea = $.trim(tdtextarea.html());
 			var oldorderby = $.trim(orderby.html());

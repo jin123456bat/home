@@ -40,7 +40,7 @@ class mobileControl extends control
 			return $this->call('index', '__404');
 			
 		//微信的自动登陆和注册
-		if (isWechat())
+		if (isWechat() && $this->_system->get('autologin','weixin'))
 		{
 			
 			if (!login::wechat())
@@ -75,18 +75,20 @@ class mobileControl extends control
 				}
 			}
 			
-			//对于点击分享链接过来的用户
-			if ($this->get->wechat_share_id !== NULL)
+			if($this->_system->get('open','dist'))
 			{
-				$wechat_share_id = intval($this->get->wechat_share_id);
-				$userModel=$this->model('user');
-				$user = $userModel->get($this->session->id);
-				if (!empty($user) && empty($user['oid']))
+				//对于点击分享链接过来的用户
+				if ($this->get->wechat_share_id !== NULL)
 				{
-					$userModel->where('id=?',array($user['id']))->update('oid',$wechat_share_id);
+					$wechat_share_id = intval($this->get->wechat_share_id);
+					$userModel=$this->model('user');
+					$user = $userModel->get($this->session->id);
+					if (!empty($user) && empty($user['oid']))
+					{
+						$userModel->where('id=?',array($user['id']))->update('oid',$wechat_share_id);
+					}
 				}
 			}
-			
 		}
 		
 		//主题锁

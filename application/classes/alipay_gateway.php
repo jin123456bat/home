@@ -73,6 +73,7 @@ class alipay_gateway
 		 */
 		$notify_url = $protocal.$http->host().'/gateway/alipay/notify.php';
 		
+		$show_url = '';
 		
 		/**
 		 * 商品描述
@@ -81,7 +82,9 @@ class alipay_gateway
 		foreach ($orderdetail as $product)
 		{
 			$body .= $product['productname'].'x'.$product['num'];
+			$show_url .= $http->url('mobile','proDetail',array('id',$product['pid'])).',';
 		}
+		$show_url = rtrim($show_url,',');
 		
 		/**
 		 * 商品名称
@@ -90,16 +93,14 @@ class alipay_gateway
 		
 		
 		$data = array(
-			'body' => $body,
-			'subject' => $subject,
-			'partner' => $this->_system->get('partner','alipay'),
-			'out_trade_no'=>$order['orderno'],
-			'currency' => $this->_system->get('currency','alipay'),//海外币种
-			'rmb_fee' => number_format($order['ordertotalamount'],2),
-			
-			'notify_url' => $notify_url,
-			'return_url' => $return_url,
-			'_input_charset'=>$this->_config['input_charset'],
+ 			'body' => $body,
+ 			'subject' => $subject,
+ 			'partner' => $this->_system->get('partner','alipay'),
+ 			'out_trade_no'=>$order['orderno'],
+ 			'rmb_fee' => number_format($order['ordertotalamount'],2),			
+ 			'notify_url' => $notify_url,
+ 			'return_url' => $return_url,
+ 			'_input_charset'=>$this->_config['input_charset'],
 		);
 		//超时时间规则
 		$timeout = (new time())->format($this->_system->get('timeout','payment'), true);
@@ -113,14 +114,15 @@ class alipay_gateway
 					$data['service'] = 'create_direct_pay_by_user';
 					break;
 				case 'wap':
+					//手机网站支付到国内账户
 					$data['service'] = 'alipay.wap.create.direct.pay.by.user';
 					$data['payment_type'] = 1;
-					//$data['seller_id'] = $this->_system->get('partner','alipay');
+					$data['seller_id'] = $data['partner'];
+					$data['show_url'] = $show_url;
 					$data['it_b_pay'] = $timeout;
 					$data['total_fee'] = $data['rmb_fee'];
 					unset($data['rmb_fee']);
 					unset($data['currency']);
-					//$data['service'] = 'alipay.wap.auth.authAndExecute';
 					break;
 				default:return array('code'=>'error','content'=>'支付方式错误');
 			}
@@ -139,6 +141,7 @@ class alipay_gateway
 			//海外支付特殊参数
 			$data['timeout_rule'] = $timeout;
 			$data['supplier'] = $this->_system->get('companyname','system');
+			$data['currency'] = $this->_system->get('currency','alipay');//海外币种
 			
 			switch ($this->_trade_type)
 			{

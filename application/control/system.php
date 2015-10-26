@@ -246,12 +246,14 @@ class systemControl extends control
 		{
 			$systemModel = $this->model('system');
 			$payment = $systemModel->fetch(array('weixin','alipay','payment'));
+			
 			$this->view = new view(config('view'), 'admin/system_payment.html');
 			$this->view->assign('role',$roleModel->get($this->session->role));
 			
 			$systemModel = $this->model('system');
 			$system = $systemModel->fetch('system');
 			$system = $systemModel->toArray($system,'system');
+			
 			$this->view->assign('system',$system);
 			
 			$systemConfig = array();
@@ -259,7 +261,8 @@ class systemControl extends control
 			{
 				$systemConfig['system_'.$value['type'].'_'.$value['name']] = $value['value'];
 			}
-			$this->view->assign('systemConfig',$systemConfig);
+			
+			$this->view->assign('systemconfig',$systemConfig);
 			return $this->view->display();
 		}
 		else

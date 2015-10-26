@@ -868,20 +868,22 @@ class orderControl extends control
 	 */
 	function thankyou()
 	{
-		$id = filter::int($this->get->id);
-		if(!empty($id))
+		$out_trade_no = filter::int($this->get->out_trade_no);
+		if(!empty($out_trade_no))
 		{
-			$order = $this->model('orderlist')->get($id);
+			$order = $this->model('orderlist')->getByOrderno($out_trade_no);
 			if(isset($order['status']))
 			{
-				switch ($order['status'])
+				$this->response->setCode(302);
+				$this->response->addHeader('Location',$this->http->url('mobile','orderList',array('status',1)));
+				/* switch ($order['status'])
 				{
 					case 0:return "尚未支付";break;
 					case 1:return "支付成功";break;
 					case 2:return "支付失败";break;
 					case 3:return "用户取消";break;
 					default:return "订单状态未知";break;
-				}
+				} */
 			}
 		}
 		else

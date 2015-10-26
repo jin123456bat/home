@@ -223,12 +223,12 @@ class userModel extends model
 	 */
 	function loginWeiXin($openid)
 	{
-		$result = $this->where('openid=?',array($openid))->find();
-		if(empty($result))
+		$result = $this->where('openid=?',array($openid))->select();
+		if(!isset($result[0]))
 		{
 			return false;
 		}
-		return $result;
+		return $result[0];
 	}
 	
 	function getById($id)
