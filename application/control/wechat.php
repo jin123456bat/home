@@ -30,22 +30,23 @@ class wechatControl extends control
 	 */
 	function registerorlogin()
 	{
-		if (empty($this->session->code))
-			return new json(json::PARAMETER_ERROR,'no code');
-		$openid = $this->_wechat->getOpenid($this->session->code);
+		$wechat_user_info = $this->session->wechat_user_info;
+		if (!isset($wechat_user_info->openid))
+			return new json(json::PARAMETER_ERROR,'没有openid');
 		$userModel = $this->model('user');
-		$user = $userModel->getByOpenid($openid);
+		$user = $userModel->getByOpenid($wechat_user_info->openid);
 		if (empty($user))
 		{
-			if($userModel->registerWeiXin($openid,$this->get->wechat_share_id))
+			if($userModel->registerWeiXin($wechat_user_info->openid,$this->session->wechat_share_id,'weixin',$wechat_user_info->nickname,$wechat_user_info->headimgurl))
 			{
-				$user = $userModel->loginWeiXin($openid);
+				$user = $userModel->loginWeiXin($wechat_user_info->openid);
 			}
 			else
 			{
 				return new json(json::PARAMETER_ERROR,'注册失败');
 			}
 		}
+		
 		$this->session->id = $user['id'];
 		//telephone默认为NULL  判断登陆时候可能导致错误
 		$this->session->telephone = empty($user['telephone'])?'':$user['telephone'];
@@ -242,14 +243,12 @@ class wechatControl extends control
 	{
 		$resultFlag = false;
 		$access_token = $this->model('system')->get('access_token','weixin');
-		if(!empty($access_token))
+		$access_token = json_decode($access_token,true);
+		if (isset($access_token['endtime']) && $access_token['endtime']>$_SERVER['REQUEST_TIME'])
 		{
-			$access_token = json_decode($access_token,true);
-			if (isset($access_token['endtime']) && $access_token['endtime']>$_SERVER['REQUEST_TIME'])
-			{
-				$resultFlag = true;
-			}
+			$resultFlag = true;
 		}
+		
 		//access_token失效或者不存在
 		if(!$resultFlag)
 		{

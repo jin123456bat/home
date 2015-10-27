@@ -197,6 +197,8 @@ class file
 	{
 		if(empty($path))
 			return '';
+		if (substr($path, 0,4) == 'http')
+			return $path;
 		if(is_file($path))
 		{
 			$path = str_replace(realpath(ROOT), '', realpath($path));

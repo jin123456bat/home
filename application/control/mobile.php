@@ -39,22 +39,24 @@ class mobileControl extends control
 	{
 		if(!empty($args))
 			return $this->call('index', '__404');
-			
+		$wechat_autologin = $this->_system->get('autologin','weixin');
 		//微信的自动登陆和注册
-		if (isWechat() && $this->_system->get('autologin','weixin'))
+		if (isWechat() && $wechat_autologin)
 		{
-			
 			if (!login::wechat())
 			{
 				if ($this->get->code === NULL)
 				{
-					$location = $this->_wechat->getCode($this->http->url(), 'snsapi_base');
+					$location = $this->_wechat->getCode($this->http->url(), 'snsapi_userinfo');
 					$this->response->setCode(302);
 					$this->response->addHeader('Location',$location);
 				}
 				else
 				{
-					$this->session->code = $this->get->code;
+					$code = $this->get->code;
+					$codeinfo = $this->_wechat->getOpenid($code);
+					$userinfo = $this->_wechat->getUserInfo($codeinfo['access_token'], $codeinfo['openid']);
+					$this->session->wechat_user_info = $userinfo;
 				}
 			}
 			
@@ -95,6 +97,11 @@ class mobileControl extends control
 			
 			if (isWechat())
 			{
+				if ($wechat_autologin)
+				{
+					$this->view->assign('need_wechat_login',1);
+				}
+				
 				$jssdk = $this->_wechat->getJSSDK();
 				$jssdk->setAccessToken($this->call('wechat', 'access_token'));
 				$signPackage = $jssdk->getSignPackage();

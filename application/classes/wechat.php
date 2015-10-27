@@ -215,20 +215,36 @@ class wechat
 		$url = sprintf($url, $this->_appid, $redict, $scope, $state);
 		return $url;
 	}
+	
+	/**
+	 * 获取用户信息
+	 * @param unknown $access_token
+	 * @param unknown $openid
+	 * @param string $lang
+	 * @return mixed
+	 */
+	function getUserInfo($access_token,$openid,$lang = 'zh_CN')
+	{
+		$url = 'https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=%s';
+		$url = sprintf($url,$access_token,$openid,$lang);
+		return json_decode($this->get($url));
+	}
 
 	/**
-	 * 获取用户的openid
 	 *
 	 * @param string $code
 	 *        	通过getCode获取到的code
+	 * @param string 返回值字段 默认为openid
 	 */
-	function getOpenid($code)
+	function getOpenid($code,$field = '')
 	{
 		$url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code';
 		$url = sprintf($url, $this->_appid, $this->_appsecret, $code);
 		$result = $this->get($url);
 		$result = json_decode($result, true);
-		return $result['openid'];
+		if (empty($field))
+			return $result;
+		return $result[$field];
 	}
 
 	/**
