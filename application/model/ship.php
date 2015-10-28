@@ -13,6 +13,11 @@ class shipModel extends model
 		parent::__construct($table);
 	}
 	
+	function save($id,array $data)
+	{
+		return $this->where('id=?',array($id))->update($data);
+	}
+	
 	/**
 	 * 创建配送方案
 	 * @param unknown $name

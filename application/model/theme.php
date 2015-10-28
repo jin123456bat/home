@@ -120,7 +120,7 @@ class themeModel extends model
 			}
 		}
 		$parameter = isset($filter['parameter'])?$filter['parameter']:'*';
-		if(isset($filter['lock_user']))
+		if(isset($filter['lock']) && $filter['lock'] && isset($filter['lock_user']) && $filter['lock_user']!==NULL)
 		{
 				$this->table('theme_lock','right join','theme_lock.tid=theme.id');
 				$this->where('theme_lock.uid=?',array($filter['lock_user']));

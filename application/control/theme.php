@@ -69,12 +69,10 @@ class themeControl extends control
 		$filter=array(
 			'length' => $length,
 			'orderby' => 'orderby',
+			'lock_user' => $this->session->id,
+			'lock' => $this->model('system')->get('lock')
 		);
-		
-		if ($this->model('system')->get('lock','theme'))
-		{
-			$filter['lock_user'] = $this->session->id;
-		}
+	
 		$filter['parameter'] = 'theme.id,theme.name,theme.description,theme.bigpic,theme.middlepic,theme.smallpic';
 		$result = $themeModel->fetchAll($filter);
 		foreach ($result as &$value)

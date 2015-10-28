@@ -159,6 +159,9 @@
 									<th>
 										 配送费用
 									</th>
+									<th>
+										操作
+									</th>
 								</tr>
 								</thead>
 								<tbody id="tbody">
@@ -178,6 +181,9 @@
 									</td>
 									<td>
 										{%$ship[ship].price%}
+									</td>
+									<td>
+										<button data-id="{%$ship[ship].id%}" class="btn green-stripe btn-xs modifier">修改</button>
 									</td>
 								</tr>
 								{%/section%}
@@ -224,6 +230,11 @@ jQuery(document).ready(function() {
 	Layout.init(); // init current layout
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
+	
+	$('.modifier').live('click',function(){
+		var id = $(this).data('id');
+		window.location = '{%url c=admin a=shipmodify%}&id='+id;
+	});
 	
 	$('#ship_form').on('submit',function(){
 		var name = $.trim($(this).find('input[name=name]').val());

@@ -385,7 +385,7 @@
 		<li {%if $smarty.get.c==ship && $smarty.get.a==admin
         		|| $smarty.get.c==system &&(
                 $smarty.get.a==base || $smarty.get.a==payment || $smarty.get.a==cache || $smarty.get.a==costums || $smarty.get.a==shippment
-                )
+                ) || ($smarty.get.c==admin && $smarty.get.a==shipmodify)
                 %}class="active open"{%/if%}>
 			<a href="javascript:;">
 			<i class="icon-settings"></i>
@@ -396,14 +396,16 @@
                                     || $smarty.get.a==cache
                                     || $smarty.get.a==costums
                                     || $smarty.get.a==shippment
-                                    ))%}open{%/if%}"></span>
+                                    ))
+									|| $smarty.get.c==admin && $smarty.get.a==shipmodify%}open{%/if%}"></span>
 			</a>
 			<ul class="sub-menu">
             	<li{%if $smarty.get.c==system && $smarty.get.a==base%} class="active"{%/if%}>
 					<a href="{%url c=system a=base%}">
 					基础配置</a>
 				</li>
-				<li{%if $smarty.get.c==ship && $smarty.get.a==admin%} class="active"{%/if%}>
+				<li{%if $smarty.get.c==ship && $smarty.get.a==admin
+					|| $smarty.get.c==admin && $smarty.get.a==shipmodify%} class="active"{%/if%}>
 					<a href="{%url c=ship a=admin%}">
 					配送方案</a>
 				</li>

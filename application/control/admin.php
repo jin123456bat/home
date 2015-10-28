@@ -11,6 +11,10 @@ use application\model\refundModel;
 
 class adminControl extends control
 {
+	
+	private $_module_power = ['shipmodify'=>'system'];
+	
+	
 	/**
 	 * 管理员登陆界面
 	 */
@@ -282,7 +286,7 @@ class adminControl extends control
 	private function init($name)
 	{
 		$roleModel = $this->model('role');
-		if (!(login::admin() && $roleModel->checkPower($this->session->role,$name,roleModel::POWER_ALL)))
+		if (!(login::admin() && $roleModel->checkPower($this->session->role,$this->_module_power[$name],roleModel::POWER_ALL)))
 		{
 			$this->response->setCode(302);
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
@@ -301,6 +305,12 @@ class adminControl extends control
 				);
 				$drawal = $this->model('drawal')->fetch($filter);
 				$this->view->assign('drawal',$drawal);
+				break;
+			case 'shipmodify':
+				$id = $this->get->id;
+				$shipModel = $this->model('ship');
+				$ship = $shipModel->get($id);
+				$this->view->assign('ship',$ship);
 				break;
 			default:
 		}

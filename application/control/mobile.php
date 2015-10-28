@@ -65,13 +65,7 @@ class mobileControl extends control
 				//对于点击分享链接过来的用户
 				if ($this->get->wechat_share_id !== NULL)
 				{
-					$wechat_share_id = intval($this->get->wechat_share_id);
-					$userModel=$this->model('user');
-					$user = $userModel->get($this->session->id);
-					if (!empty($user) && empty($user['oid']))
-					{
-						$userModel->where('id=?',array($user['id']))->update('oid',$wechat_share_id);
-					}
+					$this->session->wechat_share_id = $this->get->wechat_share_id;
 				}
 			}
 		}

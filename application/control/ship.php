@@ -37,6 +37,28 @@ class shipControl extends control
 	}
 	
 	/**
+	 * 保存修改后的配送方案
+	 */
+	function save()
+	{
+		$id = $this->post->id;
+		$name =$this->post->name;
+		$code = $this->post->code;
+		$max = $this->post->max;
+		$price = $this->post->price;
+		if(empty($id) || empty($name) || empty($code))
+			return new json(json::PARAMETER_ERROR,'名称或代码不能为空');
+		$max = empty($max)?0:$max;
+		$price = empty($price)?0:$price;
+		$data = ['name'=>$name,'code'=>$code,'max'=>$max,'price'=>$price];
+		if($this->model('ship')->save($id,$data))
+		{
+			return new json(json::OK);
+		}
+		return new json(json::PARAMETER_ERROR,'配送方案不存在');
+	}
+	
+	/**
 	 * 添加配送方案
 	 */
 	function create()
