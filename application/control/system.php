@@ -27,7 +27,6 @@ class systemControl extends control
 			$systemModel = $this->model('system');
 			
 			$config = config('file');
-			$config['path'] = ROOT.'/application/cert/';//证书文件保存位置
 			unset($config['type']);//允许所有文件类型
 			//检查文件上传
 			foreach ($_FILES as $key=>$value)

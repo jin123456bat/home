@@ -369,7 +369,7 @@ class userControl extends control
 					{
 						return json_encode(array(
 							'code' => 3,
-							'result' => '手机号重复注册或其他问题无法注册'
+							'result' => '手机号码已存在'
 						));
 					}
 				}

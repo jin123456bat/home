@@ -120,7 +120,7 @@ class wechatControl extends control
 									
 									$systemModel = $this->model('system');
 									$dist = $systemModel->fetch('dist');
-									$dist = $systemModel->toArray($dist);
+									$dist = $systemModel->toArray($dist,'dist');
 									$eqcodebackground = $dist['eqcodebackground'];
 									$eqcodebackground_x = isset($dist['eqcodebackgroundx'])?$dist['eqcodebackgroundx']:0;
 									$eqcodebackground_y = isset($dist['eqcodebackgroundy'])?$dist['eqcodebackgroundy']:0;
@@ -128,9 +128,9 @@ class wechatControl extends control
 									{
 										//给二维码增加背景图
 										$alpha = 100;
-										$savepath = $file;
 										$image = new image();
-										$image->water($eqcodebackground, $file,$eqcodebackground_x,$eqcodebackground_y, $alpha, $savepath);
+										$image->water($eqcodebackground, $file,$eqcodebackground_x,$eqcodebackground_y, $alpha, $file);
+										
 									}
 									
 									$result = $this->_wechat->file($access_token, $action, $file, $type);
