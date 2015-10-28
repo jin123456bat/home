@@ -16,13 +16,7 @@ class express
 	 */
 	function query($com,$waybills,$order = 'desc')
 	{
-		switch ($com)
-		{
-			case 'sf':$com = 'shunfeng';break;
-			default:
-		}
 		$url = 'http://m.kuaidi100.com/query?type='.$com.'&postid='.$waybills.'&id=1&valicode=&temp='.random::number(10);
-		
 		$curl = curl_init();
 		curl_setopt ($curl, CURLOPT_URL, $url);
 		curl_setopt ($curl, CURLOPT_HEADER,0);
