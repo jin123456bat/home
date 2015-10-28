@@ -121,16 +121,66 @@ class image
 		return $name;
 	}
 	
-	/**
-	 * 图片水印
-	 * @param unknown_type $sourcePic 原图位置
-	 * @param unknown_type $waterPic 水印图片位置
-	 * @param array $options 水印参数
-	 */
-	public function waterPic($sourcePic,$waterPic,array $options = array())
-	{
-	
-	}
+	 /**
+     * 添加水印
+     * @param  string  $source 水印图片路径
+     * @param  integer $locate 水印位置
+     * @param int $x 水印位置
+     * @param int $y 水印位置
+     * @param  integer $alpha  水印透明度
+     * @param string $savepath 生成文件保存位置
+     */
+    public function water($source ,$logo,$x,$y,$alpha,$savepath)
+    {
+        if (!is_file($source) || !is_file($logo))
+        	return false;
+        $dst_info = getimagesize($source);
+        switch ($dst_info[2])
+        {
+        	case 1:
+        		$dst_im =imagecreatefromgif($source);break;
+        	case 2:
+        		$dst_im =imagecreatefromjpeg($source);break;
+        	case 3:
+        		$dst_im =imagecreatefrompng($source);break;
+        	case 6:
+        		$dst_im =imagecreatefromwbmp($source);break;
+        	default:
+        		return false;
+        }
+        $src_info = getimagesize($logo);
+        switch ($src_info[2])
+        {
+        	case 1:
+        		$src_im =imagecreatefromgif($logo);break;
+        	case 2:
+        		$src_im =imagecreatefromjpeg($logo);break;
+        	case 3:
+        		$src_im =imagecreatefrompng($logo);break;
+        	case 6:
+        		$src_im =imagecreatefromwbmp($logo);break;
+        	default:
+        		return false;
+        }
+        
+        imagecopymerge($dst_im,$src_im,$x,$y,0,0,$src_info[0],$src_info[1],$alpha); //保存图片
+        
+        switch ($dst_info[2]){
+        	case 1:
+        		imagegif($dst_im,$savepath);break;
+        	case 2:
+        		imagejpeg($dst_im,$savepath);break;
+        	case 3:
+        		imagepng($dst_im,$savepath);break;
+        	case 6:
+        		imagewbmp($dst_im,$savepath);break;
+        	default:
+        		return false;
+        }
+        imagedestroy($dst_im);
+        imagedestroy($src_im);
+    }
+
 	
 	/**
 	 * 生成二维码

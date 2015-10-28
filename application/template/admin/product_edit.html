@@ -211,10 +211,10 @@
 													</label>
 													<div class="col-md-10">
 														<div class="input-group input-large date-picker input-daterange" data-date-format="yyyy-mm-dd">
-															<input type="text" class="form-control" name="starttime" value="{%$product.starttime|date_format:"y-m-d"|default:""%}">
+															<input type="text" class="form-control" name="starttime" value="{%$product.starttime|date_format:'Y-m-d'|default:""%}">
 															<span class="input-group-addon">
 															到 </span>
-															<input type="text" class="form-control" name="endtime" value="{%$product.endtime|date_format:"y-m-d"|default:""%}">
+															<input type="text" class="form-control" name="endtime" value="{%$product.endtime|date_format:'Y-m-d'|default:""%}">
 														</div>
 														<span class="help-block">
 														有效日期范围.设置为0为不限制时间，超出时间或未到时间商品会自动上下架，自动上下架有一定的时间延迟不会太长的可以放心使用 </span>

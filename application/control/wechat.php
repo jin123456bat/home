@@ -5,6 +5,7 @@ use application\classes\wechat;
 use application\message\json;
 use application\message\xml;
 use system\core\file;
+use system\core\image;
 /**
  * 微信相关控制器
  * @author jin12
@@ -98,6 +99,9 @@ class wechatControl extends control
 							{
 								case 'myeqcode':
 									$openid = $data->FromUserName;
+									//二维码保存地址
+									$file = ROOT.'/application/upload/'.md5($data->FromUserName).'.jpg';
+									
 									$userModel = $this->model('user');
 									$user = $userModel->getByOpenid($openid);
 									if(empty($user))
@@ -111,10 +115,24 @@ class wechatControl extends control
 									$access_token = $this->access_token();
 									$action = 'upload';
 									$type = 'image';
-										
-									$file = ROOT.'/application/upload/'.md5($data->FromUserName).'.jpg';
+									
 									file_put_contents($file, $this->eqcode($uid));
-				
+									
+									$systemModel = $this->model('system');
+									$dist = $systemModel->fetch('dist');
+									$dist = $systemModel->toArray($dist);
+									$eqcodebackground = $dist['eqcodebackground'];
+									$eqcodebackground_x = isset($dist['eqcodebackgroundx'])?$dist['eqcodebackgroundx']:0;
+									$eqcodebackground_y = isset($dist['eqcodebackgroundy'])?$dist['eqcodebackgroundy']:0;
+									if (is_file($eqcodebackground))
+									{
+										//给二维码增加背景图
+										$alpha = 100;
+										$savepath = $file;
+										$image = new image();
+										$image->water($eqcodebackground, $file,$eqcodebackground_x,$eqcodebackground_y, $alpha, $savepath);
+									}
+									
 									$result = $this->_wechat->file($access_token, $action, $file, $type);
 									$result = json_decode($result,true);
 									if (isset($result['media_id']))
@@ -267,8 +285,7 @@ class wechatControl extends control
 	
 	function test()
 	{
-		$access_token = $this->access_token();
-		print_r($this->_wechat->menu($access_token,NULL,'fetch'));
+		
 	}
 	
 	
@@ -280,7 +297,6 @@ class wechatControl extends control
 	{
 		$scene_id = $this->get->id;
 		$scene_id = ($scene_id === NULL)?$sid:$scene_id;
-		
 		
 		$access_token = $this->access_token();
 		

@@ -88,6 +88,8 @@ class mobileControl extends control
 		{
 			$this->view = new view($this->_config, $template);
 			
+			$this->view->assign('tempalte_name',trim($this->_template_dir,'/\\'));
+			
 			if (isWechat())
 			{
 				if ($wechat_autologin)

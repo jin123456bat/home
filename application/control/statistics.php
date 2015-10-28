@@ -205,6 +205,17 @@ class statisticsControl extends control
 		));
 	}
 	
+	/**
+	 * 流水中的统计
+	 */
+	function swift()
+	{
+		$uid = $this->session->id;
+		$swfitModel = $this->model('swift');
+		$drawal = $swfitModel->where('uid=? and note=?',array($uid,'提现'))->select('sum(money)');
+		return new json(array('drawal'=>$drawal['sum(money)']));
+	}
+	
 	function refund()
 	{
 		

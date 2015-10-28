@@ -116,12 +116,14 @@
 					退款申请</a>
 				</li>
                 {%/if%}
+				{%if isset($role.drawal) && $role.drawal==15%}
 				<li class="{%if $smarty.get.a==drawal%}active{%/if%}">
 					<a href="{%url c=admin a=drawal%}">
 					<i class="icon-tag"></i>
 					提现申请
 					</a>
 				</li>
+				{%/if%}
 			</ul>
 		</li>
         {%/if%}

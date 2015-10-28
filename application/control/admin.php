@@ -286,11 +286,13 @@ class adminControl extends control
 	private function init($name)
 	{
 		$roleModel = $this->model('role');
-		if (!(login::admin() && $roleModel->checkPower($this->session->role,$this->_module_power[$name],roleModel::POWER_ALL)))
+		$powername = isset($this->_module_power[$name])?$this->_module_power:$name;
+		if (!(login::admin() && $roleModel->checkPower($this->session->role,$powername,roleModel::POWER_ALL)))
 		{
 			$this->response->setCode(302);
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
-		}	
+		}
+		
 		$this->view->assign('role',$roleModel->get($this->session->role));	
 		$systemModel = $this->model('system');
 		$system = $systemModel->fetch('system');
