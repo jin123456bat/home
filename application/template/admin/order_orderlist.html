@@ -175,6 +175,9 @@
 									<th width="3%">
 										 配送方案
 									</th>
+									<th width="3%">
+										物流单号
+									</th>
                                     <th width="3%">
 										 支付方式
 									</th>
@@ -187,6 +190,7 @@
 									<th width="5%">
 										 已支付
 									</th>
+									
 									<th width="10%">
 										 状态
 									</th>
@@ -225,6 +229,9 @@
 									</td>
 									<td>
 										<input type="text" class="form-control form-filter input-sm" name="postmode">
+									</td>
+									<td>
+										<input type="text" class="form-control form-filter input-sm" name="waybills">
 									</td>
                                     <td>
 										<input type="text" class="form-control form-filter input-sm" name="paytype">
@@ -276,6 +283,7 @@
 								</tbody>
 								<tfoot>
 									<tr>
+										<th>#</th>
 										<th>#</th>
 										<th>#</th>
 										<th>#</th>
@@ -445,10 +453,8 @@ EcommerceOrders.init();
 			if(response.code == 1)
 			{
 				ths.addClass('display-none');
-				if(response.body.length>0)
-				{
-					ths.parent().find('.outship').removeClass('display-none');
-				}
+				ths.parent().find('.outship').removeClass('display-none');
+				ths.parents('tr').find('td:eq(10)').html('已经发货');
 			}
 			else
 			{

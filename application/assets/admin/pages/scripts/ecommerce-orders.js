@@ -109,7 +109,7 @@ var EcommerceOrders = function () {
 						return '<button class="btn btn-xs default-stripe popovers" data-html="true" data-container="body" data-trigger="hover" data-placement="right" data-content="收件人:'+full.consignee+'<br>收件人号码:'+full.consigneetel+'<br>收件地址:'+full.consigneeaddress+'" data-original-title="配送信息">'+telephone+'</button>';
 					}
 				},{
-					"targets":9,
+					"targets":10,
 					"data":"status",
 					"render":function(data,type,full){
 						switch(data)
@@ -128,13 +128,13 @@ var EcommerceOrders = function () {
 						}
 					}
 				},{
-					targets:11,
+					targets:12,
 					data:'discount',
 					render:function(data,type,full){
 						return data;
 					}
 				},{
-					targets:12,
+					targets:13,
 					render:function(data,type,full){
 						var content = '<a href="index.php?c=order&a=information&id='+data+'" class="btn default btn-xs green-stripe">查看</a><a href="#note" data-toggle="modal" data-id="'+full.id+'" class="btn default btn-xs yellow-stripe noteBtn">备注</a>';
 						var costums = (full.status == 1)?'':'display-none';
@@ -144,7 +144,7 @@ var EcommerceOrders = function () {
 						return content;
 					}
 				},{
-					"targets":[13,14,15,16,17],
+					"targets":[14,15,16,17,18],
 					visible:false
 				}],
 				"columns":[{
@@ -162,6 +162,9 @@ var EcommerceOrders = function () {
 				},{
 					"data":'postmode',
 					'orderable':true
+				},{
+					data:'waybills',
+					orderable:false
 				},{
 					"data":'paytype',
 					'orderable':true

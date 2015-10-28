@@ -64,6 +64,25 @@ class userControl extends control
 	}
 	
 	/**
+	 * 用户充值 订单生成接口
+	 */
+	function recharge()
+	{
+		if (!login::user())
+			return new json(json::NOT_LOGIN);
+		$uid = $this->session->id;
+		$money = number_format($this->post->money,2);
+		if ($money<=0)
+			return new json(json::PARAMETER_ERROR,'金额太小了');
+		$data = $this->model('recharge')->create($uid,$money);
+		if($data)
+		{
+			return new json(json::OK,NULL,$data);
+		}
+		return new json(json::PARAMETER_ERROR,'订单创建失败');
+	}
+	
+	/**
 	 * 导出用户数据
 	 */
 	function export()
@@ -117,14 +136,6 @@ class userControl extends control
 			return new json(json::PARAMETER_ERROR);
 		}
 		return new json(json::NOT_LOGIN);
-	}
-	
-	/**
-	 * 个人充值接口
-	 */
-	function encharge()
-	{
-		
 	}
 	
 	/**

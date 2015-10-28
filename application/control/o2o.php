@@ -6,7 +6,6 @@ use system\core\filter;
 use application\model\roleModel;
 use system\core\view;
 use application\message\json;
-use application\model\orderlistModel;
 use system\core\file;
 /**
  * o2o店铺相关Api

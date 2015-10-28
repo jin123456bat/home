@@ -2,7 +2,6 @@
 namespace application\model;
 
 use system\core\model;
-use system\core\file;
 /**
  * 评论中的图片数据模型
  * @author jin12

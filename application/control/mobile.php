@@ -5,7 +5,6 @@ use system\core\view;
 use system\core\http;
 use application\classes\login;
 use application\classes\wechat;
-use application\message\json;
 
 class mobileControl extends control
 {

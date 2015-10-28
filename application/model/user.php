@@ -99,7 +99,6 @@ class userModel extends model
 		$gravatar = realpath('.\application\assets\gravatar.jpg');
 		$username = '';
 		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$openid,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$o2o,$client);
-		var_dump($array);
 		if($this->insert($array))
 		{
 			return $this->lastInsertId();
@@ -212,6 +211,16 @@ class userModel extends model
 			return $this->lastInsertId();
 		}
 		return false;
+	}
+	
+	/**
+	 * 给用户增加或减少余额
+	 * @param unknown $id
+	 * @param unknown $money
+	 */
+	function money($id,$money)
+	{
+		$this->where('id=?',array($id))->increase('money',$money);
 	}
 	
 	/**

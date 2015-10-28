@@ -12,9 +12,9 @@ class order
 	/**
 	 * 随机生成一个流水号
 	 */
-	function swift($uid)
+	function swift($uid,$length = 3)
 	{
-		return date('mdHis').$uid.random::number(3);
+		return date('mdHis').$uid.random::number($length);
 	}
 	
 	/**

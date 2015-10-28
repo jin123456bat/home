@@ -500,6 +500,9 @@ class orderControl extends control
 	 */
 	function outship()
 	{
+		$systemModel = $this->model('system');
+		if (!$systemModel->get('crossboardtrade','system'))
+			return new json(json::OK);
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
@@ -524,7 +527,7 @@ class orderControl extends control
 	}
 	
 	/**
-	 * 订单报关
+	 * 发货
 	 */
 	function costums($id = NULL)
 	{
@@ -607,8 +610,17 @@ class orderControl extends control
 		$return = array();
 		$express = new express();
 		
-		//生成虚拟物流信息
-		$virtual = $express->virtual($order['shiptime'],$order['outship']);
+		$systemModel = $this->model('system');
+		$crossboardtrade = $systemModel->get('crossboardtrade','system');
+		//生成虚拟物流信息  只有跨境貌似才有国外的虚拟物流
+		if ($crossboardtrade)
+		{
+			$virtual = $express->virtual($order['shiptime'],$order['outship']);
+		}
+		else
+		{
+			$virtual = array();
+		}
 		
 		if(!empty($order['waybills']))
 		{
@@ -755,7 +767,31 @@ class orderControl extends control
 		$order = $orderModel->where('orderno=?',array($orderno))->select();
 		
 		if(empty($order))
-			return "订单不存在";
+		{
+			//订单假如不存在则为用户充值
+			$rechargeModel = $this->model('recharge');
+			$recharge = $rechargeModel->get($orderno);
+			if(!empty($recharge))
+			{
+				if ($recharge['status'] == 0)
+				{
+					$swiftModel->create($recharge['uid'],swiftModel::SWIFT_IN,$recharge['money'],'充值');
+					$rechargeModel->status($orderno,1);
+					$userModel = $this->model('user');
+					$userModel->money($recharge['uid'],$recharge['money']);
+					if ($this->get->type == 'weixin')
+					{
+						//删除数据缓存的预支付订单
+						$this->model('weixinprepay')->remove($order['orderno']);
+						return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+					}
+					else if($this->get->type == 'alipay')
+					{
+						return 'success';
+					}
+				}
+			}
+		}
 		$order = $order[0];
 		
 		if($result)
@@ -836,29 +872,6 @@ class orderControl extends control
 		}
 		else
 		{
-			//交易失败，关闭订单
-			/*
-			$this->model('orderlist')->setStatus($order['orderno'],orderlistModel::STATUS_CLOSE,$_SERVER['REQUEST_TIME'],0,'');
-			$productHelper = new product();
-			//将订单中的商品回退
-			$goods = $orderModel->getOrderDetail($order['id']);
-			if($this->get->type == 'weixin')
-			{
-				//删除数据缓存的预支付订单
-				$this->model('weixinprepay')->remove($order['orderno']);
-				//关闭微信的订单
-				$weixin->close($order);
-				foreach ($goods as $product)
-				{
-					$productHelper->increaseNum($this->model('product'), $this->model('collection'), $product['pid'], $product['content'],$product['num']);
-				}
-				return '<xml><return_code><![CDATA[FAILED]]></return_code><return_msg><![CDATA[不给钱还想通过?]]></return_msg></xml>';
-			}
-			else
-			{
-				echo "支付宝支付失败";
-			}
-			*/
 			return "支付失败";
 		}
 	}

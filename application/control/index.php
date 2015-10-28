@@ -7,7 +7,6 @@ use application\classes\sms;
 use system\core\validate;
 use system\core\random;
 use system\core\image;
-use application\classes\weixin_gateway;
 use application\message\json;
 use system\core\file;
 

@@ -1,7 +1,6 @@
 <?php
 namespace application\control;
 use system\core\control;
-use system\core\file;
 use system\core\filter;
 use application\model\roleModel;
 use application\classes\login;

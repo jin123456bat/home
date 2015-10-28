@@ -1,7 +1,6 @@
 <?php
 namespace application\model;
 use system\core\model;
-use system\core\file;
 /**
  * @author jin12
  *

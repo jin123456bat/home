@@ -11,6 +11,7 @@ use application\classes\order;
 use application\message\json;
 use application\classes\fullcut;
 use application\classes\coupon;
+use application\model\orderlistModel;
 class cartControl extends control
 {
 	/**
@@ -458,12 +459,36 @@ class cartControl extends control
 		 */
 		$action_type = '1';
 		
+		//余额支付
+		$extra_money = $this->model('user')->get($uid,'money');
+		if ($extra_money >= $ordertotalamount)
+		{
+			//余额足够支付订单
+			$extra_money -= $ordertotalamount;
+			$ordertotalamount = 0;
+			$money = $ordertotalamount;
+			$status = orderlistModel::STATUS_PAYED;
+		}
+		else
+		{
+			$ordertotalamount -= $extra_money;
+			$money = $extra_money;
+		}
+		
+		if (!$preorder)
+		{
+			//更改用户余额
+			$this->model('user')->money($uid,-$money);
+		}
+		
+		
 		$data = array(
 			NULL,
 			$uid,
 			$paytype,
 			$paynumber,
 			$ordertotalamount,
+			$money,
 			$orderno,
 			$ordertaxamount,
 			$ordergoodsamount,
@@ -492,7 +517,7 @@ class cartControl extends control
 		if($preorder)
 		{
 			$order = array(
-				'id'=>NULL,'uid'=>$uid,'paytype'=>$paytype,'paynumber'=>$paynumber,'ordertotalamount'=>$ordertotalamount,'orderno'=>$orderno,'ordertaxamount'=>$ordertaxamount,'ordergoodsamount'=>$ordergoodsamount
+				'id'=>NULL,'uid'=>$uid,'paytype'=>$paytype,'paynumber'=>$paynumber,'ordertotalamount'=>$ordertotalamount,'money'=>$money,'orderno'=>$orderno,'ordertaxamount'=>$ordertaxamount,'ordergoodsamount'=>$ordergoodsamount
 				,'feeamount'=>$feeamount,'tradetime'=>$tradetime,'createtime'=>$createtime,'totalamount'=>$totalamount,'consignee'=>$consignee,'consigneetel'=>$consigneetel,'consigneeaddress'=>$consigneeaddress
 				,'consigneeprovince'=>$consigneeprovince,'consigneecity'=>$consigneecity,'consigneecounty'=>$consigneecounty,'postmode'=>$postmode,'waybills'=>$waybills,'sendername'=>$sendername,'companyname'=>$companyname,'zipcode'=>$zipcode
 				,'note'=>$note,'status'=>$status,'discount'=>$discount,'client'=>$client,'action_type'=>$action_type
