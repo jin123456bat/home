@@ -218,8 +218,9 @@ class productControl extends control
 		$action_type = '1';
 		
 		
+		$money = 0;
 		//余额支付
-		$extra_money = $this->model('user')->get($uid,'money');
+		/* $extra_money = $this->model('user')->get($uid,'money');
 		if ($extra_money >= $ordertotalamount)
 		{
 			//余额足够支付订单
@@ -238,7 +239,7 @@ class productControl extends control
 		{
 			//更改用户余额
 			$this->model('user')->money($uid,-$money);
-		}
+		} */
 		
 		
 		$order = array(
@@ -311,7 +312,9 @@ class productControl extends control
 	 */
 	function getlist()
 	{
-		$product = $this->model('product')->select();
+		$filter = array();
+		
+		$product = $this->model('product')->fetchAll($filter);
 		foreach($product as &$good)
 		{
 			$good['img'] = $this->model('productimg')->getByPid($good['id']);
@@ -412,16 +415,22 @@ class productControl extends control
 			}
 			next($array);
 		}
-		//$array = implode(',', $array);
 		$productModel = $this->model('product');
 		$brandModel = $this->model('brand');
 		$prototypeModel = $this->model('prototype');
 		$productimgModel = $this->model('productimg');
-		$productModel->limit($start,$length);
-		$productModel->where('status=?',array(1));
-		$productModel->where('stock>?',array(0));
-		$productModel->where('(starttime=? or starttime<?) and (endtime=? or endtime>?)',array(0,$_SERVER['REQUEST_TIME'],0,$_SERVER['REQUEST_TIME']));
-		$product = $productModel->where('category in (?)',$array)->select();
+		
+		$filter = array(
+			'start' => $start,
+			'length' => $length,
+			'status' => 1,
+			'stock' => 0,
+			'category' => $array,
+			'time' => $_SERVER['REQUEST_TIME']
+		);
+		
+		$product = $productModel->fetchAll($filter);
+	
 		foreach ($product as &$goods)
 		{
 			$goods['category'] = $categoryModel->get($goods['category'],'name');
@@ -453,7 +462,6 @@ class productControl extends control
 		{
 			$productModel = $this->model('product');
 			$id = $productModel->save($this->post);
-			
 			$pid = empty($this->post->id)?$id:$this->post->id;
 			if(!empty($this->post->picid))
 			{
@@ -468,9 +476,9 @@ class productControl extends control
 				$prototypeModel->updatepid($prototype_id,$pid);
 			}
 			$this->model('log')->write($this->session->username,'修改了商品属性'.$id);
-			return json_encode(array('code'=>1,'result'=>'ok','id'=>$id));
+			return new json(json::OK,NULL,$id);
 		}
-		return json_encode(array('code'=>0,'result'=>'权限不足'));
+		return new json(json::NO_POWER);
 	}
 	
 	/**
@@ -528,12 +536,21 @@ class productControl extends control
 			$system = $systemModel->toArray($system,'system');
 			$this->view->assign('system',$system);
 			
+			$crossboardtrade = $systemModel->get('crossboardtrade','system');
+			if (!$crossboardtrade)
+			{
+				$this->view->assign('province',$this->model('province')->select());
+			}
+			
 			$productModel = $this->model('product');
 			$result = $productModel->get($this->get->id);
+			$this->view->assign('product',$result);
 			
 			if($this->get->action == 'edit' && !empty($result))
 			{
-				$this->view->assign('product',$result);
+				//$product_areaModel = $this->model('product_area');
+				//$product_area = $product_areaModel->getByPid($this->get->id);
+				//$this->view->assign('product_area',$product_area);
 			}
 			else
 			{

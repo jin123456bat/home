@@ -16,12 +16,4 @@ class order
 	{
 		return date('mdHis').$uid.random::number($length);
 	}
-	
-	/**
-	 * 订单完成支付的handler
-	 */
-	function complete()
-	{
-		
-	}
 }

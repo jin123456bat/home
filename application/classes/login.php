@@ -10,7 +10,7 @@ class login
 	static function admin()
 	{
 		$session = session::getInstance();
-		return !($session->id === NULL || $session->role === NULL || $session->username === NULL);
+		return ($session->id !== NULL && $session->role !== NULL && $session->username !== NULL);
 	}
 	
 	/**

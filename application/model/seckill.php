@@ -17,15 +17,20 @@ class seckillModel extends model
 	/**
 	 * 获得首页显示的限时特卖商品信息
 	 */
-	function getIndex($length)
+	function getIndex(array $filter = array())
 	{
+		
+		
 		$a = $_SERVER['REQUEST_TIME'];
 		
 		$this->where('seckill.endtime>? or seckill.endtime=0',array($a));
 		$this->where('product.starttime<? or product.starttime=0',array($a));
 		$this->where('product.endtime>? or product.endtime=0',array($a));
 		$this->table('product','left join','product.id=seckill.pid');
-		$this->limit($length);
+		if (isset($filter['length']))
+		{
+			$this->limit($filter['length']);
+		}
 		$this->where('product.status=?',array(1));
 		$this->orderby('seckill.orderby','desc');
 		$result = $this->select('*,seckill.starttime as s_starttime,seckill.endtime as s_endtime,seckill.price as new_price');

@@ -186,9 +186,6 @@ class userModel extends model
 	 */
 	function registerWeiXin($openid,$oid=NULL,$client = 'weixin',$usernam = '',$img = '')
 	{
-		//$result = $this->where('openid=?',array($openid))->select();
-		//if(isset($result[0]))
-		//	return false;
 		$salt = random::word(6);
 		$password = md5($openid.$salt);
 		$regtime = $_SERVER['REQUEST_TIME'];
@@ -202,10 +199,7 @@ class userModel extends model
 		$gravatar = $img;
 		$username = $usernam;
 		$telephone=NULL;
-		
-		
 		$array = array(NULL,$gravatar,$username,$telephone,$email,$password,$openid,$regtime,$logtime,$money,$score,$ordernum,$cost,$salt,$close,$oid,$client);	
-		
 		if($this->insert($array))
 		{
 			return $this->lastInsertId();

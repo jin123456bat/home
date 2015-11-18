@@ -107,7 +107,6 @@ class productModel extends model
 	 */
 	function add($product)
 	{
-		
 		$product = array_merge(array('id'=>NULL),$product,array('activity'=>'','ordernum'=>0,'complete_ordernum'=>0,'time'=>$_SERVER['REQUEST_TIME']));
 		if($this->insert($product))
 		{
@@ -134,8 +133,8 @@ class productModel extends model
 			'price' => $post->price,
 			'stock' => $post->stock,
 			'origin' => $post->origin,
-			'status' => $post->status,
 			'label' => $post->label,
+			'status' => $post->status,
 			'orderby'=>$post->orderby,
 			'meta_title'=>$post->meta_title,
 			'meta_keywords'=>$post->meta_keywords,
@@ -152,6 +151,43 @@ class productModel extends model
 		{
 			return $this->where('id=?',array($post->id))->update($data);
 		}
+	}
+	
+	function fetchAll(array $filter = array())
+	{
+		$parameter = isset($filter['parameter'])?$filter['parameter']:'*';
+		if (isset($filter['status']))
+		{
+			$this->where('product.status=?',array($filter['status']));
+		}
+		if (isset($filter['start']) && isset($filter['length']))
+		{
+			$this->limit($filter['start'],$filter['length']);
+		}
+		if (isset($filter['time']))
+		{
+			$this->where('product.starttime<? and (endtime=? or endtime>?)',array($filter['time'],$filter['time'],$filter['time']));		
+		}
+		if (isset($filter['category']))
+		{
+			$this->where('category in (?)',$filter['category']);
+		}
+		if (isset($filter['stock']))
+		{
+			$this->where('product.stock>?',array($filter['stock']));
+		}
+		if (isset($filter['sort']))
+		{
+			if (is_string($filter['sort']))
+			{
+				$this->orderby($filter['sort']);
+			}
+			else if(is_array($filter['sort']))
+			{
+				$this->orderby($filter['sort'][0],$filter['sort'][1]);
+			}
+		}
+		return $this->select($parameter);
 	}
 
 	/**

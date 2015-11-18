@@ -8,8 +8,6 @@ class wechat
 	private $_appid;
 
 	private $_appsecret;
-	
-	private $_jssdk;
 
 	/**
 	 * constructor
@@ -20,13 +18,6 @@ class wechat
 	{
 		$this->_appid = $appid;
 		$this->_appsecret = $appsecret;
-	}
-	
-	function getJSSDK()
-	{
-		if (empty($this->_jssdk))
-			$this->_jssdk = new jssdk($this->_appid, $this->_appsecret);
-		return $this->_jssdk;
 	}
 
 	/**
@@ -246,6 +237,17 @@ class wechat
 			return $result;
 		return $result[$field];
 	}
+	
+	/**
+	 * 获取jsApiTicket
+	 * @param unknown $access_token
+	 * @return mixed|boolean
+	 */
+	function getJsApiTicket($access_token)
+	{
+		$url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token='.$access_token;
+		return $this->get($url);
+	}
 
 	/**
 	 * 发送get请求
@@ -257,6 +259,41 @@ class wechat
 	{
 		if (function_exists('file_get_contents'))
 			return file_get_contents($url);
+		$curl = curl_init($url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		$result = curl_exec($curl);
+		return $result;
+	}
+	
+	/**
+	 * 微信分享和卡劵使用的签名包
+	 * @param unknown $jsApiTicket
+	 * @return multitype:string NULL number unknown Ambigous <boolean, string> 
+	 */
+	public function getSignPackage($jsApiTicket)
+	{
+		// 注意 URL 一定要动态获取，不能 hardcode.
+		$protocol = (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+		$url = $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	
+		$timestamp = time();
+		$nonceStr = random::word(16);
+
+		// 这里参数的顺序要按照 key 值 ASCII 码升序排序
+		$string = 'jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s';
+		$string = sprintf($string,$jsApiTicket,$nonceStr,$timestamp,$url);
+		$signature = sha1($string);
+	
+		$signPackage = array(
+			"appId" => $this->_appid,
+			"nonceStr" => $nonceStr,
+			"timestamp" => $timestamp,
+			"url" => $url,
+			"signature" => $signature,
+			"rawString" => $string
+		);
+		return $signPackage;
 	}
 
 	/**
@@ -300,102 +337,5 @@ class wechat
 			$result = curl_exec($curl);
 			return $result;
 		}
-	}
-}
-
-class jssdk
-{
-	private $appId;
-
-	private $appSecret;
-
-	public function __construct($appId, $appSecret)
-	{
-		$this->appId = $appId;
-		$this->appSecret = $appSecret;
-	}
-
-	public function getSignPackage()
-	{
-		$jsapiTicket = $this->getJsApiTicket();
-		
-		// 注意 URL 一定要动态获取，不能 hardcode.
-		$protocol = (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$url = $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-		
-		$timestamp = time();
-		$nonceStr = $this->createNonceStr();
-		
-		// 这里参数的顺序要按照 key 值 ASCII 码升序排序
-		$string = "jsapi_ticket=$jsapiTicket&noncestr=$nonceStr&timestamp=$timestamp&url=$url";
-		
-		$signature = sha1($string);
-		
-		$signPackage = array(
-			"appId" => $this->appId,
-			"nonceStr" => $nonceStr,
-			"timestamp" => $timestamp,
-			"url" => $url,
-			"signature" => $signature,
-			"rawString" => $string
-		);
-		return $signPackage;
-	}
-
-	private function createNonceStr($length = 16)
-	{
-		return random::word($length);
-	}
-
-	private function getJsApiTicket($data = NULL)
-	{
-		// jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
-		if (file_exists('jsapi_tocket.json'))
-			$data = json_decode(file_get_contents("jsapi_ticket.json"));
-		if (empty($data) || $data->expire_time > time()) {
-			$accessToken = $this->getAccessToken();
-			// 如果是企业号用以下 URL 获取 ticket
-			// $url = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=$accessToken";
-			$url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
-			$res = json_decode($this->httpGet($url));
-			$ticket = $res->ticket;
-			if ($ticket) {
-				$data = new \stdClass();
-				$data->expire_time = time() + 7000;
-				$data->jsapi_ticket = $ticket;
-				$fp = fopen("jsapi_ticket.json", "w");
-				fwrite($fp, json_encode($data));
-				fclose($fp);
-			}
-		} else {
-			$ticket = $data->jsapi_ticket;
-		}
-		
-		return $ticket;
-	}
-	
-	public function setAccessToken($access_token)
-	{
-		$this->_access_token = $access_token;
-	}
-
-	private function getAccessToken()
-	{
-		return $this->_access_token;
-	}
-
-	private function httpGet($url)
-	{
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_TIMEOUT, 500);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($curl, CURLOPT_URL, $url);
-		
-		$res = curl_exec($curl);
-		curl_close($curl);
-		
-		return $res;
 	}
 }

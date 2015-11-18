@@ -143,6 +143,10 @@
 											<a href="#tab_images" data-toggle="tab">
 											图像 </a>
 										</li>
+										<li>
+											<a href="#tab_area" data-toggle="tab">
+											区域 </a>
+										</li>
                                         {%if isset($role.comment) && $role.comment==15%}
 										<li>
 											<a href="#tab_reviews" data-toggle="tab">
@@ -155,6 +159,7 @@
 											<a href="#tab_history" data-toggle="tab">
 											历史 </a>
 										</li>
+										
                                         {%/if%}
                                         {%if isset($smarty.get.id)%}
                                         <li>
@@ -186,7 +191,7 @@
 													<label class="col-md-2 control-label">分类: 
 													</label>
 													<div class="col-md-10">
-														<select name="category" class="form-control form-filter input-sm">
+														<select id="select2_category" name="category" class="form-control form-filter input-sm">
 															<option value="0" selected="selected">请选择</option>
 															{%section name=category loop=$category%}
 															<option value="{%$category[category].id%}" {%if isset($product.category) && $category[category].id == $product.category%}selected="selected"{%/if%}>{%$category[category].name%}</option>
@@ -198,7 +203,7 @@
 													<label class="col-md-2 control-label">品牌: 
 													</label>
 													<div class="col-md-10">
-														<select name="bid" class="form-control form-filter input-sm">
+														<select id="select2_brand" name="bid" class="form-control form-filter input-sm">
 															<option value="0" selected="selected">请选择</option>
 															{%section name=brand loop=$brand%}
 															<option value="{%$brand[brand].id%}" {%if isset($product.bid) && $brand[brand].id == $product.bid%}selected="selected"{%/if%}>{%$brand[brand].name%}</option>
@@ -288,7 +293,7 @@
                                                     <div class="col-md-10">
                                                         <select name="origin" id="select2_sample4" class="form-control select2">
                                                             {%section name=flag loop=$flag%}
-                                                            	<option value="{%$flag[flag].id%}">{%$flag[flag].name%}</option>
+                                                            	<option value="{%$flag[flag].id%}" {%if $flag[flag].id == $product.origin%}selected="selected"{%/if%}>{%$flag[flag].name%}</option>
                                                             {%/section%}
                                                         </select>
                                                     </div>
@@ -434,6 +439,22 @@
 											<tbody id="preview">
 											</tbody>
 											</table>
+										</div>
+										<div class="tab-pane" id="tab_area">
+											<div class="form-body">
+												<a href="#" id="province_select_all">全选</a>/<a id="province_select_fan" href="">反向选择</a>
+												<div class="form-group">
+													<label class="col-md-3 control-label">配送省份</label>
+													<div class="col-md-9">
+														<div class="checkbox-list" id="province_checkbox">
+															{%section name=province loop=$province%}
+																<label class="checkbox-inline">
+																<input {%section name=product_area loop=$product_area%}{%if $product_area[product_area].province == $province[province].id%}checked="true"{%/if%}{%/section%} type="checkbox" name="province" value="{%$province[province].id%}">{%$province[province].name%} </label>
+															{%/section%}
+														</div>
+													</div>
+												</div>
+											</div>
 										</div>
                                         {%if isset($role.comment) && $role.comment==15%}
 										<div class="tab-pane" id="tab_reviews">
@@ -700,8 +721,9 @@ jQuery(document).ready(function() {
 	
 	function format(state) {
 		if (!state.id) return state.text; // optgroup
-		return "<img class='flag' src='{%url c=system a=getflag%}&id="+state.id+"'/>&nbsp;&nbsp;" + state.text;
+		return "<img width='50' height='30' class='flag' src='{%url c=system a=getflag%}&id="+state.id+"'/>&nbsp;&nbsp;" + state.text;
 	}
+	
 	$("#select2_sample4").select2({
 		placeholder: "选择国家",
 		allowClear: true,
@@ -711,6 +733,40 @@ jQuery(document).ready(function() {
 			return m;
 		}
 	});
+	
+	function format_category(state) {
+		if (!state.id) return state.text; // optgroup
+		return "<img width='50' height='30' class='flag' src='{%url c=system a=getflag%}&id="+state.id+"'/>&nbsp;&nbsp;" + state.text;
+	}
+	
+	function format_brand(state) {
+		return state.text;
+	}
+	
+	function format_category(state) {
+		return state.text;
+	}
+	
+	$("#select2_category").select2({
+		placeholder: "选择分类",
+		allowClear: true,
+		formatResult: format_category,
+		formatSelection: format_category,
+		escapeMarkup: function (m) {
+			return m;
+		}
+	});
+	
+	$("#select2_brand").select2({
+		placeholder: "选择品牌",
+		allowClear: true,
+		formatResult: format_brand,
+		formatSelection: format_brand,
+		escapeMarkup: function (m) {
+			return m;
+		}
+	});
+	
 	
 	$('input[name=oldprice]').on('blur',function(){
 		var price = parseFloat($('input[name=price]').val());
@@ -725,6 +781,26 @@ jQuery(document).ready(function() {
 			$('#price-error').addClass('display-none');
 			$(this).parents('.form-group').removeClass('has-error');
 		}
+	});
+	
+	$('#province_select_all').on('click',function(){
+		$('#province_checkbox').find('input').attr('checked','checked').parent().addClass('checked');
+		return false;
+	});
+	
+	$('#province_select_fan').on('click',function(){
+		var option = $('#province_checkbox').find('input');
+		$.each(option,function(index,value){
+			if($(value).is(':checked'))
+			{
+				$(value).removeAttr('checked').parent().removeClass('checked');
+			}
+			else
+			{
+				$(value).attr('checked','checked').parent().addClass('checked');
+			}
+		});
+		return false;
 	});
 });
 </script>

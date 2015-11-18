@@ -453,8 +453,7 @@ EcommerceOrders.init();
 			if(response.code == 1)
 			{
 				ths.addClass('display-none');
-				ths.parent().find('.outship').removeClass('display-none');
-				ths.parents('tr').find('td:eq(10)').html('已经发货');
+				getInformation(ths.parents('tr'));
 			}
 			else
 			{
@@ -463,6 +462,37 @@ EcommerceOrders.init();
 		});
 		return false;
 	});
+	
+	/*
+	刷新一行的数据
+	*/
+	function getInformation(tr)
+	{
+		var id = tr.find('input[type=checkbox]').val();
+		
+		var url = '{%url c=order a=query%}&id='+id;
+		$.get(url,function(response){
+			content = response.body;
+			tr.find('td:eq(5)').html(content.waybills);
+			tr.removeClass();
+			switch(content.status)
+			{
+				case '0':tr.find('td:eq(10)').html('等待支付');
+					break;
+				case '1':tr.addClass('active');tr.find('td:eq(10)').html('支付成功');break;
+				case '2':tr.addClass('danger');tr.find('td:eq(10)').html('订单关闭');break;
+				case '3':tr.addClass('danger');tr.find('td:eq(10)').html('用户取消');break;
+				case '4':tr.addClass('success');tr.find('td:eq(10)').html('等待收货');break;
+				case '5':tr.addClass('warning');tr.find('td:eq(10)').html('等待评论');break;
+				case '6':tr.addClass('info');tr.find('td:eq(10)').html('订单完成');break;
+				case '7':tr.find('td:eq(10)').html('退款');break;
+			}
+			if(content.waybills.length>0 && content.shiptime >0 && content.status==4)
+			{
+				tr.find('.outship').removeClass('display-none');
+			}
+		});
+	}
 	
 	$('.outship').live('click',function(){
 		var id = $(this).data('id');

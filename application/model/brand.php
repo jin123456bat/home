@@ -11,6 +11,16 @@ class brandModel extends model
 		parent::__construct($table);
 	}
 	
+	function save($id,$name,$logo,$description)
+	{
+		$this->where('id=?',array($id))->update(['name'=>$name,'description'=>$description]);
+		if(is_file($logo))
+		{
+			$this->where('id=?',array($id))->update('logo',$logo);
+		}
+		return true;
+	}
+	
 	/**
 	 * 根据产品数量 对品牌进行分组
 	 * @return Ambigous <boolean, multitype:>
@@ -18,6 +28,7 @@ class brandModel extends model
 	function fetchByProduct($start,$length)
 	{
 		$this->where('close=?',array(0));
+		$this->limit($start,$length);
 		$brand = $this->select();
 		$productModel = $this->model('product');
 		foreach ($brand as &$value)
@@ -85,9 +96,9 @@ class brandModel extends model
 	 * 删除品牌
 	 * @param unknown $id
 	 */
-	function del($id)
+	function remove($id)
 	{
-		$this->where('id=?', array(
+		return $this->where('id=?', array(
 			$id
 		))->delete();
 	}

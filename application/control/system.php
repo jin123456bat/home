@@ -287,7 +287,7 @@ class systemControl extends control
 			$systemConfig = $systemModel->toArray($systemConfig,'system');
 			$this->view->assign('systemConfig',$systemConfig);
 			
-			$config = $systemModel->fetch(array('sms','system','image','app','theme','jpush','dist'));
+			$config = $systemModel->fetch(array('area','sms','system','image','app','theme','jpush','dist'));
 			$system = array();
 			foreach ($config as $value)
 			{

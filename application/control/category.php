@@ -7,6 +7,7 @@ use application\classes\login;
 use system\core\view;
 use system\core\validate;
 use system\core\filter;
+use application\message\json;
 
 class categoryControl extends control
 {
@@ -16,12 +17,11 @@ class categoryControl extends control
 	 */
 	function getchild()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$this->response->addHeader('Cache-Control','nocache');
 		$cid = empty(filter::int($this->get->cid))?0:filter::int($this->get->cid);
 		$categoryModel = $this->model('category');
 		$result = $categoryModel->fetchChild($cid);
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
+		return new json(json::OK,NULL,$result);
 	}
 
 	/**
@@ -55,7 +55,6 @@ class categoryControl extends control
 	 */
 	function ajaxtree()
 	{
-		$this->response->addHeader('Content-Type', 'application/json');
 		$icon = array(
 			"icon-state-warning",
 			"icon-state-success",
@@ -83,12 +82,9 @@ class categoryControl extends control
 					$temp['type'] = 'root';
 				$tree[] = $temp;
 			}
-			return json_encode($tree);
+			return new json($tree);
 		}
-		return json_encode(array(
-			'code' => 0,
-			'result' => '错误的分类id'
-		));
+		return new json(json::PARAMETER_ERROR,'错误的分类id');
 	}
 
 	/**
@@ -105,26 +101,13 @@ class categoryControl extends control
 				$id = $categoryModel->add($this->post->name,$pic, $cid);
 				if ($id) {
 					$this->model('log')->write($this->session->username,'添加了一个分类');
-					return json_encode(array(
-						'code' => 1,
-						'result' => 'ok',
-						'body' => $id
-					));
+					return new json(json::OK,NULL,$id);
 				}
-				return json_encode(array(
-					'code' => 0,
-					'result' => '分类添加错误'
-				));
+				return new json(json::PARAMETER_ERROR,NULL,'添加分类失败');
 			}
-			return json_encode(array(
-				'code' => '3',
-				'result' => '分类名称不能为空'
-			));
+			return new json(json::PARAMETER_ERROR,NULL,'分类名称不能为空');
 		}
-		return json_encode(array(
-			'code' => 2,
-			'result' => '权限不足或尚未登陆 '
-		));
+		return new json(json::NOT_LOGIN);
 	}
 
 	/**
@@ -139,25 +122,13 @@ class categoryControl extends control
 			if (! empty($id) && ! empty($name)) {
 				$categoryModel = $this->model('category');
 				if ($categoryModel->rename($id, $name)) {
-					return json_encode(array(
-						'code' => 1,
-						'result' => 'ok'
-					));
+					return new json(json::OK);
 				}
-				return json_encode(array(
-					'code' => 0,
-					'result' => 'failed'
-				));
+				return new json(json::PARAMETER_ERROR,'改名失败');
 			}
-			return json_encode(array(
-				'code' => 3,
-				'result' => '参数错误'
-			));
+			return new json(json::PARAMETER_ERROR);
 		}
-		return json_encode(array(
-			'code' => 2,
-			'result' => '权限不足或尚未登陆 '
-		));
+		return new json(json::NOT_LOGIN);
 	}
 
 	/**
@@ -176,30 +147,15 @@ class categoryControl extends control
 				if (empty($result)) {
 					if ($categoryModel->del($id)) {
 						$this->model('log')->write($this->session->username,'删除了一个分类');
-						return json_encode(array(
-							'code' => 1,
-							'result' => 'ok'
-						));
+						return new json(json::OK);
 					}
-					return json_encode(array(
-						'code' => 0,
-						'result' => 'failed'
-					));
+					return new json(json::PARAMETER_ERROR);
 				}
-				return json_encode(array(
-					'code' => 4,
-					'result' => '请先删除该分类中的子分类'
-				));
+				return new json(json::PARAMETER_ERROR,'请先删除子分类');
 			}
-			return json_encode(array(
-				'code' => 3,
-				'result' => '参数错误'
-			));
+			return new json(json::PARAMETER_ERROR,'参数错误');
 		}
-		return json_encode(array(
-			'code' => 2,
-			'result' => '权限不足或尚未登陆 '
-		));
+		return new json(json::NOT_LOGIN);
 	}
 
 	/**
@@ -220,25 +176,13 @@ class categoryControl extends control
 			if (! empty($id) && ! empty($parent)) {
 				$categoryModel = $this->model('category');
 				if ($categoryModel->move($id, $parent)) {
-					return json_encode(array(
-						'code' => 1,
-						'result' => 'ok'
-					));
+					return new json(json::OK);
 				}
-				return json_encode(array(
-					'code' => 0,
-					'result' => 'failed'
-				));
+				return new json(json::PARAMETER_ERROR,'失败');
 			}
-			return json_encode(array(
-				'code' => 3,
-				'result' => '参数错误'
-			));
+			return new json(json::PARAMETER_ERROR,'参数错误');
 		}
-		return json_encode(array(
-			'code' => 2,
-			'result' => '权限不足或尚未登陆 '
-		));
+		return new json(json::NOT_LOGIN);
 	}
 	
 	/**
@@ -261,19 +205,10 @@ class categoryControl extends control
 			$categoryModel = $this->model('category');
 			if($categoryModel->paste($id,$mode,$parent))
 			{
-				return json_encode(array(
-						'code' => 1,
-						'result' => 'ok'
-					));
+				return new json(json::OK);
 			}
-			return json_encode(array(
-				'code' => 0,
-				'result' => 'failed'
-			));
+			return new json(json::PARAMETER_ERROR,'失败了');
 		}
-		return json_encode(array(
-			'code' => 2,
-			'result' => '权限不足或尚未登陆 '
-		));
+		return new json(json::NOT_LOGIN);
 	}
 }

@@ -36,7 +36,12 @@ class seckillControl extends control
 		$length = empty($this->get->length)?5:$this->get->length;
 		$seckillModel = $this->model('seckill');
 		$brandModel = $this->model('brand');
-		$result = $seckillModel->getIndex($length);
+		
+		$filter = array(
+			'length' => $length
+		);
+		
+		$result = $seckillModel->getIndex($filter);
 		$prototypeModel = $this->model('prototype');
 		$productimgModel = $this->model('productimg');
 		$categoryModel = $this->model('category');

@@ -43,7 +43,12 @@ class saleControl extends control
 		$length = empty($this->get->length)?5:$this->get->length;
 		$saleModel = $this->model('sale');
 		$brandModel = $this->model('brand');
-		$result = $saleModel->getIndex($length);
+		
+		$filter = array(
+			'length' => $length
+		);
+		
+		$result = $saleModel->getIndex($filter);
 		$prototypeModel = $this->model('prototype');
 		$productimgModel = $this->model('productimg');
 		$categoryModel = $this->model('category');

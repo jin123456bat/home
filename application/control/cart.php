@@ -11,7 +11,7 @@ use application\classes\order;
 use application\message\json;
 use application\classes\fullcut;
 use application\classes\coupon;
-use application\model\orderlistModel;
+
 class cartControl extends control
 {
 	/**
@@ -202,6 +202,21 @@ class cartControl extends control
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$uid = $this->session->id;
 		$cartModel = $this->model('cart');
+		$productModel = $this->model('product');
+		$product = $cartModel->getByUid($uid);
+		$collectionModel = $this->model('collection');
+		foreach ($product as $goods)
+		{
+			$content = unserialize($goods['content']);
+			if (empty($content))
+			{
+				$productModel->increaseStock($goods['id'],$goods['num']);
+			}
+			else
+			{
+				$collectionModel->increaseStock($goods['id'],$content,$goods['num']);
+			}
+		}
 		if($cartModel->clear($uid))
 		{
 			return json_encode(array('code'=>1,'result'=>'ok'));
@@ -459,15 +474,17 @@ class cartControl extends control
 		 */
 		$action_type = '1';
 		
+		
+		$money = 0;
 		//余额支付
-		$extra_money = $this->model('user')->get($uid,'money');
+		/* $extra_money = $this->model('user')->get($uid,'money');
 		if ($extra_money >= $ordertotalamount)
 		{
 			//余额足够支付订单
 			$extra_money -= $ordertotalamount;
 			$ordertotalamount = 0;
 			$money = $ordertotalamount;
-			$status = orderlistModel::STATUS_PAYED;
+			$status = 1;
 		}
 		else
 		{
@@ -479,7 +496,7 @@ class cartControl extends control
 		{
 			//更改用户余额
 			$this->model('user')->money($uid,-$money);
-		}
+		} */
 		
 		
 		$data = array(

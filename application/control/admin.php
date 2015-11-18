@@ -14,7 +14,6 @@ class adminControl extends control
 	
 	private $_module_power = ['shipmodify'=>'system'];
 	
-	
 	/**
 	 * 管理员登陆界面
 	 */
@@ -113,8 +112,6 @@ class adminControl extends control
 			$refundModel->table('orderlist','left join','orderlist.id=refund.oid');
 			$refundModel->table('user','left join','user.id=refund.uid');
 			$refund = $refundModel->where('refund.handle=?',array(refundModel::REFUND_HANDLE_NO))->select('orderlist.orderno,refund.*,user.username,user.telephone');
-			//$refund = $refundModel->select();
-			//var_dump($refund);
 			$this->view->assign('refund',$refund);
 			
 			//7天以内的信息
@@ -286,7 +283,7 @@ class adminControl extends control
 	private function init($name)
 	{
 		$roleModel = $this->model('role');
-		$powername = isset($this->_module_power[$name])?$this->_module_power:$name;
+		$powername = isset($this->_module_power[$name])?$this->_module_power[$name]:$name;
 		if (!(login::admin() && $roleModel->checkPower($this->session->role,$powername,roleModel::POWER_ALL)))
 		{
 			$this->response->setCode(302);

@@ -2,6 +2,7 @@
 namespace application\model;
 use system\core\model;
 use system\core\random;
+use application\message\json;
 /**
  * 退货申请数据模型
  * @author jin12
@@ -62,9 +63,10 @@ class refundModel extends model
 	function create($uid,$oid,$type,$reason,$money,$description,$imgs)
 	{
 		$orderModel = $this->model('orderlist');
-		$ordertotalamount = $orderModel->where('id=?',array($oid))->select('ordertotalamount,status');
-		
-		$money = (isset($ordertotalamount[0]['ordertotalamount']) && $ordertotalamount[0]['ordertotalamount']>=$money)?$money:$ordertotalamount[0]['ordertotalamount'];
+		$order = $orderModel->where('id=?',array($oid))->limit(1)->select('ordertotalamount,status,money');
+		if (empty($order))
+			return new json(json::PARAMETER_ERROR,'订单不存在');
+		$money = (($order[0]['money'] + $order[0]['ordertotalamount'])>=$money)?$money:($order[0]['ordertotalamount']+$order[0]['money']);
 		
 		$refundno = date("YmdHis").$uid.$oid.random::number(4);
 		
@@ -78,7 +80,7 @@ class refundModel extends model
 			'reason'=>$reason,
 			'money' => $money,
 			'description' => $description,
-			'o_status'=>$ordertotalamount[0]['status'],
+			'o_status'=>$order[0]['status'],
 			'handle' => self::REFUND_HANDLE_NO
 		);
 		$rid = $this->insert($data);
@@ -117,7 +119,7 @@ class refundModel extends model
 	 */
 	function updateHandle($id,$handle)
 	{
-		$this->where('id=?',array($id))->update('handle',$handle);
+		return $this->where('id=?',array($id))->update('handle',$handle);
 	}
 	
 	/**
@@ -127,7 +129,7 @@ class refundModel extends model
 	function getByOid($oid)
 	{
 		$this->orderby('time','desc');
-		$result = $this->where('oid=?',array($oid))->select();
+		$result = $this->where('oid=?',array($oid))->limit(1)->select();
 		return isset($result[0])?$result[0]:array();
 	}
 	
@@ -140,11 +142,16 @@ class refundModel extends model
 		return isset($result[0]['count(*)'])?$result[0]['count(*)']>0:false;
 	}
 	
-	function fetchAll()
+	function fetchAll(array $filter = array())
 	{
+		$parameter = isset($filter['parameter'])?$filter['parameter']:'*';
+		if (isset($filter['start']) && $filter['length'])
+		{
+			$this->limit($filter['start'],$filter['length']);
+		}
 		$this->table('orderlist','left join','refund.oid=orderlist.id');
 		$this->table('user','left join','orderlist.uid=user.id');
-		return $this->select('orderlist.id as order_id,orderlist.feeamount as order_feeamount,orderlist.ordertaxamount as order_ordertaxamount,orderlist.ordergoodsamount as order_ordergoodsamount,orderlist.ordertotalamount as order_ordertotalamount,refund.id as id,orderlist.orderno as order_orderno,refund.reason,user.gravatar as user_gravatar,user.username as user_username,user.telephone as user_telephone');
+		return $this->select($parameter);
 	}
 	
 	/**

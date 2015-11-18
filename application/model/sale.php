@@ -16,12 +16,15 @@ class saleModel extends model
 	/**
 	 * 获得首页显示的限时特卖商品信息
 	 */
-	function getIndex($length)
+	function getIndex(array $filter = array())
 	{
 		$a = $_SERVER['REQUEST_TIME'];
 		$this->where('(sale.starttime<? or sale.starttime=0) and (sale.endtime>? or sale.endtime=0) and (product.starttime<? or product.starttime=0) and (product.endtime>? or product.endtime=0)',array($a,$a,$a,$a));
 		$this->table('product','left join','product.id=sale.pid');
-		$this->limit($length);
+		if (isset($filter['length']))
+		{
+			$this->limit($filter['length']);
+		}
 		$this->where('product.stock>?',array(0));
 		$this->where('product.status=?',array(1));
 		$this->orderby('sale.orderby','desc');

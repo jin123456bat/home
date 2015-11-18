@@ -27,7 +27,10 @@ class hotorderControl extends control
 			$this->view->assign('system',$system);
 			
 			$hotorderModel = $this->model('hotorder');
-			$hotorder = $hotorderModel->fetchAll();
+			
+			$filter = array();
+			
+			$hotorder = $hotorderModel->fetchAll($filter);
 			foreach ($hotorder as &$product)
 			{
 				$img = $this->model('productimg')->getByPid($product['id']);

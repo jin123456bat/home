@@ -238,6 +238,7 @@ jQuery(document).ready(function() {
 	Layout.init(); // init current layout
 	QuickSidebar.init(); // init quick sidebar
 	Demo.init(); // init demo features
+	
 	$('.selectpic').live('click',function(){
 		$(this).next().click();
 		return false;
@@ -254,7 +255,7 @@ jQuery(document).ready(function() {
 		
 		var src_product = gallery.find('select[name=src_product]').val();
 		var src_theme = gallery.find('select[name=src_theme]').val();
-		var src_url =  gallery.find('intput[name=src_url]').val();
+		var src_url =  gallery.find('input[name=src_url]').val();
 		
 		var file = gallery.find('input[name=pic]')[0];
 		

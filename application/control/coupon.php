@@ -21,12 +21,11 @@ class couponControl extends control
 	 */
 	function mycoupon()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$couponModel = $this->model('coupon');
 		$coupon = $couponModel->mycoupon($this->session->id,true);
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$coupon));
+		return new json(json::OK,NULL,$coupon);
 	}
 	
 	/**
@@ -34,7 +33,6 @@ class couponControl extends control
 	 */
 	function getavaliable()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		if(!login::user())
 			return json_encode(array('code'=>2,'result'=>'尚未登陆'));
 		$couponModel = $this->model('coupon');
@@ -77,11 +75,11 @@ class couponControl extends control
 				$collection = $collectionModel->find($goods['pid'],$content);
 				if(empty($collection))
 				{
-					$price += $goods['price'];
+					$price += $goods['price'] * $product['num'];
 				}
 				else
 				{
-					$price += $collection['price'];
+					$price += $collection['price'] * $product['num'];
 				}
 			}
 		}
@@ -101,7 +99,7 @@ class couponControl extends control
 		);
 		$body2 = $couponModel->mycoupon($this->session->id,false,$filter);
 		$body = array_unique(array_merge($body1,$body2),SORT_REGULAR);
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$body));
+		return new json(json::OK,NULL,$body);
 	}
 	
 	/**
@@ -182,14 +180,13 @@ class couponControl extends control
 	 */
 	function randomcode()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$couponModel = $this->model('coupon');
 		$code = strtoupper(date('ymdHis',$_SERVER['REQUEST_TIME']).random::word(6,'',random::RANDOM_WORD_NUMBER));
 		while ($couponModel->exist($code))
 		{
 			$code = strtoupper(date('ymdHis',$_SERVER['REQUEST_TIME']).random::word(6,'',random::RANDOM_WORD_NUMBER));
 		}
-		return json_encode(array('code'=>1,'result'=>'ok','body'=>$code));
+		return new json(json::OK,NULL,$code);
 	}
 	
 	/**
@@ -197,7 +194,6 @@ class couponControl extends control
 	 */
 	function create()
 	{
-		$this->response->addHeader('Content-Type','application/json');
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'coupon',roleModel::POWER_INSERT))
 		{
@@ -216,11 +212,11 @@ class couponControl extends control
 			if($result)
 			{
 				$this->model('coupondetail')->create($result,$category);
-				return json_encode(array('code'=>1,'result'=>'ok'));
+				return new json(json::OK);
 			}
-			return json_encode(array('code'=>0,'result'=>'添加失败'));
+			return new json(json::PARAMETER_ERROR,'添加失败');
 		}
-		return json_encode(array('code'=>2,'result'=>'没有权限'));
+		return new json(json::NO_POWER);
 	}
 	
 	/**

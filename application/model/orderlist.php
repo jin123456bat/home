@@ -152,9 +152,17 @@ class orderlistModel extends model
 	 */
 	function setStatus($orderno, $status, $endtime, $money, $transaction_id)
 	{
-		if (! empty($endtime)) {
-			$endtime = strtotime($endtime);
+		if (is_numeric($endtime) && !empty($endtime))
+		{
 		}
+		else
+		{
+			if (empty($endtime))
+				$endtime = $_SERVER['REQUEST_TIME'];
+			else
+				$endtime = strtotime($endtime);
+		}
+		
 		return $this->where('orderno=?', array(
 			$orderno
 		))->update(array(
@@ -334,7 +342,7 @@ class orderlistModel extends model
 		$array = array();
 		foreach ($post->columns as $key => $value) {
 			foreach ($post->order as $orderby) {
-				if ($orderby['column'] + 1 == $key) {
+				if ($orderby['column'] == $key) {
 					$this->orderby($value['data'], $orderby['dir']);
 				}
 			}
@@ -354,7 +362,7 @@ class orderlistModel extends model
 				));
 			}
 			if (! empty($post->createtime_to)) {
-				$this->where('createtime > ?', array(
+				$this->where('createtime < ?', array(
 					strtotime($post->createtime_to)
 				));
 			}

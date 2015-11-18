@@ -3,11 +3,11 @@ namespace application\control;
 
 use system\core\control;
 use application\classes\login;
-use system\core\validate;
 use system\core\view;
 use application\model\roleModel;
 use system\core\filter;
 use application\message\json;
+use system\core\file;
 
 class brandControl extends control
 {
@@ -42,6 +42,17 @@ class brandControl extends control
 			$this->response->addHeader('Location',$this->http->url('admin','index'));
 		}
 	}
+	
+	function remove()
+	{
+		$id = intval($this->post->id);
+		$brandModel = $this->model('brand');
+		if($brandModel->remove($id))
+		{
+			return new json(json::OK);
+		}
+		return new json(json::PARAMETER_ERROR,'删除失败');
+	}
 
 	/**
 	 * 获得一个品牌信息 接口
@@ -51,7 +62,23 @@ class brandControl extends control
 		$id = filter::int($this->get->id);
 		$brandModel = $this->model('brand');
 		$result = $brandModel->get($id);
+		$result['logo'] = file::realpathToUrl($result['logo']);
 		return new json(json::OK,NULL,$result);
+	}
+	
+	/**
+	 * 保存品牌信息
+	 */
+	function save()
+	{
+		$id = $this->post->id;
+		$logo = $this->file->logo;
+		$name = $this->post->name;
+		$description = $this->post->description;
+		$brandModel = $this->model('brand');
+		$brandModel->save($id,$name,$logo,$description);
+		$this->response->setCode(302);
+		$this->response->addHeader('Location',$this->http->referer());
 	}
 
 	/**

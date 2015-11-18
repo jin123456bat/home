@@ -9,6 +9,7 @@ use system\core\random;
 use system\core\image;
 use application\message\json;
 use system\core\file;
+use application\classes\login;
 
 class indexControl extends control
 {
@@ -19,6 +20,45 @@ class indexControl extends control
 		$this->response->addHeader('Location',$this->http->url('mobile','index'));
 	}
 	
+
+	
+	/**
+	 * 设置省份
+	 * @return unknown
+	 */
+	function province()
+	{
+		if (empty($this->get->province))
+		{
+			if (login::user()) {
+				$userModel = $this->model('user');
+				$user = $userModel->get($this->session->id);
+				$province = $user['province'];
+			}
+			else
+			{
+				$province = $this->session->province;
+			}
+			$p = $this->model('province')->where('id=?',array($province))->select();
+			if (empty($p))
+				return new json(json::OK,NULL,[]);
+			return new json(json::OK,NULL,$p[0]);
+		}
+		else
+		{
+			if (login::user()) {
+				$userModel = $this->model('user');
+				$userModel->where('id=?',array($this->session->id))->update('province',$this->get->province);
+			}
+			else
+			{
+				$this->session->province = $this->get->province;
+				$this->response->addHeader('Cache-control','private');
+			}
+			return new json(json::OK);
+		}
+	}
+	
 	/**
 	 * 获取服务器当前时间
 	 * @return number
@@ -27,7 +67,6 @@ class indexControl extends control
 	{
 		return time();
 	}
-	
 
 	/**
 	 * 发送手机验证码

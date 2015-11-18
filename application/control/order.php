@@ -34,45 +34,10 @@ class orderControl extends control
 		$orderModel = $this->model('orderlist');
 		$weixinprepayModel = $this->model('weixinprepay');
 		$weixin = new weixin_gateway(config('weixin'),$this->model('system'));
-		$timeout = (new time())->format($this->model('timeout','payment'), false);
+		$timeout = (new time())->format($this->model('system')->get('timeout','payment'), false);
 		$result = $orderModel->where('status=? and createtime < ?',array(0,$_SERVER['REQUEST_TIME']-$timeout))->select();
 		foreach($result as $order)
 		{
-			switch ($order['paytype'])
-			{
-				case 'weixin':
-					//删除数据缓存的预支付订单
-					$weixinprepayModel->remove($order['orderno']);
-					//重新检查一次订单状态
-					$response = $weixin->query($order);
-					if(isset($response['trade_state']) && $response['trade_state'] == 'SUCCESS')
-					{
-						$content = $response;
-						//交易成功
-						if($orderModel->setStatus($content['out_trade_no'],orderlistModel::STATUS_PAYED,$content['time_end'],$content['cash_fee']/100,$content['transaction_id']))
-						{
-							//增加一下用户的消费金额
-							$this->model('user')->where('id=?',array($order['uid']))->increase('cost',$content['cash_fee']/100);
-							//给用户一定的积分
-							$orderdetail = $orderModel->getOrderDetail($order['id']);
-							foreach ($orderdetail as $ordergoods)
-							{
-								if($ordergoods['score'] != 0)
-									$this->model('user')->where('id=?',array($order['uid']))->increase('score',$ordergoods['score']);
-								//增加商品的销售量
-								$this->model('product')->where('id=?',array($ordergoods['pid']))->increase('complete_ordernum',$ordergoods['num']);
-							}
-						}
-					}
-					else 
-					{
-						//关闭微信的预支付订单
-						$weixin->close($order);
-					}
-					break;
-				default:
-					break;
-			}
 			//设置订单状态为关闭
 			$orderModel->setStatus($order['orderno'],orderlistModel::STATUS_CLOSE,$_SERVER['REQUEST_TIME'],0,'');
 			//将商品库存回退
@@ -90,9 +55,8 @@ class orderControl extends control
 		$id = $this->get->id;
 		$orderModel = $this->model('orderlist');
 		$order = $orderModel->get($id);
-		$weixin = new weixin_gateway(config('weixin'), $this->model('system'));
-		$result = $weixin->query($order);
-		var_dump($result);
+		$order['waybills'] = unserialize($order['waybills']);
+		return new json(json::OK,NULL,$order);
 	}
 	
 	/**
@@ -105,12 +69,12 @@ class orderControl extends control
 		{
 			
 			$orderModel = $this->model('orderlist');
-			$orderModel->table('user','left join','user.id=orderlist.uid');
 			$result = $orderModel->where('orderlist.id=?',array($id))->select();
 			$goods = $orderModel->getOrderDetail($id);
 			foreach ($goods as &$product)
 			{
 				$product['img'] = $this->model('productimg')->getByPid($product['pid']);
+				$product['origin'] = $this->model('flag')->get($product['origin'],'name');
 			}
 			if($this->get->type === 'json')
 			{
@@ -500,9 +464,6 @@ class orderControl extends control
 	 */
 	function outship()
 	{
-		$systemModel = $this->model('system');
-		if (!$systemModel->get('crossboardtrade','system'))
-			return new json(json::OK);
 		$roleModel = $this->model('role');
 		if(login::admin() && $roleModel->checkPower($this->session->role,'system',roleModel::POWER_ALL))
 		{
@@ -568,6 +529,10 @@ class orderControl extends control
 		} */
 		if($orderModel->setShipping($orderno))
 		{
+			if (!$this->model('system')->get('crossboardtrade','system'))
+			{
+				$orderModel->where('orderno=?',array($orderno))->update('outship',1);
+			}
 			return new json(json::OK,NULL,$order);
 		}
 		return new json(json::PARAMETER_ERROR,'订单不存在或者已经发货');
@@ -690,6 +655,8 @@ class orderControl extends control
 				{
 					$orderno = $content['out_trade_no'];
 					$time = $content['time_end'];
+					$time = empty($time)?date("Y-m-d H:i:s"):$time;
+					
 					$paynumber = $content['transaction_id'];
 					$tradetotal = $content['cash_fee']/100;
 					
@@ -710,7 +677,7 @@ class orderControl extends control
 				
 				if($this->post->notify_type == 'trade_status_sync')
 				{
-					$time = $_SERVER['REQUEST_TIME'];//交易完成时间
+					$time = date("Y-m-d H:i:s");//交易完成时间
 					$notify_id = $this->post->notify_id;//通知id
 					$sign_type = $this->post->sign_type;//签名方式
 					$sign = $this->post->sign;//签名
@@ -720,8 +687,12 @@ class orderControl extends control
 					
 					$status = $this->post->trade_status;//状态
 					
-					$partner = $this->post->seller_id;//商户号
-					$alipay = new alipay_gateway(config('alipay'), $this->model('system'), '');
+					$partner = $this->post->seller_id;//商户号   为什么有的时候支付宝没有推送商户号id呢
+					$systemModel = $this->model('system');
+					if (empty($partner))
+						$partner = $systemModel->get('partner','alipay');
+					
+					$alipay = new alipay_gateway(config('alipay'), $systemModel, '');
 					
 					if($alipay->verify_notify($notify_id,$partner))
 					{
@@ -764,8 +735,7 @@ class orderControl extends control
 		}
 		
 		//获取订单信息
-		$order = $orderModel->where('orderno=?',array($orderno))->select();
-		
+		$order = $orderModel->where('orderno=?',array($orderno))->limit(1)->select();
 		if(empty($order))
 		{
 			//订单假如不存在则为用户充值
@@ -881,27 +851,25 @@ class orderControl extends control
 	 */
 	function thankyou()
 	{
-		$out_trade_no = filter::int($this->get->out_trade_no);
-		if(!empty($out_trade_no))
+		$out_trade_no = $this->get->out_trade_no;
+		$id = $this->get->id;
+		if (empty($id))
 		{
 			$order = $this->model('orderlist')->getByOrderno($out_trade_no);
-			if(isset($order['status']))
-			{
-				$this->response->setCode(302);
-				$this->response->addHeader('Location',$this->http->url('mobile','orderList',array('status',1)));
-				/* switch ($order['status'])
-				{
-					case 0:return "尚未支付";break;
-					case 1:return "支付成功";break;
-					case 2:return "支付失败";break;
-					case 3:return "用户取消";break;
-					default:return "订单状态未知";break;
-				} */
-			}
 		}
 		else
 		{
-			$this->call('index', '__404');
+			$order = $this->model('orderlist')->get($id);
+		}
+		
+		if(isset($order['status']))
+		{
+			$this->response->setCode(302);
+			$this->response->addHeader('Location',$this->http->url('mobile','orderList',array('status',1)));
+		}
+		else
+		{
+			return $this->call('index','__404');
 		}
 	}
 	

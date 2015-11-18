@@ -67,7 +67,7 @@ var EcommerceOrders = function () {
 						case '4':$(row).addClass('success');break;
 						case '5':$(row).addClass('warning');break;
 						case '6':$(row).addClass('info');break;
-						case '7':return '退款';break;
+						case '7':break;
 						//default:return '未知状态';break;
 					}
 				},
@@ -199,7 +199,7 @@ var EcommerceOrders = function () {
 					"data":'waybills'
 				}],
                 "order": [
-                    [0, "desc"]
+                    [2, "desc"]
                 ], // set first column as a default sort by asc
 				initComplete:initComplete
             }	

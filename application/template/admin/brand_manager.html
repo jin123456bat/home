@@ -92,6 +92,49 @@
 				</div>
 				<!-- /.modal-dialog -->
 			</div>
+			
+			<div class="modal fade container in" id="modifyBrand" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form class="form-horizontal" action="{%url c=brand a=save%}" method="post" enctype="multipart/form-data" role="form" id="modifyBrand_form">
+							<input type="hidden" name="id" value="">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+								<h4 class="modal-title">修改品牌</h4>
+							</div>
+							<div class="modal-body">
+								<div class="form-body">
+									<div class="form-group">
+										<label class="col-md-3 control-label">品牌名称</label>
+										<div class="input-group col-md-8">                                            
+                                            <input class="form-control" type="text" name="name" placeholder="品牌名称">
+										</div>
+									</div>
+                                    <div class="form-group">
+										<label class="col-md-3 control-label">品牌LOGO</label>
+										<div class="input-group col-md-8">                                            
+                                            <img src="" width="50" height="50">
+											<input class="form-control hide" type="file" name="logo" placeholder="文件">
+										</div>
+									</div>
+                                    <div class="form-group">
+										<label class="col-md-3 control-label">描述</label>
+										<div class="input-group col-md-8">                                            
+                                            <input class="form-control" type="text" name="description" placeholder="描述">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn blue btn-circle">保存</button>
+								<button type="button" class="btn default btn-circle" data-dismiss="modal">取消</button>
+							</div>
+						</form>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
 
 			<!-- BEGIN STYLE CUSTOMIZER -->
 			{%include file='admin/public/style.html'%}
@@ -150,6 +193,8 @@
 								</ul>
 								<div class="tab-content">
 									<div class="tab-pane active" id="table-container">
+										<button class="btn yellow" id="modifyBtn">修改</button>
+										<button class="btn red" id="deleteBtn">删除</button>
 										<div class="table-responsive">
 											<table class="table table-striped table-hover table-bordered">
 											<thead>
@@ -243,6 +288,45 @@ jQuery(document).ready(function() {
 	$('#createBrand').bind('hide.bs.modal',function(){
 		$('input[name=name]',$('form#createBrand_form')).val('').parents('.form-group').removeClass('has-error');
 		$('input[name=logo]',$('form#createBrand_form')).val('').parents('.form-group').removeClass('has-error');
+	});
+	
+	$('#deleteBtn').attr('data-id',$('.banner.active').data('id'));
+	$('#modifyBtn').attr('data-id',$('.banner.active').data('id'));
+	$('#modifyBrand_form').find('input[name=id]').attr('value',$('.banner.active').data('id'));
+	
+	$('#deleteBtn').on('click',function(){
+		if(window.confirm('确定删除该品牌?'))
+		{
+			var id = $(this).data('id');
+			$.post('{%url c=brand a=remove%}',{id:id},function(response){
+				if(response.code == 1)
+				{
+					window.location.reload();
+				}
+				else
+				{
+					alert(response.result);
+				}
+			});
+		}
+	});
+	
+	$('#modifyBtn').on('click',function(){
+		$('#modifyBrand').modal('show');
+		$('#modifyBrand').find('input[name=id]').val($('.banner.active').data('id'));
+	});
+	
+	$('#modifyBrand').on('show.bs.modal',function(event){
+		var id = $('.banner.active').data('id');
+		$.get('{%url c=brand a=get%}',{id:id},function(response){
+			$('#modifyBrand').find('input[name=name]').val(response.body.name);
+			$('#modifyBrand').find('input[name=description]').val(response.body.description);		
+			$('#modifyBrand').find('img').attr('src',response.body.logo);
+		});
+	});
+	
+	$('#modifyBrand').find('img').css({cursor:'pointer'}).on('click',function(){
+		$(this).next().trigger('click');
 	});
 });
 	</script>

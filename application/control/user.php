@@ -316,7 +316,7 @@ class userControl extends control
 					
 					return json_encode(array(
 						'code' => 1,
-						'result' => 'success'
+						'result' => '添加成功'
 					));
 				}
 				else
@@ -339,7 +339,8 @@ class userControl extends control
 							return json_encode(array('code'=>6,'result'=>'推广员手机号错误'));
 						}
 					}
-					$id = $userModel->register($telephone, $password,$o2o,$client);
+					
+					$id = $userModel->register($telephone, $password,$o2o,$client,$this->session->province);
 					if ($id)
 					{
 						if(!empty($o2o))
@@ -352,13 +353,13 @@ class userControl extends control
 						$this->session->username = '';
 						$this->model('user_login_log')->create($this->session->id,$client);
 						
-						if(!empty($this->session->theme_lock))
+						if(!empty($this->session->theme_lock) && $this->model('system')->get('lock','theme'))
 						{
 							$this->model('theme_lock')->create($id,$this->session->theme_lock);
 						}
 						
 						$draw = $this->post->draw;
-						$draw = empty($draw)?'success':$draw;
+						$draw = empty($draw)?'注册成功':$draw;
 						
 						return json_encode(array(
 							'code' => 1,
@@ -405,6 +406,7 @@ class userControl extends control
 					$this->session->id = $uinfo['id'];
 					$this->session->telephone = $uinfo['telephone'];
 					$this->session->username = $uinfo['username'];
+					
 					//更新用户登陆时间
 					$userModel->updateLoginTime($uinfo['id']);
 					$this->model('user_login_log')->create($this->session->id,$client);

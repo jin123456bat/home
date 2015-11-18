@@ -21,9 +21,9 @@ class themeModel extends model
 	 * @param unknown $small
 	 * @return \system\core\Ambigous
 	 */
-	function create($name,$description,$big,$middle,$small,$tid = NULL)
+	function create($name,$description,$big,$middle,$small)
 	{
-		return $this->insert(array(NULL,$name,$description,$big,$middle,$small,0,$tid));
+		return $this->insert(array(NULL,$name,$description,$big,$middle,$small,1));
 	}
 	
 	/**
@@ -92,17 +92,6 @@ class themeModel extends model
 	 */
 	function fetchAll(array $filter = array())
 	{
-		if (isset($filter['tid']))
-		{
-			if ($filter['tid'] === NULL)
-			{
-				$this->where('theme.tid is null');
-			}
-			else
-			{
-				$this->where('theme.tid = ?',array($filter['tid']));
-			}
-		}
 		if(isset($filter['length']))
 		{
 			$this->limit($filter['length']);
@@ -119,15 +108,6 @@ class themeModel extends model
 			}
 		}
 		$parameter = isset($filter['parameter'])?$filter['parameter']:'*';
-		if(isset($filter['lock']) && $filter['lock'] && isset($filter['lock_user']) && $filter['lock_user']!==NULL)
-		{
-				$this->table('theme_lock','right join','theme_lock.tid=theme.id');
-				$this->where('theme_lock.uid=?',array($filter['lock_user']));
-				return $this->select($parameter);
-		}
-		else
-		{
-			return $this->select($parameter);
-		}
+		return $this->select($parameter);
 	}
 }

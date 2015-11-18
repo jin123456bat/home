@@ -124,15 +124,14 @@ class wechatControl extends control
 									$eqcodebackground = $dist['eqcodebackground'];
 									$eqcodebackground_x = isset($dist['eqcodebackgroundx'])?$dist['eqcodebackgroundx']:0;
 									$eqcodebackground_y = isset($dist['eqcodebackgroundy'])?$dist['eqcodebackgroundy']:0;
+									$eqcodesize = isset($dist['eqcodesize'])?$dist['eqcodesize']:250;
 									if (is_file($eqcodebackground))
 									{
 										//给二维码增加背景图
 										$alpha = 100;
 										$image = new image();
-										$image->water($eqcodebackground, $file,$eqcodebackground_x,$eqcodebackground_y, $alpha, $file);
-										
+										$image->water($eqcodebackground, $file,$eqcodebackground_x,$eqcodebackground_y, $alpha, $file,$eqcodesize,$eqcodesize);
 									}
-									
 									$result = $this->_wechat->file($access_token, $action, $file, $type);
 									$result = json_decode($result,true);
 									if (isset($result['media_id']))
@@ -259,33 +258,39 @@ class wechatControl extends control
 	 */
 	public function access_token()
 	{
-		$resultFlag = false;
 		$access_token = $this->model('system')->get('access_token','weixin');
-		$access_token = json_decode($access_token,true);
-		if (isset($access_token['endtime']) && $access_token['endtime']>$_SERVER['REQUEST_TIME'])
+		if (!empty($access_token))
 		{
-			$resultFlag = true;
+			$access_token = json_decode($access_token,true);
+			if (isset($access_token['endtime']) && $access_token['endtime']>time())
+			{
+				return $access_token['access_token'];
+			}
 		}
-		
-		//access_token失效或者不存在
-		if(!$resultFlag)
-		{
-			$result = $this->_wechat->access_token();
-			$result = json_decode($result,true);
-			if($result === false)
-				return new json(json::PARAMETER_ERROR,'微信接口错误');
-			if(!isset($result['access_token']))
-				return new json(json::PARAMETER_ERROR,'微信配置错误',$result);
-			$result['endtime'] = $_SERVER['REQUEST_TIME'] + $result['expires_in'];
-			$this->model('system')->set('access_token','weixin',json_encode($result));
-			$access_token = $result;
-		}
-		return $access_token['access_token'];
+		$result = $this->_wechat->access_token();
+		$result = json_decode($result,true);
+		if(!isset($result['access_token']))
+			return new json(json::PARAMETER_ERROR,'微信配置错误',$result);
+		$result['endtime'] = time() + $result['expires_in'];
+		$this->model('system')->set('access_token','weixin',json_encode($result));
+		return $result['access_token'];
 	}
 	
-	function test()
+	/**
+	 * 获得调用微信js的临时票据
+	 */
+	function getJsApiTicket()
 	{
-		
+		$jsapiticket = json_decode($this->model('system')->get('jsapiticket','weixin'),true);
+		if (isset($jsapiticket['endtime']) && $jsapiticket['endtime'] > time())
+		{
+			return $jsapiticket['ticket'];
+		}
+		$access_token = $this->access_token();
+		$jsapiticket = json_decode($this->_wechat->getJsApiTicket($access_token),true);
+		$jsapiticket['endtime'] = time()+$jsapiticket['expires_in'];
+		$this->model('system')->set('jsapiticket','weixin',json_encode($jsapiticket));
+		return $jsapiticket['ticket'];
 	}
 	
 	

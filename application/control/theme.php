@@ -49,9 +49,16 @@ class themeControl extends control
 			$product['origin'] = $this->model('flag')->getOrigin($product['origin']);
 		}
 		//主题锁
-		if ($this->model('system')->get('lock','theme') && login::user())
+		if ($this->model('system')->get('lock','theme') && empty($result['tid']))
 		{
-			$this->session->theme_lock = $id;
+			if (login::user())
+			{
+				$this->model('theme_lock')->create($this->session->id,$id);
+			}
+			else
+			{
+				$this->session->theme_lock = $id;
+			}
 		}
 		return json_encode(array('code'=>1,'result'=>'ok','body'=>$result));
 	}
@@ -70,7 +77,7 @@ class themeControl extends control
 			'length' => $length,
 			'orderby' => 'orderby',
 			'lock_user' => $this->session->id,
-			'lock' => $this->model('system')->get('lock')
+			'lock' => $this->model('system')->get('lock','theme')
 		);
 	
 		$filter['parameter'] = 'theme.id,theme.name,theme.description,theme.bigpic,theme.middlepic,theme.smallpic';
@@ -133,8 +140,6 @@ class themeControl extends control
 			$bigpic = $this->file->bigpic;
 			$middlepic = $this->file->middlepic;
 			$smallpic = $this->file->smallpic;
-			$tid = intval($this->post->tid);
-			$tid = empty($tid)?NULL:$tid;
 			$image = new image();
 			if (!empty($bigpic))
 			{
@@ -161,7 +166,7 @@ class themeControl extends control
 				$smallpic = '';
 			}
 			$themeModel = $this->model('theme');
-			if($themeModel->create($name,$description,$bigpic,$middlepic,$smallpic,$tid))
+			if($themeModel->create($name,$description,$bigpic,$middlepic,$smallpic))
 			{
 				$this->response->addHeader('Location',$this->http->url('theme','admin'));
 			}
@@ -193,35 +198,35 @@ class themeControl extends control
 			$themeModel = $this->model('theme');
 			if(empty($id))
 				return json_encode(array('code'=>2,'result'=>'空id'));
-			if(!empty($name))
+			if($name!==NULL)
 			{
 				$themeModel->where('id=?',array($id))->update('name',$name);
 				$body = $name;
 			}
-			if(!empty($description))
+			if($description!==NULL)
 			{
 				$themeModel->where('id=?',array($id))->update('description',$description);
 				$body = $description;
 			}
-			if(!empty($orderby))
+			if($orderby!==NULL)
 			{
 				$themeModel->where('id=?',array($id))->update('orderby',$orderby);
 				$body = $orderby;
 			}
 			$image = new image();
-			if(!empty($bigpic))
+			if(is_file($bigpic))
 			{
 				$bigpic = $image->resizeImage($bigpic, 640, 280);
 				$themeModel->where('id=?',array($id))->update('bigpic',$bigpic);
 				$body = file::realpathToUrl($bigpic);
 			}
-			if(!empty($middlepic))
+			if(is_file($middlepic))
 			{
 				$middlepic = $image->resizeImage($middlepic, 320, 260);
 				$themeModel->where('id=?',array($id))->update('middlepic',$middlepic);
 				$body = file::realpathToUrl($middlepic);
 			}
-			if(!empty($smallpic))
+			if(is_file($smallpic))
 			{
 				$smallpic = $image->resizeImage($smallpic, 320, 130);
 				$themeModel->where('id=?',array($id))->update('smallpic',$smallpic);

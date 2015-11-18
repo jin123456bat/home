@@ -130,7 +130,7 @@ class image
      * @param  integer $alpha  水印透明度
      * @param string $savepath 生成文件保存位置
      */
-    public function water($source ,$logo,$x,$y,$alpha,$savepath)
+    public function water($source ,$logo,$x,$y,$alpha,$savepath,$logo_w = 100,$logo_h = 100)
     {
         if (!is_file($source) || !is_file($logo))
         	return false;
@@ -148,6 +148,7 @@ class image
         	default:
         		return false;
         }
+        $logo = $this->resizeImage($logo, $logo_w, $logo_h);
         $src_info = getimagesize($logo);
         switch ($src_info[2])
         {

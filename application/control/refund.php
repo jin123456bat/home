@@ -3,12 +3,12 @@ namespace application\control;
 use system\core\control;
 use system\core\filter;
 use application\classes\login;
-use application\model\refundModel;
 use system\core\view;
 use application\model\roleModel;
-use system\core\file;
 use application\model\orderlistModel;
 use system\core\image;
+use application\model\refundModel;
+use application\message\json;
 /**
  * 退账申请
  * @author jin12
@@ -29,11 +29,21 @@ class refundControl extends control
 			$system = $systemModel->toArray($system,'system');
 			$this->view->assign('system',$system);
 			
+			
+			$start = empty($this->get->start)?0:$this->get->start;
+			$length = empty($this->get->length)?10:$this->get->length;
+			
+			$filter = array(
+				'parameter' => 'refund.*,user.username as user_username,user.telephone as user_telephone,
+								orderlist.orderno as order_orderno',
+				'start' => $start,
+				'length' => $length,
+			);
 			$refundModel = $this->model('refund');
-			$refund = $refundModel->fetchAll();
+			$refund = $refundModel->fetchAll($filter);
 			foreach ($refund as &$ref)
 			{
-				$ref['user_gravatar'] = file::realpathToUrl($ref['user_gravatar']);
+				$ref['img'] = $this->model('refundimg')->getByRid($ref['id']);
 			}
 			$this->view->assign('refund',$refund);
 			$this->response->setBody($this->view->display());
@@ -110,5 +120,36 @@ class refundControl extends control
 			return json_encode(array('code'=>0,'result'=>'取消失败'));
 		}
 		return json_encode(array('code'=>2,'result'=>'尚未登陆'));
+	}
+	
+	
+	/**
+	 * 完成退款申请
+	 */
+	function allow()
+	{
+		$id = intval($this->post->id);
+		$roleModel = $this->model('role');
+		if (login::admin() && $roleModel->checkPower($this->session->role,'refund',roleModel::POWER_ALL))
+		{
+			$refundModel = $this->model('refund');
+			if ($refundModel->updateHandle($id,refundModel::REFUND_HANDLE_FINISH))
+			{
+				return new json(json::OK);
+			}
+			return new json(json::PARAMETER_ERROR);
+		}
+		return new json(json::NOT_LOGIN);
+	}
+	
+	/**
+	 * 查询退款状态
+	 */
+	function information()
+	{
+		$id = $this->get->id;
+		$refundModel = $this->model('refund');
+		$refund = $refundModel->getByOid($id);
+		return new json(json::OK,NULL,$refund);
 	}
 }

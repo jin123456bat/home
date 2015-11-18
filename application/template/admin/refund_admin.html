@@ -82,59 +82,14 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
-                	{%section name=refund loop=$refund%}
-					 <div class="row portfolio-block">
-                        <div class="col-md-4">
-                            <div class="portfolio-text">
-                                <img src="{%$refund[refund].user_gravatar%}" width="80" height="80" alt="">
-                                <div class="portfolio-text-info">
-                                    <h4>{%$refund[refund].user_username%} - {%$refund[refund].order_orderno%} - {%$refund[refund].user_telephone%}</h4>
-                                    <p>
-                                    	{%$refund[refund].reason%}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-5 portfolio-stat">
-                            <div class="portfolio-info">
-                                订单运费 <span>
-                                {%$refund[refund].order_feeamount%} </span>
-                            </div>
-                            <div class="portfolio-info">
-                                 订单税款 <span>
-                                {%$refund[refund].order_ordertaxamount%} </span>
-                            </div>
-                            <div class="portfolio-info">
-                                 订单货款 <span>
-                                {%$refund[refund].order_ordergoodsamount%} </span>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <div class="portfolio-btn">
-                                <a href="{%url c=order a=information%}&id={%$refund[refund].order_id%}" class="btn bigicn-only">
-                                <span>
-                                详情 </span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <div class="portfolio-btn">
-                                <a href="#" class="btn bigicn-only actionBtn" data-action="allow" data-id="{%$refund[refund].id%}">
-                                <span>
-                                允许 </span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <div class="portfolio-btn">
-                                <a href="#" class="btn bigicn-only actionBtn" data-action="reject" data-id="{%$refund[refund].id%}">
-                                <span>
-                                拒绝 </span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    {%/section%}
+					<table class="table table-board table-hover">
+						<tr><td>退款单号</td><td>退款人</td><td>退款订单</td><td>是否退货</td><td>申请时间</td><td>退款原因</td><td>退款金额</td><td>描述</td><td>退款前状态</td><td>状态</td><td rowspan="1">操作</td></tr>
+						{%section name=refund loop=$refund%}
+						<tr><td>{%$refund[refund].refundno%}</td><td>{%if empty($refund[refund].user_username)%}{%$refund[refund].user_telephone%}{%else%}{%$refund[refund].user_username%}{%/if%}</td><td>{%$refund[refund].order_orderno%}</td><td>{%if $refund[refund].type ==1%}是{%else%}否{%/if%}</td><td>{%$refund[refund].time|date_format:"Y-m-d H:i:s"%}</td><td>{%$refund[refund].reason%}</td><td>{%$refund[refund].money%}</td><td>{%$refund[refund].description%}</td><td>{%$refund[refund].o_status%}</td><td>{%if $refund[refund].handle == 0%}等待处理{%elseif $refund[refund].handle == 1%}退款完毕{%else%}关闭{%/if%}</td><td rowspan="2">{%if $refund[refund].handle == 0%}<button data-id="{%$refund[refund].id%}" class="btn btn-xs green-stripe allowBtn">已退款</button><button class="btn btn-xs closeBtn red-stripe" data-id="{%$refund[refund].oid%}">关闭</button>{%/if%}</td></tr>
+						<tr><td colspan="10">{%foreach from=$refund[refund].img item=img%}<img width="100" height="100" src="{%$img%}">{%/foreach%}</td></tr>
+						{%/section%}
+					</table>
+                	
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
@@ -176,10 +131,24 @@ jQuery(document).ready(function() {
 	
 	$('.allowBtn').on('click',function(event){
 		var id = $(this).data('id');
-		var action = $(this).data('action');
-		$.post('{%url c=order a=refund%}',{id:id,action:action},function(data){
+		$.post('{%url c=refund a=allow%}',{id:id},function(response){
+			if(response.code == 1)
+			{
+				window.location.reload();
+			}
 		});
 		return false;
+	});
+	
+	$('.closeBtn').on('click',function(){
+		var id = $(this).data('id');
+		$.post('{%url c=refund a=remove%}',{id:id},function(response){
+			response = $.parseJSON(response);
+			if(response.code == 1)
+			{
+				window.location.reload();
+			}
+		});
 	});
 });
 </script>

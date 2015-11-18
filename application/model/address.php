@@ -136,7 +136,9 @@ class addressModel extends model
 	function getHost($uid)
 	{
 		$this->where('uid=?',array($uid));
-		$result = $this->orderby('host','desc')->orderby('id','desc')->select();
+		$this->table('province','left join','address.province=province.id');
+		$this->table('city','left join','address.city=city.id');
+		$result = $this->orderby('host','desc')->orderby('id','desc')->limit(1)->select('address.id,address.province as provinceid,province.name as province,city.name as city,address.city as cityid,address.host,address.telephone,address.name,address.zcode,address.address,address.county');
 		return isset($result[0])?$result[0]:NULL;
 	}
 }

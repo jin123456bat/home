@@ -40,7 +40,12 @@ class hotorderModel extends model
 			$this->orderby('orderby','asc');
 		}
 		$this->table('product','left join','hotorder.pid=product.id');
-		return $this->select('product.id,product.*,hotorder.orderby');
+		if (isset($filter['area_lock']) && $filter['area_lock'])
+		{
+			$this->where('product_area.province=?',array($filter['area_lock']));
+			$this->table('product_area','left join','product_area.pid=product.id');
+		}
+		return $this->select('product.id,product.*');
 	}
 	
 	function order($pid,$orderby)

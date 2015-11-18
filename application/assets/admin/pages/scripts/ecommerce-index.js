@@ -30,6 +30,8 @@ var EcommerceIndex = function () {
 			
             $('.banner').live('click',function(){
 				var bid = $(this).attr('data-id');
+				$('#deleteBtn').data('id',bid);
+				$('#modifyBtn').data('id',bid);
 				columns = [];
 				columns.push({data:'*'});
 				$.post('?c=product&a=ajaxdatatable',{draw:draw,columns:columns,action:'filter',product_bid:bid},function(data){
